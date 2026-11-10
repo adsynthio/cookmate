@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { DEFAULT_WEIGHTS, NO_CRAVING, rankRecipes, type RankContext } from "./ranking.ts";
-import { familyBranches, inLocalUnits, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, toRankRecipe, totalTime, type RecipeDoc } from "./recipes.ts";
+import { familyBranches, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
 
 const docs = JSON.parse(readFileSync(new URL("../data/recipes.json", import.meta.url), "utf8")) as RecipeDoc[];
 const catalog = JSON.parse(readFileSync(new URL("../data/catalog.json", import.meta.url), "utf8")) as {
@@ -55,6 +55,20 @@ test("grams become katori or pieces when the catalog knows the measure", () => {
   assert.deepEqual(inLocalUnits(300, "g", { piece: 150 }), { qty: 2, unit: "piece" });
   assert.deepEqual(inLocalUnits(37, "g", { katori: 140 }), { qty: 37, unit: "g" });
   assert.deepEqual(inLocalUnits(2, "piece", { katori: 140 }), { qty: 2, unit: "piece" });
+  // Spices in spoons and pinches.
+  assert.deepEqual(inLocalUnits(1.5, "g", { chhota_chammach: 3, chammach: 9, chutki: 0.3 }), { qty: 0.5, unit: "chhota_chammach" });
+  assert.deepEqual(inLocalUnits(9, "g", { chhota_chammach: 3, chammach: 9 }), { qty: 1, unit: "chammach" });
+  assert.deepEqual(inLocalUnits(0.15, "g", { chhota_chammach: 4, chutki: 0.3 }), { qty: 1, unit: "chutki" }); // half a pinch is a pinch
+  assert.deepEqual(inLocalUnits(0.15, "g", { chhota_chammach: 4 }), { qty: 0.15, unit: "g" });
+  assert.deepEqual(inLocalUnits(0.6, "g", { chhota_chammach: 4, chutki: 0.3 }), { qty: 2, unit: "chutki" });
+});
+
+test("quantities read as fractions", () => {
+  assert.equal(prettyQty(0.5), "½");
+  assert.equal(prettyQty(1.5), "1½");
+  assert.equal(prettyQty(2.25), "2¼");
+  assert.equal(prettyQty(3), "3");
+  assert.equal(prettyQty(0.15), "0.15");
 });
 
 test("family plates name the child at the right step", () => {
@@ -123,4 +137,13 @@ test("database rows map back to the same document the app bundles", () => {
   assert.deepEqual(back.steps, d.steps);
   assert.deepEqual(back.variation_rules, d.variation_rules);
   assert.deepEqual(toRankRecipe(back).equipmentFallbacks, ["pressure_cooker"]);
+});
+
+test("why this works: four bars and one balancing sentence", () => {
+  const w = whyThisWorks(doc("kadhi-pakora").flavor_profile, "en")!;
+  assert.deepEqual(w.bars.map((b) => b.key), ["rich", "heat", "crunch", "acid"]);
+  assert.match(w.sentence, /^Mostly .+, with .+ to balance it\.$/);
+  assert.ok(whyThisWorks({ starch: 0.9, rich: 0.5 }, "hi")!.sentence.startsWith("ज़्यादातर"));
+  assert.equal(whyThisWorks({ starch: 0.9, rich: 0.6 }, "en")!.sentence, "Mostly filling.");
+  assert.equal(whyThisWorks({}, "en"), null);
 });

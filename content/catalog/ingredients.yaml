@@ -1,0 +1,233 @@
+# Ingredient catalog (KIT-143). Source of truth for public.ingredients.
+# Edit here, then run: python3 tools/content/build.py   (regenerates supabase/seed.sql)
+#
+# Fields
+#   name       canonical English name, lowercase (unique)
+#   hi, latn   Hindi in Devanagari and in Latin script (Hinglish); both used for parsing and display
+#   aliases    other spellings and regional names
+#   category   see public.ingredients.category
+#   unit       default unit: g, ml, piece, bunch, packet (default g)
+#   location   usual storage kind: fridge, freezer, pantry, staples, ready_made, counter
+#   life       shelf life in days by storage kind (whole/unopened)
+#   measures   grams per local measure (see MEASURES below)
+#   groups     weekly-plate groups: dal, sabzi, greens, fruit, dairy, protein, grain
+#   staple     tracked as Full/Low/Out instead of an exact quantity
+#   allergens  milk, gluten, peanut, tree_nut, sesame, soy, egg, fish, shellfish, mustard
+#   flags      content-tool only, not stored:
+#                jain_avoid   root vegetables, onion, garlic, mushroom: a recipe using it cannot be jain
+#                safety       a recipe using it must carry a food-safety note on at least one step
+#                animal       animal product outside the dairy/egg/meat categories (e.g. honey): not vegan
+#
+# MEASURES (approximate; level, home utensils)
+#   katori 150 ml bowl · cup 240 ml · chammach 15 ml tablespoon · chhota_chammach 5 ml teaspoon
+#   mutthi one handful · chutki one pinch · piece one medium item · clove one garlic clove
+#   inch one inch of root · bunch one market bunch
+#
+# Weights and shelf life are kitchen estimates for parsing and pantry nudges, not nutrition or safety advice.
+# Every row should be checked by the culinary lead before launch.
+
+ingredients:
+  # --- Vegetables -----------------------------------------------------------------------------
+  - {name: potato, hi: आलू, latn: aloo, aliases: [alu, aaloo, batata], category: vegetable, location: pantry, life: {pantry: 30, counter: 21, fridge: 30}, measures: {piece: 150, katori: 140}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: onion, hi: प्याज़, latn: pyaaz, aliases: [pyaz, pyaj, kanda, kaanda, dungri], category: vegetable, location: pantry, life: {pantry: 30, counter: 21}, measures: {piece: 110, katori: 130}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: tomato, hi: टमाटर, latn: tamatar, aliases: [tamater, tamaatar, tameta], category: vegetable, location: counter, life: {counter: 4, fridge: 10}, measures: {piece: 100, katori: 150}, groups: [sabzi]}
+  - {name: garlic, hi: लहसुन, latn: lahsun, aliases: [lehsun, lasun, lassan, lehsan], category: vegetable, location: pantry, life: {pantry: 60, counter: 30}, measures: {clove: 4, piece: 35, chammach: 9}, groups: [], flags: [jain_avoid]}
+  - {name: ginger, hi: अदरक, latn: adrak, aliases: [adrakh, aadu, ale], category: vegetable, location: fridge, life: {fridge: 21, counter: 7}, measures: {inch: 8, chammach: 8}, groups: [], flags: [jain_avoid]}
+  - {name: green chilli, hi: हरी मिर्च, latn: hari mirch, aliases: [mirchi, hari mirchi, green chili, lili mirchi], category: vegetable, location: fridge, life: {fridge: 10, counter: 3}, measures: {piece: 3}, groups: []}
+  - {name: cauliflower, hi: फूलगोभी, latn: phool gobhi, aliases: [gobhi, gobi, phoolgobi, flower], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {piece: 600, katori: 100}, groups: [sabzi]}
+  - {name: cabbage, hi: पत्तागोभी, latn: patta gobhi, aliases: [band gobhi, bandh gobi, kobi], category: vegetable, location: fridge, life: {fridge: 10, counter: 3}, measures: {piece: 700, katori: 70}, groups: [sabzi]}
+  - {name: green peas, hi: मटर, latn: matar, aliases: [mattar, peas, vatana], category: vegetable, location: fridge, life: {fridge: 3, freezer: 180}, measures: {katori: 145, cup: 145, mutthi: 30}, groups: [sabzi]}
+  - {name: carrot, hi: गाजर, latn: gajar, aliases: [gaajar], category: vegetable, location: fridge, life: {fridge: 14, counter: 4}, measures: {piece: 70, katori: 110}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: capsicum, hi: शिमला मिर्च, latn: shimla mirch, aliases: [bell pepper, simla mirch], category: vegetable, location: fridge, life: {fridge: 7, counter: 2}, measures: {piece: 120, katori: 90}, groups: [sabzi]}
+  - {name: brinjal, hi: बैंगन, latn: baingan, aliases: [baigan, bengan, eggplant, aubergine, vangi, ringna], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {piece: 250}, groups: [sabzi]}
+  - {name: okra, hi: भिंडी, latn: bhindi, aliases: [bhendi, ladies finger, lady finger], category: vegetable, location: fridge, life: {fridge: 4, counter: 2}, measures: {piece: 12, katori: 100}, groups: [sabzi]}
+  - {name: bottle gourd, hi: लौकी, latn: lauki, aliases: [ghiya, doodhi, dudhi, kaddu lauki], category: vegetable, location: fridge, life: {fridge: 7, counter: 4}, measures: {piece: 800, katori: 120}, groups: [sabzi]}
+  - {name: ridge gourd, hi: तुरई, latn: turai, aliases: [tori, torai, turiya], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {piece: 200}, groups: [sabzi]}
+  - {name: bitter gourd, hi: करेला, latn: karela, aliases: [kareli], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {piece: 100}, groups: [sabzi]}
+  - {name: pumpkin, hi: कद्दू, latn: kaddu, aliases: [sitaphal, kashiphal, petha], category: vegetable, location: counter, life: {counter: 30, fridge: 5}, measures: {katori: 120}, groups: [sabzi]}
+  - {name: cucumber, hi: खीरा, latn: kheera, aliases: [khira, kakdi], category: vegetable, location: fridge, life: {fridge: 7, counter: 3}, measures: {piece: 200, katori: 120}, groups: [sabzi]}
+  - {name: radish, hi: मूली, latn: mooli, aliases: [muli], category: vegetable, location: fridge, life: {fridge: 7, counter: 2}, measures: {piece: 250}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: beetroot, hi: चुकंदर, latn: chukandar, aliases: [beet, chukander], category: vegetable, location: fridge, life: {fridge: 14, counter: 5}, measures: {piece: 150}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: french beans, hi: फ्रेंच बीन्स, latn: french beans, aliases: [beans, phali, farasbi], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {katori: 100, mutthi: 40}, groups: [sabzi]}
+  - {name: cluster beans, hi: ग्वार फली, latn: gwar phali, aliases: [gwar, guar, gavar], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {katori: 100}, groups: [sabzi]}
+  - {name: sweet potato, hi: शकरकंद, latn: shakarkand, aliases: [shakarkandi, ratalu], category: vegetable, location: pantry, life: {pantry: 14, counter: 10}, measures: {piece: 200}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: colocasia, hi: अरबी, latn: arbi, aliases: [arvi, taro, kachalu], category: vegetable, location: pantry, life: {pantry: 10, fridge: 14}, measures: {piece: 40}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: raw banana, hi: कच्चा केला, latn: kaccha kela, aliases: [kachcha kela, plantain, vazhakkai], category: vegetable, location: counter, life: {counter: 5, fridge: 7}, measures: {piece: 150}, groups: [sabzi]}
+  - {name: drumstick, hi: सहजन, latn: sahjan, aliases: [sehjan, saijan, moringa, shevga, murungakkai], category: vegetable, location: fridge, life: {fridge: 7, counter: 2}, measures: {piece: 60}, groups: [sabzi]}
+  - {name: mushroom, hi: मशरूम, latn: mushroom, aliases: [khumbi, khumb], category: vegetable, location: fridge, life: {fridge: 4}, measures: {katori: 70, piece: 18}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: sweet corn, hi: भुट्टा, latn: bhutta, aliases: [makka, makai, corn, sweetcorn], category: vegetable, location: fridge, life: {fridge: 4, freezer: 180}, measures: {piece: 250, katori: 140}, groups: [grain]}
+  - {name: spring onion, hi: हरा प्याज़, latn: hara pyaaz, aliases: [hari pyaz, scallion, kanda pat], category: vegetable, location: fridge, life: {fridge: 7}, measures: {bunch: 100, mutthi: 25}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: round gourd, hi: टिंडा, latn: tinda, aliases: [tinde, dilpasand], category: vegetable, location: fridge, life: {fridge: 7, counter: 3}, measures: {piece: 60}, groups: [sabzi]}
+  - {name: ivy gourd, hi: कुंदरू, latn: kundru, aliases: [tindora, tondli, kovakkai], category: vegetable, location: fridge, life: {fridge: 7, counter: 2}, measures: {katori: 100, piece: 10}, groups: [sabzi]}
+  - {name: pointed gourd, hi: परवल, latn: parwal, aliases: [parval, potol], category: vegetable, location: fridge, life: {fridge: 7, counter: 2}, measures: {piece: 30}, groups: [sabzi]}
+  - {name: raw jackfruit, hi: कटहल, latn: kathal, aliases: [kathhal, phanas, raw jackfruit], category: vegetable, location: fridge, life: {fridge: 4, freezer: 90}, measures: {katori: 130}, groups: [sabzi]}
+  - {name: turnip, hi: शलजम, latn: shalgam, aliases: [shaljam], category: vegetable, location: fridge, life: {fridge: 14}, measures: {piece: 120}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: lotus stem, hi: कमल ककड़ी, latn: kamal kakdi, aliases: [bhein, nadru, kamal kakri], category: vegetable, location: fridge, life: {fridge: 7}, measures: {piece: 150}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: elephant foot yam, hi: जिमीकंद, latn: jimikand, aliases: [suran, oal, zamikand], category: vegetable, location: pantry, life: {pantry: 30}, measures: {katori: 140}, groups: [sabzi], flags: [jain_avoid]}
+  - {name: raw mango, hi: कच्चा आम, latn: kaccha aam, aliases: [kairi, keri, ambiya], category: vegetable, location: counter, life: {counter: 5, fridge: 14}, measures: {piece: 200}, groups: []}
+  - {name: ker, hi: कैर, latn: ker, aliases: [kair, kerda], category: vegetable, location: pantry, life: {pantry: 365}, measures: {katori: 60, mutthi: 20}, groups: [sabzi]}
+  - {name: sangri, hi: सांगरी, latn: sangri, aliases: [sangari, khejri beans], category: vegetable, location: pantry, life: {pantry: 365}, measures: {katori: 40, mutthi: 15}, groups: [sabzi]}
+  - {name: spinach, hi: पालक, latn: palak, aliases: [paalak], category: vegetable, unit: bunch, location: fridge, life: {fridge: 3, freezer: 90}, measures: {bunch: 250, katori: 30}, groups: [greens]}
+  - {name: fenugreek leaves, hi: मेथी, latn: methi, aliases: [methi saag, methi bhaji, fresh methi], category: vegetable, unit: bunch, location: fridge, life: {fridge: 3}, measures: {bunch: 150, katori: 25, mutthi: 15}, groups: [greens]}
+  - {name: mustard greens, hi: सरसों का साग, latn: sarson saag, aliases: [sarson, sarson ka saag, saag], category: vegetable, unit: bunch, location: fridge, life: {fridge: 3}, measures: {bunch: 400}, groups: [greens]}
+  - {name: bathua, hi: बथुआ, latn: bathua, aliases: [chakvat, lambsquarters], category: vegetable, unit: bunch, location: fridge, life: {fridge: 3}, measures: {bunch: 250}, groups: [greens]}
+  - {name: amaranth leaves, hi: चौलाई, latn: chaulai, aliases: [lal saag, cholai, rajgira saag], category: vegetable, unit: bunch, location: fridge, life: {fridge: 3}, measures: {bunch: 200}, groups: [greens]}
+
+  # --- Herbs ----------------------------------------------------------------------------------
+  - {name: coriander leaves, hi: हरा धनिया, latn: hara dhaniya, aliases: [dhaniya, dhania, cilantro, kothmir, kothimbir, dhaniya patta], category: herb, unit: bunch, location: fridge, life: {fridge: 5}, measures: {bunch: 100, mutthi: 10, chammach: 2}, groups: []}
+  - {name: mint leaves, hi: पुदीना, latn: pudina, aliases: [podina, phudina, mint], category: herb, unit: bunch, location: fridge, life: {fridge: 5}, measures: {bunch: 60, mutthi: 8}, groups: []}
+  - {name: curry leaves, hi: करी पत्ता, latn: kadi patta, aliases: [kadhi patta, curry patta, meetha neem, karuveppilai], category: herb, location: fridge, life: {fridge: 10, freezer: 60}, measures: {piece: 0.3, mutthi: 4}, groups: []}
+  - {name: dill leaves, hi: सोआ, latn: soya, aliases: [suva, shepu, dill], category: herb, unit: bunch, location: fridge, life: {fridge: 4}, measures: {bunch: 100}, groups: [greens]}
+
+  # --- Fruit ----------------------------------------------------------------------------------
+  - {name: lemon, hi: नींबू, latn: nimbu, aliases: [nimboo, limbu, lime, lemon], category: fruit, unit: piece, location: counter, life: {counter: 7, fridge: 21}, measures: {piece: 50}, groups: []}
+  - {name: banana, hi: केला, latn: kela, aliases: [kele], category: fruit, unit: piece, location: counter, life: {counter: 4}, measures: {piece: 120}, groups: [fruit]}
+  - {name: apple, hi: सेब, latn: seb, aliases: [saeb, safarchand], category: fruit, unit: piece, location: fridge, life: {counter: 7, fridge: 30}, measures: {piece: 180}, groups: [fruit]}
+  - {name: mango, hi: आम, latn: aam, aliases: [keri pakki], category: fruit, unit: piece, location: counter, life: {counter: 4, fridge: 7}, measures: {piece: 250}, groups: [fruit]}
+  - {name: papaya, hi: पपीता, latn: papita, aliases: [papaya], category: fruit, location: counter, life: {counter: 3, fridge: 5}, measures: {katori: 140}, groups: [fruit]}
+  - {name: guava, hi: अमरूद, latn: amrood, aliases: [amrud, peru, jamfal], category: fruit, unit: piece, location: counter, life: {counter: 3, fridge: 7}, measures: {piece: 120}, groups: [fruit]}
+  - {name: pomegranate, hi: अनार, latn: anaar, aliases: [anar, dalimb], category: fruit, unit: piece, location: fridge, life: {counter: 14, fridge: 30}, measures: {piece: 250, katori: 150}, groups: [fruit]}
+  - {name: orange, hi: संतरा, latn: santra, aliases: [santara, narangi], category: fruit, unit: piece, location: counter, life: {counter: 7, fridge: 21}, measures: {piece: 150}, groups: [fruit]}
+  - {name: grapes, hi: अंगूर, latn: angoor, aliases: [angur], category: fruit, location: fridge, life: {fridge: 7, counter: 2}, measures: {katori: 150}, groups: [fruit]}
+  - {name: watermelon, hi: तरबूज़, latn: tarbooz, aliases: [tarbuj, kalingad], category: fruit, location: counter, life: {counter: 10, fridge: 3}, measures: {katori: 150}, groups: [fruit]}
+  - {name: sapota, hi: चीकू, latn: chikoo, aliases: [chiku, sapodilla], category: fruit, unit: piece, location: counter, life: {counter: 3, fridge: 7}, measures: {piece: 80}, groups: [fruit]}
+
+  # --- Grains and cereals ---------------------------------------------------------------------
+  - {name: rice, hi: चावल, latn: chawal, aliases: [chaawal, bhaat, sona masoori, kolam], category: grain, location: staples, staple: true, life: {staples: 365, pantry: 365}, measures: {katori: 130, cup: 200, mutthi: 30}, groups: [grain]}
+  - {name: basmati rice, hi: बासमती चावल, latn: basmati chawal, aliases: [basmati], category: grain, location: staples, staple: true, life: {staples: 365, pantry: 365}, measures: {katori: 125, cup: 190, mutthi: 30}, groups: [grain]}
+  - {name: poha, hi: पोहा, latn: poha, aliases: [chiwda, chivda, aval, avalakki, flattened rice, beaten rice], category: grain, location: pantry, life: {pantry: 60}, measures: {katori: 50, cup: 80, mutthi: 15}, groups: [grain]}
+  - {name: semolina, hi: सूजी, latn: sooji, aliases: [suji, rava, rawa, semolina], category: grain, location: pantry, life: {pantry: 90}, measures: {katori: 110, cup: 170, chammach: 10}, groups: [grain]}
+  - {name: broken wheat, hi: दलिया, latn: daliya, aliases: [dalia, lapsi, godhuma rava], category: grain, location: pantry, life: {pantry: 120}, measures: {katori: 110, cup: 170}, groups: [grain]}
+  - {name: sabudana, hi: साबूदाना, latn: sabudana, aliases: [sago, tapioca pearls, javvarisi], category: grain, location: pantry, life: {pantry: 365}, measures: {katori: 110, cup: 160}, groups: [grain]}
+  - {name: vermicelli, hi: सेवई, latn: seviyan, aliases: [sevaiyan, semiya, sevai], category: grain, location: pantry, life: {pantry: 180}, measures: {katori: 60, cup: 90}, groups: [grain], allergens: [gluten]}
+  - {name: pearl millet, hi: बाजरा, latn: bajra, aliases: [bajri, kambu], category: grain, location: pantry, life: {pantry: 90}, measures: {katori: 120}, groups: [grain]}
+  - {name: sorghum, hi: ज्वार, latn: jowar, aliases: [jwar, jonna, cholam], category: grain, location: pantry, life: {pantry: 180}, measures: {katori: 120}, groups: [grain]}
+  - {name: rolled oats, hi: ओट्स, latn: oats, aliases: [jai], category: grain, location: pantry, life: {pantry: 180}, measures: {katori: 60, cup: 90, chammach: 6}, groups: [grain], allergens: [gluten]}
+  - {name: puffed rice, hi: मुरमुरा, latn: murmura, aliases: [mamra, kurmura, muri, pori], category: grain, location: pantry, life: {pantry: 60}, measures: {katori: 20, cup: 30}, groups: [grain]}
+  - {name: bread, hi: ब्रेड, latn: bread, aliases: [double roti, pauroti], category: packaged, unit: piece, location: counter, life: {counter: 4, fridge: 7}, measures: {piece: 28}, groups: [grain], allergens: [gluten]}
+  - {name: pav, hi: पाव, latn: pav, aliases: [pao, ladi pav, bun], category: packaged, unit: piece, location: counter, life: {counter: 2, fridge: 4}, measures: {piece: 40}, groups: [grain], allergens: [gluten]}
+
+  # --- Flours ---------------------------------------------------------------------------------
+  - {name: whole wheat flour, hi: आटा, latn: atta, aliases: [aata, gehun ka atta, gehu atta, chakki atta, wheat flour], category: flour, location: staples, staple: true, life: {staples: 60, pantry: 60, fridge: 120}, measures: {katori: 75, cup: 120, chammach: 8}, groups: [grain], allergens: [gluten]}
+  - {name: refined flour, hi: मैदा, latn: maida, aliases: [all purpose flour, maida atta], category: flour, location: pantry, life: {pantry: 180}, measures: {katori: 80, cup: 125, chammach: 8}, groups: [grain], allergens: [gluten]}
+  - {name: gram flour, hi: बेसन, latn: besan, aliases: [besun, chickpea flour, chana atta, kadalai maavu], category: flour, location: pantry, life: {pantry: 120}, measures: {katori: 60, cup: 92, chammach: 7}, groups: [dal]}
+  - {name: rice flour, hi: चावल का आटा, latn: chawal ka atta, aliases: [rice atta, akki hittu, chawal atta], category: flour, location: pantry, life: {pantry: 180}, measures: {katori: 100, cup: 160, chammach: 9}, groups: [grain]}
+  - {name: pearl millet flour, hi: बाजरे का आटा, latn: bajre ka atta, aliases: [bajra atta, bajri atta], category: flour, location: pantry, life: {pantry: 30}, measures: {katori: 75, cup: 120}, groups: [grain]}
+  - {name: maize flour, hi: मक्की का आटा, latn: makki ka atta, aliases: [makki atta, makai atta, cornmeal], category: flour, location: pantry, life: {pantry: 60}, measures: {katori: 80, cup: 125}, groups: [grain]}
+  - {name: cornflour, hi: कॉर्नफ्लोर, latn: cornflour, aliases: [corn starch, cornstarch, corn flour], category: flour, location: pantry, life: {pantry: 365}, measures: {chammach: 8, chhota_chammach: 3}, groups: []}
+  - {name: finger millet flour, hi: रागी का आटा, latn: ragi atta, aliases: [ragi, nachni, nachni atta, finger millet], category: flour, location: pantry, life: {pantry: 90}, measures: {katori: 75, cup: 120}, groups: [grain]}
+  - {name: sorghum flour, hi: ज्वार का आटा, latn: jowar atta, aliases: [jowar ka atta, jwari pith], category: flour, location: pantry, life: {pantry: 90}, measures: {katori: 75, cup: 120}, groups: [grain]}
+  - {name: water chestnut flour, hi: सिंघाड़े का आटा, latn: singhare ka atta, aliases: [singhara atta, singhada atta], category: flour, location: pantry, life: {pantry: 180}, measures: {katori: 75, cup: 120}, groups: [grain]}
+  - {name: buckwheat flour, hi: कुट्टू का आटा, latn: kuttu ka atta, aliases: [kuttu atta, buckwheat], category: flour, location: pantry, life: {pantry: 90}, measures: {katori: 75, cup: 120}, groups: [grain]}
+
+  # --- Pulses ---------------------------------------------------------------------------------
+  - {name: toor dal, hi: अरहर दाल, latn: arhar dal, aliases: [toor, tuvar dal, tur dal, arhar, pigeon pea, togari bele], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200, mutthi: 30}, groups: [dal]}
+  - {name: yellow moong dal, hi: मूंग दाल, latn: moong dal, aliases: [mung dal, dhuli moong, peeli moong dal, pasi paruppu], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200, mutthi: 30}, groups: [dal]}
+  - {name: whole green moong, hi: साबुत मूंग, latn: sabut moong, aliases: [hari moong, green gram, mung beans, moong sabut], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200}, groups: [dal]}
+  - {name: masoor dal, hi: मसूर दाल, latn: masoor dal, aliases: [masur, red lentil, lal masoor], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200, mutthi: 30}, groups: [dal]}
+  - {name: chana dal, hi: चना दाल, latn: chana dal, aliases: [split bengal gram, kadalai paruppu, chane ki dal], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200, chammach: 13, mutthi: 30}, groups: [dal]}
+  - {name: urad dal, hi: उड़द दाल, latn: urad dal, aliases: [dhuli urad, white urad, split black gram, uddina bele], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200, chhota_chammach: 4}, groups: [dal]}
+  - {name: whole black urad, hi: साबुत उड़द, latn: sabut urad, aliases: [kali dal, maa ki dal, whole urad, black gram], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200}, groups: [dal]}
+  - {name: kidney beans, hi: राजमा, latn: rajma, aliases: [rajmah, red kidney beans, chitra rajma], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 120, cup: 185}, groups: [dal], flags: [safety]}
+  - {name: chickpeas, hi: काबुली चना, latn: kabuli chana, aliases: [chole, chhole, safed chana, garbanzo], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200}, groups: [dal]}
+  - {name: black chickpeas, hi: काला चना, latn: kala chana, aliases: [desi chana, bengal gram whole], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 125, cup: 200}, groups: [dal]}
+  - {name: black eyed peas, hi: लोबिया, latn: lobia, aliases: [lobiya, chawli, rongi], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 120, cup: 180}, groups: [dal]}
+  - {name: moth beans, hi: मोठ, latn: moth, aliases: [matki, mot, math], category: pulse, location: pantry, life: {pantry: 365}, measures: {katori: 120, cup: 190}, groups: [dal]}
+  - {name: soya chunks, hi: सोया चंक्स, latn: soya chunks, aliases: [soya badi, soyabean chunks, meal maker], category: packaged, location: pantry, life: {pantry: 180}, measures: {katori: 35, cup: 50}, groups: [protein], allergens: [soy]}
+
+  # --- Dairy ----------------------------------------------------------------------------------
+  - {name: milk, hi: दूध, latn: doodh, aliases: [dudh, paal], category: dairy, unit: ml, location: fridge, life: {fridge: 2}, measures: {katori: 155, cup: 245, chammach: 15}, groups: [dairy], allergens: [milk]}
+  - {name: curd, hi: दही, latn: dahi, aliases: [yogurt, yoghurt, doi, thayir, mosaru], category: dairy, location: fridge, life: {fridge: 4}, measures: {katori: 150, cup: 245, chammach: 15}, groups: [dairy], allergens: [milk]}
+  - {name: paneer, hi: पनीर, latn: paneer, aliases: [panir, cottage cheese], category: dairy, location: fridge, life: {fridge: 3, freezer: 60}, measures: {katori: 120, cup: 200}, groups: [dairy, protein], allergens: [milk]}
+  - {name: ghee, hi: घी, latn: ghee, aliases: [desi ghee, clarified butter, tup, neyyi], category: oil_fat, location: staples, staple: true, life: {staples: 180, pantry: 180, fridge: 365}, measures: {chammach: 13, chhota_chammach: 4.5, katori: 135}, groups: [], allergens: [milk]}
+  - {name: butter, hi: मक्खन, latn: makhan, aliases: [makkhan, loni, white butter], category: dairy, location: fridge, life: {fridge: 30, freezer: 180}, measures: {chammach: 14, chhota_chammach: 5}, groups: [], allergens: [milk]}
+  - {name: fresh cream, hi: मलाई, latn: malai, aliases: [cream, fresh cream, sai], category: dairy, unit: ml, location: fridge, life: {fridge: 5}, measures: {chammach: 15, katori: 150}, groups: [dairy], allergens: [milk]}
+  - {name: khoya, hi: खोया, latn: khoya, aliases: [mawa, khoa], category: dairy, location: fridge, life: {fridge: 3, freezer: 60}, measures: {katori: 130}, groups: [dairy], allergens: [milk]}
+  - {name: buttermilk, hi: छाछ, latn: chaas, aliases: [chhachh, mattha, taak, majjige], category: dairy, unit: ml, location: fridge, life: {fridge: 2}, measures: {katori: 150, cup: 240}, groups: [dairy], allergens: [milk]}
+  - {name: cheese, hi: चीज़, latn: cheese, aliases: [processed cheese, cheese slice], category: dairy, location: fridge, life: {fridge: 30}, measures: {piece: 20}, groups: [dairy], allergens: [milk]}
+
+  # --- Egg, meat, seafood ---------------------------------------------------------------------
+  - {name: egg, hi: अंडा, latn: anda, aliases: [ande, anday, eggs, motte], category: egg, unit: piece, location: fridge, life: {counter: 10, fridge: 21}, measures: {piece: 50}, groups: [protein], allergens: [egg], flags: [safety]}
+  - {name: chicken, hi: चिकन, latn: chicken, aliases: [murga, murgi, kozhi, koli], category: meat, location: fridge, life: {fridge: 2, freezer: 90}, measures: {piece: 60}, groups: [protein], flags: [safety]}
+  - {name: mutton, hi: मटन, latn: mutton, aliases: [goat meat, bakra, gosht, meat], category: meat, location: fridge, life: {fridge: 2, freezer: 120}, measures: {piece: 50}, groups: [protein], flags: [safety]}
+  - {name: minced mutton, hi: कीमा, latn: keema, aliases: [qeema, kheema, mince], category: meat, location: fridge, life: {fridge: 1, freezer: 90}, measures: {katori: 150}, groups: [protein], flags: [safety]}
+  - {name: fish, hi: मछली, latn: machli, aliases: [machhli, macchi, meen, mach], category: seafood, location: fridge, life: {fridge: 1, freezer: 90}, measures: {piece: 80}, groups: [protein], allergens: [fish], flags: [safety]}
+  - {name: prawns, hi: झींगा, latn: jhinga, aliases: [jhinge, shrimp, kolambi, chemmeen], category: seafood, location: fridge, life: {fridge: 1, freezer: 90}, measures: {katori: 150, piece: 15}, groups: [protein], allergens: [shellfish], flags: [safety]}
+  - {name: tofu, hi: टोफू, latn: tofu, aliases: [soya paneer], category: packaged, location: fridge, life: {fridge: 5}, measures: {katori: 120}, groups: [protein], allergens: [soy]}
+
+  # --- Spices (most are staples) --------------------------------------------------------------
+  - {name: salt, hi: नमक, latn: namak, aliases: [noon, mith, uppu], category: spice, location: staples, staple: true, life: {staples: 1825}, measures: {chhota_chammach: 6, chammach: 18, chutki: 0.4}, groups: []}
+  - {name: black salt, hi: काला नमक, latn: kala namak, aliases: [sanchal, kala noon], category: spice, location: staples, staple: true, life: {staples: 1825}, measures: {chhota_chammach: 5, chutki: 0.4}, groups: []}
+  - {name: rock salt, hi: सेंधा नमक, latn: sendha namak, aliases: [sendha, upvas namak, vrat namak], category: spice, location: staples, staple: true, life: {staples: 1825}, measures: {chhota_chammach: 5, chutki: 0.4}, groups: []}
+  - {name: turmeric powder, hi: हल्दी, latn: haldi, aliases: [halad, manjal, turmeric], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 3, chammach: 9, chutki: 0.3}, groups: []}
+  - {name: red chilli powder, hi: लाल मिर्च पाउडर, latn: lal mirch, aliases: [lal mirchi, mirchi powder, chilli powder, tikhat], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5, chammach: 8, chutki: 0.3}, groups: []}
+  - {name: kashmiri chilli powder, hi: कश्मीरी लाल मिर्च, latn: kashmiri mirch, aliases: [kashmiri lal mirch, degi mirch, deggi mirch], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5, chammach: 8}, groups: []}
+  - {name: coriander powder, hi: धनिया पाउडर, latn: dhaniya powder, aliases: [pisa dhaniya, dhania powder, dhane pood], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
+  - {name: cumin seeds, hi: जीरा, latn: jeera, aliases: [zeera, jira, jeerige, cumin], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2, chammach: 6, chutki: 0.3}, groups: []}
+  - {name: roasted cumin powder, hi: भुना जीरा पाउडर, latn: bhuna jeera, aliases: [jeera powder, bhuna jeera powder, cumin powder], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
+  - {name: garam masala, hi: गरम मसाला, latn: garam masala, aliases: [garam masaala], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
+  - {name: mustard seeds, hi: राई, latn: rai, aliases: [sarson ke dane, mohri, kadugu, sarson dana], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 3.5, chammach: 11}, groups: [], allergens: [mustard]}
+  - {name: fenugreek seeds, hi: मेथी दाना, latn: methi dana, aliases: [methi seeds, methi dane, vendhayam], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 3.7}, groups: []}
+  - {name: asafoetida, hi: हींग, latn: hing, aliases: [heeng, hingu, perungayam], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chutki: 0.2, chhota_chammach: 2.5}, groups: [], allergens: [gluten]}
+  - {name: carom seeds, hi: अजवाइन, latn: ajwain, aliases: [ajwan, ajowan, owa, omam], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2, chutki: 0.2}, groups: []}
+  - {name: fennel seeds, hi: सौंफ, latn: saunf, aliases: [sonf, badishep, fennel], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
+  - {name: dried fenugreek leaves, hi: कसूरी मेथी, latn: kasuri methi, aliases: [kasoori methi, dry methi], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 0.5, chammach: 1.5}, groups: []}
+  - {name: dry mango powder, hi: अमचूर, latn: amchur, aliases: [amchoor, aamchur, mango powder], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2.5}, groups: []}
+  - {name: black pepper, hi: काली मिर्च, latn: kali mirch, aliases: [kaali mirch, miri, pepper, milagu], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5, piece: 0.05}, groups: []}
+  - {name: cloves, hi: लौंग, latn: laung, aliases: [long, lavang, clove], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.1}, groups: []}
+  - {name: green cardamom, hi: हरी इलायची, latn: elaichi, aliases: [ilaichi, choti elaichi, velchi, cardamom], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.15}, groups: []}
+  - {name: black cardamom, hi: बड़ी इलायची, latn: badi elaichi, aliases: [kali elaichi, moti elaichi], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 1.2}, groups: []}
+  - {name: cinnamon, hi: दालचीनी, latn: dalchini, aliases: [dalcheeni, taj], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {inch: 1}, groups: []}
+  - {name: bay leaf, hi: तेज पत्ता, latn: tej patta, aliases: [tejpatta, tamalpatra], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.2}, groups: []}
+  - {name: dry red chilli, hi: साबुत लाल मिर्च, latn: sabut lal mirch, aliases: [sukhi lal mirch, whole red chilli, boriya mirch], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.5}, groups: []}
+  - {name: chaat masala, hi: चाट मसाला, latn: chaat masala, aliases: [chat masala], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2.5}, groups: []}
+  - {name: nigella seeds, hi: कलौंजी, latn: kalonji, aliases: [mangrail, kalaunji, onion seeds], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5}, groups: []}
+  - {name: nutmeg, hi: जायफल, latn: jaiphal, aliases: [jayphal], category: spice, location: staples, staple: true, life: {staples: 730}, measures: {chutki: 0.2}, groups: []}
+  - {name: saffron, hi: केसर, latn: kesar, aliases: [zafran, keshar], category: spice, location: staples, staple: true, life: {staples: 730}, measures: {chutki: 0.05}, groups: []}
+  - {name: dry ginger powder, hi: सोंठ, latn: saunth, aliases: [sonth, sunth, dry ginger], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2}, groups: []}
+  - {name: sambar powder, hi: सांभर मसाला, latn: sambar masala, aliases: [sambhar masala, sambar podi], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2.5, chammach: 7}, groups: []}
+  - {name: pav bhaji masala, hi: पाव भाजी मसाला, latn: pav bhaji masala, aliases: [bhaji masala], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2.5, chammach: 7}, groups: []}
+  - {name: chole masala, hi: छोले मसाला, latn: chole masala, aliases: [chana masala powder], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2.5, chammach: 7}, groups: []}
+
+  # --- Oils and fats --------------------------------------------------------------------------
+  - {name: mustard oil, hi: सरसों का तेल, latn: sarson ka tel, aliases: [sarson tel, kachi ghani], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: [], allergens: [mustard]}
+  - {name: groundnut oil, hi: मूंगफली का तेल, latn: moongphali tel, aliases: [peanut oil, singdana tel, kadalai ennai], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: [], allergens: [peanut]}
+  - {name: refined oil, hi: रिफाइंड तेल, latn: refined tel, aliases: [refined, sunflower oil, vegetable oil, cooking oil, tel], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: []}
+  - {name: coconut oil, hi: नारियल तेल, latn: nariyal tel, aliases: [khobrel tel, velichenna], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6}, groups: []}
+  - {name: sesame oil, hi: तिल का तेल, latn: til ka tel, aliases: [gingelly oil, nallennai, til tel], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6}, groups: [], allergens: [sesame]}
+
+  # --- Sweeteners -----------------------------------------------------------------------------
+  - {name: sugar, hi: चीनी, latn: cheeni, aliases: [chini, shakkar, sakhar, sakkarai], category: sweetener, location: staples, staple: true, life: {staples: 730}, measures: {chhota_chammach: 4, chammach: 12, katori: 130, cup: 200}, groups: []}
+  - {name: jaggery, hi: गुड़, latn: gud, aliases: [gur, gul, bellam, vellam], category: sweetener, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 15, katori: 140}, groups: []}
+  - {name: honey, hi: शहद, latn: shahad, aliases: [shehad, madh, then], category: sweetener, location: pantry, life: {pantry: 730}, measures: {chammach: 21, chhota_chammach: 7}, groups: [], flags: [animal]}
+
+  # --- Condiments, ready-made -----------------------------------------------------------------
+  - {name: tamarind, hi: इमली, latn: imli, aliases: [chinch, puli, tamarind], category: condiment, location: pantry, life: {pantry: 365}, measures: {piece: 15, chammach: 15}, groups: []}
+  - {name: kokum, hi: कोकम, latn: kokum, aliases: [amsul, punarpuli], category: condiment, location: pantry, life: {pantry: 365}, measures: {piece: 2}, groups: []}
+  - {name: ginger garlic paste, hi: अदरक लहसुन पेस्ट, latn: adrak lahsun paste, aliases: [ginger garlic paste, adrak lehsun paste, gg paste], category: condiment, location: ready_made, life: {ready_made: 30, fridge: 30}, measures: {chhota_chammach: 5, chammach: 15}, groups: [], flags: [jain_avoid]}
+  - {name: tomato ketchup, hi: टमाटर सॉस, latn: tomato sauce, aliases: [ketchup, sauce], category: condiment, location: ready_made, life: {ready_made: 90}, measures: {chammach: 17}, groups: []}
+  - {name: vinegar, hi: सिरका, latn: sirka, aliases: [sirkaa, white vinegar], category: condiment, unit: ml, location: pantry, life: {pantry: 730}, measures: {chammach: 15, chhota_chammach: 5}, groups: []}
+  - {name: soy sauce, hi: सोया सॉस, latn: soya sauce, aliases: [soy, dark soy sauce], category: condiment, unit: ml, location: pantry, life: {pantry: 365}, measures: {chammach: 16, chhota_chammach: 5.5}, groups: [], allergens: [soy, gluten]}
+  - {name: pickle, hi: अचार, latn: achaar, aliases: [achar, loncha, oorugai], category: condiment, location: ready_made, life: {ready_made: 365}, measures: {chammach: 15}, groups: []}
+  - {name: papad, hi: पापड़, latn: papad, aliases: [papadum, appalam, papar], category: packaged, unit: piece, location: ready_made, life: {ready_made: 180}, measures: {piece: 12}, groups: []}
+  - {name: bhujia, hi: भुजिया, latn: bhujia, aliases: [sev, namkeen, bikaneri bhujia], category: packaged, location: ready_made, life: {ready_made: 90}, measures: {katori: 50, mutthi: 20}, groups: []}
+  - {name: baking soda, hi: खाने का सोडा, latn: khane ka soda, aliases: [meetha soda, soda, cooking soda], category: other, location: pantry, life: {pantry: 365}, measures: {chutki: 0.3, chhota_chammach: 4.6}, groups: []}
+  - {name: baking powder, hi: बेकिंग पाउडर, latn: baking powder, aliases: [], category: other, location: pantry, life: {pantry: 365}, measures: {chhota_chammach: 4}, groups: []}
+
+  # --- Nuts and seeds -------------------------------------------------------------------------
+  - {name: peanuts, hi: मूंगफली, latn: moongphali, aliases: [mungfali, shengdana, singdana, groundnut, kadalai], category: nut_seed, location: pantry, life: {pantry: 120, fridge: 240}, measures: {katori: 110, chammach: 9, mutthi: 25}, groups: [protein], allergens: [peanut]}
+  - {name: cashews, hi: काजू, latn: kaju, aliases: [cashew, godambi], category: nut_seed, location: pantry, life: {pantry: 180, fridge: 365}, measures: {piece: 1.5, katori: 100, mutthi: 25}, groups: [], allergens: [tree_nut]}
+  - {name: almonds, hi: बादाम, latn: badam, aliases: [baadaam], category: nut_seed, location: pantry, life: {pantry: 180, fridge: 365}, measures: {piece: 1.2, katori: 105, mutthi: 25}, groups: [], allergens: [tree_nut]}
+  - {name: raisins, hi: किशमिश, latn: kishmish, aliases: [kismis, manuka, ona drakshe], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {chammach: 10, mutthi: 25}, groups: [fruit]}
+  - {name: walnuts, hi: अखरोट, latn: akhrot, aliases: [akhrod], category: nut_seed, location: pantry, life: {pantry: 90, fridge: 365}, measures: {piece: 4, katori: 75}, groups: [], allergens: [tree_nut]}
+  - {name: pistachios, hi: पिस्ता, latn: pista, aliases: [pistachio], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {piece: 0.7, chammach: 9}, groups: [], allergens: [tree_nut]}
+  - {name: fox nuts, hi: मखाना, latn: makhana, aliases: [phool makhana, lotus seeds], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {katori: 15, cup: 25, mutthi: 8}, groups: []}
+  - {name: coconut, hi: नारियल, latn: nariyal, aliases: [fresh coconut, kopra, thengai, grated coconut], category: nut_seed, location: pantry, life: {pantry: 30, fridge: 4, freezer: 90}, measures: {piece: 400, katori: 80, chammach: 6}, groups: []}
+  - {name: desiccated coconut, hi: सूखा नारियल, latn: sukha nariyal, aliases: [nariyal burada, copra, khopra, dry coconut], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {katori: 55, chammach: 5}, groups: []}
+  - {name: sesame seeds, hi: तिल, latn: til, aliases: [safed til, ellu, til ke beej], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {chammach: 9, chhota_chammach: 3}, groups: [], allergens: [sesame]}
+  - {name: poppy seeds, hi: खसखस, latn: khaskhas, aliases: [khus khus, posto, gasagase], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {chammach: 9, chhota_chammach: 3}, groups: []}
+  - {name: flax seeds, hi: अलसी, latn: alsi, aliases: [javas, agasi, linseed], category: nut_seed, location: pantry, life: {pantry: 180}, measures: {chammach: 10}, groups: []}
+
+  # --- Beverages ------------------------------------------------------------------------------
+  - {name: tea leaves, hi: चाय पत्ती, latn: chai patti, aliases: [chai, chaipatti, tea, tea powder], category: beverage, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5, chammach: 7}, groups: []}
+  - {name: coffee powder, hi: कॉफ़ी, latn: coffee, aliases: [kaapi, coffee powder, instant coffee], category: beverage, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2}, groups: []}

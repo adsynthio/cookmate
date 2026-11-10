@@ -1,0 +1,24 @@
+# Feature flags (public.feature_flags). The seed inserts missing keys only; it never overwrites a value
+# that was changed in the database, so operations can toggle flags without the next seed undoing them.
+
+feature_flags:
+  - key: voice_cook
+    enabled: true
+    rollout_pct: 100
+    rules: {}
+
+  # D5: free-tier voice cap. A config value, not code. Default 4 Voice Cook sessions per month.
+  - key: voice_free_monthly_cap
+    enabled: true
+    rollout_pct: 100
+    rules: {sessions_per_month: 4}
+
+  - key: daily_pick_notification
+    enabled: false
+    rollout_pct: 0
+    rules: {max_per_day: 1, quiet_hours: ["21:30", "07:00"]}
+
+  - key: scan_pantry
+    enabled: false
+    rollout_pct: 0
+    rules: {release: V1.5}

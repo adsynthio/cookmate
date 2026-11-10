@@ -1,0 +1,152 @@
+# Cooking techniques (public.techniques). Steps reference these by slug.
+# description: what it is, then the sensory signs of doing it right (used by Cook With Me and the voice agent).
+
+techniques:
+  - slug: tadka
+    name: Tempering (tadka)
+    hi: तड़का
+    latn: tadka
+    difficulty: 2
+    description: >-
+      Whole spices bloomed in hot oil or ghee, then poured over or stirred into the dish.
+      Right: cumin sizzles and darkens a shade within seconds, mustard seeds pop, curry leaves crackle.
+      Too far: spices turn black and smell bitter; start again rather than use it.
+
+  - slug: bhuna
+    name: Frying the masala (bhuna)
+    hi: भूनना
+    latn: bhunna
+    difficulty: 3
+    description: >-
+      Cooking onion, tomato and ground spices in oil, stirring, until the raw smell goes and the masala comes together.
+      Right: the masala darkens, thickens into a paste, and oil shines at the edges and leaves the masala.
+      If it sticks, splash in a little water and keep going.
+
+  - slug: saute_onion
+    name: Browning onions
+    hi: प्याज़ भूनना
+    latn: pyaaz bhunna
+    difficulty: 2
+    description: >-
+      Cooking sliced or chopped onion in oil to the colour the dish needs.
+      Right: translucent and soft for light gravies, golden brown at the edges for most curries, deep brown for rich ones.
+      Stir more often as they colour; they go from brown to burnt quickly.
+
+  - slug: dum
+    name: Slow steaming under a seal (dum)
+    hi: दम
+    latn: dum
+    difficulty: 4
+    description: >-
+      Cooking covered on very low heat so the food finishes in its own steam.
+      Right: lid sealed with dough or a heavy weight, gentle aroma escaping, no scorching smell from the base.
+
+  - slug: pressure_cook
+    name: Pressure cooking
+    hi: प्रेशर कुकर
+    latn: cooker mein pakana
+    difficulty: 1
+    description: >-
+      Cooking under pressure, counted in whistles.
+      Right: count whistles at the heat the step says, then let the pressure drop on its own before opening.
+      Never force the lid open while it is still hissing.
+
+  - slug: simmer
+    name: Simmering
+    hi: धीमी आंच पर पकाना
+    latn: dheemi aanch par pakana
+    difficulty: 1
+    description: >-
+      Cooking a liquid just below the boil.
+      Right: small lazy bubbles at the edges, not a rolling boil; stir now and then so the base does not catch.
+
+  - slug: deep_fry
+    name: Deep frying
+    hi: तलना
+    latn: talna
+    difficulty: 3
+    description: >-
+      Frying in enough oil for the food to float.
+      Right: a drop of batter rises steadily to the top with bubbles; too cold and it sinks and soaks oil, too hot and it browns before cooking inside.
+      Fry in small batches.
+
+  - slug: shallow_fry
+    name: Shallow frying
+    hi: कम तेल में तलना
+    latn: kam tel mein talna
+    difficulty: 2
+    description: >-
+      Cooking in a thin layer of oil on a tawa or pan, turning once.
+      Right: steady sizzle, golden crust that releases from the pan on its own.
+
+  - slug: tawa_cook
+    name: Cooking on the tawa
+    hi: तवे पर सेंकना
+    latn: tawe par sekna
+    difficulty: 2
+    description: >-
+      Cooking flatbreads and chillas on a hot griddle.
+      Right: small bubbles rise within seconds, brown spots form underneath, edges lift easily.
+
+  - slug: dry_roast
+    name: Dry roasting
+    hi: सूखा भूनना
+    latn: sukha bhunna
+    difficulty: 2
+    description: >-
+      Roasting spices, flour, sooji or poha in a dry pan.
+      Right: a nutty aroma, an even shade darker, stirring constantly; take it off the heat a moment early because the pan keeps cooking.
+
+  - slug: knead
+    name: Kneading dough
+    hi: आटा गूंधना
+    latn: aata goondhna
+    difficulty: 2
+    description: >-
+      Bringing flour and water together into a dough.
+      Right: soft, smooth and not sticky; a finger pressed in leaves a dent that slowly fills back. Rest it covered.
+
+  - slug: steam
+    name: Steaming
+    hi: भाप में पकाना
+    latn: bhaap mein pakana
+    difficulty: 2
+    description: >-
+      Cooking over boiling water, covered.
+      Right: steady steam escaping; a toothpick or knife comes out clean when done.
+
+  - slug: marinate
+    name: Marinating
+    hi: मैरीनेट करना
+    latn: marinate karna
+    difficulty: 1
+    description: >-
+      Coating meat, paneer or vegetables in curd, spices and acid before cooking.
+      Right: evenly coated; raw meat marinates covered in the fridge, never on the counter.
+
+  - slug: soak
+    name: Soaking
+    hi: भिगोना
+    latn: bhigona
+    difficulty: 1
+    description: >-
+      Soaking dals, beans, rice or sabudana in water before cooking.
+      Right: grains swell and soften; discard the soaking water for rajma and other beans.
+
+  - slug: batter
+    name: Making a batter
+    hi: घोल बनाना
+    latn: ghol banana
+    difficulty: 2
+    description: >-
+      Whisking flour with water or curd into a smooth batter.
+      Right: no lumps; coats the back of a spoon; thick enough to hold shape for pakoras, pourable for chillas.
+
+  - slug: dhungar
+    name: Smoking with charcoal (dhungar)
+    hi: धुंगार
+    latn: dhungar
+    difficulty: 3
+    description: >-
+      Smoking a dish with a hot coal and ghee in a small bowl, covered for a few minutes.
+      Right: the coal glows red before use; cover at once; remove the coal before serving. Keep the kitchen ventilated.

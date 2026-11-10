@@ -1,0 +1,63 @@
+slug: rajma
+title: Rajma
+titles: {hi: राजमा, hi-Latn: Rajma}
+description: >-
+  Kidney beans soaked overnight, pressure-cooked until creamy and simmered in a thick onion-tomato masala. Best with steamed rice.
+cuisine_region: punjabi
+course: main
+diet: vegan
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 60
+difficulty: 2
+spice_level: 2
+equipment: [pressure_cooker, kadai]
+tags: [comforting, high_protein]
+flavor_profile: {rich: 0.6, heat: 0.3, acid: 0.4, crunch: 0, starch: 0.6, sweet: 0}
+food_groups: [dal]
+review_status: draft
+ingredients:
+  - {ingredient: kidney beans, qty: 200, unit: g, local: 1 cup rajma, role: base}
+  - {ingredient: salt, qty: 8, unit: g, local: 1.5 chhota chammach, role: spice}
+  - {ingredient: onion, qty: 220, unit: g, local: 2 pyaaz, role: aromatic, group: Masala}
+  - {ingredient: tomato, qty: 300, unit: g, local: 3 tamatar, role: acid, group: Masala}
+  - {ingredient: ginger, qty: 8, unit: g, local: 1 inch, role: aromatic, group: Masala}
+  - {ingredient: garlic, qty: 20, unit: g, local: 5 kali lahsun, role: aromatic, group: Masala}
+  - {ingredient: green chilli, qty: 3, unit: g, local: 1 hari mirch, role: heat, group: Masala}
+  - {ingredient: refined oil, qty: 42, unit: ml, local: 3 chammach, role: fat}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: bay leaf, qty: 0.2, unit: g, local: 1 tej patta, role: aromatic}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: kashmiri chilli powder, qty: 3, unit: g, local: 1 chhota chammach, role: heat}
+  - {ingredient: coriander powder, qty: 4, unit: g, local: 2 chhota chammach, role: spice}
+  - {ingredient: garam masala, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+steps:
+  - text: Rinse the rajma and soak in plenty of water overnight, at least 8 hours.
+    technique: soak
+    minutes: 480
+    cue: The beans double in size and the skins are smooth.
+  - text: Drain and throw away the soaking water. Pressure-cook the rajma with 750 ml fresh water and the salt.
+    technique: pressure_cook
+    whistles: 8
+    minutes: 30
+    cue: Let the pressure drop by itself. A bean should mash easily between two fingers and be creamy inside.
+    safety: Raw or undercooked kidney beans are poisonous. Always soak, throw away the soaking water, and cook until every bean is completely soft. If any bean is still firm, cook for more whistles. Never cook rajma from raw in a slow cooker.
+  - text: Heat the oil in a kadai. Add cumin and the bay leaf, then the finely chopped onion and cook until deep golden.
+    technique: saute_onion
+    minutes: 10
+    cue: The onion is evenly golden brown at the edges.
+  - text: Add grated ginger, garlic and green chilli for a minute, then the tomato puree, turmeric, Kashmiri chilli and coriander powder. Cook, stirring.
+    technique: bhuna
+    minutes: 10
+    cue: The masala is thick and dark and the oil leaves the sides.
+  - text: Add the rajma with its cooking water. Mash a few beans against the side of the pan for body and simmer on low heat.
+    technique: simmer
+    minutes: 15
+    timer: true
+    cue: The gravy thickens and coats the beans.
+  - text: Add garam masala and coriander leaves and serve with rice.
+    minutes: 1
+variation_rules:
+  - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: boil, minutes: 90, at_step: 2}, note: "Boil hard for the first 10 minutes, then simmer covered until every bean is completely soft."}
+  - {type: time, condition: {max_time_min: 45}, action: {requires: soaked_or_cooked_rajma}, note: Only quick if the rajma is already soaked or boiled.}

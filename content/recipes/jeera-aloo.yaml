@@ -1,0 +1,53 @@
+slug: jeera-aloo
+title: Jeera Aloo
+titles: {hi: जीरा आलू, hi-Latn: Jeera Aloo}
+description: >-
+  Boiled potatoes tossed in a cumin tadka with turmeric, chilli and a squeeze of amchur. Quick, dry and loved by children.
+cuisine_region: generic_north
+course: side
+diet: vegan
+base_servings: 4
+prep_time_min: 5
+cook_time_min: 20
+difficulty: 1
+spice_level: 2
+equipment: [pressure_cooker, kadai]
+tags: [quick, kids_friendly]
+flavor_profile: {rich: 0.3, heat: 0.3, acid: 0.3, crunch: 0.3, starch: 0.9, sweet: 0}
+food_groups: [sabzi]
+review_status: draft
+ingredients:
+  - {ingredient: potato, qty: 500, unit: g, local: 4 medium aloo, role: base}
+  - {ingredient: refined oil, qty: 28, unit: ml, local: 2 chammach, role: fat}
+  - {ingredient: cumin seeds, qty: 4, unit: g, local: 2 chhota chammach, role: spice}
+  - {ingredient: asafoetida, qty: 0.2, unit: g, local: 1 chutki, role: aromatic}
+  - {ingredient: green chilli, qty: 6, unit: g, local: 2 hari mirch, role: heat}
+  - {ingredient: ginger, qty: 8, unit: g, local: 1 inch, role: aromatic, optional: true}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: red chilli powder, qty: 1.25, unit: g, local: aadha chhota chammach, role: heat}
+  - {ingredient: coriander powder, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: dry mango powder, qty: 1.25, unit: g, local: aadha chhota chammach, role: acid, substitutes: [{ingredient: lemon, ratio: 1, note: juice of half a lemon at the end}]}
+  - {ingredient: salt, qty: 6, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+steps:
+  - text: Pressure-cook the whole potatoes with water to cover.
+    technique: pressure_cook
+    whistles: 2
+    minutes: 10
+    cue: Let the pressure drop by itself. A knife should slide in easily but the potato should still hold its shape.
+  - text: Peel the potatoes once cool enough to touch and cut into bite-sized cubes.
+    minutes: 5
+  - text: Heat the oil in a kadai. Add cumin, then hing, green chilli and ginger and stir for 30 seconds.
+    technique: tadka
+    minutes: 1
+    cue: Cumin sizzles and darkens one shade. If it turns black, start again.
+  - text: Add turmeric, chilli powder and coriander powder, then immediately the potatoes and salt. Toss on medium heat.
+    technique: shallow_fry
+    minutes: 6
+    timer: true
+    cue: The edges of the potatoes turn golden and slightly crisp.
+  - text: Sprinkle amchur and coriander leaves, toss once and serve.
+    minutes: 1
+variation_rules:
+  - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: boil, minutes: 20, at_step: 1}, note: Boil in a covered pot for about 20 minutes until tender.}
+  - {type: spice, condition: {member_age_group: child}, action: {omit: [green chilli, red chilli powder]}, note: Leave out the chillies; the cumin and amchur carry the flavour.}

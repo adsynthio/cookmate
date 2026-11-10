@@ -1,5 +1,4 @@
 // NFR-08: every user-facing string comes from a catalogue. No hard-coded copy in components.
-import { getLocales } from "expo-localization";
 import { useSyncExternalStore } from "react";
 
 import en from "./en.json";
@@ -13,12 +12,10 @@ export type StringKey = keyof typeof en;
 
 const catalogues: Record<Locale, Partial<Record<StringKey, string>>> = { en, hi, hinglish };
 
-let current: Locale = detectLocale();
+/** English for everyone until the user picks a language on onboarding (or it is restored from their profile). */
+export const DEFAULT_LOCALE: Locale = "en";
 
-export function detectLocale(): Locale {
-  const tag = getLocales()[0]?.languageCode ?? "en";
-  return tag === "hi" ? "hi" : "en";
-}
+let current: Locale = DEFAULT_LOCALE;
 
 const listeners = new Set<(locale: Locale) => void>();
 

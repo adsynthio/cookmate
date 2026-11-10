@@ -1,6 +1,7 @@
 // UI and session state (Zustand). Server data lives in TanStack Query, not here.
 import { create } from "zustand";
 
+import { localHour, slotForHour } from "@/domain/ranking";
 import type { MealSlot } from "@/services";
 
 export type VoiceState = "idle" | "connecting" | "listening" | "thinking" | "speaking" | "error";
@@ -11,29 +12,31 @@ type SessionState = {
   /** False until the app has checked for an existing household on launch. */
   ready: boolean;
   mealSlot: MealSlot;
+  /** KIT-057: member ids eating today; null = everyone. */
+  whoEating: string[] | null;
   voice: VoiceState;
   setHousehold: (householdId: string, memberId: string) => void;
   setReady: () => void;
   setMealSlot: (slot: MealSlot) => void;
+  setWhoEating: (ids: string[] | null) => void;
   setVoice: (state: VoiceState) => void;
 };
 
-/** HOME-05: meal slot from the time of day. */
-export function slotForHour(hour: number): MealSlot {
-  if (hour < 11) return "breakfast";
-  if (hour < 15) return "lunch";
-  if (hour < 18) return "snack";
-  return "dinner";
+/** HOME-05: meal slot from the time of day in the household's timezone (India for now). */
+export function currentSlot(now: Date = new Date(), timeZone = "Asia/Kolkata"): MealSlot {
+  return slotForHour(localHour(now, timeZone));
 }
 
 export const useSession = create<SessionState>((set) => ({
   householdId: null,
   memberId: null,
   ready: false,
-  mealSlot: slotForHour(new Date().getHours()),
+  mealSlot: currentSlot(),
+  whoEating: null,
   voice: "idle",
   setHousehold: (householdId, memberId) => set({ householdId, memberId }),
   setReady: () => set({ ready: true }),
   setMealSlot: (mealSlot) => set({ mealSlot }),
+  setWhoEating: (whoEating) => set({ whoEating }),
   setVoice: (voice) => set({ voice }),
 }));

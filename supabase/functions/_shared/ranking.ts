@@ -188,13 +188,14 @@ export function pantryMatch(r: RankRecipe, pantry: PantryEntry[], staples: strin
 
 export type Breakdown = Record<keyof Weights, number>;
 
+/** Share of the dish you can make now, squared: missing several things should hurt far more than missing one. */
 export function coverageFactor(m: PantryMatch): number {
   if (m.total === 0) return 0;
   const points = m.items.reduce(
     (s, i) => s + (i.status === "have" ? 1 : i.status === "assumed" ? 0.9 : i.status === "substitute" ? 0.7 : 0),
     0,
   );
-  return points / m.total;
+  return (points / m.total) ** 2;
 }
 
 /** 1 for using something that spoils today, 0.25 for three days out; summed and capped at 1. */

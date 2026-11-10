@@ -31,6 +31,7 @@ CONTENT = ROOT / "content"
 ARCH = ROOT / "docs" / "architecture"
 OUT = ROOT / "supabase" / "seed.sql"
 CATALOG_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "catalog.json"
+RECIPES_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "recipes.json"
 
 UNITS = {"g", "ml", "piece", "bunch", "packet"}
 MEASURES = {"katori", "cup", "chammach", "chhota_chammach", "mutthi", "chutki", "piece", "clove", "inch", "bunch"}
@@ -475,8 +476,17 @@ def render_catalog(catalog: dict[str, dict]) -> str:
             row["staple"] = True
         if ing.get("measures"):
             row["measures"] = ing["measures"]
+        if ing.get("flags"):
+            row["flags"] = ing["flags"]
+        if ing.get("allergens"):
+            row["allergens"] = ing["allergens"]
         rows.append(row)
     return json.dumps(rows, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n"
+
+
+def render_recipes(recipes: list[dict]) -> str:
+    """Recipes bundled with the app: mock mode, offline ranking and recipe detail. Drafts carry review_status."""
+    return json.dumps(recipes, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n"
 
 
 def main() -> int:
@@ -504,8 +514,9 @@ def main() -> int:
     summary = (f"{len(catalog)} ingredients, {len(techniques)} techniques, {len(flags)} flags, "
                f"{len(recipes)} recipes ({approved} approved)")
     catalog_json = render_catalog(catalog)
+    recipes_json = render_recipes(recipes)
     if a.check:
-        for path, text in ((OUT, sql), (CATALOG_OUT, catalog_json)):
+        for path, text in ((OUT, sql), (CATALOG_OUT, catalog_json), (RECIPES_OUT, recipes_json)):
             if not path.exists() or path.read_text(encoding="utf-8") != text:
                 print(f"stale: {path.relative_to(ROOT)} (run python3 tools/content/build.py)", file=sys.stderr)
                 return 1
@@ -514,7 +525,8 @@ def main() -> int:
     OUT.write_text(sql, encoding="utf-8")
     CATALOG_OUT.parent.mkdir(parents=True, exist_ok=True)
     CATALOG_OUT.write_text(catalog_json, encoding="utf-8")
-    print(f"wrote {OUT.relative_to(ROOT)} and {CATALOG_OUT.relative_to(ROOT)}: {summary}")
+    RECIPES_OUT.write_text(recipes_json, encoding="utf-8")
+    print(f"wrote {OUT.relative_to(ROOT)}, {CATALOG_OUT.relative_to(ROOT)} and {RECIPES_OUT.relative_to(ROOT)}: {summary}")
     return 0
 
 

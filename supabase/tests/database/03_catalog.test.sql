@@ -27,7 +27,8 @@ select ok((select bool_and(safety_note is not null) from public.recipe_steps s j
 select is((select rules ->> 'sessions_per_month' from public.feature_flags where key = 'voice_free_monthly_cap'),
   '4', 'free voice cap is a flag value (D5)');
 
--- As a signed-in user: catalog visible, draft recipes and their steps hidden.
+-- As a signed-in user in production (show_draft_recipes off): catalog visible, draft recipes and their steps hidden.
+update public.feature_flags set enabled = false where key = 'show_draft_recipes';
 insert into auth.users (id, is_anonymous) values ('00000000-0000-0000-0000-0000000000c1', true);
 select pg_temp.login('00000000-0000-0000-0000-0000000000c1');
 select cmp_ok((select count(*)::int from public.ingredients), '>=', 150, 'authenticated users read the ingredient catalog');

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import { UndoBar } from "@/components/UndoBar";
+import { Icon } from "@/design-system/icons";
 import { itemName } from "@/components/kitchen/names";
 import { illustrations } from "@/design-system/media";
 import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
@@ -24,6 +25,10 @@ export default function KitchenScreen() {
   const queryClient = useQueryClient();
   const householdId = useSession((s) => s.householdId);
   const [place, setPlace] = useState<LocationKind>("fridge");
+  const clearGuesses = useMutation({
+    mutationFn: () => services.kitchen.clearGuesses(householdId!),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["kitchen", householdId] }),
+  });
 
   const kitchen = useQuery({
     queryKey: ["kitchen", householdId],
@@ -59,6 +64,24 @@ export default function KitchenScreen() {
           </Text>
         </View>
         <Button label={t("kitchen.add")} onPress={() => router.push("/pantry/add")} />
+        {kitchen.data && kitchen.data.length < 12 ? (
+          <Pressable accessibilityRole="button" onPress={() => router.push("/pantry/yesterday")}>
+            {({ pressed }) => (
+              <Card style={[styles.quick, { opacity: pressed ? 0.8 : 1 }]}>
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text variant="bodyStrong">{t("quick.cta")}</Text>
+                  <Text variant="label" muted>
+                    {t("quick.ctaBody")}
+                  </Text>
+                </View>
+                <Icon name="forward" muted />
+              </Card>
+            )}
+          </Pressable>
+        ) : null}
+        {kitchen.data?.some((i) => i.guess) ? (
+          <Button kind="quiet" label={t("quick.clearAll")} onPress={() => clearGuesses.mutate()} disabled={clearGuesses.isPending} />
+        ) : null}
 
         {kitchen.isPending ? (
           <StateView state="loading" title={t("state.loading.home")} />
@@ -199,6 +222,7 @@ function StapleRow({ item, householdId }: { item: PantryItem; householdId: strin
 
 const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center" },
+  quick: { flexDirection: "row", alignItems: "center", gap: space.md },
   tabs: { gap: space.sm },
   row: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: touch.cook, paddingVertical: space.sm },
   unsure: { flexDirection: "row", alignItems: "center", gap: space.sm },

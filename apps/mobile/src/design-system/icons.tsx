@@ -16,6 +16,10 @@ export type IconName =
   | "check"
   | "close"
   | "speaker"
+  | "search"
+  | "clock"
+  | "users"
+  | "cart"
   | "fridge"
   | "freezer"
   | "pantry"
@@ -78,6 +82,35 @@ function shapes(name: IconName) {
       return <Path d="M5 12.5l4.5 4.5L19 7.5" />;
     case "close":
       return <Path d="M6 6l12 12M18 6 6 18" />;
+    case "search":
+      return (
+        <>
+          <Circle cx={11} cy={11} r={6.5} />
+          <Path d="M16 16l4.5 4.5" />
+        </>
+      );
+    case "clock":
+      return (
+        <>
+          <Circle cx={12} cy={12} r={8.5} />
+          <Path d="M12 7.5V12l3 2" />
+        </>
+      );
+    case "users":
+      return (
+        <>
+          <Circle cx={9} cy={8.5} r={3.25} />
+          <Path d="M3.5 19a5.5 5.5 0 0 1 11 0M15.5 5.5a3 3 0 0 1 0 6M17.5 14.2A5.5 5.5 0 0 1 20.5 19" />
+        </>
+      );
+    case "cart":
+      return (
+        <>
+          <Path d="M3 4h2.2l2 11h10.3l2-8H6.3" />
+          <Circle cx={9} cy={19} r={1.4} />
+          <Circle cx={17} cy={19} r={1.4} />
+        </>
+      );
     case "speaker":
       return <Path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />;
   }

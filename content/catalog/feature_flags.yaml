@@ -22,3 +22,17 @@ feature_flags:
     enabled: false
     rollout_pct: 0
     rules: {release: V1.5}
+
+  # KIT-041: ranking weights for suggest-meals, tunable without a release. Keys match DEFAULT_WEIGHTS in
+  # apps/mobile/src/domain/ranking.ts; missing keys fall back to those defaults.
+  - key: ranking_weights
+    enabled: true
+    rollout_pct: 100
+    rules: {weights: {coverage: 3, useSoon: 2, taste: 1.5, novelty: 1.5, time: 1, equipment: 1, calendar: 0.5, craving: 2.5, slot: 1.5}}
+
+  # Staging only: let signed-in users see draft curated recipes so picks have content before the culinary lead
+  # approves dishes (REC-01). Turn OFF in production; only approved recipes may reach real users there.
+  - key: show_draft_recipes
+    enabled: true
+    rollout_pct: 100
+    rules: {environment: staging}

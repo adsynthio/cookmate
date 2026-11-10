@@ -59,6 +59,21 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] Dish photos are temporary placeholders: replace before any release; redo three cropped illustrations and the produce pile (PROMPTS.md checklist)
 - [ ] Voice add (KIT-031 by voice) arrives with the voice session in Sprint 4; the mic button is in place
 
+### Sprint 3 status (10 Nov 2026, branch `sprint-3/craving`, draft PR adsynthio/cookmate#4)
+- [x] Ranking engine (KIT-041), shared by the app and the Edge Functions (`apps/mobile/src/domain/ranking.ts`): hard filters for slot, every eater's diet, avoided ingredients, time, equipment and "use these first"; nine factors (coverage², use soon, taste, novelty, time, equipment, calendar, craving, slot); weights in `feature_flags.ranking_weights`; reasons built only from factors that scored, in three languages, ≤ 90 characters
+- [x] `suggest-meals` Edge Function (KIT-040): ranks under the user's own RLS; Haiku only reads free-text cravings and rewords reasons, both with rule fallbacks; a reworded reason must keep the same facts and make no health claims; every batch stored in `recommendations` with its score breakdown
+- [x] Home: meal-slot switch (KIT-046), who's eating (KIT-057), craving chips and typed cravings in Hindi, Hinglish or English (KIT-042), "You have X of Y", Use Soon cards that ask for picks using that item (KIT-043), empty state when nothing fits
+- [x] Recipe screen (KIT-050/052/053): pantry match from confident items and staples, substitutes from your own kitchen, Add to list, servings from who's eating, katori / chammach / chutki with fractions, Why this works, family plates naming who each branch is for, steps with cues, whistles and safety notes, Draft badge on unreviewed dishes
+- [x] Search in any script (KIT-054): `search_recipes` RPC and screen; "rajma", "राजमा" and "kidney bean curry" find the same dish
+- [x] Your way (KIT-051): reviewed rules first (diet, missing items, equipment, spice, time, servings), Sonnet only for essentials nothing replaces, every result validated (safety notes unchanged, no dropped steps, no shorter cooking on safety steps, catalog ingredients that fit the diet, no unsafe shortcuts) and saved as the household's variant
+- [x] Quick start from yesterday's meal (KIT-026): guesses at confidence 0.4, cleared in one tap
+- [x] Draft recipes visible only while `show_draft_recipes` is on (staging)
+- [x] Tests: 59 mobile unit tests, 13 Edge Function tests, 17 new pgTAP tests (visibility, search, quick start); every screen walked in a browser build
+- [ ] **You:** approve the Supabase tool's prompt so I can apply migrations `20261201000000_recipes` and `20261202000000_quick_start` to ChefMate and deploy `suggest-meals` and `adapt-recipe` (the request timed out while you were away)
+- [ ] **You:** before production, set `show_draft_recipes` off in `feature_flags`
+- [ ] KIT-141 (100 curated dishes) needs the culinary lead; there are 10 drafts, so picks repeat quickly
+- [ ] Omitted ingredients stay mentioned in step text after a rules-only adaptation (the summary says to leave them out); rewording needs the model
+
 ---
 
 ## 1. What we are building (V1 in one page)

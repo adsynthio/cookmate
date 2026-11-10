@@ -474,6 +474,15 @@ export const liveServices: Services = {
       const r = data as { current_step: number; total: number };
       return { currentStep: r.current_step, total: r.total };
     },
+    async abandonSession(sessionId) {
+      const sb = requireSupabase();
+      const { error } = await sb
+        .from("cooking_sessions")
+        .update({ status: "abandoned", last_activity_at: new Date().toISOString() })
+        .eq("id", sessionId)
+        .in("status", ["active", "paused"]);
+      if (error) throw error;
+    },
     async completeSession(sessionId) {
       const sb = requireSupabase();
       const { data, error } = await sb.rpc("complete_cooking_session", { p_session: sessionId });

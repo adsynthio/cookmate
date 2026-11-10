@@ -1,5 +1,7 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
+import type { AgeGroup, Diet } from "@/domain/ranking";
+import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
 
 export type MealSlot = Row<"recommendations">["meal_slot"];
@@ -55,15 +57,59 @@ export type AddedVia = "manual" | "voice" | "text";
 export type Pick = {
   recommendationId: string;
   recipeId: string;
+  slug: string;
   title: string;
+  titles: RecipeDoc["titles"];
+  /** One line citing a real factor, already in the user's language (KIT-040). */
   reason: string;
+  /** Ingredient keys from the pantry this dish uses. */
   uses: string[];
+  /** Ingredient keys still needed. */
   missing: string[];
   totalTimeMin: number | null;
   imageUrl: string | null;
+  /** "You have 9 of 10" (confident items and staples only). */
+  have: number;
+  total: number;
+  score: number;
 };
 
-export type PickBatch = { batchId: string; mealSlot: MealSlot; hero: Pick; alternates: Pick[] };
+/** hero is null when nothing fits the filters; the screen offers to clear them. */
+export type PickBatch = { batchId: string; mealSlot: MealSlot; hero: Pick | null; alternates: Pick[] };
+
+export type PickInput = {
+  householdId: string;
+  memberId: string;
+  mealSlot?: MealSlot;
+  craving?: string;
+  chips?: string[];
+  /** Member ids eating today (KIT-057); everyone when omitted. */
+  whoEating?: string[];
+  /** "Use these first": ingredient keys from the Use Soon strip (KIT-043). */
+  focus?: string[];
+  languageCode: string;
+};
+
+export type RecipeSummary = {
+  id: string;
+  slug: string;
+  title: string;
+  titles: RecipeDoc["titles"];
+  course: string;
+  diet: string;
+  totalTimeMin: number | null;
+  spiceLevel: number;
+  tags: string[];
+};
+
+export type Member = {
+  id: string;
+  displayName: string;
+  ageGroup: AgeGroup;
+  diet: Diet;
+  spice: number;
+  notes: string | null;
+};
 
 export type Memory = {
   id: string;
@@ -99,6 +145,8 @@ export interface PreferenceService {
   createHousehold(input: { name: string; language: string; members: NewMember[] }): Promise<{ householdId: string; memberId: string }>;
   /** ONB-05: append-only consent records (DPDP); one row per purpose asked. */
   recordConsents(input: { householdId: string; memberId: string; policyVersion: string; consents: ConsentRecord[] }): Promise<void>;
+  /** KIT-057: who can be eating today. */
+  listMembers(householdId: string): Promise<Member[]>;
   listMemories(householdId: string): Promise<Memory[]>;
   forgetMemory(memoryId: string): Promise<void>;
   keepMemory(memoryId: string): Promise<void>;
@@ -125,7 +173,13 @@ export interface KitchenService {
 
 export interface RecipeService {
   /** HOME-01: one hero pick and two alternates for the meal slot. */
-  getPicks(input: { householdId: string; memberId: string; mealSlot?: MealSlot; craving?: string; chips?: string[] }): Promise<PickBatch>;
+  getPicks(input: PickInput): Promise<PickBatch>;
+  /** "Cook this" or a dismissal; feeds novelty and, later, learning (HOME-06). */
+  respondToPick(recommendationId: string, status: "accepted" | "dismissed", reason?: string): Promise<void>;
+  /** KIT-050: full recipe by id or slug. */
+  getRecipe(idOrSlug: string): Promise<RecipeDoc>;
+  /** KIT-054: search in any language and script. */
+  searchRecipes(query: string): Promise<RecipeSummary[]>;
 }
 
 export type Services = {

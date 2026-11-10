@@ -5,16 +5,8 @@ import type { Services } from "./types";
 
 const useMocks = process.env.EXPO_PUBLIC_USE_MOCKS !== "0";
 
-/**
- * In live mode, features whose backend is still pending fall back to mocks so the app stays usable.
- * Remove an entry here when the live implementation lands.
- */
-export const services: Services = useMocks
-  ? mockServices
-  : {
-      ...liveServices,
-      recipe: mockServices.recipe, // suggest-meals ships in Sprint 3
-    };
+/** Live mode uses the Supabase backend for everything that has shipped; see live.ts for what still throws. */
+export const services: Services = useMocks ? mockServices : liveServices;
 
 export type { Services } from "./types";
 export * from "./types";

@@ -90,7 +90,7 @@ test("coverage counts confident items, staples and substitutes; optional items d
   assert.equal(m.total, 3);
   assert.deepEqual(m.items.map((i) => i.status), ["have", "missing", "assumed"]);
   assert.equal(m.have, 2);
-  assert.equal(Math.round(coverageFactor(m) * 100), 63); // (1 + 0 + 0.9) / 3
+  assert.equal(Math.round(coverageFactor(m) * 100), 40); // ((1 + 0 + 0.9) / 3)^2
   const out = pantryMatch(palakPaneer, [item("salt", { out: true })], ["salt"]);
   assert.equal(out.items.find((i) => i.key === "salt")?.status, "missing");
   const sub = recipe({ id: "s", ingredients: [ing("dry mango powder", { substitutes: ["lemon"] })] });

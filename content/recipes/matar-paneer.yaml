@@ -1,0 +1,63 @@
+slug: matar-paneer
+title: Matar Paneer
+titles: {hi: मटर पनीर, hi-Latn: Matar Paneer}
+description: >-
+  Soft paneer and green peas in an onion-tomato gravy with Kashmiri chilli, finished with kasuri methi.
+cuisine_region: punjabi
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 35
+difficulty: 2
+spice_level: 2
+equipment: [kadai, mixer_grinder]
+tags: [comforting, high_protein]
+flavor_profile: {rich: 0.7, heat: 0.3, acid: 0.4, crunch: 0, starch: 0.2, sweet: 0.1}
+food_groups: [sabzi, dairy, protein]
+review_status: draft
+ingredients:
+  - {ingredient: paneer, qty: 200, unit: g, local: 200 gram paneer, role: protein, substitutes: [{ingredient: tofu, ratio: 1, note: firm tofu; add it at the very end}]}
+  - {ingredient: green peas, qty: 150, unit: g, local: 1 katori matar, role: vegetable}
+  - {ingredient: onion, qty: 220, unit: g, local: 2 pyaaz, role: aromatic, group: Masala}
+  - {ingredient: tomato, qty: 300, unit: g, local: 3 tamatar, role: acid, group: Masala}
+  - {ingredient: ginger, qty: 8, unit: g, local: 1 inch, role: aromatic, group: Masala}
+  - {ingredient: garlic, qty: 16, unit: g, local: 4 kali lahsun, role: aromatic, group: Masala}
+  - {ingredient: green chilli, qty: 3, unit: g, local: 1 hari mirch, role: heat, group: Masala}
+  - {ingredient: refined oil, qty: 42, unit: ml, local: 3 chammach, role: fat}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: bay leaf, qty: 0.2, unit: g, local: 1 tej patta, role: aromatic}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: kashmiri chilli powder, qty: 2.5, unit: g, local: 1 chhota chammach, role: heat}
+  - {ingredient: coriander powder, qty: 4, unit: g, local: 2 chhota chammach, role: spice}
+  - {ingredient: garam masala, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: dried fenugreek leaves, qty: 1, unit: g, local: 2 chhota chammach, role: aromatic}
+  - {ingredient: salt, qty: 7, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: fresh cream, qty: 30, unit: ml, local: 2 chammach malai, role: fat, optional: true}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+steps:
+  - text: Cut the paneer into cubes and soak them in warm water so they stay soft. Grind the onion, ginger, garlic and green chilli to a paste, and the tomatoes to a separate puree.
+    minutes: 10
+  - text: Heat the oil in a kadai. Add cumin and the bay leaf, then the onion paste. Cook, stirring.
+    technique: saute_onion
+    minutes: 10
+    cue: The raw onion smell goes and the paste turns golden.
+  - text: Add turmeric, Kashmiri chilli and coriander powder with a splash of water, stir for a minute, then add the tomato puree. Keep cooking and stirring.
+    technique: bhuna
+    minutes: 10
+    cue: The masala thickens, darkens and the oil separates at the edges.
+  - text: Add the peas, salt and 300 ml water. Cover and simmer until the peas are soft.
+    technique: simmer
+    minutes: 8
+    timer: true
+    cue: Fresh peas take about 8 minutes; frozen peas about 4.
+  - text: Drain the paneer and add it to the gravy. Simmer for 3 minutes only.
+    technique: simmer
+    minutes: 3
+    timer: true
+    cue: Do not boil the paneer for long or it turns rubbery.
+  - text: Add garam masala, crushed kasuri methi and cream. Stir, top with coriander leaves and serve.
+    minutes: 1
+variation_rules:
+  - {type: diet, condition: {diet: vegan}, action: {replace: {paneer: tofu}, omit: [fresh cream]}, note: Firm tofu and no cream.}
+  - {type: diet, condition: {diet: jain}, action: {omit: [onion, ginger, garlic], add: [{ingredient: asafoetida, qty: 0.2, unit: g}]}, note: A tomato-only gravy with hing; add a little cashew paste for body.}

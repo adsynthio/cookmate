@@ -87,6 +87,7 @@ function RecipeBody({
   householdId: string;
 }) {
   const { colors } = useTheme();
+  const router = useRouter();
   const locale = getLocale();
   const whoEating = useSession((s) => s.whoEating);
   const eaters = whoEating ? members.filter((m) => whoEating.includes(m.id)) : members;
@@ -127,12 +128,23 @@ function RecipeBody({
           <View style={[styles.photo, { backgroundColor: colors.limePale }]} accessible={false} />
         )}
       </View>
-      {doc.review_status !== "approved" ? (
-        <View style={[styles.badge, { backgroundColor: colors.amberSoft }]}>
-          <Text variant="caption">{t("recipe.draft")}</Text>
+      {doc.parent_id ? (
+        <View style={[styles.note, { backgroundColor: colors.limePale, gap: space.xs }]}>
+          <Text variant="label" weight={500}>
+            {t("adapt.yourVersion")}
+          </Text>
+          <Text variant="label">{doc.description}</Text>
         </View>
-      ) : null}
-      <Text muted>{doc.description}</Text>
+      ) : (
+        <>
+          {doc.review_status !== "approved" ? (
+            <View style={[styles.badge, { backgroundColor: colors.amberSoft }]}>
+              <Text variant="caption">{t("recipe.draft")}</Text>
+            </View>
+          ) : null}
+          <Text muted>{doc.description}</Text>
+        </>
+      )}
 
       {/* The screen's one lime card: can I cook this now? */}
       <Card hero>
@@ -151,6 +163,8 @@ function RecipeBody({
           />
         ) : null}
       </Card>
+
+      <Button kind="secondary" label={t("recipe.adapt")} onPress={() => router.push(`/adapt/${doc.id ?? doc.slug}`)} />
 
       <View style={styles.servings}>
         <IconButton label={t("recipe.fewer")} muted onPress={() => setServings((s) => Math.max(1, s - 1))}>
@@ -319,8 +333,8 @@ function IngredientRow({
           {detail}
         </Text>
       </View>
-      <View style={{ alignItems: "flex-end", gap: space.xs }}>
-        <Text variant="label" muted>
+      <View style={styles.amount}>
+        <Text variant="label" muted style={{ textAlign: "right" }}>
           {amount}
         </Text>
         {status === "missing" ? (
@@ -348,6 +362,7 @@ const styles = StyleSheet.create({
   fill: { height: 8, borderRadius: radius.pill },
   servings: { flexDirection: "row", alignItems: "center", gap: space.md },
   ingRow: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 56 },
+  amount: { alignItems: "flex-end", gap: space.xs, maxWidth: 132 },
   ingIcon: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   barRow: { flexDirection: "row", alignItems: "center", gap: space.md },
   barLabel: { width: 80 },

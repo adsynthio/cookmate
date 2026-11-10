@@ -348,6 +348,34 @@ export const liveServices: Services = {
       if (error) throw error;
     },
 
+    async adaptRecipe(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{
+        adapted_recipe_id: string | null;
+        summary: string;
+        changed_steps: number[];
+        unresolved: string[];
+      }>("adapt-recipe", {
+        body: {
+          household_id: input.householdId,
+          recipe_id: input.recipeId,
+          missing: input.missing,
+          spice: input.spice,
+          servings: input.servings,
+          missing_equipment: input.missingEquipment,
+          diet: input.diet,
+          max_time_min: input.maxTimeMin,
+        },
+      });
+      if (error || !data) throw error ?? new Error("adapt-recipe returned nothing");
+      return {
+        adaptedRecipeId: data.adapted_recipe_id,
+        summary: data.summary,
+        changedSteps: data.changed_steps,
+        unresolved: data.unresolved,
+      };
+    },
+
     async getRecipe(idOrSlug) {
       const sb = requireSupabase();
       const isId = /^[0-9a-f-]{36}$/i.test(idOrSlug);

@@ -18,6 +18,9 @@ SHARED = {
     "apps/mobile/src/domain/pantryParse.ts": "supabase/functions/_shared/pantryParse.ts",
     "apps/mobile/src/domain/ranking.ts": "supabase/functions/_shared/ranking.ts",
     "apps/mobile/src/domain/recipes.ts": "supabase/functions/_shared/recipes.ts",
+    "apps/mobile/src/domain/adapt.ts": "supabase/functions/_shared/adapt.ts",
+    # Generated catalog (diet flags, allergens, measures) so functions validate exactly like the app.
+    "apps/mobile/src/data/catalog.json": "supabase/functions/_shared/catalog.json",
 }
 HEADER = "// GENERATED from {src} by scripts/sync-shared.py. Do not edit; edit the source and re-run.\n"
 
@@ -26,7 +29,8 @@ def main() -> int:
     check = "--check" in sys.argv
     stale = False
     for src, dst in SHARED.items():
-        text = HEADER.format(src=src) + (ROOT / src).read_text(encoding="utf-8")
+        body = (ROOT / src).read_text(encoding="utf-8")
+        text = body if src.endswith(".json") else HEADER.format(src=src) + body
         out = ROOT / dst
         if check:
             if not out.exists() or out.read_text(encoding="utf-8") != text:

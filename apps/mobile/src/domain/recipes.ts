@@ -37,6 +37,8 @@ export type VariationRuleDoc = {
 export type RecipeDoc = {
   /** Database id when it came from the backend; the slug for bundled recipes. */
   id?: string;
+  /** For a household's adapted variant: the recipe it was adapted from (KIT-051). */
+  parent_id?: string;
   slug: string;
   title: string;
   titles?: { hi?: string; "hi-Latn"?: string; en?: string };
@@ -237,6 +239,7 @@ export function searchRecipes<T extends RecipeDoc>(docs: T[], query: string, nam
 
 export type RecipeRow = {
   id: string;
+  parent_recipe_id?: string | null;
   slug: string | null;
   title: string;
   titles: RecipeDoc["titles"] | null;
@@ -282,8 +285,8 @@ export type RecipeRow = {
 
 /** PostgREST select for a full recipe (used by the app and the Edge Functions). */
 export const RECIPE_SELECT =
-  "id, slug, title, titles, description, cuisine_region, course, diet, base_servings, prep_time_min, cook_time_min, " +
-  "difficulty, spice_level, equipment, tags, flavor_profile, food_groups, review_status, " +
+  "id, parent_recipe_id, slug, title, titles, description, cuisine_region, course, diet, base_servings, prep_time_min, " +
+  "cook_time_min, difficulty, spice_level, equipment, tags, flavor_profile, food_groups, review_status, " +
   "recipe_ingredients(display_name, quantity, unit, local_measure, is_optional, group_name, role, substitutes, sort_order, ingredients(canonical_name)), " +
   "recipe_steps(step_no, instruction, duration_sec, timer_required, whistles, sensory_cue, member_branch, safety_note, techniques(slug)), " +
   "recipe_variation_rules(rule_type, condition, action, note)";
@@ -323,6 +326,7 @@ export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
     });
   return {
     id: row.id,
+    ...(row.parent_recipe_id ? { parent_id: row.parent_recipe_id } : {}),
     slug: row.slug ?? row.id,
     title: row.title,
     titles: row.titles ?? undefined,

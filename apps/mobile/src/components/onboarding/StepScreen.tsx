@@ -3,9 +3,12 @@ import { useRouter } from "expo-router";
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Button, Screen, Text } from "@/design-system/primitives";
+import { Icon } from "@/design-system/icons";
+import { Button, IconButton, Screen, Text } from "@/design-system/primitives";
 import { space } from "@/design-system/tokens";
 import { t, useLocale } from "@/i18n";
+
+import { Dashes } from "./Dashes";
 
 export const TOTAL_STEPS = 5;
 
@@ -34,13 +37,16 @@ export function StepScreen({
     <Screen>
       <View style={styles.top}>
         {router.canGoBack() ? (
-          <Button kind="quiet" label={t("onb.back")} onPress={() => router.back()} />
+          <IconButton label={t("onb.back")} onPress={() => router.back()}>
+            <Icon name="back" />
+          </IconButton>
         ) : (
-          <View />
+          <View style={styles.spacer} />
         )}
-        <Text variant="caption" muted accessibilityRole="text">
-          {t("onb.step", { n: step, total: TOTAL_STEPS })}
-        </Text>
+        <View accessible accessibilityLabel={t("onb.step", { n: step, total: TOTAL_STEPS })}>
+          <Dashes count={TOTAL_STEPS} current={step - 1} />
+        </View>
+        <View style={styles.spacer} />
       </View>
       <Text variant="title" accessibilityRole="header">
         {title}
@@ -56,4 +62,5 @@ export function StepScreen({
 const styles = StyleSheet.create({
   top: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", minHeight: 48 },
   content: { gap: space.md },
+  spacer: { width: 48 },
 });

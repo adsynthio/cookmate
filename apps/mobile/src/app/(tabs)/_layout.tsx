@@ -1,22 +1,12 @@
 import { Tabs } from "expo-router";
 
-import { useTheme } from "@/design-system/theme";
+import { TabBar } from "@/components/TabBar";
 import { t, useLocale } from "@/i18n";
 
 export default function TabsLayout() {
   useLocale();
-  const { colors } = useTheme();
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primaryText,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.bg, borderTopColor: colors.border, minHeight: 64 },
-        tabBarLabelStyle: { fontSize: 13, fontWeight: "500" },
-        tabBarIcon: () => null,
-      }}
-    >
+    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
       <Tabs.Screen name="index" options={{ title: t("tab.home") }} />
       <Tabs.Screen name="kitchen" options={{ title: t("tab.kitchen") }} />
       <Tabs.Screen name="cook" options={{ title: t("tab.cook") }} />

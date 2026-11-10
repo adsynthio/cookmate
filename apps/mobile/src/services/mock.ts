@@ -10,7 +10,8 @@ import { parsePantryText } from "@/domain/pantryParse";
 import { toDraft } from "./drafts";
 import { recipeBySlug, recipeDocs } from "@/data/recipes";
 import { localHour, slotForHour } from "@/domain/ranking";
-import { searchRecipes, toSummary } from "@/domain/recipes";
+import { applyRules, ingredientFitsDiet, summarise, validateAdaptation } from "@/domain/adapt";
+import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
 import { buildPicks } from "./picks";
 import type { HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
@@ -92,6 +93,9 @@ function readMembers(): Member[] {
 const recent: { recipeId: string; at: number }[] = [];
 const shown = new Map<string, string>(); // recommendationId -> recipeId
 let batchNo = 1;
+/** The household's adapted variants (KIT-051), kept for the session. */
+const adapted = new Map<string, RecipeDoc>();
+let adaptedNo = 1;
 
 export const mockServices: Services = {
   auth: {
@@ -244,9 +248,26 @@ export const mockServices: Services = {
       const recipeId = shown.get(recommendationId);
       if (status === "accepted" && recipeId) recent.push({ recipeId, at: Date.now() });
     },
+    async adaptRecipe(input) {
+      await delay(500);
+      const base = adapted.get(input.recipeId) ?? recipeBySlug(input.recipeId);
+      if (!base) throw new Error("recipe not found");
+      const a = applyRules(base, input);
+      const byName = new Map(catalog.map((c) => [c.name, c]));
+      const problems = validateAdaptation(base, a, {
+        known: (k) => byName.has(k),
+        allowed: (d, k) => ingredientFitsDiet(d, byName.get(k)),
+        diet: input.diet,
+      });
+      const summary = summarise(a);
+      if (problems.length) return { adaptedRecipeId: null, summary, changedSteps: [], unresolved: a.unresolved };
+      const id = `adapted-${adaptedNo++}`;
+      adapted.set(id, { ...a.doc, id, slug: base.slug, parent_id: base.id ?? base.slug, description: summary || base.description });
+      return { adaptedRecipeId: id, summary, changedSteps: a.changedSteps, unresolved: [] };
+    },
     async getRecipe(idOrSlug) {
       await delay(200);
-      const doc = recipeBySlug(idOrSlug);
+      const doc = adapted.get(idOrSlug) ?? recipeBySlug(idOrSlug);
       if (!doc) throw new Error("recipe not found");
       return doc;
     },

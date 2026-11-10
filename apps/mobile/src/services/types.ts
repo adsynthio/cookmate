@@ -102,6 +102,26 @@ export type RecipeSummary = {
   tags: string[];
 };
 
+export type AdaptInput = {
+  householdId: string;
+  recipeId: string;
+  missing?: string[];
+  spice?: number;
+  servings?: number;
+  missingEquipment?: string[];
+  diet?: Diet;
+  maxTimeMin?: number;
+};
+
+export type AdaptResult = {
+  /** Null when nothing safe could be made (see unresolved). */
+  adaptedRecipeId: string | null;
+  summary: string;
+  changedSteps: number[];
+  /** Essentials nothing replaces: the cook needs to buy them. */
+  unresolved: string[];
+};
+
 export type Member = {
   id: string;
   displayName: string;
@@ -178,6 +198,8 @@ export interface RecipeService {
   respondToPick(recommendationId: string, status: "accepted" | "dismissed", reason?: string): Promise<void>;
   /** KIT-050: full recipe by id or slug. */
   getRecipe(idOrSlug: string): Promise<RecipeDoc>;
+  /** KIT-051: the household's own version (rules first, model only for gaps, always validated). */
+  adaptRecipe(input: AdaptInput): Promise<AdaptResult>;
   /** KIT-054: search in any language and script. */
   searchRecipes(query: string): Promise<RecipeSummary[]>;
 }

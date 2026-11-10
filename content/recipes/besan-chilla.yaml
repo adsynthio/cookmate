@@ -1,0 +1,49 @@
+slug: besan-chilla
+title: Besan Chilla
+titles: {hi: बेसन चीला, hi-Latn: Besan Chilla}
+description: >-
+  Thin savoury pancakes of gram flour with onion, tomato and coriander, cooked on the tawa. Ready in twenty minutes.
+cuisine_region: generic_north
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 20
+difficulty: 2
+spice_level: 2
+equipment: [tawa]
+tags: [quick, high_protein, tiffin]
+flavor_profile: {rich: 0.3, heat: 0.3, acid: 0.2, crunch: 0.3, starch: 0.4, sweet: 0}
+food_groups: [dal]
+review_status: draft
+ingredients:
+  - {ingredient: gram flour, qty: 180, unit: g, local: 3 katori besan, role: base}
+  - {ingredient: onion, qty: 110, unit: g, local: 1 pyaaz, role: vegetable}
+  - {ingredient: tomato, qty: 100, unit: g, local: 1 tamatar, role: vegetable}
+  - {ingredient: green chilli, qty: 3, unit: g, local: 1 hari mirch, role: heat}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+  - {ingredient: carom seeds, qty: 1, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: turmeric powder, qty: 0.75, unit: g, local: chauthai chhota chammach, role: spice}
+  - {ingredient: red chilli powder, qty: 1.25, unit: g, local: aadha chhota chammach, role: heat}
+  - {ingredient: salt, qty: 5, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: refined oil, qty: 42, unit: ml, local: 3 chammach, role: fat}
+steps:
+  - text: Whisk the besan with turmeric, chilli powder, ajwain, salt and about 250 ml water into a smooth batter. Rest it for 10 minutes.
+    technique: batter
+    minutes: 10
+    timer: true
+    cue: Smooth and pourable, like thin dosa batter. No lumps.
+    branch: {age_group: child, action: Make the child's chillas first, before the green chilli goes into the batter}
+  - text: Stir in the finely chopped onion, tomato, green chilli and coriander.
+    minutes: 2
+  - text: Heat the tawa on medium and grease it lightly. Pour a ladle of batter in the centre and spread it into a thin circle. Drizzle a little oil around the edge.
+    technique: tawa_cook
+    minutes: 2
+    cue: Small bubbles appear and the edges start to lift on their own.
+  - text: Flip and cook the other side, pressing gently. Repeat with the rest of the batter.
+    technique: tawa_cook
+    minutes: 15
+    cue: Golden-brown spots on both sides and no raw batter in the middle.
+variation_rules:
+  - {type: diet, condition: {diet: jain}, action: {omit: [onion]}, note: Use finely chopped capsicum instead of onion.}
+  - {type: add, condition: {have: [paneer]}, action: {add: [{ingredient: paneer, qty: 100, unit: g}], at_step: 4}, note: Crumble paneer over the chilla before folding for a stuffed chilla.}

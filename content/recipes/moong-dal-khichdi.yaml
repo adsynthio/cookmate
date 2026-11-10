@@ -1,0 +1,48 @@
+slug: moong-dal-khichdi
+title: Moong Dal Khichdi
+titles: {hi: मूंग दाल खिचड़ी, hi-Latn: Moong Dal Khichdi}
+description: >-
+  Soft rice and yellow moong dal cooked together with ghee, cumin and ginger. Light, one-pot and easy on the stomach.
+cuisine_region: generic_north
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 20
+difficulty: 1
+spice_level: 1
+equipment: [pressure_cooker]
+tags: [comforting, light, kids_friendly, one_pot]
+flavor_profile: {rich: 0.4, heat: 0.1, acid: 0, crunch: 0, starch: 0.8, sweet: 0}
+food_groups: [dal, grain]
+review_status: draft
+ingredients:
+  - {ingredient: rice, qty: 100, unit: g, local: aadha cup chawal, role: starch}
+  - {ingredient: yellow moong dal, qty: 100, unit: g, local: aadha cup moong dal, role: base}
+  - {ingredient: ghee, qty: 26, unit: g, local: 2 chammach, role: fat}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: asafoetida, qty: 0.2, unit: g, local: 1 chutki, role: aromatic}
+  - {ingredient: ginger, qty: 8, unit: g, local: 1 inch, role: aromatic}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: salt, qty: 7, unit: g, local: 1 chhota chammach, role: spice}
+steps:
+  - text: Rinse the rice and dal together 2 to 3 times and soak them in fresh water.
+    technique: soak
+    minutes: 15
+    timer: true
+  - text: Heat the ghee in the pressure cooker. Add cumin, hing and grated ginger and stir for 30 seconds.
+    technique: tadka
+    minutes: 1
+    cue: The cumin sizzles and smells toasty.
+  - text: Add the drained rice and dal, turmeric, salt and 900 ml water. Close the lid and cook on medium heat.
+    technique: pressure_cook
+    whistles: 4
+    minutes: 15
+    cue: Let the pressure drop by itself before opening.
+    branch: {age_group: elder, action: Add another half cup of water for a softer khichdi}
+  - text: Stir and mash lightly. Add hot water if it is too thick, and serve with a little ghee on top.
+    minutes: 2
+    cue: It should flow slowly from the spoon, like a thick porridge. It thickens as it stands.
+variation_rules:
+  - {type: diet, condition: {diet: jain}, action: {omit: [ginger]}, note: Leave out the ginger; the hing and cumin are enough.}
+  - {type: diet, condition: {diet: vegan}, action: {replace: {ghee: refined oil}}, note: Use oil instead of ghee.}

@@ -3,19 +3,19 @@
 import type { ImageSourcePropType } from "react-native";
 
 export const illustrations: Record<"emptyKitchen" | "emptyPicks" | "emptyList" | "offline" | "error" | "allDone", ImageSourcePropType | null> = {
-  emptyKitchen: null,
-  emptyPicks: null,
-  emptyList: null,
-  offline: null,
-  error: null,
-  allDone: null,
+  emptyKitchen: require("../../assets/media/illustrations/empty-kitchen.png") as ImageSourcePropType,
+  emptyPicks: require("../../assets/media/illustrations/empty-picks.png") as ImageSourcePropType,
+  emptyList: require("../../assets/media/illustrations/empty-list.png") as ImageSourcePropType,
+  offline: require("../../assets/media/illustrations/offline.png") as ImageSourcePropType,
+  error: require("../../assets/media/illustrations/error.png") as ImageSourcePropType,
+  allDone: require("../../assets/media/illustrations/all-done.png") as ImageSourcePropType,
 };
 
 export const onboarding: Record<"producePile" | "leafPalak" | "leafMethi" | "leafCoriander", ImageSourcePropType | null> = {
-  producePile: null,
-  leafPalak: null,
-  leafMethi: null,
-  leafCoriander: null,
+  producePile: require("../../assets/media/onboarding/produce-pile.png") as ImageSourcePropType,
+  leafPalak: require("../../assets/media/onboarding/leaf-palak.png") as ImageSourcePropType,
+  leafMethi: require("../../assets/media/onboarding/leaf-methi.png") as ImageSourcePropType,
+  leafCoriander: require("../../assets/media/onboarding/leaf-coriander.png") as ImageSourcePropType,
 };
 
 export const dishes: Record<"besan-chilla" | "chicken-curry" | "dal-tadka" | "egg-bhurji" | "jeera-aloo" | "kadhi-pakora" | "kanda-poha" | "matar-paneer" | "moong-dal-khichdi" | "rajma", ImageSourcePropType | null> = {

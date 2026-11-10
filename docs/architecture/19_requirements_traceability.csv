@@ -1,0 +1,106 @@
+﻿business_requirements,epic_id,story_id,story_title,prd_requirements,tables
+"BR-15, BR-20",E01,KIT-001,"Set up monorepo, tooling and branch protection",NFR-12,ai_requests; voice_sessions
+"BR-15, BR-20",E01,KIT-002,Create Supabase staging and production projects in Mumbai,NFR-13,ai_requests; voice_sessions
+"BR-15, BR-20",E01,KIT-003,Apply generated schema migration and pgTAP RLS test,NFR-12,ai_requests; voice_sessions
+"BR-15, BR-20",E01,KIT-004,EAS development and preview builds,NFR-06,ai_requests; voice_sessions
+"BR-15, BR-20",E01,KIT-005,Service layer with mock and live implementations,NFR-12,ai_requests; voice_sessions
+BR-05,E02,KIT-010,Design tokens and primitives,NFR-09,ai_requests; voice_sessions
+BR-05,E02,KIT-011,"Tab navigation: Home, Kitchen, Cook, You",,
+BR-05,E02,KIT-012,"Loading, empty, offline and error states",HOME-08,calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+BR-05,E02,KIT-013,Localisation framework,NFR-08,ai_requests; voice_sessions
+"BR-09, BR-14",E03,KIT-020,Start without email or password,ONB-01,consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles
+"BR-09, BR-14",E03,KIT-021,Upgrade to phone OTP without losing data,ONB-01,consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles
+"BR-09, BR-14",E03,KIT-022,Choose language by voice or tap,ONB-02,consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles
+"BR-09, BR-14",E03,KIT-023,"Who eats here, spice and diet in three steps","ONB-03, HH-01",consents; household_members; households; kitchen_equipment; meal_plans; profiles; recipe_steps (member_branch); taste_profiles; voice_profiles
+"BR-09, BR-14",E03,KIT-024,Voice-only onboarding,ONB-05,consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles
+"BR-09, BR-14",E03,KIT-025,Kitchen equipment checklist,ONB-06,consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles
+"BR-09, BR-14",E03,KIT-026,Quick start from yesterday's meal,ONB-07,consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles
+"BR-02, BR-12",E04,KIT-040,"Tonight, decided hero pick","HOME-01, HOME-02",calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-02, BR-12",E04,KIT-041,Deterministic ranking engine,HOME-02,calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-02, BR-12",E04,KIT-042,Craving search by voice or text,HOME-03,calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-02, BR-12",E04,KIT-043,Use Soon strip,"HOME-04, LEFT-01",calendar_events; inventory_items; inventory_items (state leftover); meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-02, BR-12",E04,KIT-044,Dismiss a pick with a reason,HOME-06,calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-02, BR-12",E04,KIT-045,Daily pick notification,"HOME-07, NOTIF-01",calendar_events; devices; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-02, BR-12",E04,KIT-046,Meal-slot awareness,HOME-05,calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-01, BR-03, BR-04",E05,KIT-030,Kitchen locations and item list,"KIT-01, KIT-02, KIT-10",ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-031,Add items by voice or text,KIT-03,ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-032,"Edit, finish or discard an item",KIT-04,ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-033,Staples as Full / Low / Out,KIT-06,ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-034,Homemade components,KIT-07,ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-035,Confidence decay and targeted checks,KIT-08,ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-036,Storage advice and shelf life,KIT-09,ingredients; inventory_events; inventory_items; storage_locations
+"BR-01, BR-03, BR-04",E05,KIT-037,Automatic deduction after cooking,KIT-05,ingredients; inventory_events; inventory_items; storage_locations
+"BR-08, BR-09",E06,KIT-050,Recipe detail with pantry match,"REC-02, REC-04",recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-08, BR-09",E06,KIT-051,Adapt a recipe,REC-03,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-08, BR-09",E06,KIT-052,Family plates,HH-02,household_members; meal_plans; recipe_steps (member_branch)
+"BR-08, BR-09",E06,KIT-053,Why this works,REC-05,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-08, BR-09",E06,KIT-054,Search recipes in any language,REC-08,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-08, BR-09",E06,KIT-055,Save and favourite recipes,REC-07,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-08, BR-09",E06,KIT-056,Invent a combination from what's here,REC-06,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-08, BR-09",E06,KIT-057,Who's eating today,HH-03,household_members; meal_plans; recipe_steps (member_branch)
+"BR-05, BR-13",E07,KIT-070,Cook step view,"COOK-01, COOK-09",cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-071,Timers that work with the app closed,COOK-02,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-072,Sensory cues and reference photos,COOK-04,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-073,Photo checkpoint,COOK-05,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-074,Ask a question mid-step,COOK-06,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-075,I changed something,COOK-07,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-076,Offline cooking bundle,"COOK-08, NFR-04",ai_requests; cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache; voice_sessions
+"BR-05, BR-13",E07,KIT-077,Finish sheet,COOK-10,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-078,Whistle counting,COOK-03,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-05, BR-13",E07,KIT-079,Resume an interrupted session,COOK-11,cooking_sessions; photo_checkpoints; session_events; session_timers; step_audio_cache
+"BR-06, BR-07, BR-19",E08,KIT-060,Voice agent worker skeleton,VOICE-02,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-061,Voice token Edge Function,VOICE-07,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-062,Voice context packet,VOICE-07,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-063,Mic button on every tab,VOICE-01,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-064,Hands-free Cook mode,VOICE-03,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-065,Barge-in,VOICE-04,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-066,Fast-path cooking commands,VOICE-06,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-067,Voice tools mapped to services,"VOICE-07, VOICE-08",session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-068,Personal voice behaviour,VOICE-09,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-069,Latency budget and telemetry,"VOICE-05, VOICE-14",session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-080,Step audio cache,VOICE-14,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-081,VAD-gated speech-to-text,VOICE-14,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-082,Kitchen noise robustness,VOICE-10,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-083,Switch speaker on a shared phone,VOICE-13,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-084,Voice offline fallback,VOICE-12,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-07, BR-19",E08,KIT-085,Regional launch language,VOICE-02,session_events; step_audio_cache; voice_profiles; voice_sessions
+BR-11,E09,KIT-090,Something's wrong sheet,RES-01,cooking_sessions; session_events
+BR-11,E09,KIT-091,State-aware rescue fix,RES-02,cooking_sessions; session_events
+BR-11,E09,KIT-092,Food-safety guards,RES-03,cooking_sessions; session_events
+BR-10,E10,KIT-100,One-tap feedback after cooking,"LRN-01, LRN-06",ingredient_preferences; meal_feedback; member_skills; memories; taste_profiles
+BR-10,E10,KIT-101,Memory model and rules,"LRN-02, LRN-03, LRN-04",ingredient_preferences; meal_feedback; member_skills; memories; taste_profiles
+BR-10,E10,KIT-102,What I've learned screen,LRN-05,ingredient_preferences; meal_feedback; member_skills; memories; taste_profiles
+BR-10,E10,KIT-103,Memory extraction from speech and feedback,LRN-02,ingredient_preferences; meal_feedback; member_skills; memories; taste_profiles
+BR-10,E10,KIT-104,Picks reflect memories,LRN-08,ingredient_preferences; meal_feedback; member_skills; memories; taste_profiles
+BR-10,E10,KIT-105,Ingredient likes and dislikes,LRN-07,ingredient_preferences; meal_feedback; member_skills; memories; taste_profiles
+BR-17,E11,KIT-110,Add missing items to the list,"SHOP-01, SHOP-02",shopping_list_items; shopping_lists
+BR-17,E11,KIT-111,Mark bought into pantry,SHOP-04,shopping_list_items; shopping_lists
+BR-17,E11,KIT-112,Share list on WhatsApp,SHOP-03,shopping_list_items; shopping_lists
+BR-15,E12,KIT-120,Consent per purpose,"ONB-04, NFR-10",ai_requests; consents; household_members; households; kitchen_equipment; profiles; taste_profiles; voice_profiles; voice_sessions
+BR-15,E12,KIT-121,Export my data,NFR-10,ai_requests; voice_sessions
+BR-15,E12,KIT-122,Delete my account,NFR-10,ai_requests; voice_sessions
+BR-15,E12,KIT-123,Retention jobs,NFR-11,ai_requests; voice_sessions
+BR-15,E12,KIT-124,Security review before beta,NFR-12,ai_requests; voice_sessions
+"BR-19, BR-20",E13,KIT-130,Analytics events,BR-20,
+"BR-19, BR-20",E13,KIT-131,Crash and error monitoring,NFR-15,ai_requests; voice_sessions
+"BR-19, BR-20",E13,KIT-132,AI request logging,NFR-15,ai_requests; voice_sessions
+"BR-19, BR-20",E13,KIT-133,AI evaluation harness,NFR-17,ai_requests; voice_sessions
+"BR-05, BR-08",E14,KIT-140,Recipe content format and pipeline,REC-01,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-05, BR-08",E14,KIT-141,First 100 curated dishes,REC-01,recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes
+"BR-05, BR-08",E14,KIT-142,300 dishes and reference photos,"REC-01, COOK-04",cooking_sessions; photo_checkpoints; recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes; session_events; session_timers; step_audio_cache
+"BR-05, BR-08",E14,KIT-143,Ingredient catalog with local names and measures,"REC-04, KIT-03",ingredients; inventory_events; inventory_items; recipe_ingredients; recipe_steps; recipe_variation_rules; recipes; saved_recipes; storage_locations
+"BR-05, BR-08",E14,KIT-144,Festival and fasting calendar,HOME-02,calendar_events; inventory_items; meal_plans; memories; notifications; recipes; recommendations; taste_profiles
+"BR-06, BR-14",E15,KIT-150,Beta recruitment and onboarding,,
+"BR-06, BR-14",E15,KIT-151,Rural field observation protocol,VOICE-03,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-14",E15,KIT-152,Beta gate review,,
+BR-03,E16,KIT-160,Barcode scanning,INP-01,inventory_items; products; scan_items; scans
+BR-03,E16,KIT-161,Fridge photo scan,INP-02,inventory_items; products; scan_items; scans
+BR-03,E16,KIT-162,Receipt scan,INP-03,inventory_items; products; scan_items; scans
+BR-16,E17,KIT-170,In-dish balance nudge,HLTH-01,nutrition_weekly
+BR-16,E17,KIT-171,Weekly plate,HLTH-02,nutrition_weekly
+"BR-12, BR-18",E18,KIT-180,Save and track leftovers,"LEFT-02, LEFT-03",inventory_items (state leftover)
+"BR-12, BR-18",E18,KIT-181,Predictive restocking,GROC-03,cart_items; carts; grocery_providers; provider_connections; purchase_patterns
+BR-18,E19,KIT-190,Provider adapter interface,GROC-01,cart_items; carts; grocery_providers; provider_connections; purchase_patterns
+BR-18,E19,KIT-191,Cart approval,GROC-02,cart_items; carts; grocery_providers; provider_connections; purchase_patterns
+"BR-06, BR-09",E20,KIT-200,WhatsApp voice notes,VOICE-15,session_events; step_audio_cache; voice_profiles; voice_sessions
+"BR-06, BR-09",E20,KIT-201,Cook handoff,HH-05,household_members; meal_plans; recipe_steps (member_branch)

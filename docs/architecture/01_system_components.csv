@@ -1,0 +1,35 @@
+﻿component,layer,technology,version_or_plan,responsibility,hosting,depends_on,owner,release
+Mobile app shell,Client,"React Native + Expo + TypeScript, Expo Router","Expo SDK 58, development build","Navigation (Home, Kitchen, Cook, You), screens, states","User's phone (Android 9+, iOS 16+)",Design system; Service layer,Frontend,V1
+Design system,Client,"apps/mobile/design-system (tokens.ts, primitives)",—,"Colour, type, spacing, radius, motion tokens; Button, Chip, Sheet, Card, StepView, TimerRing",Bundled,—,Design + Frontend,V1
+Service layer,Client,apps/mobile/services/*.ts,—,"The only code that talks to the backend: Kitchen, Recipe, Cooking, Preference, Feedback, Shopping, AI and Voice services; mock and live implementations behind one interface",Bundled,Supabase JS client; LiveKit client,Frontend,V1
+Server-state cache,Client,TanStack Query,v5,"Caching, retries, optimistic updates for service calls",Bundled,Service layer,Frontend,V1
+UI and session state,Client,Zustand,v5,"Live cooking state (step, timers, mode), voice state, onboarding draft",Bundled,—,Frontend,V1
+Offline store,Client,expo-sqlite + react-native-mmkv,—,"Session bundles (steps, images, cached audio paths), queued writes for sync, small prefs",On device,Service layer,Frontend,V1
+Timers and alarms,Client,expo-notifications (local) + keep-awake,—,Timers that fire with the app closed; screen stays on in Cook,On device,Offline store,Frontend,V1
+Voice client,Client,@livekit/react-native + @livekit/react-native-expo-plugin,3.x / 1.x,"Joins the voice room, publishes mic, plays agent audio, data messages for step sync",On device,voice-token Edge Function; LiveKit Cloud,Frontend + Voice,V1
+Supabase JS client,Client,@supabase/supabase-js,2.x,"Auth session, PostgREST, RPC, Storage, Realtime",Bundled,Supabase,Frontend,V1
+Analytics,Client,PostHog React Native,—,"Product events from 12_analytics_events.csv (no PII, no transcripts)",PostHog EU/US cloud or self-host,—,Product,V1
+Crash and performance monitoring,Client + backend,"Sentry (@sentry/react-native, Deno and Python SDKs)",—,"Crashes, errors, traces",Sentry cloud,—,Engineering,V1
+Build and OTA updates,Delivery,"EAS Build, EAS Update, EAS Submit",—,"Android/iOS builds, over-the-air JS updates, store submission",Expo cloud,GitHub Actions,Frontend,V1
+Supabase Auth,Backend,Supabase Auth: anonymous sign-ins + phone OTP,—,No-password start; phone upgrade keeps data; JWT for RLS,"Supabase, Mumbai (ap-south-1)",Send SMS Auth Hook -> SMS provider,Backend,V1
+Kitchen Brain database,Backend,Supabase Postgres with row-level security,Postgres 15+,"All state: households, pantry, recipes, sessions, memories, shopping; RLS on every table","Supabase, Mumbai (ap-south-1)",—,Backend,V1
+Vector search,Backend,"pgvector (HNSW, cosine)",—,Semantic recipe search and craving matching on 384-d embeddings,Inside Postgres,Embedding job,Backend,V1
+Fuzzy text search,Backend,pg_trgm,—,Ingredient and recipe name matching in any spelling,Inside Postgres,—,Backend,V1
+Scheduled jobs,Backend,pg_cron + pg_net,—,"Confidence decay, notifications, retention cleanup, weekly plate, restock prediction",Inside Postgres,Edge Functions,Backend,V1
+Realtime,Backend,Supabase Realtime (postgres_changes),—,"Live pantry, shopping list, session and timer sync across household phones",Supabase,Kitchen Brain database,Backend,V1
+Object storage,Backend,Supabase Storage,—,Buckets in 06_storage_buckets.csv,"Supabase, Mumbai",—,Backend,V1
+Edge Functions,Backend,"Supabase Edge Functions (Deno, TypeScript)",—,"AI orchestration, token minting, scans, exports; all model keys live here",Supabase,Claude API; Sarvam; LiveKit; Open Food Facts,Backend,V1
+Secrets vault,Backend,Supabase Vault,—,Provider OAuth tokens (V2),Supabase,—,Backend,V2
+Real-time media server,Voice,"LiveKit Cloud (WebRTC SFU, agent dispatch)",Ship plan to start,"Rooms, audio transport, echo cancellation, explicit agent dispatch","LiveKit Cloud, nearest region to India",—,Voice,V1
+Voice agent worker,Voice,"Python 3.12, livekit-agents 1.8.11 with sarvam, anthropic, silero plugins",1.8.11,"Turn-taking, barge-in, VAD-gated speech-to-text, fast-path commands, Claude tool calls, streamed speech, telemetry","Containers in Mumbai region (e.g. AWS ap-south-1), self-hosted workers",LiveKit Cloud; Sarvam; Claude; Supabase RPC,Voice,V1
+Speech-to-text,Voice,Sarvam Saaras,saaras:v3 (v4 available),Indian-language and code-mixed recognition with language detection,Sarvam API,—,Voice,V1
+Text-to-speech,Voice,Sarvam Bulbul,bulbul:v3 or bulbul:v4-flash,Streaming speech for live answers; batch synthesis for step_audio_cache,Sarvam API,—,Voice,V1
+Conversation model,AI,Claude Haiku 5.5,claude-haiku-5-5,"Voice turns with tools, text parsing, reasons, rescue, memory extraction",Anthropic API,—,Backend + Voice,V1
+Planning and vision model,AI,Claude Sonnet 5.5,claude-sonnet-5-5,"Recipe adaptation and invention, photo checkpoints, fridge and receipt scans",Anthropic API,—,Backend,V1
+Embeddings,AI,Supabase AI gte-small in Edge Functions,384 dimensions,Recipe and craving embeddings,Supabase Edge runtime,—,Backend,V1
+Barcode database,External,Open Food Facts API,—,Product lookup by barcode,Open Food Facts,—,Backend,V1.5
+Push notifications,External,Expo Push Service,—,"Daily pick, Use Soon, restock nudges",Expo,devices table,Backend,V1
+WhatsApp channel,External,Meta WhatsApp Business Platform (Cloud API),—,Voice-note conversations and cook handoff,Meta,whatsapp-webhook Edge Function,Backend + Voice,V2
+Grocery provider adapters,External,Official provider APIs or partner feeds only,—,"Product search, carts, orders behind one adapter interface",Providers,grocery-agent Edge Function,Backend,V2
+Source control and CI,Delivery,"GitHub, GitHub Actions, GitHub Projects",—,"Code, reviews, CI, backlog board",GitHub,—,Engineering,V1
+Design source of truth,Delivery,Figma (Stitch for exploration only),—,Approved screens and components,Figma,—,Design,V1

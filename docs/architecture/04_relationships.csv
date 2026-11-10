@@ -1,0 +1,109 @@
+﻿from_table,from_column,to_table,to_column,cardinality,on_delete,optionality,meaning
+profiles,id,auth.users,id,one-to-one,cascade,required,Same as auth.users.id
+profiles,last_active_household_id,households,id,many-to-one,set null,optional,Household opened by default
+households,created_by,profiles,id,many-to-one,set null,optional,Profile that created the household
+household_members,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+household_members,user_id,profiles,id,many-to-one,set null,optional,Linked profile; null for dependents without the app
+voice_profiles,member_id,household_members,id,one-to-one,cascade,required,Member (one profile per member)
+voice_profiles,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+consents,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+consents,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+kitchen_equipment,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+products,ingredient_id,ingredients,id,many-to-one,set null,optional,Mapped ingredient
+calendar_events,household_id,households,id,many-to-one,cascade,optional,Null for global calendar rows
+storage_locations,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+inventory_items,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+inventory_items,ingredient_id,ingredients,id,many-to-one,set null,optional,Catalog ingredient (null for unmapped custom items)
+inventory_items,product_id,products,id,many-to-one,set null,optional,Barcode product if scanned
+inventory_items,location_id,storage_locations,id,many-to-one,set null,optional,Where it is stored
+inventory_items,source_session_id,cooking_sessions,id,many-to-one,set null,optional,"Cooking session that produced it (components, leftovers)"
+inventory_items,recipe_id,recipes,id,many-to-one,set null,optional,"Recipe that produced it (components, leftovers)"
+inventory_items,created_by,household_members,id,many-to-one,set null,optional,Member who added it
+inventory_events,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+inventory_events,item_id,inventory_items,id,many-to-one,cascade,required,Inventory item
+inventory_events,session_id,cooking_sessions,id,many-to-one,set null,optional,Cooking session that caused it
+inventory_events,actor_member_id,household_members,id,many-to-one,set null,optional,Member who made the change
+scans,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+scans,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+scan_items,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+scan_items,scan_id,scans,id,many-to-one,cascade,required,Parent scan
+scan_items,ingredient_id,ingredients,id,many-to-one,set null,optional,Mapped ingredient
+scan_items,product_id,products,id,many-to-one,set null,optional,Mapped product
+scan_items,inventory_item_id,inventory_items,id,many-to-one,set null,optional,Item created on acceptance
+recipes,household_id,households,id,many-to-one,cascade,optional,Null for curated global recipes
+recipes,parent_recipe_id,recipes,id,many-to-one,set null,optional,Base recipe this variant was adapted from
+recipes,created_by_member_id,household_members,id,many-to-one,set null,optional,Member who created the variant
+recipe_ingredients,recipe_id,recipes,id,many-to-one,cascade,required,Recipe
+recipe_ingredients,ingredient_id,ingredients,id,many-to-one,restrict,optional,Catalog ingredient
+recipe_steps,recipe_id,recipes,id,many-to-one,cascade,required,Recipe
+recipe_steps,technique_id,techniques,id,many-to-one,set null,optional,Technique taught by this step
+recipe_variation_rules,recipe_id,recipes,id,many-to-one,cascade,required,Recipe
+step_audio_cache,recipe_id,recipes,id,many-to-one,cascade,required,Recipe
+step_audio_cache,step_id,recipe_steps,id,many-to-one,cascade,required,Step
+saved_recipes,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+saved_recipes,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+saved_recipes,recipe_id,recipes,id,many-to-one,cascade,required,Recipe
+recommendations,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+recommendations,member_id,household_members,id,many-to-one,set null,optional,Member who asked or was shown
+recommendations,recipe_id,recipes,id,many-to-one,cascade,required,Recommended recipe
+meal_plans,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+meal_plans,recipe_id,recipes,id,many-to-one,cascade,required,Planned recipe
+meal_plans,planned_by,household_members,id,many-to-one,set null,optional,Member who planned
+cooking_sessions,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+cooking_sessions,member_id,household_members,id,many-to-one,cascade,required,Member cooking
+cooking_sessions,recipe_id,recipes,id,many-to-one,restrict,required,Base recipe
+cooking_sessions,adapted_recipe_id,recipes,id,many-to-one,set null,optional,Adapted variant actually cooked
+cooking_sessions,recommendation_id,recommendations,id,many-to-one,set null,optional,Pick that led here
+session_timers,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+session_timers,session_id,cooking_sessions,id,many-to-one,cascade,required,Session
+session_events,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+session_events,session_id,cooking_sessions,id,many-to-one,cascade,required,Session
+photo_checkpoints,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+photo_checkpoints,session_id,cooking_sessions,id,many-to-one,cascade,required,Session
+meal_feedback,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+meal_feedback,session_id,cooking_sessions,id,many-to-one,cascade,required,Session
+meal_feedback,member_id,household_members,id,many-to-one,cascade,required,Member giving feedback
+memories,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+memories,member_id,household_members,id,many-to-one,cascade,optional,Member; null = whole household
+memories,subject_ingredient_id,ingredients,id,many-to-one,set null,optional,Ingredient it is about
+memories,subject_recipe_id,recipes,id,many-to-one,set null,optional,Recipe it is about
+memories,superseded_by,memories,id,many-to-one,set null,optional,Memory that replaced this one
+taste_profiles,member_id,household_members,id,one-to-one,cascade,required,Member
+taste_profiles,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+ingredient_preferences,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+ingredient_preferences,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+ingredient_preferences,ingredient_id,ingredients,id,many-to-one,cascade,required,Ingredient
+member_skills,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+member_skills,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+member_skills,technique_id,techniques,id,many-to-one,cascade,required,Technique
+nutrition_weekly,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+nutrition_weekly,member_id,household_members,id,many-to-one,cascade,optional,Member; null = household
+shopping_lists,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+shopping_list_items,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+shopping_list_items,list_id,shopping_lists,id,many-to-one,cascade,required,List
+shopping_list_items,ingredient_id,ingredients,id,many-to-one,set null,optional,Ingredient
+shopping_list_items,product_id,products,id,many-to-one,set null,optional,Preferred product
+shopping_list_items,recipe_id,recipes,id,many-to-one,set null,optional,Recipe that needed it
+shopping_list_items,added_by,household_members,id,many-to-one,set null,optional,Member
+purchase_patterns,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+purchase_patterns,ingredient_id,ingredients,id,many-to-one,cascade,required,Ingredient
+purchase_patterns,preferred_product_id,products,id,many-to-one,set null,optional,Usual product
+purchase_patterns,preferred_provider_id,grocery_providers,id,many-to-one,set null,optional,Usual provider
+provider_connections,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+provider_connections,provider_id,grocery_providers,id,many-to-one,cascade,required,Provider
+carts,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+carts,provider_id,grocery_providers,id,many-to-one,restrict,required,Provider
+carts,approved_by,household_members,id,many-to-one,set null,optional,Member who approved
+cart_items,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+cart_items,cart_id,carts,id,many-to-one,cascade,required,Cart
+cart_items,list_item_id,shopping_list_items,id,many-to-one,set null,optional,List item it fulfils
+devices,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+devices,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+notifications,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+notifications,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+channel_identities,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+channel_identities,member_id,household_members,id,many-to-one,cascade,required,Household member this row belongs to
+voice_sessions,household_id,households,id,many-to-one,cascade,required,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+voice_sessions,member_id,household_members,id,many-to-one,set null,optional,Member
+voice_sessions,cooking_session_id,cooking_sessions,id,many-to-one,set null,optional,"Cooking session, if any"
+ai_requests,household_id,households,id,many-to-one,set null,optional,Household (null for content jobs)

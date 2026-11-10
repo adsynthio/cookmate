@@ -1,0 +1,46 @@
+﻿name,color,description
+type:story,1D76DB,User story
+type:bug,D73A4A,Something is broken
+type:task,0E8A16,Technical task
+type:spike,FBCA04,Time-boxed investigation
+type:epic,5319E7,Epic tracking issue
+priority:P0,B60205,Must ship in its release
+priority:P1,D93F0B,Should ship
+priority:P2,FEF2C0,Could ship
+release:V1,0052CC,V1 Personal Kitchen Brain
+release:V1.5,006B75,V1.5 Frictionless input
+release:V2,5319E7,V2 Kitchen Agent
+release:V3,8B4513,V3 Household Food OS
+area:mobile,C2E0C6,Expo app
+area:backend,BFD4F2,"Supabase, RPCs, Edge Functions"
+area:voice,F9D0C4,Voice agent and speech
+area:ai,D4C5F9,"Prompts, models, evals"
+area:design,FAD8C7,Design system and Figma
+area:content,FEF2C0,Recipes and catalog
+area:devops,E4E669,"CI/CD, environments"
+area:data,C5DEF5,Analytics and telemetry
+area:product,BFDADC,"Research, beta, decisions"
+field-test,0E8A16,Found in field testing
+needs-design,FAD8C7,Blocked on design
+blocked,000000,Blocked
+good first issue,7057FF,Good for newcomers
+epic:E01,EDEDED,Foundation and DevOps
+epic:E02,EDEDED,Design system and app shell
+epic:E03,EDEDED,Onboarding and household
+epic:E04,EDEDED,Home and recommendations
+epic:E05,EDEDED,Kitchen and pantry
+epic:E06,EDEDED,Recipes and adaptation
+epic:E07,EDEDED,Cook With Me
+epic:E08,EDEDED,Voice Cook
+epic:E09,EDEDED,Recipe Rescue
+epic:E10,EDEDED,Learning and memory
+epic:E11,EDEDED,Shopping list
+epic:E12,EDEDED,Privacy and consent
+epic:E13,EDEDED,Analytics and observability
+epic:E14,EDEDED,Recipe content
+epic:E15,EDEDED,Beta and field testing
+epic:E16,EDEDED,Scanning
+epic:E17,EDEDED,Health nudges
+epic:E18,EDEDED,Leftovers and restock
+epic:E19,EDEDED,Grocery agent
+epic:E20,EDEDED,WhatsApp and cook handoff

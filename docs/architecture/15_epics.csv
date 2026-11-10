@@ -1,0 +1,21 @@
+﻿epic_id,title,goal,business_requirements,release,primary_area,story_count,points
+E01,Foundation and DevOps,"Repo, environments, Supabase project, CI/CD and EAS builds working from day one","BR-15, BR-20",V1,devops,5,14
+E02,Design system and app shell,"Tokens, primitives, navigation and every screen state",BR-05,V1,mobile,4,13
+E03,Onboarding and household,"Start without a password; set up who eats here in three steps, by tap or voice","BR-09, BR-14",V1,mobile,7,23
+E04,Home and recommendations,"Tonight, decided: one trustworthy pick with a reason, plus craving search","BR-02, BR-12",V1,backend,7,27
+E05,Kitchen and pantry,"A living, probable pantry that stays true with little effort","BR-01, BR-03, BR-04",V1,backend,8,33
+E06,Recipes and adaptation,Curated foundations adapted to the real kitchen and family,"BR-08, BR-09",V1,backend,8,32
+E07,Cook With Me,"Stateful step-by-step cooking with timers, checkpoints and offline mode","BR-05, BR-13",V1,mobile,10,36
+E08,Voice Cook,"Real-time voice assistant cook in the user's language, hands-free","BR-06, BR-07, BR-19",V1,voice,16,67
+E09,Recipe Rescue,"Fix cooking problems in the moment, safely",BR-11,V1,ai,3,10
+E10,Learning and memory,Learn from every meal under the user's control,BR-10,V1,backend,6,22
+E11,Shopping list,Missing and running-low items flow to a list and back into the pantry,BR-17,V1,mobile,3,6
+E12,Privacy and consent,"DPDP-compliant consent, export and deletion",BR-15,V1,backend,5,15
+E13,Analytics and observability,Every KPI measured; latency and cost visible per voice session,"BR-19, BR-20",V1,data,4,15
+E14,Recipe content,"300 curated, tested dishes with cues, photos and variation rules","BR-05, BR-08",V1,content,5,42
+E15,Beta and field testing,Closed beta with urban and rural cohorts against the BRD gates,"BR-06, BR-14",V1,product,3,10
+E16,Scanning,"Barcode, camera and receipt input with confirmation",BR-03,V1.5,ai,3,18
+E17,Health nudges,In-dish balance nudges and the weekly plate,BR-16,V1.5,ai,2,8
+E18,Leftovers and restock,Leftover tracking and predictive restocking,"BR-12, BR-18",V2,backend,2,10
+E19,Grocery agent,Official provider carts with explicit approval,BR-18,V2,backend,2,13
+E20,WhatsApp and cook handoff,Voice-note channel and menus sent to the household cook,"BR-06, BR-09",V2,voice,2,13

@@ -1,0 +1,34 @@
+﻿event,trigger,properties,kpi,contains_pii,release
+app_open,App foreground,"household_id, member_id, app_version, network_type",Retention,no,V1
+onboarding_step,Each onboarding step completed,"step, channel (tap|voice), duration_ms",Activation,no,V1
+onboarding_completed,Household created,"members_count, language, voice_consent",Activation,no,V1
+consent_changed,Consent granted or withdrawn,"consent_type, granted",Compliance,no,V1
+pick_shown,Hero/alternates displayed,"batch_id, meal_slot, source (home|push|voice|craving), coverage_pct",Pick acceptance,no,V1
+pick_accepted,User accepts a pick,"recommendation_id, rank, channel",Pick acceptance,no,V1
+pick_dismissed,User dismisses,"recommendation_id, reason",Pick acceptance,no,V1
+craving_submitted,Craving sent,"chips[], channel, length_chars",Engagement,no,V1
+inventory_added,Items committed,"count, added_via, parse_confidence_avg",Pantry trust,no,V1
+inventory_corrected,User fixes an item or deduction,"field, source (deduction|parse|decay)",Pantry trust,no,V1
+inventory_consumed,Deduction applied,"items_count, use_soon_items_count",Waste rescue,no,V1
+use_soon_shown,Use Soon strip rendered,items_count,Waste rescue,no,V1
+recipe_viewed,Recipe detail opened,"recipe_id, coverage_pct, from",Funnel,no,V1
+recipe_adapted,Adaptation applied,"recipe_id, change_types[]",Funnel,no,V1
+cook_started,Session started,"session_id, mode, recipe_id, servings",Cooking frequency,no,V1
+cook_step,Step advanced,"session_id, step_no, channel",Funnel,no,V1
+timer_set,Timer started,"session_id, duration_sec, channel",Engagement,no,V1
+checkpoint_used,Photo checkpoint,"session_id, verdict",Quality,no,V1
+rescue_requested,Something's wrong,"session_id, problem, channel",Rescue success,no,V1
+cook_completed,Session completed,"session_id, duration_min, mode, taps_after_start, rescues",Cooking frequency; hands-free rate,no,V1
+cook_abandoned,Session abandoned,"session_id, last_step, reason",Funnel,no,V1
+feedback_submitted,Feedback saved,"session_id, rating, tags_count",Learning,no,V1
+memory_saved,Memory created,"category, scope, source",Learning,no,V1
+memory_forgotten,Memory forgotten,"category, channel",Trust,no,V1
+voice_session_started,Voice room joined,"context (home|kitchen|cook|you), language",Hands-free rate,no,V1
+voice_turn,Each voice turn (sampled 100% in beta),"latency_ms, fast_path, tool_name?, stt_confidence, language",Voice latency,no,V1
+voice_session_ended,Voice room left,"turns, duration_sec, cost_inr, end_reason",Cost,no,V1
+list_item_added,Shopping list add,"reason, channel",Shopping,no,V1
+list_items_bought,Marked bought,count,Shopping,no,V1
+notification_opened,Push opened,type,Engagement,no,V1
+scan_completed,Scan confirmed,"scan_type, detected, accepted",Pantry trust,no,V1.5
+cart_approved,Cart approved,"provider, items_count, total_band",Revenue,no,V2
+subscription_started,Plus purchased,"plan, price_band",Revenue,no,V2

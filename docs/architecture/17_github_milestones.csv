@@ -1,0 +1,11 @@
+﻿title,due_on,description
+Sprint 1,2026-11-29,"Shell, design system, Home states, Supabase + schema + auth"
+Sprint 2,2026-12-13,"Kitchen: locations, items, NL add, staples, components, consent"
+Sprint 3,2026-12-27,"Craving + recipes: ranking, picks, recipe detail, adaptation, family plates"
+Sprint 4,2027-01-10,Cook With Me + Voice Cook + Rescue
+Sprint 5,2027-01-24,"You + learning, shopping, voice personalisation, cost controls"
+Sprint 6,2027-02-07,"Backend integration, offline, analytics, privacy, 300 dishes"
+Beta,2027-03-07,Closed beta (urban + rural) and gate review
+V1.5,2027-04-11,Frictionless input and health nudges
+V2,2027-07-31,"Kitchen Agent: leftovers, restock, grocery, WhatsApp, paid tier"
+V3,2027-12-31,Household Food OS

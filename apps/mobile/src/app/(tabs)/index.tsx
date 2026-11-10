@@ -1,0 +1,144 @@
+// Home: "Tonight, decided" (HOME-01), craving chips (HOME-03), Use Soon strip (HOME-04), all states (HOME-08).
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+
+import { MicButton } from "@/components/MicButton";
+import { daysLeft } from "@/domain/pantry";
+import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
+import { useTheme } from "@/design-system/theme";
+import { space } from "@/design-system/tokens";
+import { t, type StringKey } from "@/i18n";
+import { services, type PantryItem, type Pick } from "@/services";
+import { useSession } from "@/state/session";
+
+const CHIPS: { key: string; label: StringKey }[] = [
+  { key: "comforting", label: "chip.comforting" },
+  { key: "under_20", label: "chip.under20" },
+  { key: "high_protein", label: "chip.highProtein" },
+  { key: "kids_friendly", label: "chip.kidsFriendly" },
+  { key: "light", label: "chip.light" },
+];
+
+export default function HomeScreen() {
+  const { householdId, memberId, mealSlot } = useSession();
+  const [chips, setChips] = useState<string[]>([]);
+
+  const picks = useQuery({
+    queryKey: ["picks", householdId, mealSlot, chips],
+    queryFn: () => services.recipe.getPicks({ householdId: householdId!, memberId: memberId!, mealSlot, chips }),
+    enabled: !!householdId && !!memberId,
+  });
+  const useSoon = useQuery({
+    queryKey: ["useSoon", householdId],
+    queryFn: () => services.kitchen.getUseSoon(householdId!),
+    enabled: !!householdId,
+  });
+
+  const toggleChip = (key: string) =>
+    setChips((c) => (c.includes(key) ? c.filter((x) => x !== key) : [...c, key]));
+
+  return (
+    <Screen>
+      <View style={styles.header}>
+        <View style={{ flex: 1 }}>
+          <Text variant="caption" muted>
+            {t(`home.slot.${mealSlot}` as StringKey)}
+          </Text>
+          <Text variant="display">{t("home.greeting")}</Text>
+        </View>
+        <MicButton />
+      </View>
+
+      {picks.isPending ? (
+        <StateView state="loading" title={t("state.loading.home")} />
+      ) : picks.isError ? (
+        <StateView
+          state="error"
+          title={t("state.error.title")}
+          body={t("state.error.body")}
+          actionLabel={t("state.retry")}
+          onAction={() => picks.refetch()}
+        />
+      ) : (
+        <>
+          <HeroPick pick={picks.data.hero} />
+          <Text variant="label" muted>
+            {t("home.alternates")}
+          </Text>
+          {picks.data.alternates.map((p) => (
+            <AlternatePick key={p.recommendationId} pick={p} />
+          ))}
+        </>
+      )}
+
+      <Text variant="heading">{t("home.cravingPrompt")}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
+        {CHIPS.map((c) => (
+          <Chip key={c.key} label={t(c.label)} selected={chips.includes(c.key)} onPress={() => toggleChip(c.key)} />
+        ))}
+      </ScrollView>
+
+      {useSoon.data && useSoon.data.length > 0 ? <UseSoonStrip items={useSoon.data} /> : null}
+    </Screen>
+  );
+}
+
+function HeroPick({ pick }: { pick: Pick }) {
+  const { colors } = useTheme();
+  return (
+    <Card style={{ gap: space.md }}>
+      <View style={[styles.heroImage, { backgroundColor: colors.tintHaldi }]} accessible={false} />
+      <Text variant="title">{pick.title}</Text>
+      <Text muted>{pick.reason}</Text>
+      {pick.missing.length > 0 ? (
+        <Text variant="caption" color={colors.primaryText}>
+          {t("home.missing", { items: pick.missing.join(", ") })}
+        </Text>
+      ) : null}
+      <Button label={t("home.cookThis")} onPress={() => {}} accessibilityHint={pick.title} />
+    </Card>
+  );
+}
+
+function AlternatePick({ pick }: { pick: Pick }) {
+  return (
+    <Card style={{ paddingVertical: space.md }}>
+      <Text variant="heading">{pick.title}</Text>
+      <Text variant="caption" muted>
+        {pick.reason}
+      </Text>
+    </Card>
+  );
+}
+
+function UseSoonStrip({ items }: { items: PantryItem[] }) {
+  const { colors } = useTheme();
+  return (
+    <View style={{ gap: space.sm }}>
+      <Text variant="heading">{t("home.useSoon")}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
+        {items.map((item) => {
+          const days = item.expiryDate ? daysLeft(item.expiryDate) : null;
+          const label =
+            days === 0 ? t("home.today") : days === 1 ? t("home.dayLeft") : t("home.daysLeft", { days: days ?? "?" });
+          return (
+            <Card key={item.id} tint={colors.tintHaldi} style={styles.useSoonCard}>
+              <Text variant="label">{item.name}</Text>
+              <Text variant="caption" muted>
+                {label}
+                {item.expiryEstimated ? ` · ${t("kitchen.estimated")}` : ""}
+              </Text>
+            </Card>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: { flexDirection: "row", alignItems: "flex-end", gap: space.md },
+  heroImage: { height: 160, borderRadius: 16 },
+  useSoonCard: { minWidth: 120, paddingVertical: space.md },
+});

@@ -1,0 +1,502 @@
+﻿table,ordinal,column,type,nullable,default,primary_key,unique,foreign_key,on_delete,check_constraint,indexed,description
+profiles,1,id,uuid,no,,yes,,auth.users.id,cascade,,yes,Same as auth.users.id
+profiles,2,display_name,text,yes,,,,,,,,Name the user goes by
+profiles,3,phone,text,yes,,,,,,,,E.164 phone number once verified by OTP; null for anonymous users
+profiles,4,preferred_language,text,no,'hi-IN',,,,,,,"BCP-47 code for UI and voice, e.g. hi-IN, en-IN"
+profiles,5,is_anonymous,boolean,no,true,,,,,,,True until the user verifies a phone number
+profiles,6,onboarding_completed_at,timestamptz,yes,,,,,,,,When onboarding finished
+profiles,7,last_active_household_id,uuid,yes,,,,households.id,set null,,,Household opened by default
+profiles,8,created_at,timestamptz,no,now(),,,,,,,Row creation time
+profiles,9,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+households,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+households,2,name,text,no,'My kitchen',,,,,,,"Display name, e.g. 'Sharma ghar'"
+households,3,region,text,yes,,,,,,,,"Indian state or region code, e.g. RJ"
+households,4,cuisine_region,text,yes,,,,,,,,"Home cuisine used to rank dishes, e.g. rajasthani, punjabi, malabar"
+households,5,timezone,text,no,'Asia/Kolkata',,,,,,,IANA timezone for meal slots and notifications
+households,6,plan,text,no,'free',,,,,"plan in ('free', 'plus', 'community')",,Commercial plan
+households,7,plan_renews_at,timestamptz,yes,,,,,,,,Subscription renewal date (V2)
+households,8,created_by,uuid,yes,,,,profiles.id,set null,,,Profile that created the household
+households,9,created_at,timestamptz,no,now(),,,,,,,Row creation time
+households,10,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+household_members,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+household_members,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+household_members,3,user_id,uuid,yes,,,,profiles.id,set null,,yes,Linked profile; null for dependents without the app
+household_members,4,display_name,text,no,,,,,,,,Name used in family plates and voice ('Main Sunita hoon')
+household_members,5,role,text,no,'member',,,,,"role in ('owner', 'admin', 'member', 'cook', 'dependent')",,Permission role
+household_members,6,age_group,text,no,'adult',,,,,"age_group in ('child', 'teen', 'adult', 'elder')",,Used for family plates and gentle nudges
+household_members,7,diet,text,yes,,,,,,"diet in ('veg', 'eggetarian', 'nonveg', 'jain', 'vegan')",,Dietary pattern
+household_members,8,notes,text,yes,,,,,,,,"Free-text cooking notes the user sets, e.g. 'less oil'"
+household_members,9,avatar_path,text,yes,,,,,,,,Path in the avatars bucket
+household_members,10,status,text,no,'active',,,,,"status in ('active', 'invited', 'removed')",,Membership status
+household_members,11,created_at,timestamptz,no,now(),,,,,,,Row creation time
+household_members,12,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+voice_profiles,1,member_id,uuid,no,,yes,,household_members.id,cascade,,yes,Member (one profile per member)
+voice_profiles,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+voice_profiles,3,language_code,text,no,'hi-IN',,,,,,,"Language to speak, e.g. hi-IN; 'auto' follows the user"
+voice_profiles,4,dialect,text,yes,,,,,,,,"Free-text dialect hint for prompts, e.g. 'Marwari-influenced Hindi'"
+voice_profiles,5,units_system,text,no,'local',,,,,"units_system in ('metric', 'local', 'mixed')",,Measures used in speech and UI
+voice_profiles,6,pace,text,no,'normal',,,,,"pace in ('slow', 'normal', 'fast')",,Speaking and step pace
+voice_profiles,7,verbosity,text,no,'normal',,,,,"verbosity in ('detailed', 'normal', 'brief')",,Amount of detail
+voice_profiles,8,skill_level,text,no,'intermediate',,,,,"skill_level in ('beginner', 'intermediate', 'confident', 'expert')",,Cooking confidence; controls sensory-cue detail
+voice_profiles,9,tts_voice_id,text,yes,,,,,,,,Sarvam speaker id
+voice_profiles,10,hands_free_default,boolean,no,true,,,,,,,Start Cook mode hands-free
+voice_profiles,11,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+consents,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+consents,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+consents,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+consents,4,consent_type,text,no,,,,,,"consent_type in ('voice_processing', 'transcript_retention', 'memory', 'analytics', 'notifications', 'whatsapp', 'marketing')",,Purpose consented to
+consents,5,granted,boolean,no,,,,,,,,Granted (true) or withdrawn (false)
+consents,6,policy_version,text,no,,,,,,,,Privacy notice version shown
+consents,7,channel,text,yes,,,,,,"channel in ('tap', 'voice', 'whatsapp')",,How consent was given
+consents,8,created_at,timestamptz,no,now(),,,,,,,Row creation time
+kitchen_equipment,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+kitchen_equipment,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+kitchen_equipment,3,equipment_type,text,no,,,,,,"equipment_type in ('pressure_cooker', 'kadai', 'tawa', 'air_fryer', 'otg', 'microwave', 'induction', 'gas_stove', 'chulha', 'mixer_grinder', 'blender', 'fridge', 'freezer')",,Equipment kind
+kitchen_equipment,4,details,jsonb,no,'{}'::jsonb,,,,,,,"Optional details, e.g. {""litres"": 5}"
+kitchen_equipment,5,created_at,timestamptz,no,now(),,,,,,,Row creation time
+ingredients,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+ingredients,2,canonical_name,text,no,,,yes,,,,yes,"English canonical name, lowercase, e.g. 'paneer'"
+ingredients,3,names,jsonb,no,'{}'::jsonb,,,,,,,"Names by locale, e.g. {""hi"": ""पनीर"", ""hi-Latn"": ""paneer""}"
+ingredients,4,aliases,text[],no,'{}',,,,,,,Other spellings and regional names used for parsing
+ingredients,5,category,text,no,,,,,,"category in ('vegetable', 'fruit', 'grain', 'flour', 'pulse', 'dairy', 'egg', 'meat', 'seafood', 'spice', 'herb', 'oil_fat', 'sweetener', 'condiment', 'nut_seed', 'beverage', 'packaged', 'other')",,Category
+ingredients,6,default_unit,text,no,'g',,,,,,,"Default unit for quantities: g, ml, piece, bunch, packet"
+ingredients,7,default_location_kind,text,yes,,,,,,"default_location_kind in ('fridge', 'freezer', 'pantry', 'staples', 'ready_made', 'counter')",,Where it is usually stored
+ingredients,8,shelf_life_days,jsonb,no,'{}'::jsonb,,,,,,,"Days by storage kind and state, e.g. {""fridge"": 5, ""pantry"": 2}"
+ingredients,9,grams_per_measure,jsonb,no,'{}'::jsonb,,,,,,,"Gram weights for local measures: katori, chammach, mutthi, cup, piece"
+ingredients,10,nutrition_per_100g,jsonb,yes,,,,,,,,"Energy and macros per 100 g (for weekly plate, not shown as calories)"
+ingredients,11,food_groups,text[],no,'{}',,,,,,,"Groups for the weekly plate: dal, sabzi, greens, fruit, dairy, protein, grain"
+ingredients,12,is_staple,boolean,no,false,,,,,,,Tracked as Full/Low/Out rather than exact quantity
+ingredients,13,allergens,text[],no,'{}',,,,,,,Common allergens present (ingredient attribute only)
+ingredients,14,created_at,timestamptz,no,now(),,,,,,,Row creation time
+ingredients,15,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+products,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+products,2,barcode,text,no,,,yes,,,,yes,EAN/UPC barcode
+products,3,brand,text,yes,,,,,,,,Brand
+products,4,name,text,no,,,,,,,,Product name
+products,5,ingredient_id,uuid,yes,,,,ingredients.id,set null,,yes,Mapped ingredient
+products,6,pack_size,numeric,yes,,,,,,,,Pack size in pack_unit
+products,7,pack_unit,text,yes,,,,,,,,Unit for pack_size
+products,8,source,text,no,'open_food_facts',,,,,"source in ('open_food_facts', 'user', 'partner')",,Where the record came from
+products,9,raw,jsonb,yes,,,,,,,,Raw source payload
+products,10,created_at,timestamptz,no,now(),,,,,,,Row creation time
+techniques,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+techniques,2,slug,text,no,,,yes,,,,yes,"Stable key, e.g. 'tadka'"
+techniques,3,name,text,no,,,,,,,,Display name
+techniques,4,names,jsonb,no,'{}'::jsonb,,,,,,,Names by locale
+techniques,5,description,text,yes,,,,,,,,What it is and the sensory signs of doing it right
+techniques,6,difficulty,smallint,no,2,,,,,difficulty between 1 and 5,,1 (easy) to 5 (hard)
+techniques,7,created_at,timestamptz,no,now(),,,,,,,Row creation time
+calendar_events,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+calendar_events,2,household_id,uuid,yes,,,,households.id,cascade,,yes,Null for global calendar rows
+calendar_events,3,event_date,date,no,,,,,,,,Start date
+calendar_events,4,end_date,date,yes,,,,,,,,End date for multi-day events
+calendar_events,5,kind,text,no,,,,,,"kind in ('festival', 'fast', 'guests', 'exam', 'travel', 'other')",,Event kind
+calendar_events,6,name,text,no,,,,,,,,"Event name, e.g. 'Navratri'"
+calendar_events,7,regions,text[],no,'{}',,,,,,,Regions where it applies (global rows)
+calendar_events,8,rules,jsonb,no,'{}'::jsonb,,,,,,,"Food rules, e.g. {""avoid"": [""onion"", ""garlic""], ""prefer"": [""sabudana""]}"
+calendar_events,9,created_at,timestamptz,no,now(),,,,,,,Row creation time
+feature_flags,1,key,text,no,,yes,,,,,yes,Flag key
+feature_flags,2,enabled,boolean,no,false,,,,,,,Master switch
+feature_flags,3,rollout_pct,smallint,no,0,,,,,rollout_pct between 0 and 100,,0–100 rollout
+feature_flags,4,rules,jsonb,no,'{}'::jsonb,,,,,,,Targeting rules
+feature_flags,5,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+storage_locations,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+storage_locations,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+storage_locations,3,name,text,no,,,,,,,,Display name
+storage_locations,4,kind,text,no,,,,,,"kind in ('fridge', 'freezer', 'pantry', 'staples', 'ready_made', 'counter')",,Location kind
+storage_locations,5,sort_order,smallint,no,0,,,,,,,Tab order
+storage_locations,6,created_at,timestamptz,no,now(),,,,,,,Row creation time
+inventory_items,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+inventory_items,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+inventory_items,3,ingredient_id,uuid,yes,,,,ingredients.id,set null,,yes,Catalog ingredient (null for unmapped custom items)
+inventory_items,4,product_id,uuid,yes,,,,products.id,set null,,,Barcode product if scanned
+inventory_items,5,custom_name,text,yes,,,,,,,,Name as the user said it when not mapped
+inventory_items,6,location_id,uuid,yes,,,,storage_locations.id,set null,,,Where it is stored
+inventory_items,7,quantity,numeric,yes,,,,,,quantity is null or quantity >= 0,,Quantity in unit; null for staples tracked by level
+inventory_items,8,unit,text,yes,,,,,,,,"g, kg, ml, l, piece, dozen, bunch, packet, katori…"
+inventory_items,9,staple_level,text,yes,,,,,,"staple_level in ('full', 'low', 'out')",,Level for staples
+inventory_items,10,state,text,no,'raw',,,,,"state in ('raw', 'opened', 'cooked', 'homemade', 'leftover')",,"Raw, opened, cooked, homemade component or leftover"
+inventory_items,11,flavor_roles,text[],no,'{}',,,,,,,"For components: rich, heat, acid, crunch, starch, sweet"
+inventory_items,12,expiry_date,date,yes,,,,,,,yes,Use-by date (actual or estimated)
+inventory_items,13,expiry_estimated,boolean,no,true,,,,,,,True when expiry is estimated from shelf life
+inventory_items,14,opened_at,timestamptz,yes,,,,,,,,When opened
+inventory_items,15,confidence,"numeric(3,2)",no,0.90,,,,,confidence between 0 and 1,,0–1 belief that the item is present in this quantity; decays nightly
+inventory_items,16,last_confirmed_at,timestamptz,yes,,,,,,,,Last time a person confirmed it
+inventory_items,17,added_via,text,no,'manual',,,,,"added_via in ('manual', 'voice', 'text', 'camera', 'barcode', 'receipt', 'grocery_sync', 'cooking', 'onboarding')",,Input channel
+inventory_items,18,source_session_id,uuid,yes,,,,cooking_sessions.id,set null,,,"Cooking session that produced it (components, leftovers)"
+inventory_items,19,recipe_id,uuid,yes,,,,recipes.id,set null,,,"Recipe that produced it (components, leftovers)"
+inventory_items,20,status,text,no,'active',,,,,"status in ('active', 'finished', 'discarded')",,Lifecycle
+inventory_items,21,created_by,uuid,yes,,,,household_members.id,set null,,,Member who added it
+inventory_items,22,created_at,timestamptz,no,now(),,,,,,,Row creation time
+inventory_items,23,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+inventory_events,1,id,bigint,no,generated always as identity,yes,,,,,yes,Primary key (identity; high-volume append-only table)
+inventory_events,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+inventory_events,3,item_id,uuid,no,,,,inventory_items.id,cascade,,yes,Inventory item
+inventory_events,4,event_type,text,no,,,,,,"event_type in ('added', 'consumed', 'adjusted', 'moved', 'finished', 'discarded', 'confirmed', 'corrected', 'decayed')",,Change kind
+inventory_events,5,quantity_delta,numeric,yes,,,,,,,,Signed change in item unit
+inventory_events,6,unit,text,yes,,,,,,,,Unit of the delta
+inventory_events,7,reason,text,yes,,,,,,,,Human-readable reason
+inventory_events,8,session_id,uuid,yes,,,,cooking_sessions.id,set null,,,Cooking session that caused it
+inventory_events,9,actor_member_id,uuid,yes,,,,household_members.id,set null,,,Member who made the change
+inventory_events,10,actor_kind,text,no,'user',,,,,"actor_kind in ('user', 'voice', 'ai', 'system')",,Who/what made the change
+inventory_events,11,created_at,timestamptz,no,now(),,,,,,,Row creation time
+scans,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+scans,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+scans,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+scans,4,scan_type,text,no,,,,,,"scan_type in ('camera', 'barcode', 'receipt')",,Scan kind
+scans,5,image_path,text,yes,,,,,,,,Path in the scans bucket
+scans,6,status,text,no,'pending',,,,,"status in ('pending', 'processed', 'confirmed', 'rejected', 'failed')",,Processing state
+scans,7,raw_result,jsonb,yes,,,,,,,,Model or lookup output
+scans,8,model,text,yes,,,,,,,,Model used
+scans,9,created_at,timestamptz,no,now(),,,,,,,Row creation time
+scans,10,processed_at,timestamptz,yes,,,,,,,,When processing finished
+scan_items,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+scan_items,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+scan_items,3,scan_id,uuid,no,,,,scans.id,cascade,,yes,Parent scan
+scan_items,4,detected_name,text,no,,,,,,,,Name as detected
+scan_items,5,ingredient_id,uuid,yes,,,,ingredients.id,set null,,,Mapped ingredient
+scan_items,6,product_id,uuid,yes,,,,products.id,set null,,,Mapped product
+scan_items,7,quantity,numeric,yes,,,,,,,,Detected quantity
+scan_items,8,unit,text,yes,,,,,,,,Unit
+scan_items,9,confidence,"numeric(3,2)",yes,,,,,,confidence between 0 and 1,,Detection confidence 0–1
+scan_items,10,accepted,boolean,yes,,,,,,,,User decision; null until reviewed
+scan_items,11,inventory_item_id,uuid,yes,,,,inventory_items.id,set null,,,Item created on acceptance
+recipes,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+recipes,2,household_id,uuid,yes,,,,households.id,cascade,,yes,Null for curated global recipes
+recipes,3,slug,text,no,,,,,,,,"URL-safe key, unique among global recipes"
+recipes,4,title,text,no,,,,,,,,Title in English/Hinglish
+recipes,5,titles,jsonb,no,'{}'::jsonb,,,,,,,Titles by locale
+recipes,6,description,text,yes,,,,,,,,One-paragraph description
+recipes,7,cuisine_region,text,yes,,,,,,,,"e.g. rajasthani, punjabi, malabar, generic_north"
+recipes,8,course,text,no,'main',,,,,"course in ('breakfast', 'main', 'side', 'snack', 'dessert', 'drink', 'tiffin', 'chutney_pickle', 'component')",,Course
+recipes,9,diet,text,no,,,,,,"diet in ('veg', 'eggetarian', 'nonveg', 'jain', 'vegan')",,Dietary pattern
+recipes,10,base_servings,smallint,no,4,,,,,base_servings > 0,,Servings the quantities are written for
+recipes,11,prep_time_min,smallint,yes,,,,,,,,Active prep minutes
+recipes,12,cook_time_min,smallint,yes,,,,,,,,Cooking minutes
+recipes,13,difficulty,smallint,no,2,,,,,difficulty between 1 and 5,,1–5
+recipes,14,spice_level,smallint,no,3,,,,,spice_level between 1 and 5,,1–5 at base recipe
+recipes,15,equipment,text[],no,'{}',,,,,,,Equipment needed (kitchen_equipment types)
+recipes,16,tags,text[],no,'{}',,,,,,,"Search and ranking tags: comforting, quick, high_protein, kids_friendly, light, fasting"
+recipes,17,flavor_profile,jsonb,no,'{}'::jsonb,,,,,,,"Scores 0–1 for rich, heat, acid, crunch, starch, sweet"
+recipes,18,food_groups,text[],no,'{}',,,,,,,Weekly-plate groups this dish contributes
+recipes,19,nutrition_per_serving,jsonb,yes,,,,,,,,Computed macros per serving
+recipes,20,hero_image_path,text,yes,,,,,,,,Path in recipe-media bucket
+recipes,21,source,text,no,'curated',,,,,"source in ('curated', 'generated', 'adapted', 'user', 'family_capture')",,Origin
+recipes,22,parent_recipe_id,uuid,yes,,,,recipes.id,set null,,yes,Base recipe this variant was adapted from
+recipes,23,created_by_member_id,uuid,yes,,,,household_members.id,set null,,,Member who created the variant
+recipes,24,review_status,text,no,'approved',,,,,"review_status in ('draft', 'in_review', 'approved')",,Culinary review state (curated rows must be approved to publish)
+recipes,25,is_published,boolean,no,true,,,,,,,Visible to users
+recipes,26,embedding,vector(384),yes,,,,,,,,gte-small embedding of title+description+ingredients for semantic search
+recipes,27,created_at,timestamptz,no,now(),,,,,,,Row creation time
+recipes,28,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+recipe_ingredients,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+recipe_ingredients,2,recipe_id,uuid,no,,,,recipes.id,cascade,,yes,Recipe
+recipe_ingredients,3,ingredient_id,uuid,yes,,,,ingredients.id,restrict,,yes,Catalog ingredient
+recipe_ingredients,4,display_name,text,no,,,,,,,,Name shown in the recipe
+recipe_ingredients,5,quantity,numeric,yes,,,,,,,,Quantity for base_servings
+recipe_ingredients,6,unit,text,yes,,,,,,,,Metric unit
+recipe_ingredients,7,local_measure,text,yes,,,,,,,,"Spoken measure, e.g. 'do mutthi', 'ek chammach'"
+recipe_ingredients,8,is_optional,boolean,no,false,,,,,,,Optional ingredient
+recipe_ingredients,9,group_name,text,yes,,,,,,,,"Group, e.g. 'For the tadka'"
+recipe_ingredients,10,role,text,yes,,,,,,"role in ('base', 'aromatic', 'heat', 'acid', 'fat', 'sweet', 'garnish', 'component', 'liquid', 'binder', 'protein', 'vegetable', 'starch', 'spice')",,Culinary role used by substitution and flavour logic
+recipe_ingredients,11,substitutes,jsonb,no,'[]'::jsonb,,,,,,,"Ordered substitutes: [{ingredient_id, ratio, note}]"
+recipe_ingredients,12,sort_order,smallint,no,0,,,,,,,Display order
+recipe_steps,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+recipe_steps,2,recipe_id,uuid,no,,,,recipes.id,cascade,,yes,Recipe
+recipe_steps,3,step_no,smallint,no,,,,,,step_no > 0,,1-based order
+recipe_steps,4,instruction,text,no,,,,,,,,Instruction (English/Hinglish)
+recipe_steps,5,instructions,jsonb,no,'{}'::jsonb,,,,,,,Instruction by locale
+recipe_steps,6,technique_id,uuid,yes,,,,techniques.id,set null,,,Technique taught by this step
+recipe_steps,7,duration_sec,integer,yes,,,,,,,,Expected duration
+recipe_steps,8,timer_required,boolean,no,false,,,,,,,Start a timer automatically
+recipe_steps,9,whistles,smallint,yes,,,,,,,,"Pressure-cooker whistles, when used"
+recipe_steps,10,sensory_cue,text,yes,,,,,,,,"How to know it's right: look, smell, sound, touch"
+recipe_steps,11,sensory_cues,jsonb,no,'{}'::jsonb,,,,,,,Sensory cue by locale
+recipe_steps,12,checkpoint_image_path,text,yes,,,,,,,,Reference photo: 'It should look like this'
+recipe_steps,13,member_branch,jsonb,yes,,,,,,,,"Per-member branch, e.g. {""age_group"": ""child"", ""action"": ""take out portion before chilli""}"
+recipe_steps,14,safety_note,text,yes,,,,,,,,Food-safety note the model may not soften
+recipe_variation_rules,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+recipe_variation_rules,2,recipe_id,uuid,no,,,,recipes.id,cascade,,yes,Recipe
+recipe_variation_rules,3,rule_type,text,no,,,,,,"rule_type in ('substitute', 'omit', 'add', 'equipment', 'spice', 'diet', 'servings', 'member_branch', 'time')",,Rule kind
+recipe_variation_rules,4,condition,jsonb,no,'{}'::jsonb,,,,,,,"When it applies, e.g. {""missing"": ""tomato""}"
+recipe_variation_rules,5,action,jsonb,no,'{}'::jsonb,,,,,,,"What to do, e.g. {""use"": ""curd"", ""qty_ratio"": 0.5, ""at_step"": 4}"
+recipe_variation_rules,6,note,text,yes,,,,,,,,Explanation for the cook
+recipe_variation_rules,7,safety_checked,boolean,no,false,,,,,,,Reviewed by culinary lead
+recipe_variation_rules,8,created_at,timestamptz,no,now(),,,,,,,Row creation time
+step_audio_cache,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+step_audio_cache,2,recipe_id,uuid,no,,,,recipes.id,cascade,,,Recipe
+step_audio_cache,3,step_id,uuid,no,,,,recipe_steps.id,cascade,,yes,Step
+step_audio_cache,4,language_code,text,no,,,,,,,,Language
+step_audio_cache,5,voice_id,text,no,,,,,,,,Sarvam speaker
+step_audio_cache,6,variant_hash,text,no,,,,,,,,Hash of the exact text spoken (adapted text gets its own row)
+step_audio_cache,7,storage_path,text,no,,,,,,,,Path in step-audio bucket
+step_audio_cache,8,characters,integer,no,,,,,,,,Characters synthesised (cost accounting)
+step_audio_cache,9,created_at,timestamptz,no,now(),,,,,,,Row creation time
+saved_recipes,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+saved_recipes,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+saved_recipes,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+saved_recipes,4,recipe_id,uuid,no,,,,recipes.id,cascade,,,Recipe
+saved_recipes,5,collection,text,no,'favourites',,,,,,,Collection name
+saved_recipes,6,created_at,timestamptz,no,now(),,,,,,,Row creation time
+recommendations,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+recommendations,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+recommendations,3,member_id,uuid,yes,,,,household_members.id,set null,,,Member who asked or was shown
+recommendations,4,batch_id,uuid,no,,,,,,,yes,Groups the hero pick and alternates shown together
+recommendations,5,meal_slot,text,no,,,,,,"meal_slot in ('breakfast', 'lunch', 'tiffin', 'dinner', 'snack')",,Meal slot
+recommendations,6,context,jsonb,no,'{}'::jsonb,,,,,,,"Craving text, chips, who's eating, time available, calendar"
+recommendations,7,recipe_id,uuid,no,,,,recipes.id,cascade,,,Recommended recipe
+recommendations,8,rank,smallint,no,,,,,,,,0 = hero pick
+recommendations,9,score,numeric,yes,,,,,,,,Final ranking score
+recommendations,10,score_breakdown,jsonb,no,'{}'::jsonb,,,,,,,"Coverage, use-soon, taste, novelty, time, calendar components"
+recommendations,11,reason_text,text,no,,,,,,,,One-line reason shown to the user
+recommendations,12,uses_item_ids,uuid[],no,'{}',,,,,,,Inventory items it uses
+recommendations,13,missing,jsonb,no,'[]'::jsonb,,,,,,,Missing ingredients with substitutes
+recommendations,14,status,text,no,'shown',,,,,"status in ('shown', 'accepted', 'dismissed', 'cooked', 'expired')",,Outcome
+recommendations,15,dismiss_reason,text,yes,,,,,,,,not_today | dont_like | no_time | missing_item | other
+recommendations,16,created_at,timestamptz,no,now(),,,,,,,Row creation time
+recommendations,17,acted_at,timestamptz,yes,,,,,,,,When accepted or dismissed
+meal_plans,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+meal_plans,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+meal_plans,3,plan_date,date,no,,,,,,,,Date
+meal_plans,4,meal_slot,text,no,,,,,,"meal_slot in ('breakfast', 'lunch', 'tiffin', 'dinner', 'snack')",,Slot
+meal_plans,5,recipe_id,uuid,no,,,,recipes.id,cascade,,,Planned recipe
+meal_plans,6,servings,smallint,yes,,,,,,,,Servings
+meal_plans,7,who_eating,uuid[],no,'{}',,,,,,,Member ids eating
+meal_plans,8,status,text,no,'planned',,,,,"status in ('planned', 'cooked', 'skipped')",,Plan state
+meal_plans,9,planned_by,uuid,yes,,,,household_members.id,set null,,,Member who planned
+meal_plans,10,handoff_sent_at,timestamptz,yes,,,,,,,,When sent to the domestic cook (V2)
+meal_plans,11,created_at,timestamptz,no,now(),,,,,,,Row creation time
+cooking_sessions,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+cooking_sessions,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+cooking_sessions,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Member cooking
+cooking_sessions,4,recipe_id,uuid,no,,,,recipes.id,restrict,,yes,Base recipe
+cooking_sessions,5,adapted_recipe_id,uuid,yes,,,,recipes.id,set null,,,Adapted variant actually cooked
+cooking_sessions,6,recommendation_id,uuid,yes,,,,recommendations.id,set null,,,Pick that led here
+cooking_sessions,7,servings,smallint,no,4,,,,,,,Servings cooked
+cooking_sessions,8,who_eating,uuid[],no,'{}',,,,,,,Member ids eating
+cooking_sessions,9,status,text,no,'active',,,,,"status in ('active', 'paused', 'completed', 'abandoned')",,Session state
+cooking_sessions,10,mode,text,no,'touch',,,,,"mode in ('touch', 'voice', 'hands_free')",,How it is being driven
+cooking_sessions,11,language_code,text,no,'hi-IN',,,,,,,Language used
+cooking_sessions,12,current_step,smallint,no,1,,,,,,,Current step number
+cooking_sessions,13,modifications,jsonb,no,'[]'::jsonb,,,,,,,"Changes made during cooking: [{step, change, remember}]"
+cooking_sessions,14,offline_bundle_version,text,yes,,,,,,,,Version of the downloaded session bundle
+cooking_sessions,15,started_at,timestamptz,no,now(),,,,,,,Start
+cooking_sessions,16,completed_at,timestamptz,yes,,,,,,,,Completion
+cooking_sessions,17,last_activity_at,timestamptz,no,now(),,,,,,,Last step/command (used to resume or abandon)
+session_timers,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+session_timers,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+session_timers,3,session_id,uuid,no,,,,cooking_sessions.id,cascade,,yes,Session
+session_timers,4,label,text,no,,,,,,,,"Spoken label, e.g. 'dal'"
+session_timers,5,step_no,smallint,yes,,,,,,,,Step that started it
+session_timers,6,duration_sec,integer,no,,,,,,duration_sec > 0,,Duration
+session_timers,7,started_at,timestamptz,no,now(),,,,,,,Start
+session_timers,8,ends_at,timestamptz,no,,,,,,,,Planned end
+session_timers,9,status,text,no,'running',,,,,"status in ('running', 'paused', 'done', 'cancelled')",,Timer state
+session_events,1,id,bigint,no,generated always as identity,yes,,,,,yes,Primary key (identity; high-volume append-only table)
+session_events,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+session_events,3,session_id,uuid,no,,,,cooking_sessions.id,cascade,,yes,Session
+session_events,4,event_type,text,no,,,,,,"event_type in ('step_next', 'step_back', 'repeat', 'question', 'answer', 'substitution', 'modification', 'rescue', 'photo_checkpoint', 'timer_set', 'timer_done', 'whistle', 'barge_in', 'tool_call', 'fast_path', 'error')",,Event kind
+session_events,5,step_no,smallint,yes,,,,,,,,Step at the time
+session_events,6,channel,text,no,'touch',,,,,"channel in ('touch', 'voice')",,Touch or voice
+session_events,7,utterance,text,yes,,,,,,,,What the user said (only with transcript_retention consent)
+session_events,8,payload,jsonb,no,'{}'::jsonb,,,,,,,"Event details: tool name/args, answer, rescue type"
+session_events,9,latency_ms,integer,yes,,,,,,,,Voice: end of speech to first audio
+session_events,10,created_at,timestamptz,no,now(),,,,,,,Row creation time
+photo_checkpoints,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+photo_checkpoints,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+photo_checkpoints,3,session_id,uuid,no,,,,cooking_sessions.id,cascade,,yes,Session
+photo_checkpoints,4,step_no,smallint,no,,,,,,,,Step
+photo_checkpoints,5,image_path,text,no,,,,,,,,Path in checkpoints bucket
+photo_checkpoints,6,assessment,text,yes,,,,,,,,What the AI said
+photo_checkpoints,7,verdict,text,yes,,,,,,"verdict in ('looks_right', 'needs_more', 'overdone', 'unsafe', 'unsure')",,Verdict
+photo_checkpoints,8,confidence,"numeric(3,2)",yes,,,,,,confidence between 0 and 1,,0–1
+photo_checkpoints,9,model,text,yes,,,,,,,,Model used
+photo_checkpoints,10,created_at,timestamptz,no,now(),,,,,,,Row creation time
+meal_feedback,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+meal_feedback,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+meal_feedback,3,session_id,uuid,no,,,,cooking_sessions.id,cascade,,,Session
+meal_feedback,4,member_id,uuid,no,,,,household_members.id,cascade,,yes,Member giving feedback
+meal_feedback,5,rating,text,no,,,,,,"rating in ('loved', 'good', 'meh', 'bad')",,Rating
+meal_feedback,6,tags,text[],no,'{}',,,,,,,"Chips: too_spicy, not_spicy_enough, more_garlic, too_oily, make_again…"
+meal_feedback,7,comment,text,yes,,,,,,,,Free text or transcribed voice
+meal_feedback,8,make_again,boolean,yes,,,,,,,,Wants it again
+meal_feedback,9,created_at,timestamptz,no,now(),,,,,,,Row creation time
+memories,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+memories,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+memories,3,member_id,uuid,yes,,,,household_members.id,cascade,,yes,Member; null = whole household
+memories,4,statement,text,no,,,,,,,,"Plain-language statement shown on You, e.g. 'You like extra garlic'"
+memories,5,category,text,no,,,,,,"category in ('taste', 'ingredient', 'technique', 'routine', 'household', 'diet', 'equipment', 'other')",,Category
+memories,6,scope,text,no,'permanent',,,,,"scope in ('permanent', 'temporary')",,Permanent or temporary
+memories,7,polarity,smallint,no,0,,,,,polarity between -1 and 1,,"-1 dislike/avoid, 0 neutral, 1 like/prefer"
+memories,8,subject_ingredient_id,uuid,yes,,,,ingredients.id,set null,,,Ingredient it is about
+memories,9,subject_recipe_id,uuid,yes,,,,recipes.id,set null,,,Recipe it is about
+memories,10,attributes,jsonb,no,'{}'::jsonb,,,,,,,"Machine-readable effect, e.g. {""garlic_multiplier"": 1.5}"
+memories,11,confidence,"numeric(3,2)",no,0.60,,,,,confidence between 0 and 1,,0–1
+memories,12,source,text,no,,,,,,"source in ('explicit', 'observed', 'correction', 'onboarding')",,Where it came from; explicit outranks observed
+memories,13,evidence_count,integer,no,1,,,,,,,Supporting observations
+memories,14,provenance,jsonb,no,'{}'::jsonb,,,,,,,"Session id, utterance or feedback id that created it"
+memories,15,status,text,no,'active',,,,,"status in ('active', 'forgotten', 'superseded', 'expired')",,Lifecycle
+memories,16,superseded_by,uuid,yes,,,,memories.id,set null,,,Memory that replaced this one
+memories,17,expires_at,timestamptz,yes,,,,,,,,For temporary memories
+memories,18,last_confirmed_at,timestamptz,yes,,,,,,,,Last time the user kept/confirmed it
+memories,19,created_at,timestamptz,no,now(),,,,,,,Row creation time
+memories,20,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+taste_profiles,1,member_id,uuid,no,,yes,,household_members.id,cascade,,yes,Member
+taste_profiles,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+taste_profiles,3,spice,smallint,no,3,,,,,spice between 1 and 5,,1–5
+taste_profiles,4,sweetness,smallint,no,3,,,,,sweetness between 1 and 5,,1–5
+taste_profiles,5,richness,smallint,no,3,,,,,richness between 1 and 5,,1–5
+taste_profiles,6,sourness,smallint,no,3,,,,,sourness between 1 and 5,,1–5
+taste_profiles,7,textures,text[],no,'{}',,,,,,,"Liked textures: crispy, creamy, soft…"
+taste_profiles,8,preferred_cuisines,text[],no,'{}',,,,,,,Cuisines
+taste_profiles,9,max_time_min,smallint,yes,,,,,,,,Usual time budget on weekdays
+taste_profiles,10,difficulty_pref,smallint,yes,,,,,,difficulty_pref between 1 and 5,,Preferred difficulty 1–5
+taste_profiles,11,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+ingredient_preferences,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+ingredient_preferences,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+ingredient_preferences,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+ingredient_preferences,4,ingredient_id,uuid,no,,,,ingredients.id,cascade,,,Ingredient
+ingredient_preferences,5,preference,smallint,no,,,,,,preference between -2 and 2,,-2 hate … 2 love
+ingredient_preferences,6,confidence,"numeric(3,2)",no,0.60,,,,,confidence between 0 and 1,,0–1
+ingredient_preferences,7,source,text,no,,,,,,"source in ('explicit', 'observed', 'correction', 'onboarding')",,Source
+ingredient_preferences,8,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+member_skills,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+member_skills,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+member_skills,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+member_skills,4,technique_id,uuid,no,,,,techniques.id,cascade,,,Technique
+member_skills,5,level,smallint,no,0,,,,,level between 0 and 5,,0–5
+member_skills,6,times_practiced,integer,no,0,,,,,,,Count
+member_skills,7,last_practiced_at,timestamptz,yes,,,,,,,,Last time
+nutrition_weekly,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+nutrition_weekly,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+nutrition_weekly,3,member_id,uuid,yes,,,,household_members.id,cascade,,,Member; null = household
+nutrition_weekly,4,week_start,date,no,,,,,,,,Monday of the week
+nutrition_weekly,5,food_groups,jsonb,no,'{}'::jsonb,,,,,,,"Counts per group: dal, sabzi, greens, fruit, dairy, protein, grain"
+nutrition_weekly,6,nudges,jsonb,no,'[]'::jsonb,,,,,,,Nudges generated for next week
+nutrition_weekly,7,computed_at,timestamptz,no,now(),,,,,,,Computed
+shopping_lists,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+shopping_lists,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+shopping_lists,3,name,text,no,'Main',,,,,,,Name
+shopping_lists,4,status,text,no,'active',,,,,"status in ('active', 'archived')",,State
+shopping_lists,5,created_at,timestamptz,no,now(),,,,,,,Row creation time
+shopping_list_items,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+shopping_list_items,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+shopping_list_items,3,list_id,uuid,no,,,,shopping_lists.id,cascade,,yes,List
+shopping_list_items,4,ingredient_id,uuid,yes,,,,ingredients.id,set null,,,Ingredient
+shopping_list_items,5,product_id,uuid,yes,,,,products.id,set null,,,Preferred product
+shopping_list_items,6,display_name,text,no,,,,,,,,Name shown
+shopping_list_items,7,quantity,numeric,yes,,,,,,,,Quantity
+shopping_list_items,8,unit,text,yes,,,,,,,,Unit
+shopping_list_items,9,reason,text,no,'manual',,,,,"reason in ('recipe_missing', 'running_low', 'predicted', 'manual', 'voice')",,Why it was added
+shopping_list_items,10,recipe_id,uuid,yes,,,,recipes.id,set null,,,Recipe that needed it
+shopping_list_items,11,status,text,no,'needed',,,,,"status in ('needed', 'in_cart', 'bought', 'removed')",,State
+shopping_list_items,12,added_by,uuid,yes,,,,household_members.id,set null,,,Member
+shopping_list_items,13,created_at,timestamptz,no,now(),,,,,,,Row creation time
+shopping_list_items,14,bought_at,timestamptz,yes,,,,,,,,When marked bought
+purchase_patterns,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+purchase_patterns,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+purchase_patterns,3,ingredient_id,uuid,no,,,,ingredients.id,cascade,,,Ingredient
+purchase_patterns,4,avg_interval_days,numeric,yes,,,,,,,,Average days between purchases
+purchase_patterns,5,avg_quantity,numeric,yes,,,,,,,,Average quantity bought
+purchase_patterns,6,unit,text,yes,,,,,,,,Unit
+purchase_patterns,7,preferred_product_id,uuid,yes,,,,products.id,set null,,,Usual product
+purchase_patterns,8,preferred_provider_id,uuid,yes,,,,grocery_providers.id,set null,,,Usual provider
+purchase_patterns,9,last_purchased_at,timestamptz,yes,,,,,,,,Last purchase
+purchase_patterns,10,next_predicted_at,timestamptz,yes,,,,,,,,Predicted run-out
+purchase_patterns,11,sample_count,integer,no,0,,,,,,,Purchases observed
+purchase_patterns,12,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
+grocery_providers,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+grocery_providers,2,slug,text,no,,,yes,,,,yes,"Key, e.g. 'bigbasket'"
+grocery_providers,3,name,text,no,,,,,,,,Display name
+grocery_providers,4,integration_type,text,no,,,,,,"integration_type in ('official_api', 'partner_feed', 'deeplink')",,Integration kind; scraping is never allowed
+grocery_providers,5,status,text,no,'planned',,,,,"status in ('planned', 'active', 'paused')",,Availability
+grocery_providers,6,regions,text[],no,'{}',,,,,,,Service regions
+grocery_providers,7,created_at,timestamptz,no,now(),,,,,,,Row creation time
+provider_connections,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+provider_connections,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+provider_connections,3,provider_id,uuid,no,,,,grocery_providers.id,cascade,,,Provider
+provider_connections,4,status,text,no,'connected',,,,,"status in ('connected', 'expired', 'revoked')",,Connection state
+provider_connections,5,external_account_ref,text,yes,,,,,,,,Provider's account reference (non-secret)
+provider_connections,6,vault_secret_id,uuid,yes,,,,,,,,Supabase Vault secret holding the access token
+provider_connections,7,connected_at,timestamptz,no,now(),,,,,,,Connected
+carts,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+carts,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+carts,3,provider_id,uuid,no,,,,grocery_providers.id,restrict,,,Provider
+carts,4,status,text,no,'draft',,,,,"status in ('draft', 'awaiting_approval', 'approved', 'placed', 'failed', 'cancelled')",,Cart state
+carts,5,subtotal_inr,"numeric(10,2)",yes,,,,,,,,Items subtotal
+carts,6,fees_inr,"numeric(10,2)",yes,,,,,,,,Delivery and handling fees
+carts,7,total_inr,"numeric(10,2)",yes,,,,,,,,Total shown at approval
+carts,8,approved_by,uuid,yes,,,,household_members.id,set null,,,Member who approved
+carts,9,approved_at,timestamptz,yes,,,,,,,,Approval time (required before placed)
+carts,10,external_order_id,text,yes,,,,,,,,Provider order id
+carts,11,placed_at,timestamptz,yes,,,,,,,,Placed
+carts,12,created_at,timestamptz,no,now(),,,,,,,Row creation time
+cart_items,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+cart_items,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+cart_items,3,cart_id,uuid,no,,,,carts.id,cascade,,yes,Cart
+cart_items,4,list_item_id,uuid,yes,,,,shopping_list_items.id,set null,,,List item it fulfils
+cart_items,5,provider_product_ref,text,no,,,,,,,,Provider's product id
+cart_items,6,name,text,no,,,,,,,,Product name
+cart_items,7,quantity,numeric,no,,,,,,,,Quantity
+cart_items,8,unit_price_inr,"numeric(10,2)",yes,,,,,,,,Unit price
+cart_items,9,line_total_inr,"numeric(10,2)",yes,,,,,,,,Line total
+devices,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+devices,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+devices,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+devices,4,platform,text,no,,,,,,"platform in ('android', 'ios')",,OS
+devices,5,push_token,text,yes,,,yes,,,,yes,Expo push token
+devices,6,app_version,text,yes,,,,,,,,App version
+devices,7,locale,text,yes,,,,,,,,Device locale
+devices,8,last_seen_at,timestamptz,no,now(),,,,,,,Last seen
+devices,9,created_at,timestamptz,no,now(),,,,,,,Row creation time
+notifications,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+notifications,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+notifications,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+notifications,4,type,text,no,,,,,,"type in ('daily_pick', 'use_soon', 'leftover', 'restock', 'timer', 'system')",,Notification kind
+notifications,5,payload,jsonb,no,'{}'::jsonb,,,,,,,"Title, body, deep link"
+notifications,6,channel,text,no,'push',,,,,"channel in ('push', 'whatsapp', 'in_app')",,Delivery channel
+notifications,7,scheduled_for,timestamptz,no,,,,,,,,When to send
+notifications,8,sent_at,timestamptz,yes,,,,,,,,Sent
+notifications,9,opened_at,timestamptz,yes,,,,,,,,Opened
+notifications,10,status,text,no,'scheduled',,,,,"status in ('scheduled', 'sent', 'failed', 'cancelled', 'suppressed')",,State
+notifications,11,created_at,timestamptz,no,now(),,,,,,,Row creation time
+channel_identities,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+channel_identities,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+channel_identities,3,member_id,uuid,no,,,,household_members.id,cascade,,yes,Household member this row belongs to
+channel_identities,4,channel,text,no,,,,,,"channel in ('whatsapp', 'phone')",,Channel
+channel_identities,5,external_id_hash,text,no,,,,,,,,SHA-256 of the E.164 number with a server-side pepper
+channel_identities,6,verified_at,timestamptz,yes,,,,,,,,Verified
+channel_identities,7,created_at,timestamptz,no,now(),,,,,,,Row creation time
+voice_sessions,1,id,uuid,no,gen_random_uuid(),yes,,,,,yes,Primary key
+voice_sessions,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
+voice_sessions,3,member_id,uuid,yes,,,,household_members.id,set null,,yes,Member
+voice_sessions,4,cooking_session_id,uuid,yes,,,,cooking_sessions.id,set null,,,"Cooking session, if any"
+voice_sessions,5,room_name,text,no,,,,,,,,LiveKit room
+voice_sessions,6,channel,text,no,'app',,,,,"channel in ('app', 'whatsapp', 'phone')",,Channel
+voice_sessions,7,language_detected,text,yes,,,,,,,,Dominant language detected
+voice_sessions,8,started_at,timestamptz,no,now(),,,,,,,Connected
+voice_sessions,9,ended_at,timestamptz,yes,,,,,,,,Disconnected
+voice_sessions,10,end_reason,text,yes,,,,,,,,completed | user_left | idle | error
+voice_sessions,11,turns,integer,no,0,,,,,,,User turns
+voice_sessions,12,fast_path_turns,integer,no,0,,,,,,,Turns answered without the LLM
+voice_sessions,13,stt_seconds,numeric,no,0,,,,,,,Audio seconds sent to speech-to-text
+voice_sessions,14,tts_characters,integer,no,0,,,,,,,Characters synthesised live
+voice_sessions,15,tts_cached_characters,integer,no,0,,,,,,,Characters served from step_audio_cache
+voice_sessions,16,llm_input_tokens,integer,no,0,,,,,,,LLM input tokens
+voice_sessions,17,llm_cached_tokens,integer,no,0,,,,,,,Prompt-cache read tokens
+voice_sessions,18,llm_output_tokens,integer,no,0,,,,,,,LLM output tokens
+voice_sessions,19,p50_latency_ms,integer,yes,,,,,,,,Median turn latency
+voice_sessions,20,p95_latency_ms,integer,yes,,,,,,,,95th percentile turn latency
+voice_sessions,21,cost_inr,"numeric(8,2)",yes,,,,,,,,Computed variable cost
+ai_requests,1,id,bigint,no,generated always as identity,yes,,,,,yes,Primary key (identity; high-volume append-only table)
+ai_requests,2,household_id,uuid,yes,,,,households.id,set null,,yes,Household (null for content jobs)
+ai_requests,3,task,text,no,,,,,,,,AI task key from 11_ai_tasks_and_models.csv
+ai_requests,4,model,text,no,,,,,,,,Model id
+ai_requests,5,prompt_version,text,no,,,,,,,,Prompt version tag
+ai_requests,6,input_tokens,integer,yes,,,,,,,,Input tokens
+ai_requests,7,cached_tokens,integer,yes,,,,,,,,Cache-read tokens
+ai_requests,8,output_tokens,integer,yes,,,,,,,,Output tokens
+ai_requests,9,latency_ms,integer,yes,,,,,,,,Latency
+ai_requests,10,status,text,no,,,,,,"status in ('ok', 'error', 'timeout', 'refused', 'invalid_output')",,Outcome
+ai_requests,11,error,text,yes,,,,,,,,Error message
+ai_requests,12,created_at,timestamptz,no,now(),,,,,,,Row creation time

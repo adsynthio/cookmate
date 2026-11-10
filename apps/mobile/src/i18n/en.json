@@ -244,5 +244,16 @@
   "equip.pressure_cooker": "pressure cooker",
   "equip.kadai": "kadai",
   "equip.tawa": "tawa",
-  "equip.mixer_grinder": "mixer"
+  "equip.mixer_grinder": "mixer",
+  "quick.cta": "Quick start: what did you cook yesterday?",
+  "quick.ctaBody": "I'll guess what's in your kitchen from it.",
+  "quick.title": "What did you cook yesterday?",
+  "quick.body": "Pick the dish. I'll add what it needs as guesses, marked \"Still have this?\" until you say yes.",
+  "quick.added": "Added {n} guesses from {dish}",
+  "quick.none": "{dish}: everything it needs is already in your kitchen",
+  "quick.addedBody": "They won't count towards picks until you confirm them in Kitchen.",
+  "quick.clear": "Clear these guesses",
+  "quick.cleared": "Cleared",
+  "quick.done": "Done",
+  "quick.clearAll": "Clear all guesses"
 }

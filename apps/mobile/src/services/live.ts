@@ -169,7 +169,7 @@ export const liveServices: Services = {
       const { data, error } = await sb
         .from("inventory_items")
         .select(
-          "id, custom_name, quantity, unit, staple_level, state, flavor_roles, expiry_date, expiry_estimated, confidence, ingredients(canonical_name), storage_locations(kind)",
+          "id, custom_name, quantity, unit, staple_level, state, flavor_roles, expiry_date, expiry_estimated, confidence, added_via, ingredients(canonical_name), storage_locations(kind)",
         )
         .eq("household_id", householdId)
         .eq("status", "active")
@@ -194,6 +194,7 @@ export const liveServices: Services = {
           confidence: Number(r.confidence),
           state: r.state,
           flavorRoles: (r.flavor_roles ?? []) as FlavorRole[],
+          guess: r.added_via === "onboarding" && Number(r.confidence) <= 0.5,
         };
       });
     },
@@ -279,6 +280,20 @@ export const liveServices: Services = {
     async reopenItem(itemId) {
       const { error } = await requireSupabase().rpc("reopen_inventory_item", { p_item: itemId });
       if (error) throw error;
+    },
+
+    async guessFromRecipe(householdId, recipeId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("guess_pantry_from_recipe", { p_household: householdId, p_recipe: recipeId });
+      if (error) throw error;
+      return data ?? [];
+    },
+
+    async clearGuesses(householdId, itemIds) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("clear_pantry_guesses", { p_household: householdId, p_items: itemIds });
+      if (error) throw error;
+      return data ?? 0;
     },
 
     async addToList(householdId, items) {

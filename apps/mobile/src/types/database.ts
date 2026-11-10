@@ -3252,6 +3252,26 @@ export type Database = {
         Args: { p_household: string; p_items?: string[] };
         Returns: number;
       };
+      start_cooking_session: {
+        Args: { p_household: string; p_recipe: string; p_servings?: number; p_who_eating?: string[]; p_mode?: string; p_recommendation?: string; p_language?: string };
+        Returns: string;
+      };
+      advance_session_step: {
+        Args: { p_session: string; p_delta?: number; p_channel?: string };
+        Returns: Json;
+      };
+      complete_cooking_session: {
+        Args: { p_session: string };
+        Returns: { item_id: string; ingredient: string; quantity: number | null; unit: string | null; current_quantity: number | null; staple: boolean }[];
+      };
+      apply_session_deduction: {
+        Args: { p_session: string; p_adjustments?: Json };
+        Returns: string[];
+      };
+      submit_feedback: {
+        Args: { p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean };
+        Returns: string;
+      };
       search_recipes: {
         Args: { p_query: string; p_limit?: number };
         Returns: { id: string; slug: string | null; title: string; titles: Json; course: string; diet: string; prep_time_min: number | null; cook_time_min: number | null; spice_level: number; tags: string[] | null; score: number }[];

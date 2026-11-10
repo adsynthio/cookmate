@@ -16,6 +16,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SHARED = {
     "apps/mobile/src/domain/pantryParse.ts": "supabase/functions/_shared/pantryParse.ts",
+    "apps/mobile/src/domain/ranking.ts": "supabase/functions/_shared/ranking.ts",
+    "apps/mobile/src/domain/recipes.ts": "supabase/functions/_shared/recipes.ts",
 }
 HEADER = "// GENERATED from {src} by scripts/sync-shared.py. Do not edit; edit the source and re-run.\n"
 

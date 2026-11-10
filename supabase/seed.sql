@@ -215,7 +215,9 @@ insert into public.feature_flags (key, enabled, rollout_pct, rules) values
   ('voice_cook', true, 100, '{}'::jsonb),
   ('voice_free_monthly_cap', true, 100, '{"sessions_per_month": 4}'::jsonb),
   ('daily_pick_notification', false, 0, '{"max_per_day": 1, "quiet_hours": ["21:30", "07:00"]}'::jsonb),
-  ('scan_pantry', false, 0, '{"release": "V1.5"}'::jsonb)
+  ('scan_pantry', false, 0, '{"release": "V1.5"}'::jsonb),
+  ('ranking_weights', true, 100, '{"weights": {"calendar": 0.5, "coverage": 3, "craving": 2.5, "equipment": 1, "novelty": 1.5, "slot": 1.5, "taste": 1.5, "time": 1, "useSoon": 2}}'::jsonb),
+  ('show_draft_recipes', true, 100, '{"environment": "staging"}'::jsonb)
 on conflict (key) do nothing;
 
 -- Recipe: besan-chilla (draft, not published)

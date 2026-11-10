@@ -1,6 +1,7 @@
 // Pure helpers for Cook With Me (KIT-070/071/078) and the finish sheet's deduction (KIT-037). No React, no network.
 // convertQty / deductionPreview mirror private.convert_qty and complete_cooking_session in the database so mock mode
 // and the live backend agree.
+import { parseQuantity } from "./kitchen.ts";
 import type { RecipeDoc, RecipeStepDoc } from "./recipes.ts";
 
 export type Timer = { id: string; label: string; stepNo: number; durationSec: number; endsAt: number };
@@ -107,4 +108,41 @@ export function deductionPreview(
     });
   }
   return lines.sort((a, b) => a.ingredient.localeCompare(b.ingredient));
+}
+
+// --- finish sheet review ---------------------------------------------------------------------------------------------
+
+export type StapleLevel = "full" | "low" | "out";
+/** One line of the deduction review as the cook left it: switched on or off, the typed amount, a new staple level. */
+export type LineReview = { on: boolean; qty: string; level: StapleLevel | null };
+export type Adjustment = { itemId: string; quantity?: number; skip?: boolean; stapleLevel?: StapleLevel };
+
+/**
+ * What to send to apply_session_deduction for one reviewed line; null when the preview already says it.
+ * A cleared or unreadable amount means "don't touch this item", never "take the suggested amount".
+ */
+export function adjustmentFor(line: DeductionLine, review: LineReview): Adjustment | null {
+  if (!review.on) return { itemId: line.itemId, skip: true };
+  if (line.staple) return review.level ? { itemId: line.itemId, stapleLevel: review.level } : null;
+  const q = parseQuantity(review.qty);
+  if (q === undefined || q === null) return line.quantity === null ? null : { itemId: line.itemId, skip: true };
+  return q === line.quantity ? null : { itemId: line.itemId, quantity: q };
+}
+
+/**
+ * 0.055 kg of onion reads better as 55 g. Returns the line in the smaller unit, plus the factor that turns an amount
+ * typed in that unit back into the item's own unit.
+ */
+export function readableLine(line: DeductionLine): { line: DeductionLine; factor: number } {
+  const small = line.unit === "kg" ? "g" : line.unit === "l" ? "ml" : null;
+  if (!small || line.quantity === null || line.quantity >= 1) return { line, factor: 1 };
+  return { line: { ...line, quantity: Math.round(line.quantity * 1000), unit: small }, factor: 1000 };
+}
+
+/** Whether to offer a timer for a step: always when the recipe asks for one, otherwise for waits worth timing. */
+export function offersTimer(step: Pick<RecipeStepDoc, "minutes" | "seconds" | "timer" | "whistles">): boolean {
+  const sec = stepSeconds(step);
+  if (sec === null) return false;
+  if (step.timer) return true;
+  return !step.whistles && sec >= 120 && sec <= 3 * 60 * 60;
 }

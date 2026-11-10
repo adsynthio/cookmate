@@ -247,6 +247,8 @@ export interface CookingService {
   /** The cook's session in progress, to resume from the Cook tab. */
   getActiveSession(householdId: string): Promise<CookSession | null>;
   advanceStep(sessionId: string, delta: number, channel?: "touch" | "voice"): Promise<{ currentStep: number; total: number }>;
+  /** Stop without finishing: nothing is deducted and the Cook tab stops offering to resume. */
+  abandonSession(sessionId: string): Promise<void>;
   /** KIT-037: finish and preview what comes off the pantry. */
   completeSession(sessionId: string): Promise<DeductionLine[]>;
   applyDeduction(sessionId: string, adjustments: DeductionAdjustment[]): Promise<string[]>;

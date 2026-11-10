@@ -37,6 +37,8 @@ export function resetMockHousehold() {
 
 const delay = (ms = 350) => new Promise((r) => setTimeout(r, ms));
 
+const isoOrNull = (days: number | null) => (days === null ? null : isoInDays(days));
+
 function isoInDays(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
@@ -63,6 +65,11 @@ let pantry: PantryItem[] = seed.map(([id, ingredientKey, name, quantity, unit, l
   state: id === "i9" ? "homemade" : "raw",
   flavorRoles: id === "i9" ? ["heat", "acid"] : [],
 }));
+/** Cooked food keeps for days, whatever it was made from (same rule as private.estimate_expiry). */
+function cookedLife(state: PantryItem["state"], location: PantryItem["location"]): number | null {
+  if (state !== "cooked" && state !== "leftover" && state !== "homemade") return null;
+  return location === "freezer" ? 30 : location === "ready_made" ? 5 : location === "fridge" ? 3 : 1;
+}
 const finished = new Map<string, PantryItem>();
 /** Items added as guesses from yesterday's dish (KIT-026). */
 const guesses = new Set<string>();
@@ -186,7 +193,7 @@ export const mockServices: Services = {
           unit: d.unit ?? (d.quantity !== null ? (entry?.unit ?? null) : null),
           location,
           stapleLevel: entry?.staple || location === "staples" ? "full" : null,
-          expiryDate: days !== undefined ? isoInDays(days) : d.state === "homemade" ? isoInDays(5) : null,
+          expiryDate: isoOrNull(cookedLife(d.state ?? "raw", location) ?? days ?? null),
           expiryEstimated: true,
           confidence: 0.95,
           state: d.state ?? "raw",
@@ -356,6 +363,10 @@ export const mockServices: Services = {
       const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
       s.currentStep = Math.max(1, Math.min(doc.steps.length, s.currentStep + delta));
       return { currentStep: s.currentStep, total: doc.steps.length };
+    },
+    async abandonSession(sessionId) {
+      const s = sessions.get(sessionId);
+      if (s && s.status === "active") s.status = "abandoned";
     },
     async completeSession(sessionId) {
       await delay(300);

@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { TimerAlarm } from "@/components/cook/TimerAlarm";
 import { StateView } from "@/design-system/primitives";
 import { ThemeProvider, useTheme } from "@/design-system/theme";
 import { localeFromLanguageCode } from "@/domain/onboarding";
@@ -81,11 +82,13 @@ function RootNavigator() {
           <Stack.Screen name="recipe/[id]" />
           <Stack.Screen name="search" />
           <Stack.Screen name="adapt/[id]" options={{ presentation: "modal" }} />
+          <Stack.Screen name="cook/[id]" options={{ gestureEnabled: false }} />
         </Stack.Protected>
         <Stack.Protected guard={!onboarded}>
           <Stack.Screen name="onboarding" />
         </Stack.Protected>
       </Stack>
+      <TimerAlarm />
       {!ready ? (
         <View style={[StyleSheet.absoluteFill, styles.overlay, { backgroundColor: colors.canvas }]}>
           {failed ? (

@@ -1,8 +1,27 @@
 // Mock services (EXPO_PUBLIC_USE_MOCKS=1). Data mirrors the Sunita persona from the PRD so screens can be
 // built and demoed before the live backend exists for each feature.
+import "expo-sqlite/localStorage/install";
+
 import { useSoon } from "@/domain/pantry";
 
-import type { Memory, PantryItem, PickBatch, Services } from "./types";
+import type { HouseholdRef, Memory, PantryItem, PickBatch, Services } from "./types";
+
+// The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
+// just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
+const HOUSEHOLD_KEY = "cookmate.mock.household";
+
+function readHousehold(): HouseholdRef | null {
+  try {
+    const raw = globalThis.localStorage?.getItem(HOUSEHOLD_KEY);
+    return raw ? (JSON.parse(raw) as HouseholdRef) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function resetMockHousehold() {
+  globalThis.localStorage?.removeItem(HOUSEHOLD_KEY);
+}
 
 const delay = (ms = 350) => new Promise((r) => setTimeout(r, ms));
 
@@ -54,11 +73,20 @@ export const mockServices: Services = {
     async ensureSignedIn() {
       return { userId: "mock-user", isAnonymous: true };
     },
+    async getCurrentHousehold() {
+      return readHousehold();
+    },
   },
   preference: {
-    async createHousehold() {
+    async createHousehold({ language, members }) {
       await delay();
-      return { householdId: "mock-household", memberId: "mock-member" };
+      if (members.length < 1 || members.length > 6) throw new Error("a household has 1 to 6 members");
+      const ref: HouseholdRef = { householdId: "mock-household", memberId: "mock-member", languageCode: language };
+      globalThis.localStorage?.setItem(HOUSEHOLD_KEY, JSON.stringify(ref));
+      return { householdId: ref.householdId, memberId: ref.memberId };
+    },
+    async recordConsents() {
+      await delay(100);
     },
     async listMemories() {
       await delay(200);

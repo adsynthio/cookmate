@@ -4,11 +4,12 @@ import { View } from "react-native";
 
 import { Button, Card, Screen, StateView, Text } from "@/design-system/primitives";
 import { space } from "@/design-system/tokens";
-import { t, type StringKey } from "@/i18n";
+import { t, useLocale, type StringKey } from "@/i18n";
 import { services, type Memory } from "@/services";
 import { useSession } from "@/state/session";
 
 export default function YouScreen() {
+  useLocale();
   const householdId = useSession((s) => s.householdId);
   const qc = useQueryClient();
   const memories = useQuery({

@@ -8,7 +8,7 @@ import { daysLeft } from "@/domain/pantry";
 import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
-import { t, type StringKey } from "@/i18n";
+import { t, useLocale, type StringKey } from "@/i18n";
 import { services, type PantryItem, type Pick } from "@/services";
 import { useSession } from "@/state/session";
 
@@ -21,6 +21,7 @@ const CHIPS: { key: string; label: StringKey }[] = [
 ];
 
 export default function HomeScreen() {
+  useLocale();
   const { householdId, memberId, mealSlot } = useSession();
   const [chips, setChips] = useState<string[]>([]);
 

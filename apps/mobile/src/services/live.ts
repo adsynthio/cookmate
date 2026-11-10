@@ -23,6 +23,31 @@ export const liveServices: Services = {
       if (error || !data.user) throw error ?? new Error("anonymous sign-in failed");
       return { userId: data.user.id, isAnonymous: true };
     },
+
+    async getCurrentHousehold() {
+      const sb = requireSupabase();
+      const { data: auth } = await sb.auth.getSession();
+      const userId = auth.session?.user.id;
+      if (!userId) return null;
+      const { data: profile, error } = await sb
+        .from("profiles")
+        .select("last_active_household_id, preferred_language")
+        .eq("id", userId)
+        .maybeSingle();
+      if (error) throw error;
+      const householdId = profile?.last_active_household_id;
+      if (!householdId) return null;
+      const { data: member, error: memberError } = await sb
+        .from("household_members")
+        .select("id")
+        .eq("household_id", householdId)
+        .eq("user_id", userId)
+        .eq("status", "active")
+        .maybeSingle();
+      if (memberError) throw memberError;
+      if (!member) return null;
+      return { householdId, memberId: member.id, languageCode: profile.preferred_language };
+    },
   },
 
   preference: {
@@ -42,6 +67,21 @@ export const liveServices: Services = {
       if (error) throw error;
       const result = data as { household_id: string; member_id: string };
       return { householdId: result.household_id, memberId: result.member_id };
+    },
+
+    async recordConsents({ householdId, memberId, policyVersion, consents }) {
+      const sb = requireSupabase();
+      const { error } = await sb.from("consents").insert(
+        consents.map((c) => ({
+          household_id: householdId,
+          member_id: memberId,
+          consent_type: c.purpose,
+          granted: c.granted,
+          policy_version: policyVersion,
+          channel: "tap" as const,
+        })),
+      );
+      if (error) throw error;
     },
 
     async listMemories(householdId) {

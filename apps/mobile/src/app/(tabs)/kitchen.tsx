@@ -6,13 +6,14 @@ import { MicButton } from "@/components/MicButton";
 import { Card, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
-import { t, type StringKey } from "@/i18n";
+import { t, useLocale, type StringKey } from "@/i18n";
 import { services, type LocationKind, type PantryItem } from "@/services";
 import { useSession } from "@/state/session";
 
 const ORDER: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready_made"];
 
 export default function KitchenScreen() {
+  useLocale();
   const householdId = useSession((s) => s.householdId);
   const kitchen = useQuery({
     queryKey: ["kitchen", householdId],

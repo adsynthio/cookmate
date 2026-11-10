@@ -18,6 +18,7 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 | D5 | Free-tier voice cap | Open; will be a `feature_flags` value (default 4/month). |
 | D6 | Who curates the 300 dishes | Open; biggest non-code risk. |
 | D7 | Palette | Using the PRD warm palette (`apps/mobile/src/design-system/tokens.ts`) until design sign-off. |
+| D8 | Assistant persona (voice gender, Hindi verb forms) | Open; needed by Sprint 3 with the Sarvam voice choice. Until then Hindi/Hinglish copy speaks as "Cookmate" and addresses the user in the neutral respectful आप form, never assuming the cook's gender. |
 
 ### Phase 0 status (10 Nov 2026)
 - [x] Monorepo layout, CI workflow (database, mobile, voice agent), PR/issue templates, README, ADR
@@ -27,18 +28,21 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [x] Applied to Supabase ChefMate; policy fingerprint identical to local; advisors clean apart from expected notices
 - [x] Expo SDK 58 app: tabs, design tokens, primitives, i18n (en/hi/hinglish), service layer (mock + live), Home/Kitchen/You with all states; Android bundle builds
 - [x] Voice agent: LiveKit 1.8 worker skeleton, fast-path matcher (Hindi/Hinglish/English), confirmation gate, text harness (53 tests)
-- [ ] Seed data (ingredients with local names and measures, techniques, sample dishes) — start of Sprint 1
+- [x] Seed data: see Sprint 1 status
 - [ ] GitHub backlog: `scripts/github/bootstrap.py` is ready; run with `--apply` when you want the 105 issues created
 - [ ] EAS project and first development build (needs your Expo account)
 
----|----------|--------|-------------------|
-| D1 | Repo name: this repo is `cookmate`, product is **Kitchnos**. Keep `cookmate` as the repo and use Kitchnos everywhere in code? | App IDs, bundle IDs, package names | Keep repo name; use `kitchnos` for package/app identifiers (`com.drishix.kitchnos`). Renaming later is painful for store listings. |
-| D2 | The pack mentions a separate `kitchnos-repo.zip` (generated migration, Expo skeleton, voice-agent skeleton, `tools/archgen`, GitHub bootstrap script). Do you have it? | Saves ~1 sprint of scaffolding | If you have it, upload it and I'll start from it. If not, I'll build those pieces from the CSVs (plan below assumes **not**). |
-| D3 | Accounts to create (you, not me): Supabase (Mumbai), Anthropic API, Sarvam, LiveKit Cloud, Expo/EAS, Sentry, PostHog, SMS provider with DLT | Live backend from Sprint 1; voice from Sprint 4 | Supabase + Expo now; Anthropic by Sprint 2; Sarvam + LiveKit by Sprint 3. Until then I build against mocks. |
-| D4 | Launch regional language | Voice tests, i18n catalogue #4 | BRD proposes Marwari-influenced Hindi + one of Punjabi/Gujarati. Need a pick by Sprint 4. |
-| D5 | Free-tier voice cap | Server-side quota code | Implement cap as a `feature_flags` value (default 4/month) so it is a config change, not code. |
-| D6 | Who curates the 300 dishes (culinary lead) | Sprint 3 needs 100 real dishes | This is the biggest non-code risk. I can produce draft YAML for dishes, but each must be cooked and checked by a person (REC-01). |
-| D7 | Design palette ("Morning kitchen light" vs blueprint pastel) and Figma source | Sprint 1 tokens | Use the PRD warm palette now; tokens are one file, so swapping is cheap. |
+### Sprint 1 status (10 Nov 2026, branch `sprint-1/seed-and-onboarding`)
+- [x] Content pipeline: `content/catalog/*.yaml` + `content/recipes/*.yaml` → `tools/content/build.py` validates (enums from the CSVs, catalog references, diet vs ingredients, safety notes for meat/egg/rajma, timers, whistles, ambiguous aliases) and generates an idempotent `supabase/seed.sql`; CI runs `--check` and 11 validator tests
+- [x] Catalog: 177 ingredients (Hindi + Hinglish names, aliases, shelf life by storage kind, katori/chammach/mutthi weights, allergens), 16 techniques with sensory signs, 4 feature flags (incl. D5 voice cap)
+- [x] 10 sample dishes as **drafts** (unpublished until the culinary lead cooks and approves them, REC-01): kadhi pakora, jeera aloo, dal tadka, moong dal khichdi, kanda poha, besan chilla, matar paneer, rajma, egg bhurji, chicken curry
+- [x] Migration `20261117000000_catalog.sql` (global recipe slug index, alias/trigram indexes), applied to ChefMate
+- [x] Onboarding (KIT-020/022/023, ONB-05): Try now → language (spoken prompt, big buttons) → who eats here (≤ 6, age groups) → spice → diet → consent per purpose (nothing pre-ticked) → `create_household` + consents → Home. Root layout gates tabs vs onboarding with `Stack.Protected`; returning users skip onboarding; language switches without restart
+- [x] Tests: 43 pgTAP (catalog, seed idempotency, onboarding consents), 8 mobile unit tests; onboarding walked end to end in a browser build in Hindi
+- [ ] KIT-143 asks for ≥ 500 ingredients; 177 are in. The rest should come with the culinary lead's dish list so names match real recipes
+- [ ] Seed data on ChefMate: load it in Sprint 2 when `parse-inventory` needs it (CI job with a database URL secret, or I apply it in chunks)
+- [ ] Sentry (KIT-131): needs your Sentry account
+- [ ] Privacy notice text: consent rows carry `policy_version = 2026-11-draft-1` until the real notice is written
 
 ---
 

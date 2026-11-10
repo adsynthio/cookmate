@@ -33,6 +33,13 @@ for f in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -f "$f" >/dev/null
 done
 
+# Seed twice: the second run proves the generated seed is idempotent.
+if [ -f "$ROOT/supabase/seed.sql" ]; then
+  echo "seed     seed.sql (x2)"
+  "${PSQL[@]}" -f "$ROOT/supabase/seed.sql" >/dev/null
+  "${PSQL[@]}" -f "$ROOT/supabase/seed.sql" >/dev/null
+fi
+
 failed=0
 for t in "$ROOT"/supabase/tests/database/*.sql; do
   out="$("${PSQL[@]}" -t -A -f "$t" 2>&1)" || failed=1

@@ -1,9 +1,10 @@
 import { Tabs } from "expo-router";
 
 import { useTheme } from "@/design-system/theme";
-import { t } from "@/i18n";
+import { t, useLocale } from "@/i18n";
 
 export default function TabsLayout() {
+  useLocale();
   const { colors } = useTheme();
   return (
     <Tabs

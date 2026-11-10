@@ -4,6 +4,7 @@
 // Pure TypeScript, imports types only, so it is shared with the Edge Functions by scripts/sync-shared.py.
 import type { AgeGroup, Course, Diet, FlavorKey, Locale, RankRecipe } from "./ranking.ts";
 
+
 export type RecipeIngredientDoc = {
   ingredient: string;
   qty: number;
@@ -109,19 +110,42 @@ export function scaleQty(qty: number, baseServings: number, servings: number): n
 export type Measures = Record<string, number>;
 
 /**
- * Grams or ml in the household's own measures where the catalog knows them (katori, piece), else metric.
- * Returns e.g. { qty: 2, unit: "katori" } or { qty: 250, unit: "g" }.
+ * Grams or ml in the household's own measures where the catalog knows them: katori and pieces for big amounts,
+ * chammach / chhota chammach / chutki for spices. Returns e.g. { qty: 2, unit: "katori" } or { qty: 250, unit: "g" }.
  */
 export function inLocalUnits(grams: number, unit: string, measures: Measures | undefined): { qty: number; unit: string } {
   if (unit !== "g" && unit !== "ml") return { qty: grams, unit };
-  for (const m of ["katori", "piece", "cup"]) {
+  const tries: [string, number, number][] = [
+    // measure, smallest sensible amount, largest
+    ["katori", 0.5, 8],
+    ["piece", 0.5, 20],
+    ["cup", 0.5, 8],
+    ["chammach", 0.5, 8],
+    ["chhota_chammach", 0.25, 6],
+  ];
+  for (const [m, lo, hi] of tries) {
     const per = measures?.[m];
     if (!per) continue;
     const n = grams / per;
     const quarters = Math.round(n * 4) / 4;
-    if (quarters >= 0.5 && quarters <= 8 && Math.abs(quarters - n) / n < 0.15) return { qty: quarters, unit: m };
+    if (quarters >= lo && quarters <= hi && Math.abs(quarters - n) / n < 0.2) return { qty: quarters, unit: m };
+  }
+  const pinch = measures?.chutki;
+  if (pinch) {
+    const n = Math.round(grams / pinch);
+    if (n >= 1 && n <= 4) return { qty: n, unit: "chutki" };
   }
   return { qty: grams, unit };
+}
+
+const FRACTIONS: Record<string, string> = { "0.25": "¼", "0.5": "½", "0.75": "¾" };
+
+/** 1.5 -> "1½", 0.25 -> "¼"; other numbers as they are. */
+export function prettyQty(n: number): string {
+  const whole = Math.floor(n);
+  const frac = FRACTIONS[String(Math.round((n - whole) * 100) / 100)];
+  if (frac) return whole ? `${whole}${frac}` : frac;
+  return String(Math.round(n * 100) / 100);
 }
 
 // --- family plates (KIT-052, HH-02) ---------------------------------------------------------------------------------
@@ -326,4 +350,42 @@ export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
       ...(r.note ? { note: r.note } : {}),
     })),
   };
+}
+
+// --- why this works (KIT-053, REC-05) ---------------------------------------------------------------------------
+
+const FLAVOR_WORDS: Record<FlavorKey, Record<Locale, string>> = {
+  rich: { en: "rich", hinglish: "rich", hi: "भरपूर" },
+  heat: { en: "warm with chilli", hinglish: "mirch ki garmi", hi: "मिर्च की गर्माहट" },
+  acid: { en: "a sour edge", hinglish: "khatta touch", hi: "हल्की खटास" },
+  crunch: { en: "crunch", hinglish: "crunch", hi: "कुरकुरापन" },
+  starch: { en: "filling", hinglish: "pet bharne wala", hi: "पेट भरने वाला" },
+  sweet: { en: "a little sweetness", hinglish: "thodi mithaas", hi: "थोड़ी मिठास" },
+};
+const WHY: Record<Locale, string> = {
+  en: "Mostly {a}, with {b} to balance it.",
+  hinglish: "Zyada {a}, aur balance ke liye {b}.",
+  hi: "ज़्यादातर {a}, और संतुलन के लिए {b}।",
+};
+const WHY_ONE: Record<Locale, string> = { en: "Mostly {a}.", hinglish: "Zyada {a}.", hi: "ज़्यादातर {a}।" };
+
+/** Flavour bars for rich, heat, crunch and acid, and one sentence on how they balance. */
+export function whyThisWorks(
+  flavor: Partial<Record<FlavorKey, number>> | undefined,
+  locale: Locale,
+): { bars: { key: FlavorKey; value: number }[]; sentence: string } | null {
+  const f = flavor ?? {};
+  const bars = (["rich", "heat", "crunch", "acid"] as FlavorKey[]).map((key) => ({ key, value: Math.max(0, Math.min(1, f[key] ?? 0)) }));
+  const ranked = (Object.keys(FLAVOR_WORDS) as FlavorKey[])
+    .map((k) => ({ k, v: f[k] ?? 0 }))
+    .filter((x) => x.v >= 0.3)
+    .sort((a, b) => b.v - a.v);
+  if (!ranked.length) return null;
+  const a = FLAVOR_WORDS[ranked[0]!.k][locale];
+  // The balancing note: the strongest flavour from a different family than the main one.
+  const contrast = ranked.slice(1).find((x) => !(ranked[0]!.k === "rich" && x.k === "starch") && !(ranked[0]!.k === "starch" && x.k === "rich"));
+  const sentence = contrast
+    ? WHY[locale].replace("{a}", a).replace("{b}", FLAVOR_WORDS[contrast.k][locale])
+    : WHY_ONE[locale].replace("{a}", a);
+  return { bars, sentence };
 }

@@ -3216,6 +3216,34 @@ export type Database = {
         Args: { p_name: string; p_language: string; p_members: Json };
         Returns: Json;
       };
+      match_ingredient: {
+        Args: { p_name: string };
+        Returns: string | null;
+      };
+      add_inventory_items: {
+        Args: { p_household: string; p_items: Json; p_added_via?: string };
+        Returns: string[];
+      };
+      update_inventory_item: {
+        Args: { p_item: string; p_changes: Json };
+        Returns: undefined;
+      };
+      finish_inventory_item: {
+        Args: { p_item: string; p_discarded?: boolean };
+        Returns: undefined;
+      };
+      reopen_inventory_item: {
+        Args: { p_item: string };
+        Returns: undefined;
+      };
+      get_use_soon: {
+        Args: { p_household: string; p_days?: number };
+        Returns: { id: string; name: string; quantity: number | null; unit: string | null; location_kind: string; expiry_date: string; days_left: number; confidence: number }[];
+      };
+      add_to_shopping_list: {
+        Args: { p_household: string; p_items: Json };
+        Returns: string[];
+      };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

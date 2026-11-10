@@ -1,34 +1,57 @@
+// Cookmate primitives, styled from the brand kit: canvas + flat white cards, one lime, circles and pills.
 import type { ReactNode } from "react";
 import {
   ActivityIndicator,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
   Text as RNText,
+  TextInput,
   View,
+  type ImageSourcePropType,
   type StyleProp,
+  type TextInputProps,
   type TextProps as RNTextProps,
   type ViewStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useTheme } from "./theme";
-import { radius, space, touch, type as typeScale } from "./tokens";
+import { getLocale } from "@/i18n";
 
-type Variant = keyof typeof typeScale;
+import { illustrations } from "./media";
+import { useTheme } from "./theme";
+import { DEVANAGARI_EXTRA_LEADING, fonts, radius, shadow, space, touch, type as typeScale, type Weight } from "./tokens";
+
+export type Variant = keyof typeof typeScale;
+
+/** Font family, size and leading for a type style in the current language. */
+export function textStyle(variant: Variant, weight?: Weight) {
+  const t = typeScale[variant];
+  const hindi = getLocale() === "hi";
+  const w = weight ?? t.weight;
+  const tight = t.lineHeight < t.fontSize * 1.3;
+  return {
+    fontFamily: (hindi ? fonts.devanagari : fonts.latin)[w],
+    fontSize: t.fontSize,
+    lineHeight: hindi && tight ? t.lineHeight + DEVANAGARI_EXTRA_LEADING : t.lineHeight,
+    letterSpacing: hindi ? 0 : ("letterSpacing" in t ? t.letterSpacing : 0),
+  };
+}
 
 export function Text({
   variant = "body",
+  weight,
   muted,
   color,
   style,
   ...rest
-}: RNTextProps & { variant?: Variant; muted?: boolean; color?: string }) {
+}: RNTextProps & { variant?: Variant; weight?: Weight; muted?: boolean; color?: string }) {
   const { colors } = useTheme();
   return (
     <RNText
       {...rest}
-      style={[typeScale[variant], { color: color ?? (muted ? colors.textMuted : colors.text) }, style]}
+      style={[textStyle(variant, weight), { color: color ?? (muted ? colors.inkSecondary : colors.ink) }, style]}
     />
   );
 }
@@ -41,7 +64,7 @@ export function Screen({ children, scroll = true }: { children: ReactNode; scrol
     <View style={[styles.screenContent, { flex: 1 }]}>{children}</View>
   );
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       {body}
     </SafeAreaView>
   );
@@ -54,6 +77,7 @@ export function Button({
   size = "regular",
   disabled,
   accessibilityHint,
+  textColor,
 }: {
   label: string;
   onPress: () => void;
@@ -61,10 +85,12 @@ export function Button({
   size?: "regular" | "cook";
   disabled?: boolean;
   accessibilityHint?: string;
+  /** Override for quiet buttons on dark surfaces (e.g. the undo snackbar). */
+  textColor?: string;
 }) {
   const { colors } = useTheme();
-  const bg = kind === "primary" ? colors.primary : kind === "secondary" ? colors.surface : "transparent";
-  const fg = kind === "primary" ? colors.onPrimary : colors.text;
+  const bg = kind === "primary" ? colors.lime : kind === "secondary" ? colors.surface : "transparent";
+  const fg = textColor ?? (kind === "primary" ? colors.onLime : colors.ink);
   return (
     <Pressable
       accessibilityRole="button"
@@ -75,16 +101,21 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor: bg, minHeight: size === "cook" ? touch.cook : touch.min, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
+        {
+          backgroundColor: kind === "primary" && pressed ? colors.limePressed : bg,
+          minHeight: size === "cook" ? touch.cook : touch.min,
+          opacity: disabled ? 0.5 : pressed && kind !== "primary" ? 0.7 : 1,
+        },
       ]}
     >
-      <Text variant="label" color={fg} style={{ fontSize: size === "cook" ? 18 : 16 }}>
+      <Text variant="bodyStrong" color={fg}>
         {label}
       </Text>
     </Pressable>
   );
 }
 
+/** Pill chip: muted when off, soft lime when on (the selected-day treatment). */
 export function Chip({ label, selected, onPress }: { label: string; selected?: boolean; onPress?: () => void }) {
   const { colors } = useTheme();
   return (
@@ -92,19 +123,84 @@ export function Chip({ label, selected, onPress }: { label: string; selected?: b
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}
-      style={[
+      hitSlop={{ top: 4, bottom: 4 }}
+      style={({ pressed }) => [
         styles.chip,
-        { backgroundColor: selected ? colors.tintTomato : colors.surface, borderColor: selected ? colors.primary : colors.border },
+        { backgroundColor: selected ? colors.limeSoft : colors.surfaceMuted, opacity: pressed ? 0.75 : 1 },
       ]}
     >
-      <Text variant="label">{label}</Text>
+      <Text variant="label" weight={selected ? 500 : 400}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
 
-export function Card({ children, tint, style }: { children: ReactNode; tint?: string; style?: StyleProp<ViewStyle> }) {
+/** Flat white card. `hero` = the one lime-filled card a screen may have. */
+export function Card({
+  children,
+  tint,
+  hero,
+  style,
+}: {
+  children: ReactNode;
+  tint?: string;
+  hero?: boolean;
+  style?: StyleProp<ViewStyle>;
+}) {
   const { colors } = useTheme();
-  return <View style={[styles.card, { backgroundColor: tint ?? colors.surface }, style]}>{children}</View>;
+  return (
+    <View
+      style={[
+        styles.card,
+        hero && { borderRadius: radius.cardLg },
+        { backgroundColor: tint ?? (hero ? colors.limeSoft : colors.surface) },
+        style,
+      ]}
+    >
+      {children}
+    </View>
+  );
+}
+
+/** Round icon button (header actions, add). */
+export function IconButton({
+  label,
+  onPress,
+  children,
+  muted,
+}: {
+  label: string;
+  onPress: () => void;
+  children: ReactNode;
+  muted?: boolean;
+}) {
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.iconButton,
+        { backgroundColor: muted ? colors.surfaceMuted : colors.surface, opacity: pressed ? 0.7 : 1 },
+      ]}
+    >
+      {children}
+    </Pressable>
+  );
+}
+
+/** Text field: muted fill, no border until focused, pill-round corners like the rest of the kit. */
+export function Field({ variant = "body", style, ...rest }: TextInputProps & { variant?: Variant }) {
+  const { colors } = useTheme();
+  return (
+    <TextInput
+      placeholderTextColor={colors.inkSecondary}
+      {...rest}
+      style={[styles.field, textStyle(variant), { color: colors.ink, backgroundColor: colors.surfaceMuted }, style]}
+    />
+  );
 }
 
 export type ScreenState = "loading" | "empty" | "offline" | "error";
@@ -116,20 +212,28 @@ export function StateView({
   body,
   actionLabel,
   onAction,
+  illustration,
 }: {
   state: ScreenState;
   title: string;
   body?: string;
   actionLabel?: string;
   onAction?: () => void;
+  /** Art for this state (assets/media/illustrations); offline and error have defaults. */
+  illustration?: ImageSourcePropType | null;
 }) {
   const { colors } = useTheme();
+  const art = illustration ?? (state === "offline" ? illustrations.offline : state === "error" ? illustrations.error : null);
   return (
     <View style={styles.state} accessibilityLiveRegion="polite">
       {state === "loading" ? (
-        <ActivityIndicator color={colors.primary} />
+        <ActivityIndicator color={colors.limeText} />
+      ) : art ? (
+        <Image source={art} style={styles.illustration} resizeMode="contain" accessible={false} />
       ) : (
-        <View style={[styles.illustration, { backgroundColor: state === "error" ? colors.tintTomato : colors.tintHaldi }]} />
+        <View
+          style={[styles.illustration, styles.placeholder, { backgroundColor: state === "error" ? colors.alertSoft : colors.limePale }]}
+        />
       )}
       <Text variant="heading" style={{ textAlign: "center" }}>
         {title}
@@ -144,11 +248,16 @@ export function StateView({
   );
 }
 
+export { shadow };
+
 const styles = StyleSheet.create({
-  screenContent: { padding: space.lg, gap: space.lg, paddingBottom: space.xxxl },
+  screenContent: { paddingHorizontal: space.gutter, paddingTop: space.lg, gap: space.lg, paddingBottom: space.xxxl * 2 },
   button: { borderRadius: radius.pill, paddingHorizontal: space.xl, alignItems: "center", justifyContent: "center" },
-  chip: { borderRadius: radius.chip, borderWidth: 1, paddingHorizontal: space.md, minHeight: touch.min, justifyContent: "center" },
+  chip: { borderRadius: radius.pill, paddingHorizontal: space.lg, minHeight: 40, justifyContent: "center" },
   card: { borderRadius: radius.card, padding: space.lg, gap: space.sm },
+  iconButton: { width: 48, height: 48, borderRadius: radius.pill, alignItems: "center", justifyContent: "center" },
+  field: { borderRadius: radius.tag, paddingHorizontal: space.lg, paddingVertical: space.md, minHeight: touch.min },
   state: { alignItems: "center", gap: space.md, paddingVertical: space.xxxl },
-  illustration: { width: 96, height: 96, borderRadius: 48 },
+  illustration: { width: 160, height: 160 },
+  placeholder: { borderRadius: 80 },
 });

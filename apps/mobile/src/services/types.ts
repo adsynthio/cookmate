@@ -210,9 +210,53 @@ export interface RecipeService {
   searchRecipes(query: string): Promise<RecipeSummary[]>;
 }
 
+export type CookSession = {
+  id: string;
+  recipeId: string;
+  currentStep: number;
+  servings: number;
+  whoEating: string[];
+  status: "active" | "paused" | "completed" | "abandoned";
+};
+
+export type DeductionLine = {
+  itemId: string;
+  ingredient: string;
+  quantity: number | null;
+  unit: string | null;
+  currentQuantity: number | null;
+  staple: boolean;
+};
+
+export type DeductionAdjustment = { itemId: string; quantity?: number; skip?: boolean; stapleLevel?: StapleLevel };
+
+export type Rating = "loved" | "good" | "meh" | "bad";
+
+export interface CookingService {
+  /** KIT-070: start cooking a recipe (or its adapted variant). */
+  startSession(input: {
+    householdId: string;
+    recipeId: string;
+    servings: number;
+    whoEating: string[];
+    mode?: "touch" | "voice" | "hands_free";
+    recommendationId?: string;
+    languageCode: string;
+  }): Promise<string>;
+  getSession(sessionId: string): Promise<CookSession>;
+  /** The cook's session in progress, to resume from the Cook tab. */
+  getActiveSession(householdId: string): Promise<CookSession | null>;
+  advanceStep(sessionId: string, delta: number, channel?: "touch" | "voice"): Promise<{ currentStep: number; total: number }>;
+  /** KIT-037: finish and preview what comes off the pantry. */
+  completeSession(sessionId: string): Promise<DeductionLine[]>;
+  applyDeduction(sessionId: string, adjustments: DeductionAdjustment[]): Promise<string[]>;
+  submitFeedback(input: { sessionId: string; rating: Rating; tags?: string[]; comment?: string; makeAgain?: boolean }): Promise<void>;
+}
+
 export type Services = {
   auth: AuthService;
   preference: PreferenceService;
   kitchen: KitchenService;
   recipe: RecipeService;
+  cooking: CookingService;
 };

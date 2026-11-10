@@ -9,7 +9,18 @@ import type { Json } from "@/types/database";
 import { toDraft, toRpcItem } from "./drafts";
 import { RECIPE_SELECT, recipeDocFromRow, type RecipeRow } from "@/domain/recipes";
 
-import type { FlavorRole, LocationKind, MealSlot, Member, Memory, PantryItem, Pick, RecipeSummary, Services } from "./types";
+import type {
+  CookSession,
+  FlavorRole,
+  LocationKind,
+  MealSlot,
+  Member,
+  Memory,
+  PantryItem,
+  Pick,
+  RecipeSummary,
+  Services,
+} from "./types";
 
 type UseSoonRow = {
   id: string;
@@ -418,7 +429,110 @@ export const liveServices: Services = {
       }));
     },
   },
+  cooking: {
+    async startSession(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("start_cooking_session", {
+        p_household: input.householdId,
+        p_recipe: input.recipeId,
+        p_servings: input.servings,
+        p_who_eating: input.whoEating,
+        p_mode: input.mode ?? "touch",
+        p_recommendation: input.recommendationId,
+        p_language: input.languageCode,
+      });
+      if (error) throw error;
+      return data;
+    },
+    async getSession(sessionId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb
+        .from("cooking_sessions")
+        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status")
+        .eq("id", sessionId)
+        .single();
+      if (error) throw error;
+      return toSession(data);
+    },
+    async getActiveSession(householdId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb
+        .from("cooking_sessions")
+        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status")
+        .eq("household_id", householdId)
+        .eq("status", "active")
+        .order("last_activity_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? toSession(data) : null;
+    },
+    async advanceStep(sessionId, delta, channel = "touch") {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("advance_session_step", { p_session: sessionId, p_delta: delta, p_channel: channel });
+      if (error) throw error;
+      const r = data as { current_step: number; total: number };
+      return { currentStep: r.current_step, total: r.total };
+    },
+    async completeSession(sessionId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("complete_cooking_session", { p_session: sessionId });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        itemId: r.item_id,
+        ingredient: r.ingredient,
+        quantity: r.quantity === null ? null : Number(r.quantity),
+        unit: r.unit,
+        currentQuantity: r.current_quantity === null ? null : Number(r.current_quantity),
+        staple: r.staple,
+      }));
+    },
+    async applyDeduction(sessionId, adjustments) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("apply_session_deduction", {
+        p_session: sessionId,
+        p_adjustments: adjustments.map((a) => ({
+          item_id: a.itemId,
+          ...(a.quantity !== undefined ? { quantity: a.quantity } : {}),
+          ...(a.skip ? { skip: true } : {}),
+          ...(a.stapleLevel ? { staple_level: a.stapleLevel } : {}),
+        })),
+      });
+      if (error) throw error;
+      return data ?? [];
+    },
+    async submitFeedback({ sessionId, rating, tags, comment, makeAgain }) {
+      const sb = requireSupabase();
+      const { error } = await sb.rpc("submit_feedback", {
+        p_session: sessionId,
+        p_rating: rating,
+        p_tags: tags ?? [],
+        p_comment: comment,
+        p_make_again: makeAgain,
+      });
+      if (error) throw error;
+    },
+  },
 };
+
+function toSession(r: {
+  id: string;
+  recipe_id: string;
+  adapted_recipe_id: string | null;
+  current_step: number;
+  servings: number;
+  who_eating: string[];
+  status: string;
+}): CookSession {
+  return {
+    id: r.id,
+    recipeId: r.adapted_recipe_id ?? r.recipe_id,
+    currentStep: r.current_step,
+    servings: r.servings,
+    whoEating: r.who_eating ?? [],
+    status: r.status as CookSession["status"],
+  };
+}
 
 type SuggestMealsResponse = {
   batch_id: string;

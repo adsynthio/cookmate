@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
+import { itemName } from "@/components/kitchen/names";
 import { daysLeft } from "@/domain/pantry";
 import { dishImage } from "@/design-system/media";
 import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
@@ -133,7 +134,7 @@ function UseSoonStrip({ items }: { items: PantryItem[] }) {
             days === 0 ? t("home.today") : days === 1 ? t("home.dayLeft") : t("home.daysLeft", { days: days ?? "?" });
           return (
             <Card key={item.id} style={styles.useSoonCard}>
-              <Text variant="label">{item.name}</Text>
+              <Text variant="label">{itemName(item)}</Text>
               <Text variant="caption" muted>
                 {label}
                 {item.expiryEstimated ? ` · ${t("kitchen.estimated")}` : ""}

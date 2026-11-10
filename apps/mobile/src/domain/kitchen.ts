@@ -69,3 +69,27 @@ export function roughDuration(days: number): { unit: "day" | "week" | "month" | 
   if (days < 365) return { unit: "month", n: Math.round(days / 30) };
   return { unit: "year", n: Math.round(days / 365) };
 }
+
+/** Below this, the read-back marks an item "Please check" (KIT-031). */
+export const CHECK_CONFIDENCE = 0.8;
+
+export function needsCheck(d: { confidence: number }): boolean {
+  return d.confidence < CHECK_CONFIDENCE;
+}
+
+/** One sentence for reading the list aloud: "2 kg aloo, 12 ande, atta." */
+export function readBackText(items: { name: string; quantity: number | null; unit: string | null }[]): string {
+  const parts = items.map((i) => {
+    const q = formatQuantity(i.quantity, i.unit);
+    return q ? `${q} ${i.name}` : i.name;
+  });
+  return parts.length ? `${parts.join(", ")}.` : "";
+}
+
+/** Parse a typed quantity: "1.5", "1,5" and "" (unknown). Returns undefined when it isn't a number. */
+export function parseQuantity(text: string): number | null | undefined {
+  const s = text.trim().replace(",", ".");
+  if (s === "") return null;
+  const n = Number(s);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}

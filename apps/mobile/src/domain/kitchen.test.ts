@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { displayName, expiryInfo, formatQuantity, roughDuration, shelfLife } from "./kitchen.ts";
+import { displayName, expiryInfo, formatQuantity, needsCheck, parseQuantity, readBackText, roughDuration, shelfLife } from "./kitchen.ts";
 
 const curd = { name: "curd", hi: "दही", latn: "dahi", location: "fridge" as const, life: { fridge: 4 } };
 
@@ -36,4 +36,29 @@ test("shelf life lists the usual place first, then longest-lasting", () => {
   assert.deepEqual(roughDuration(21), { unit: "week", n: 3 });
   assert.deepEqual(roughDuration(180), { unit: "month", n: 6 });
   assert.deepEqual(roughDuration(1825), { unit: "year", n: 5 });
+});
+
+test("items the parser is unsure about are marked for checking", () => {
+  assert.equal(needsCheck({ confidence: 0.95 }), false);
+  assert.equal(needsCheck({ confidence: 0.6 }), true);
+});
+
+test("the read-back is one short sentence", () => {
+  assert.equal(
+    readBackText([
+      { name: "aloo", quantity: 2, unit: "kg" },
+      { name: "ande", quantity: 12, unit: "piece" },
+      { name: "atta", quantity: null, unit: null },
+    ]),
+    "2 kg aloo, 12 ande, atta.",
+  );
+  assert.equal(readBackText([]), "");
+});
+
+test("typed quantities", () => {
+  assert.equal(parseQuantity("1.5"), 1.5);
+  assert.equal(parseQuantity(" 1,5 "), 1.5);
+  assert.equal(parseQuantity(""), null);
+  assert.equal(parseQuantity("abc"), undefined);
+  assert.equal(parseQuantity("0"), undefined);
 });

@@ -54,6 +54,7 @@ export function Button({
   size = "regular",
   disabled,
   accessibilityHint,
+  textColor,
 }: {
   label: string;
   onPress: () => void;
@@ -61,10 +62,12 @@ export function Button({
   size?: "regular" | "cook";
   disabled?: boolean;
   accessibilityHint?: string;
+  /** Override for quiet buttons on dark surfaces (e.g. the undo snackbar). */
+  textColor?: string;
 }) {
   const { colors } = useTheme();
   const bg = kind === "primary" ? colors.primary : kind === "secondary" ? colors.surface : "transparent";
-  const fg = kind === "primary" ? colors.onPrimary : colors.text;
+  const fg = textColor ?? (kind === "primary" ? colors.onPrimary : colors.text);
   return (
     <Pressable
       accessibilityRole="button"

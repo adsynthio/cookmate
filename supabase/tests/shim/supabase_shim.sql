@@ -55,4 +55,11 @@ alter default privileges in schema public grant execute on functions to anon, au
 create extension if not exists pgtap with schema extensions;
 
 -- Supabase's default search_path includes the extensions schema.
+-- Supabase ships an (initially empty) publication that Realtime listens to.
+do $$ begin
+  if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    create publication supabase_realtime;
+  end if;
+end $$;
+
 alter database postgres set search_path = "$user", public, extensions;

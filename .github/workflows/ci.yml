@@ -54,7 +54,7 @@ jobs:
         run: "! grep -rEn 'service_role|SERVICE_ROLE|sk-ant-' src app.json"
 
   functions:
-    name: Edge Functions (shared parser in sync, deno check + tests)
+    name: Edge Functions (shared code in sync, deno check + tests)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -63,8 +63,8 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: "2.9.6"
-      - run: deno check supabase/functions/parse-inventory/index.ts
-      - run: deno test supabase/functions/parse-inventory/
+      - run: deno check supabase/functions/*/index.ts
+      - run: deno test supabase/functions/
 
   voice-agent:
     name: Voice agent (lint + tests)

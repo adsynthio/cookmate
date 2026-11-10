@@ -6,6 +6,8 @@ export type CatalogItem = CatalogEntry & {
   category: string;
   life: Partial<Record<LocationKind, number>>;
   measures?: Record<string, number>;
+  flags?: string[];
+  allergens?: string[];
 };
 
 /** Name in the user's language: Hindi script for hi, Hinglish for hinglish, English otherwise. */

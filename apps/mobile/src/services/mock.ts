@@ -4,11 +4,17 @@ import "expo-sqlite/localStorage/install";
 
 import { useSoon } from "@/domain/pantry";
 
-import { catalogEntry, catalogIndex } from "@/data/catalog";
+import { catalog, catalogEntry, catalogIndex } from "@/data/catalog";
 import { parsePantryText } from "@/domain/pantryParse";
 
 import { toDraft } from "./drafts";
-import type { HouseholdRef, Memory, PantryItem, PickBatch, Services } from "./types";
+import { recipeBySlug, recipeDocs } from "@/data/recipes";
+import { localHour, slotForHour } from "@/domain/ranking";
+import { applyRules, ingredientFitsDiet, summarise, validateAdaptation } from "@/domain/adapt";
+import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
+
+import { buildPicks } from "./picks";
+import type { HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -56,6 +62,8 @@ let pantry: PantryItem[] = seed.map(([id, ingredientKey, name, quantity, unit, l
   flavorRoles: id === "i9" ? ["heat", "acid"] : [],
 }));
 const finished = new Map<string, PantryItem>();
+/** Items added as guesses from yesterday's dish (KIT-026). */
+const guesses = new Set<string>();
 const listeners = new Set<() => void>();
 const changed = () => listeners.forEach((fn) => fn());
 let nextId = 100;
@@ -66,24 +74,30 @@ let memories: Memory[] = [
   { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null },
 ];
 
-const picks: PickBatch = {
-  batchId: "b1",
-  mealSlot: "dinner",
-  hero: {
-    recommendationId: "r1",
-    recipeId: "palak-paneer",
-    title: "Palak paneer",
-    reason: "Uses your palak before it wilts — kept mild for Aarav",
-    uses: ["Palak", "Paneer", "Pyaaz"],
-    missing: [],
-    totalTimeMin: 35,
-    imageUrl: null,
-  },
-  alternates: [
-    { recommendationId: "r2", recipeId: "besan-aloo-sabzi", title: "Besan wali aloo sabzi", reason: "Quick, all from your kitchen", uses: ["Aloo", "Besan", "Dahi"], missing: [], totalTimeMin: 25, imageUrl: null },
-    { recommendationId: "r3", recipeId: "aloo-pyaaz-pakode", title: "Aloo pyaaz pakode", reason: "Goes with your hari chutney", uses: ["Aloo", "Pyaaz", "Besan", "Hari chutney"], missing: [], totalTimeMin: 20, imageUrl: null },
-  ],
-};
+// The Sunita household from the PRD, used when the mock household was created before members were stored.
+const PERSONA: Member[] = [
+  { id: "mock-member", displayName: "Sunita", ageGroup: "adult", diet: "veg", spice: 3, notes: null },
+  { id: "mock-rakesh", displayName: "Rakesh", ageGroup: "adult", diet: "veg", spice: 4, notes: "less oil" },
+  { id: "mock-aarav", displayName: "Aarav", ageGroup: "child", diet: "veg", spice: 1, notes: null },
+];
+const MEMBERS_KEY = "cookmate.mock.members";
+
+function readMembers(): Member[] {
+  try {
+    const raw = globalThis.localStorage?.getItem(MEMBERS_KEY);
+    return raw ? (JSON.parse(raw) as Member[]) : PERSONA;
+  } catch {
+    return PERSONA;
+  }
+}
+
+/** Recipes cooked or accepted, for "no repeat within 3 days". */
+const recent: { recipeId: string; at: number }[] = [];
+const shown = new Map<string, string>(); // recommendationId -> recipeId
+let batchNo = 1;
+/** The household's adapted variants (KIT-051), kept for the session. */
+const adapted = new Map<string, RecipeDoc>();
+let adaptedNo = 1;
 
 export const mockServices: Services = {
   auth: {
@@ -100,10 +114,23 @@ export const mockServices: Services = {
       if (members.length < 1 || members.length > 6) throw new Error("a household has 1 to 6 members");
       const ref: HouseholdRef = { householdId: "mock-household", memberId: "mock-member", languageCode: language };
       globalThis.localStorage?.setItem(HOUSEHOLD_KEY, JSON.stringify(ref));
+      const stored: Member[] = members.map((m, i) => ({
+        id: m.isSelf ? "mock-member" : `mock-m${i}`,
+        displayName: m.displayName,
+        ageGroup: m.ageGroup ?? "adult",
+        diet: m.diet ?? "veg",
+        spice: m.spice ?? 3,
+        notes: null,
+      }));
+      globalThis.localStorage?.setItem(MEMBERS_KEY, JSON.stringify(stored));
       return { householdId: ref.householdId, memberId: ref.memberId };
     },
     async recordConsents() {
       await delay(100);
+    },
+    async listMembers() {
+      await delay(150);
+      return readMembers();
     },
     async listMemories() {
       await delay(200);
@@ -175,7 +202,10 @@ export const mockServices: Services = {
         item.expiryEstimated = false;
       }
       if (c.customName !== undefined) item.name = c.customName;
-      if (c.confirm || c.quantity !== undefined || c.stapleLevel !== undefined) item.confidence = 0.95;
+      if (c.confirm || c.quantity !== undefined || c.stapleLevel !== undefined) {
+        item.confidence = 0.95;
+        item.guess = false;
+      }
       changed();
     },
     async finishItem(itemId) {
@@ -192,6 +222,46 @@ export const mockServices: Services = {
       pantry.push(item);
       changed();
     },
+    async guessFromRecipe(_householdId, recipeId) {
+      await delay(300);
+      const doc = recipeBySlug(recipeId);
+      if (!doc) throw new Error("recipe not found");
+      const have = new Set(pantry.map((p) => p.ingredientKey));
+      const ids: string[] = [];
+      for (const i of doc.ingredients) {
+        if (i.optional || have.has(i.ingredient)) continue;
+        have.add(i.ingredient);
+        const entry = catalogEntry(i.ingredient);
+        const location = entry?.location ?? "pantry";
+        const days = entry?.life[location];
+        const id = `i${nextId++}`;
+        pantry.push({
+          id,
+          ingredientKey: i.ingredient,
+          name: i.ingredient,
+          quantity: null,
+          unit: null,
+          location,
+          stapleLevel: entry?.staple || location === "staples" ? "full" : null,
+          expiryDate: days !== undefined ? isoInDays(days) : null,
+          expiryEstimated: true,
+          confidence: 0.4,
+          state: "raw",
+          flavorRoles: [],
+          guess: true,
+        });
+        guesses.add(id);
+        ids.push(id);
+      }
+      changed();
+      return ids;
+    },
+    async clearGuesses(_householdId, itemIds) {
+      const before = pantry.length;
+      pantry = pantry.filter((p) => !(guesses.has(p.id) && p.confidence <= 0.5 && (!itemIds || itemIds.includes(p.id))));
+      changed();
+      return before - pantry.length;
+    },
     async addToList() {
       await delay(150);
     },
@@ -203,9 +273,56 @@ export const mockServices: Services = {
     },
   },
   recipe: {
-    async getPicks() {
-      await delay(700);
-      return picks;
+    async getPicks(input) {
+      await delay(600);
+      const slot = input.mealSlot ?? slotForHour(localHour(new Date(), "Asia/Kolkata"));
+      const now = Date.now();
+      const batch = buildPicks({
+        docs: recipeDocs,
+        items: pantry,
+        members: readMembers(),
+        input,
+        slot,
+        recent: recent.map((r) => ({ recipeId: r.recipeId, daysAgo: Math.floor((now - r.at) / 86_400_000) })),
+        batchId: `b${batchNo++}`,
+      });
+      for (const p of [batch.hero, ...batch.alternates]) if (p) shown.set(p.recommendationId, p.recipeId);
+      return batch;
+    },
+    async respondToPick(recommendationId, status) {
+      const recipeId = shown.get(recommendationId);
+      if (status === "accepted" && recipeId) recent.push({ recipeId, at: Date.now() });
+    },
+    async adaptRecipe(input) {
+      await delay(500);
+      const base = adapted.get(input.recipeId) ?? recipeBySlug(input.recipeId);
+      if (!base) throw new Error("recipe not found");
+      const a = applyRules(base, input);
+      const byName = new Map(catalog.map((c) => [c.name, c]));
+      const problems = validateAdaptation(base, a, {
+        known: (k) => byName.has(k),
+        allowed: (d, k) => ingredientFitsDiet(d, byName.get(k)),
+        diet: input.diet,
+      });
+      const summary = summarise(a);
+      if (problems.length) return { adaptedRecipeId: null, summary, changedSteps: [], unresolved: a.unresolved };
+      const id = `adapted-${adaptedNo++}`;
+      adapted.set(id, { ...a.doc, id, slug: base.slug, parent_id: base.id ?? base.slug, description: summary || base.description });
+      return { adaptedRecipeId: id, summary, changedSteps: a.changedSteps, unresolved: [] };
+    },
+    async getRecipe(idOrSlug) {
+      await delay(200);
+      const doc = adapted.get(idOrSlug) ?? recipeBySlug(idOrSlug);
+      if (!doc) throw new Error("recipe not found");
+      return doc;
+    },
+    async searchRecipes(query) {
+      await delay(150);
+      const byName = new Map(catalog.map((c) => [c.name, c]));
+      return searchRecipes(recipeDocs, query, (k) => {
+        const c = byName.get(k);
+        return c ? [c.hi ?? "", c.latn ?? "", ...(c.aliases ?? [])] : [];
+      }).map(toSummary);
     },
   },
 };

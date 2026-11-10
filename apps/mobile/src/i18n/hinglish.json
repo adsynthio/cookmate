@@ -210,5 +210,16 @@
   "equip.pressure_cooker": "pressure cooker",
   "equip.kadai": "kadai",
   "equip.tawa": "tawa",
-  "equip.mixer_grinder": "mixie"
+  "equip.mixer_grinder": "mixie",
+  "quick.cta": "Quick start: kal kya banaya tha?",
+  "quick.ctaBody": "Usse andaaza lagaunga ki rasoi mein kya hai.",
+  "quick.title": "Kal kya banaya tha?",
+  "quick.body": "Dish chuno. Uski cheezein andaaze se jodunga, jab tak aap haan na kaho \"Abhi bhi hai?\" likha rahega.",
+  "quick.added": "{dish} se {n} andaaze jode",
+  "quick.none": "{dish}: sab kuch pehle se rasoi mein hai",
+  "quick.addedBody": "Rasoi mein confirm karne tak ye suggestions mein nahi gine jayenge.",
+  "quick.clear": "Ye andaaze hatao",
+  "quick.cleared": "Hata diye",
+  "quick.done": "Ho gaya",
+  "quick.clearAll": "Saare andaaze hatao"
 }

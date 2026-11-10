@@ -26,6 +26,8 @@ export type PantryItem = {
   confidence: number;
   state: ItemState;
   flavorRoles: FlavorRole[];
+  /** An unconfirmed guess from yesterday's dish (KIT-026); "Clear all guesses" removes these. */
+  guess?: boolean;
 };
 
 /** An item on the confirm sheet, before it is added (KIT-031 read-back). */
@@ -185,6 +187,10 @@ export interface KitchenService {
   finishItem(itemId: string, discarded: boolean): Promise<void>;
   /** Undo of finish/discard. */
   reopenItem(itemId: string): Promise<void>;
+  /** KIT-026: yesterday's dish -> unconfirmed guesses (confidence 0.4). Returns the new item ids. */
+  guessFromRecipe(householdId: string, recipeId: string): Promise<string[]>;
+  /** KIT-026: clear guesses nobody confirmed (all of them, or just these). */
+  clearGuesses(householdId: string, itemIds?: string[]): Promise<number>;
   /** KIT-033: Low/Out staples -> shopping list. */
   addToList(householdId: string, items: { name: string; reason: "running_low" | "manual" }[]): Promise<void>;
   /** KIT-030: pantry changes from other phones; returns an unsubscribe function. */

@@ -58,6 +58,8 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
         "expiry_date: string; days_left: number; confidence: number }[]",
     ),
     "add_to_shopping_list": ("{ p_household: string; p_items: Json }", "string[]"),
+    "guess_pantry_from_recipe": ("{ p_household: string; p_recipe: string }", "string[]"),
+    "clear_pantry_guesses": ("{ p_household: string; p_items?: string[] }", "number"),
     "search_recipes": (
         "{ p_query: string; p_limit?: number }",
         "{ id: string; slug: string | null; title: string; titles: Json; course: string; diet: string; "

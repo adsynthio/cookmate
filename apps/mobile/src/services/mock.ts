@@ -62,6 +62,8 @@ let pantry: PantryItem[] = seed.map(([id, ingredientKey, name, quantity, unit, l
   flavorRoles: id === "i9" ? ["heat", "acid"] : [],
 }));
 const finished = new Map<string, PantryItem>();
+/** Items added as guesses from yesterday's dish (KIT-026). */
+const guesses = new Set<string>();
 const listeners = new Set<() => void>();
 const changed = () => listeners.forEach((fn) => fn());
 let nextId = 100;
@@ -200,7 +202,10 @@ export const mockServices: Services = {
         item.expiryEstimated = false;
       }
       if (c.customName !== undefined) item.name = c.customName;
-      if (c.confirm || c.quantity !== undefined || c.stapleLevel !== undefined) item.confidence = 0.95;
+      if (c.confirm || c.quantity !== undefined || c.stapleLevel !== undefined) {
+        item.confidence = 0.95;
+        item.guess = false;
+      }
       changed();
     },
     async finishItem(itemId) {
@@ -216,6 +221,46 @@ export const mockServices: Services = {
       finished.delete(itemId);
       pantry.push(item);
       changed();
+    },
+    async guessFromRecipe(_householdId, recipeId) {
+      await delay(300);
+      const doc = recipeBySlug(recipeId);
+      if (!doc) throw new Error("recipe not found");
+      const have = new Set(pantry.map((p) => p.ingredientKey));
+      const ids: string[] = [];
+      for (const i of doc.ingredients) {
+        if (i.optional || have.has(i.ingredient)) continue;
+        have.add(i.ingredient);
+        const entry = catalogEntry(i.ingredient);
+        const location = entry?.location ?? "pantry";
+        const days = entry?.life[location];
+        const id = `i${nextId++}`;
+        pantry.push({
+          id,
+          ingredientKey: i.ingredient,
+          name: i.ingredient,
+          quantity: null,
+          unit: null,
+          location,
+          stapleLevel: entry?.staple || location === "staples" ? "full" : null,
+          expiryDate: days !== undefined ? isoInDays(days) : null,
+          expiryEstimated: true,
+          confidence: 0.4,
+          state: "raw",
+          flavorRoles: [],
+          guess: true,
+        });
+        guesses.add(id);
+        ids.push(id);
+      }
+      changed();
+      return ids;
+    },
+    async clearGuesses(_householdId, itemIds) {
+      const before = pantry.length;
+      pantry = pantry.filter((p) => !(guesses.has(p.id) && p.confidence <= 0.5 && (!itemIds || itemIds.includes(p.id))));
+      changed();
+      return before - pantry.length;
     },
     async addToList() {
       await delay(150);

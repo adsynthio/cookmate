@@ -19,16 +19,16 @@ export const onboarding: Record<"producePile" | "leafPalak" | "leafMethi" | "lea
 };
 
 export const dishes: Record<"besan-chilla" | "chicken-curry" | "dal-tadka" | "egg-bhurji" | "jeera-aloo" | "kadhi-pakora" | "kanda-poha" | "matar-paneer" | "moong-dal-khichdi" | "rajma", ImageSourcePropType | null> = {
-  "besan-chilla": null,
-  "chicken-curry": null,
-  "dal-tadka": null,
-  "egg-bhurji": null,
-  "jeera-aloo": null,
-  "kadhi-pakora": null,
-  "kanda-poha": null,
-  "matar-paneer": null,
-  "moong-dal-khichdi": null,
-  "rajma": null,
+  "besan-chilla": require("../../assets/media/dishes/besan-chilla.png") as ImageSourcePropType,
+  "chicken-curry": require("../../assets/media/dishes/chicken-curry.png") as ImageSourcePropType,
+  "dal-tadka": require("../../assets/media/dishes/dal-tadka.png") as ImageSourcePropType,
+  "egg-bhurji": require("../../assets/media/dishes/egg-bhurji.png") as ImageSourcePropType,
+  "jeera-aloo": require("../../assets/media/dishes/jeera-aloo.png") as ImageSourcePropType,
+  "kadhi-pakora": require("../../assets/media/dishes/kadhi-pakora.png") as ImageSourcePropType,
+  "kanda-poha": require("../../assets/media/dishes/kanda-poha.png") as ImageSourcePropType,
+  "matar-paneer": require("../../assets/media/dishes/matar-paneer.png") as ImageSourcePropType,
+  "moong-dal-khichdi": require("../../assets/media/dishes/moong-dal-khichdi.png") as ImageSourcePropType,
+  "rajma": require("../../assets/media/dishes/rajma.png") as ImageSourcePropType,
 };
 
 /** Photo for a recipe by slug, if one has been generated. */

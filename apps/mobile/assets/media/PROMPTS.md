@@ -100,8 +100,8 @@ These replace the Expo placeholders that are there now. The mark is a simple gly
 
 ## Checklist
 
-- [ ] 1. Six state illustrations
-- [ ] 2. Produce pile and three leaves
-- [ ] 3. Ten dish photos
-- [ ] 4. App icon set and splash
+- [x] 1. Six state illustrations (redo later: error, all-done and offline are cropped at the edges)
+- [x] 2. Produce pile and three leaves (redo later: the pile should be a studio photo, not flat art)
+- [ ] 3. Ten dish photos. **The current ones are temporary placeholders of unconfirmed origin: replace all ten before any release.**
+- [x] 4. App icon set and splash
 - [ ] `python3 tools/media/sync.py` reports no problems

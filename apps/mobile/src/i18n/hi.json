@@ -155,5 +155,6 @@
   "duration.day": "{n} दिन",
   "duration.week": "{n} हफ़्ते",
   "duration.month": "{n} महीने",
-  "duration.year": "{n} साल"
+  "duration.year": "{n} साल",
+  "kitchen.unit": "इकाई"
 }

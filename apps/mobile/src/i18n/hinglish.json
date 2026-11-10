@@ -125,5 +125,6 @@
   "duration.day": "{n} din",
   "duration.week": "{n} hafte",
   "duration.month": "{n} mahine",
-  "duration.year": "{n} saal"
+  "duration.year": "{n} saal",
+  "kitchen.unit": "Unit"
 }

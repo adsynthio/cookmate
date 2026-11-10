@@ -7,9 +7,11 @@ import {
   ScrollView,
   StyleSheet,
   Text as RNText,
+  TextInput,
   View,
   type ImageSourcePropType,
   type StyleProp,
+  type TextInputProps,
   type TextProps as RNTextProps,
   type ViewStyle,
 } from "react-native";
@@ -189,6 +191,18 @@ export function IconButton({
   );
 }
 
+/** Text field: muted fill, no border until focused, pill-round corners like the rest of the kit. */
+export function Field({ variant = "body", style, ...rest }: TextInputProps & { variant?: Variant }) {
+  const { colors } = useTheme();
+  return (
+    <TextInput
+      placeholderTextColor={colors.inkSecondary}
+      {...rest}
+      style={[styles.field, textStyle(variant), { color: colors.ink, backgroundColor: colors.surfaceMuted }, style]}
+    />
+  );
+}
+
 export type ScreenState = "loading" | "empty" | "offline" | "error";
 
 /** HOME-08 / KIT-012: every state has copy, an illustration slot and a recovery action. */
@@ -242,6 +256,7 @@ const styles = StyleSheet.create({
   chip: { borderRadius: radius.pill, paddingHorizontal: space.lg, minHeight: 40, justifyContent: "center" },
   card: { borderRadius: radius.card, padding: space.lg, gap: space.sm },
   iconButton: { width: 48, height: 48, borderRadius: radius.pill, alignItems: "center", justifyContent: "center" },
+  field: { borderRadius: radius.tag, paddingHorizontal: space.lg, paddingVertical: space.md, minHeight: touch.min },
   state: { alignItems: "center", gap: space.md, paddingVertical: space.xxxl },
   illustration: { width: 160, height: 160 },
   placeholder: { borderRadius: 80 },

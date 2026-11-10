@@ -240,5 +240,16 @@
   "equip.pressure_cooker": "प्रेशर कुकर",
   "equip.kadai": "कड़ाही",
   "equip.tawa": "तवा",
-  "equip.mixer_grinder": "मिक्सी"
+  "equip.mixer_grinder": "मिक्सी",
+  "quick.cta": "जल्दी शुरुआत: कल क्या बनाया था?",
+  "quick.ctaBody": "उससे अंदाज़ा लगाऊँगा कि रसोई में क्या है।",
+  "quick.title": "कल क्या बनाया था?",
+  "quick.body": "डिश चुनिए। उसकी चीज़ें अंदाज़े से जोड़ूँगा, जब तक आप हाँ न कहें \"अभी भी है?\" लिखा रहेगा।",
+  "quick.added": "{dish} से {n} अंदाज़े जोड़े",
+  "quick.none": "{dish}: सब कुछ पहले से रसोई में है",
+  "quick.addedBody": "रसोई में पक्का करने तक ये सुझावों में नहीं गिने जाएंगे।",
+  "quick.clear": "ये अंदाज़े हटाइए",
+  "quick.cleared": "हटा दिए",
+  "quick.done": "हो गया",
+  "quick.clearAll": "सारे अंदाज़े हटाइए"
 }

@@ -4,9 +4,9 @@ import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import { MicButton } from "@/components/MicButton";
 import { UndoBar } from "@/components/UndoBar";
 import { catalogEntry } from "@/data/catalog";
+import { illustrations } from "@/design-system/media";
 import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space, touch } from "@/design-system/tokens";
@@ -61,7 +61,6 @@ export default function KitchenScreen() {
           <Text variant="display" style={{ flex: 1 }} accessibilityRole="header">
             {t("kitchen.title")}
           </Text>
-          <MicButton />
         </View>
         <Button label={`+ ${t("kitchen.add")}`} onPress={() => router.push("/pantry/add")} />
 
@@ -78,6 +77,7 @@ export default function KitchenScreen() {
         ) : kitchen.data.length === 0 ? (
           <StateView
             state="empty"
+            illustration={illustrations.emptyKitchen}
             title={t("state.empty.kitchen.title")}
             body={t("state.empty.kitchen.body")}
             actionLabel={t("state.empty.kitchen.action")}
@@ -149,7 +149,7 @@ function ItemRow({ item }: { item: PantryItem }) {
       <View style={{ flex: 1, gap: 2 }}>
         <Text variant="heading">{itemName(item)}</Text>
         {sub.length ? (
-          <Text variant="caption" color={expiry && expiry.kind !== "later" ? colors.primaryText : colors.textMuted}>
+          <Text variant="caption" color={expiry && expiry.kind !== "later" ? colors.limeText : colors.inkSecondary}>
             {sub.join(" · ")}
           </Text>
         ) : null}

@@ -1,7 +1,8 @@
-// A large, full-width choice (language, spice, diet). Selected state is shown by colour, border and a check,
-// and announced to screen readers as a radio button.
+// A large, full-width choice (language, spice, diet): a flat white card that turns soft lime with a lime check
+// disc when chosen (colour plus the check, never colour alone), announced to screen readers as a radio button.
 import { Pressable, StyleSheet, View } from "react-native";
 
+import { Icon } from "@/design-system/icons";
 import { Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space, touch } from "@/design-system/tokens";
@@ -30,8 +31,8 @@ export function ChoiceRow({
         styles.row,
         {
           minHeight: large ? 72 : touch.cook,
-          backgroundColor: selected ? colors.tintTomato : colors.surface,
-          borderColor: selected ? colors.primary : colors.border,
+          backgroundColor: selected ? colors.limeSoft : colors.surface,
+          borderColor: selected ? colors.lime : "transparent",
           opacity: pressed ? 0.85 : 1,
         },
       ]}
@@ -41,8 +42,10 @@ export function ChoiceRow({
         {detail ? <Text muted>{detail}</Text> : null}
       </View>
       <View
-        style={[styles.dot, { borderColor: selected ? colors.primary : colors.border, backgroundColor: selected ? colors.primary : "transparent" }]}
-      />
+        style={[styles.dot, { borderColor: selected ? colors.lime : colors.line, backgroundColor: selected ? colors.lime : "transparent" }]}
+      >
+        {selected ? <Icon name="check" size={18} color={colors.onLime} /> : null}
+      </View>
     </Pressable>
   );
 }
@@ -57,5 +60,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingVertical: space.md,
   },
-  dot: { width: 24, height: 24, borderRadius: 12, borderWidth: 2 },
+  dot: { width: 28, height: 28, borderRadius: 14, borderWidth: 2, alignItems: "center", justifyContent: "center" },
 });

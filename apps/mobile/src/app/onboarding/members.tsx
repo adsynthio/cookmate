@@ -4,9 +4,9 @@ import { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
 import { StepScreen } from "@/components/onboarding/StepScreen";
-import { Button, Card, Chip, Text } from "@/design-system/primitives";
+import { Button, Card, Chip, Text, textStyle } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, space, touch, type as typeScale } from "@/design-system/tokens";
+import { radius, space, touch } from "@/design-system/tokens";
 import { checkMembers, MAX_MEMBERS, MAX_NAME_LENGTH, type AgeGroup } from "@/domain/onboarding";
 import { t, useLocale, type StringKey } from "@/i18n";
 import { useOnboarding } from "@/state/onboarding";
@@ -34,7 +34,7 @@ export default function MembersScreen() {
       onAction={next}
       footer={
         tried && problem !== "none" ? (
-          <Text color={colors.primaryText} accessibilityLiveRegion="assertive">
+          <Text color={colors.limeText} accessibilityLiveRegion="assertive">
             {t(`onb.members.error.${problem}` as StringKey)}
           </Text>
         ) : null
@@ -58,12 +58,12 @@ export default function MembersScreen() {
             value={m.displayName}
             onChangeText={(v) => setName(m.key, v)}
             placeholder={m.isSelf ? t("onb.members.yourName") : t("onb.members.name")}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.inkSecondary}
             accessibilityLabel={m.isSelf ? t("onb.members.yourName") : t("onb.members.name")}
             maxLength={MAX_NAME_LENGTH}
             autoCapitalize="words"
             returnKeyType="done"
-            style={[styles.input, typeScale.heading, { color: colors.text, backgroundColor: colors.bg, borderColor: colors.border }]}
+            style={[styles.input, textStyle("heading"), { color: colors.ink, backgroundColor: colors.canvas, borderColor: colors.line }]}
           />
           <View style={styles.chips} accessibilityRole="radiogroup">
             {AGE_GROUPS.map((a) => (
@@ -79,6 +79,6 @@ export default function MembersScreen() {
 
 const styles = StyleSheet.create({
   labelRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: touch.min },
-  input: { minHeight: touch.cook, borderWidth: 1, borderRadius: radius.chip, paddingHorizontal: space.md },
+  input: { minHeight: touch.cook, borderWidth: 0, borderRadius: radius.tag, paddingHorizontal: space.md },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
 });

@@ -1,13 +1,13 @@
 // Home: "Tonight, decided" (HOME-01), craving chips (HOME-03), Use Soon strip (HOME-04), all states (HOME-08).
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
 
-import { MicButton } from "@/components/MicButton";
 import { daysLeft } from "@/domain/pantry";
+import { dishImage } from "@/design-system/media";
 import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { space } from "@/design-system/tokens";
+import { size, space } from "@/design-system/tokens";
 import { t, useLocale, type StringKey } from "@/i18n";
 import { services, type PantryItem, type Pick } from "@/services";
 import { useSession } from "@/state/session";
@@ -48,7 +48,6 @@ export default function HomeScreen() {
           </Text>
           <Text variant="display">{t("home.greeting")}</Text>
         </View>
-        <MicButton />
       </View>
 
       {picks.isPending ? (
@@ -85,15 +84,25 @@ export default function HomeScreen() {
   );
 }
 
+/** The screen's one lime card (brand kit HighlightCard): title and reason on the left, the dish in a circle. */
 function HeroPick({ pick }: { pick: Pick }) {
   const { colors } = useTheme();
+  const photo = pick.imageUrl ? { uri: pick.imageUrl } : dishImage(pick.recipeId);
   return (
-    <Card style={{ gap: space.md }}>
-      <View style={[styles.heroImage, { backgroundColor: colors.tintHaldi }]} accessible={false} />
-      <Text variant="title">{pick.title}</Text>
-      <Text muted>{pick.reason}</Text>
+    <Card hero style={{ gap: space.md }}>
+      <View style={styles.heroRow}>
+        <View style={{ flex: 1, gap: space.sm }}>
+          <Text variant="title">{pick.title}</Text>
+          <Text muted>{pick.reason}</Text>
+        </View>
+        {photo ? (
+          <Image source={photo} style={styles.heroImage} accessible={false} />
+        ) : (
+          <View style={[styles.heroImage, { backgroundColor: colors.limePale }]} accessible={false} />
+        )}
+      </View>
       {pick.missing.length > 0 ? (
-        <Text variant="caption" color={colors.primaryText}>
+        <Text variant="label" muted>
           {t("home.missing", { items: pick.missing.join(", ") })}
         </Text>
       ) : null}
@@ -114,7 +123,6 @@ function AlternatePick({ pick }: { pick: Pick }) {
 }
 
 function UseSoonStrip({ items }: { items: PantryItem[] }) {
-  const { colors } = useTheme();
   return (
     <View style={{ gap: space.sm }}>
       <Text variant="heading">{t("home.useSoon")}</Text>
@@ -124,7 +132,7 @@ function UseSoonStrip({ items }: { items: PantryItem[] }) {
           const label =
             days === 0 ? t("home.today") : days === 1 ? t("home.dayLeft") : t("home.daysLeft", { days: days ?? "?" });
           return (
-            <Card key={item.id} tint={colors.tintHaldi} style={styles.useSoonCard}>
+            <Card key={item.id} style={styles.useSoonCard}>
               <Text variant="label">{item.name}</Text>
               <Text variant="caption" muted>
                 {label}
@@ -140,6 +148,7 @@ function UseSoonStrip({ items }: { items: PantryItem[] }) {
 
 const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "flex-end", gap: space.md },
-  heroImage: { height: 160, borderRadius: 16 },
+  heroRow: { flexDirection: "row", alignItems: "center", gap: space.md },
+  heroImage: { width: size.ring, height: size.ring, borderRadius: size.ring / 2 },
   useSoonCard: { minWidth: 120, paddingVertical: space.md },
 });

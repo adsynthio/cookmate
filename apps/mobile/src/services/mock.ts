@@ -4,6 +4,10 @@ import "expo-sqlite/localStorage/install";
 
 import { useSoon } from "@/domain/pantry";
 
+import { catalogEntry, catalogIndex } from "@/data/catalog";
+import { parsePantryText } from "@/domain/pantryParse";
+
+import { toDraft } from "./drafts";
 import type { HouseholdRef, Memory, PantryItem, PickBatch, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
@@ -31,17 +35,30 @@ function isoInDays(days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-const pantry: PantryItem[] = [
-  { id: "i1", name: "Palak", quantity: 1, unit: "bunch", location: "fridge", stapleLevel: null, expiryDate: isoInDays(1), expiryEstimated: true, confidence: 0.9 },
-  { id: "i2", name: "Paneer", quantity: 200, unit: "g", location: "fridge", stapleLevel: null, expiryDate: isoInDays(2), expiryEstimated: false, confidence: 0.95 },
-  { id: "i3", name: "Dahi", quantity: 1, unit: "katori", location: "fridge", stapleLevel: null, expiryDate: isoInDays(3), expiryEstimated: true, confidence: 0.8 },
-  { id: "i4", name: "Tamatar", quantity: 2, unit: "piece", location: "fridge", stapleLevel: null, expiryDate: isoInDays(5), expiryEstimated: true, confidence: 0.7 },
-  { id: "i5", name: "Aloo", quantity: 2, unit: "kg", location: "pantry", stapleLevel: null, expiryDate: isoInDays(14), expiryEstimated: true, confidence: 0.9 },
-  { id: "i6", name: "Pyaaz", quantity: 1, unit: "kg", location: "pantry", stapleLevel: null, expiryDate: isoInDays(20), expiryEstimated: true, confidence: 0.85 },
-  { id: "i7", name: "Atta", quantity: null, unit: null, location: "staples", stapleLevel: "low", expiryDate: null, expiryEstimated: true, confidence: 0.9 },
-  { id: "i8", name: "Besan", quantity: null, unit: null, location: "staples", stapleLevel: "full", expiryDate: null, expiryEstimated: true, confidence: 0.9 },
-  { id: "i9", name: "Hari chutney", quantity: 1, unit: "katori", location: "ready_made", stapleLevel: null, expiryDate: isoInDays(2), expiryEstimated: true, confidence: 0.9 },
+type Seed = [id: string, key: string | null, name: string, qty: number | null, unit: string | null,
+  location: PantryItem["location"], level: PantryItem["stapleLevel"], days: number | null, confidence: number];
+const seed: Seed[] = [
+  ["i1", "spinach", "spinach", 1, "bunch", "fridge", null, 1, 0.9],
+  ["i2", "paneer", "paneer", 200, "g", "fridge", null, 2, 0.95],
+  ["i3", "curd", "curd", 1, "katori", "fridge", null, 3, 0.8],
+  ["i4", "tomato", "tomato", 2, "piece", "fridge", null, 5, 0.4],
+  ["i5", "potato", "potato", 2, "kg", "pantry", null, 14, 0.9],
+  ["i6", "onion", "onion", 1, "kg", "pantry", null, 20, 0.85],
+  ["i7", "whole wheat flour", "whole wheat flour", null, null, "staples", "low", null, 0.9],
+  ["i8", "gram flour", "gram flour", null, null, "staples", "full", null, 0.9],
+  ["i9", null, "hari chutney", 1, "katori", "ready_made", null, 2, 0.9],
 ];
+let pantry: PantryItem[] = seed.map(([id, ingredientKey, name, quantity, unit, location, stapleLevel, days, confidence]) => ({
+  id, ingredientKey, name, quantity, unit, location, stapleLevel, confidence,
+  expiryDate: days === null ? null : isoInDays(days),
+  expiryEstimated: true,
+  state: id === "i9" ? "homemade" : "raw",
+  flavorRoles: id === "i9" ? ["heat", "acid"] : [],
+}));
+const finished = new Map<string, PantryItem>();
+const listeners = new Set<() => void>();
+const changed = () => listeners.forEach((fn) => fn());
+let nextId = 100;
 
 let memories: Memory[] = [
   { id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita" },
@@ -100,11 +117,89 @@ export const mockServices: Services = {
   kitchen: {
     async getKitchen() {
       await delay(250);
-      return pantry;
+      return [...pantry];
     },
     async getUseSoon(_householdId, days = 3) {
       await delay(150);
       return useSoon(pantry, days);
+    },
+    async parseItems({ text }) {
+      await delay(300);
+      return { items: parsePantryText(text, catalogIndex).map(toDraft), source: "rules" };
+    },
+    async addItems({ items }) {
+      await delay(250);
+      const ids: string[] = [];
+      for (const d of items) {
+        const entry = catalogEntry(d.ingredientKey);
+        const location = d.locationKind ?? entry?.location ?? "pantry";
+        const existing = pantry.find(
+          (p) => p.location === location && (d.ingredientKey ? p.ingredientKey === d.ingredientKey : p.name === d.said),
+        );
+        if (existing) {
+          if (d.quantity !== null) existing.quantity = (existing.quantity ?? 0) + d.quantity;
+          existing.confidence = 0.95;
+          ids.push(existing.id);
+          continue;
+        }
+        const days = entry?.life[location];
+        const id = `i${nextId++}`;
+        pantry.push({
+          id,
+          ingredientKey: d.ingredientKey,
+          name: d.ingredientKey ?? d.said,
+          quantity: d.quantity,
+          unit: d.unit ?? (d.quantity !== null ? (entry?.unit ?? null) : null),
+          location,
+          stapleLevel: entry?.staple || location === "staples" ? "full" : null,
+          expiryDate: days !== undefined ? isoInDays(days) : d.state === "homemade" ? isoInDays(5) : null,
+          expiryEstimated: true,
+          confidence: 0.95,
+          state: d.state ?? "raw",
+          flavorRoles: d.flavorRoles,
+        });
+        ids.push(id);
+      }
+      changed();
+      return ids;
+    },
+    async updateItem(itemId, c) {
+      const item = pantry.find((p) => p.id === itemId);
+      if (!item) throw new Error("item not found");
+      if (c.quantity !== undefined) item.quantity = c.quantity;
+      if (c.unit !== undefined) item.unit = c.unit;
+      if (c.stapleLevel !== undefined) item.stapleLevel = c.stapleLevel;
+      if (c.locationKind !== undefined) item.location = c.locationKind;
+      if (c.expiryDate !== undefined) {
+        item.expiryDate = c.expiryDate;
+        item.expiryEstimated = false;
+      }
+      if (c.customName !== undefined) item.name = c.customName;
+      if (c.confirm || c.quantity !== undefined || c.stapleLevel !== undefined) item.confidence = 0.95;
+      changed();
+    },
+    async finishItem(itemId) {
+      const item = pantry.find((p) => p.id === itemId);
+      if (!item) throw new Error("item not found");
+      finished.set(itemId, item);
+      pantry = pantry.filter((p) => p.id !== itemId);
+      changed();
+    },
+    async reopenItem(itemId) {
+      const item = finished.get(itemId);
+      if (!item) throw new Error("item not found");
+      finished.delete(itemId);
+      pantry.push(item);
+      changed();
+    },
+    async addToList() {
+      await delay(150);
+    },
+    subscribe(_householdId, onChange) {
+      listeners.add(onChange);
+      return () => {
+        listeners.delete(onChange);
+      };
     },
   },
   recipe: {

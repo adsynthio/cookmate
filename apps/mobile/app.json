@@ -14,7 +14,7 @@
     "android": {
       "package": "com.drishix.cookmate",
       "adaptiveIcon": {
-        "backgroundColor": "#FAF6EF",
+        "backgroundColor": "#9ED22A",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"

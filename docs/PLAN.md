@@ -40,9 +40,24 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [x] Onboarding (KIT-020/022/023, ONB-05): Try now → language (spoken prompt, big buttons) → who eats here (≤ 6, age groups) → spice → diet → consent per purpose (nothing pre-ticked) → `create_household` + consents → Home. Root layout gates tabs vs onboarding with `Stack.Protected`; returning users skip onboarding; language switches without restart
 - [x] Tests: 43 pgTAP (catalog, seed idempotency, onboarding consents), 8 mobile unit tests; onboarding walked end to end in a browser build in Hindi
 - [ ] KIT-143 asks for ≥ 500 ingredients; 177 are in. The rest should come with the culinary lead's dish list so names match real recipes
-- [ ] Seed data on ChefMate: load it in Sprint 2 when `parse-inventory` needs it (CI job with a database URL secret, or I apply it in chunks)
+- [ ] Seed data on ChefMate: `.github/workflows/seed.yml` loads it once the `SUPABASE_DB_URL` secret is set (see Sprint 2 status)
 - [ ] Sentry (KIT-131): needs your Sentry account
 - [ ] Privacy notice text: consent rows carry `policy_version = 2026-11-draft-1` until the real notice is written
+
+### Sprint 2 status (10 Nov 2026, branch `sprint-2/kitchen`)
+- [x] Pantry backend (KIT-030..035): migration `20261124000000_pantry.sql` with `match_ingredient`, `add_inventory_items` (tops up the same thing in the same place), `update_inventory_item`, `finish_inventory_item` / `reopen_inventory_item` (undo), `get_use_soon`, `add_to_shopping_list`, every change logged as an inventory event, pantry tables on the Realtime publication; applied to ChefMate; 20 pgTAP tests
+- [x] Rule parser shared by the app and the Edge Function (`apps/mobile/src/domain/pantryParse.ts`, copied by `scripts/sync-shared.py`): Hindi/Hinglish/English numbers, sawa/paune/dedh/paav kilo, units, homemade and leftover, confidence per item
+- [x] `parse-inventory` Edge Function: rules first, Claude Haiku only for what the rules can't place (structured output, no thinking, cached catalog prompt, "never invent items" guardrail, every call logged to `ai_requests`), falls back to rules if the model is unavailable. **Deployed** to ChefMate
+- [x] Kitchen tab: one tab per storage place, staples as Full / Low / Out with "Add to list", "Still have this?" for unsure items, live updates from other phones
+- [x] Add items (KIT-031): type it like you'd say it → editable read-back cards with "Please check" on unsure items → Read aloud → Add. Nothing is written before Add
+- [x] Item screen (KIT-032/035): quantity and place, how long it keeps in each place, Finished / Threw it away with a 5-second Undo
+- [x] Brand kit applied to the whole app (tokens, Inter + Noto Sans Devanagari, bottom bar with the raised lime mic, outline icons in code); generated media wired through `tools/media/sync.py` (see `apps/mobile/assets/media/PROMPTS.md`)
+- [x] CI: Edge Function job (shared parser in sync, `deno check`, `deno test`), media map check
+- [ ] **You:** add the `ANTHROPIC_API_KEY` Edge Function secret on ChefMate (until then `parse-inventory` answers from the rules only)
+- [ ] **You:** add the `SUPABASE_DB_URL` repository secret, then run "Seed hosted database" from the Actions tab. ChefMate has 0 ingredients until then, so the deployed parser can't match anything yet
+- [ ] **You:** enable anonymous sign-ins on ChefMate (needed for "Try now" in live mode)
+- [ ] Dish photos are temporary placeholders: replace before any release; redo three cropped illustrations and the produce pile (PROMPTS.md checklist)
+- [ ] Voice add (KIT-031 by voice) arrives with the voice session in Sprint 4; the mic button is in place
 
 ---
 

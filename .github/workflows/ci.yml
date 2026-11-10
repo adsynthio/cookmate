@@ -53,6 +53,19 @@ jobs:
       - name: No service keys in the app
         run: "! grep -rEn 'service_role|SERVICE_ROLE|sk-ant-' src app.json"
 
+  functions:
+    name: Edge Functions (shared parser in sync, deno check + tests)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shared parser copy matches the app's source
+        run: python3 scripts/sync-shared.py --check
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.9.6"
+      - run: deno check supabase/functions/parse-inventory/index.ts
+      - run: deno test supabase/functions/parse-inventory/
+
   voice-agent:
     name: Voice agent (lint + tests)
     runs-on: ubuntu-24.04

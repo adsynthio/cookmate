@@ -48,13 +48,24 @@ export type NewMember = {
   isSelf?: boolean;
 };
 
+export type HouseholdRef = { householdId: string; memberId: string; languageCode: string | null };
+
+export type ConsentRecord = {
+  purpose: "voice_processing" | "transcript_retention" | "memory" | "analytics" | "notifications" | "whatsapp" | "marketing";
+  granted: boolean;
+};
+
 export interface AuthService {
   /** ONB-01: "Try now" — anonymous account, no email or password. */
   ensureSignedIn(): Promise<{ userId: string; isAnonymous: boolean }>;
+  /** The household this device last used, or null when onboarding is still needed. Never signs in. */
+  getCurrentHousehold(): Promise<HouseholdRef | null>;
 }
 
 export interface PreferenceService {
   createHousehold(input: { name: string; language: string; members: NewMember[] }): Promise<{ householdId: string; memberId: string }>;
+  /** ONB-05: append-only consent records (DPDP); one row per purpose asked. */
+  recordConsents(input: { householdId: string; memberId: string; policyVersion: string; consents: ConsentRecord[] }): Promise<void>;
   listMemories(householdId: string): Promise<Memory[]>;
   forgetMemory(memoryId: string): Promise<void>;
   keepMemory(memoryId: string): Promise<void>;

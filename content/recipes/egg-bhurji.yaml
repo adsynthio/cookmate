@@ -1,0 +1,47 @@
+slug: egg-bhurji
+title: Egg Bhurji
+titles: {hi: अंडा भुर्जी, hi-Latn: Anda Bhurji}
+description: >-
+  Spiced Indian scrambled eggs with onion, tomato, green chilli and coriander. Ten minutes, good with pav or roti.
+cuisine_region: generic_north
+course: breakfast
+diet: eggetarian
+base_servings: 4
+prep_time_min: 5
+cook_time_min: 12
+difficulty: 1
+spice_level: 2
+equipment: [kadai]
+tags: [quick, high_protein]
+flavor_profile: {rich: 0.5, heat: 0.4, acid: 0.3, crunch: 0, starch: 0, sweet: 0}
+food_groups: [protein]
+review_status: draft
+ingredients:
+  - {ingredient: egg, qty: 6, unit: piece, local: 6 ande, role: protein}
+  - {ingredient: onion, qty: 110, unit: g, local: 1 pyaaz, role: aromatic}
+  - {ingredient: tomato, qty: 100, unit: g, local: 1 tamatar, role: acid}
+  - {ingredient: green chilli, qty: 3, unit: g, local: 1 hari mirch, role: heat}
+  - {ingredient: ginger, qty: 4, unit: g, local: aadha inch, role: aromatic}
+  - {ingredient: refined oil, qty: 28, unit: ml, local: 2 chammach, role: fat, substitutes: [{ingredient: butter, ratio: 1}]}
+  - {ingredient: turmeric powder, qty: 0.75, unit: g, local: chauthai chhota chammach, role: spice}
+  - {ingredient: red chilli powder, qty: 1.25, unit: g, local: aadha chhota chammach, role: heat}
+  - {ingredient: pav bhaji masala, qty: 1, unit: g, local: aadha chhota chammach, role: spice, optional: true, substitutes: [{ingredient: garam masala, ratio: 1}]}
+  - {ingredient: salt, qty: 4, unit: g, local: 1 chhota chammach se kam, role: spice}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+steps:
+  - text: Beat the eggs with a pinch of the salt.
+    minutes: 1
+  - text: Heat the oil in a kadai and cook the onion until soft. Add the green chilli and ginger, then the tomato, and cook until the tomato is soft.
+    technique: saute_onion
+    minutes: 5
+    cue: The tomato breaks down when pressed with the spoon.
+  - text: Add turmeric, chilli powder, pav bhaji masala and the rest of the salt and stir for 30 seconds.
+    minutes: 1
+  - text: Lower the heat and pour in the eggs. Leave them for 20 seconds, then scramble, scraping the bottom, until fully set.
+    minutes: 4
+    cue: Soft, moist curds with no runny egg left.
+    safety: Cook until the egg is fully set with no wet or runny parts, especially for children, elders or anyone pregnant.
+  - text: Add the coriander leaves and serve hot.
+    minutes: 1
+variation_rules:
+  - {type: spice, condition: {member_age_group: child}, action: {omit: [green chilli, red chilli powder]}, note: Leave out the chillies for a mild bhurji.}

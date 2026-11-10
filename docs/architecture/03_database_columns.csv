@@ -2,7 +2,7 @@
 profiles,1,id,uuid,no,,yes,,auth.users.id,cascade,,yes,Same as auth.users.id
 profiles,2,display_name,text,yes,,,,,,,,Name the user goes by
 profiles,3,phone,text,yes,,,,,,,,E.164 phone number once verified by OTP; null for anonymous users
-profiles,4,preferred_language,text,no,'hi-IN',,,,,,,"BCP-47 code for UI and voice, e.g. hi-IN, en-IN"
+profiles,4,preferred_language,text,no,'en-IN',,,,,,,"BCP-47 code for UI and voice, e.g. hi-IN, en-IN"
 profiles,5,is_anonymous,boolean,no,true,,,,,,,True until the user verifies a phone number
 profiles,6,onboarding_completed_at,timestamptz,yes,,,,,,,,When onboarding finished
 profiles,7,last_active_household_id,uuid,yes,,,,households.id,set null,,,Household opened by default
@@ -32,7 +32,7 @@ household_members,11,created_at,timestamptz,no,now(),,,,,,,Row creation time
 household_members,12,updated_at,timestamptz,no,now(),,,,,,,Last update time (maintained by trigger)
 voice_profiles,1,member_id,uuid,no,,yes,,household_members.id,cascade,,yes,Member (one profile per member)
 voice_profiles,2,household_id,uuid,no,,,,households.id,cascade,,yes,Owning household; denormalised on every household-scoped row so RLS stays a cheap equality check
-voice_profiles,3,language_code,text,no,'hi-IN',,,,,,,"Language to speak, e.g. hi-IN; 'auto' follows the user"
+voice_profiles,3,language_code,text,no,'en-IN',,,,,,,"Language to speak, e.g. hi-IN; 'auto' follows the user"
 voice_profiles,4,dialect,text,yes,,,,,,,,"Free-text dialect hint for prompts, e.g. 'Marwari-influenced Hindi'"
 voice_profiles,5,units_system,text,no,'local',,,,,"units_system in ('metric', 'local', 'mixed')",,Measures used in speech and UI
 voice_profiles,6,pace,text,no,'normal',,,,,"pace in ('slow', 'normal', 'fast')",,Speaking and step pace
@@ -276,7 +276,7 @@ cooking_sessions,7,servings,smallint,no,4,,,,,,,Servings cooked
 cooking_sessions,8,who_eating,uuid[],no,'{}',,,,,,,Member ids eating
 cooking_sessions,9,status,text,no,'active',,,,,"status in ('active', 'paused', 'completed', 'abandoned')",,Session state
 cooking_sessions,10,mode,text,no,'touch',,,,,"mode in ('touch', 'voice', 'hands_free')",,How it is being driven
-cooking_sessions,11,language_code,text,no,'hi-IN',,,,,,,Language used
+cooking_sessions,11,language_code,text,no,'en-IN',,,,,,,Language used
 cooking_sessions,12,current_step,smallint,no,1,,,,,,,Current step number
 cooking_sessions,13,modifications,jsonb,no,'[]'::jsonb,,,,,,,"Changes made during cooking: [{step, change, remember}]"
 cooking_sessions,14,offline_bundle_version,text,yes,,,,,,,,Version of the downloaded session bundle

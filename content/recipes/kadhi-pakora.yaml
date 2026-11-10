@@ -1,0 +1,73 @@
+slug: kadhi-pakora
+title: Kadhi Pakora
+titles: {hi: कढ़ी पकौड़ा, hi-Latn: Kadhi Pakora}
+description: >-
+  Tangy curd and besan kadhi simmered slowly, with soft onion pakoras and a ghee tadka of cumin, methi dana and red chilli.
+cuisine_region: punjabi
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 45
+difficulty: 3
+spice_level: 2
+equipment: [kadai]
+tags: [comforting]
+flavor_profile: {rich: 0.5, heat: 0.3, acid: 0.7, crunch: 0.3, starch: 0.4, sweet: 0}
+food_groups: [dal, dairy]
+review_status: draft
+ingredients:
+  - {ingredient: curd, qty: 300, unit: g, local: 2 katori dahi, role: acid, group: Kadhi}
+  - {ingredient: gram flour, qty: 45, unit: g, local: 6 chammach besan, role: binder, group: Kadhi}
+  - {ingredient: turmeric powder, qty: 3, unit: g, local: 1 chhota chammach, role: spice, group: Kadhi}
+  - {ingredient: red chilli powder, qty: 2.5, unit: g, local: 1 chhota chammach, role: heat, group: Kadhi}
+  - {ingredient: ginger, qty: 8, unit: g, local: 1 inch, role: aromatic, group: Kadhi}
+  - {ingredient: salt, qty: 9, unit: g, local: 1.5 chhota chammach, role: spice, group: Kadhi}
+  - {ingredient: gram flour, qty: 120, unit: g, local: 2 katori besan, role: base, group: Pakora}
+  - {ingredient: onion, qty: 110, unit: g, local: 1 bada pyaaz, role: vegetable, group: Pakora}
+  - {ingredient: green chilli, qty: 6, unit: g, local: 2 hari mirch, role: heat, group: Pakora}
+  - {ingredient: carom seeds, qty: 1, unit: g, local: aadha chhota chammach, role: spice, group: Pakora}
+  - {ingredient: baking soda, qty: 0.3, unit: g, local: 1 chutki, role: binder, group: Pakora, optional: true}
+  - {ingredient: refined oil, qty: 250, unit: ml, local: talne ke liye, role: fat, group: Pakora}
+  - {ingredient: ghee, qty: 26, unit: g, local: 2 chammach, role: fat, group: Tadka, substitutes: [{ingredient: refined oil, ratio: 1}]}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice, group: Tadka}
+  - {ingredient: fenugreek seeds, qty: 1, unit: g, local: chauthai chhota chammach, role: spice, group: Tadka}
+  - {ingredient: dry red chilli, qty: 1, unit: g, local: 2 sabut lal mirch, role: heat, group: Tadka}
+  - {ingredient: asafoetida, qty: 0.2, unit: g, local: 1 chutki, role: aromatic, group: Tadka}
+  - {ingredient: kashmiri chilli powder, qty: 1.25, unit: g, local: aadha chhota chammach, role: heat, group: Tadka}
+steps:
+  - text: In a big bowl whisk the curd, 6 chammach besan, turmeric, red chilli powder and salt until completely smooth. Add 900 ml water and whisk again.
+    technique: batter
+    minutes: 3
+    cue: No lumps at all, and as thin as buttermilk.
+  - text: Pour into the kadai with the grated ginger. Bring to a boil on medium heat, stirring all the time.
+    technique: simmer
+    minutes: 8
+    cue: Keep stirring until the first boil. If you stop, the curd can split.
+  - text: Lower the heat and let the kadhi simmer, stirring every few minutes.
+    technique: simmer
+    minutes: 25
+    timer: true
+    cue: It thickens enough to coat the back of a spoon, and the raw besan smell is gone.
+  - text: Meanwhile make the pakora batter. Mix 2 katori besan with the sliced onion, green chilli, ajwain, a little salt and the soda, adding about 100 ml water slowly. Beat for 2 minutes.
+    technique: batter
+    minutes: 4
+    cue: Thick enough to drop from a spoon in a blob. A drop of batter floats in a bowl of water.
+  - text: Heat the oil in a second pan on medium. Drop small spoonfuls of batter and fry in batches until golden all over.
+    technique: deep_fry
+    minutes: 12
+    cue: The pakoras rise to the top and turn golden in about 4 minutes per batch.
+    safety: Keep children away from the hot oil. Slide the batter in close to the oil so it does not splash, and never let water drip into hot oil.
+  - text: Add the pakoras to the kadhi and simmer for 5 more minutes so they soak it up.
+    technique: simmer
+    minutes: 5
+    timer: true
+  - text: For the tadka, heat the ghee. Add cumin, methi dana, dry red chillies and hing. Turn off the heat, add Kashmiri chilli powder and pour over the kadhi at once.
+    technique: tadka
+    minutes: 1
+    cue: Cumin darkens one shade in a few seconds. Add the chilli powder off the heat so it turns red, not black.
+    branch: {age_group: child, action: Take out the child's portion before pouring the chilli tadka}
+variation_rules:
+  - {type: substitute, condition: {missing: curd}, action: {use: buttermilk, qty_ratio: 4, at_step: 1, reduce_water_ml: 900}, note: Use about 1.2 litres chaas and skip the extra water.}
+  - {type: omit, condition: {max_time_min: 30}, action: {skip_steps: [4, 5]}, note: Plain kadhi without pakoras is ready in about 30 minutes.}
+  - {type: diet, condition: {diet: jain}, action: {omit: [onion, ginger], at_step: 4}, note: Make the pakoras with a little chopped methi or plain besan instead of onion.}

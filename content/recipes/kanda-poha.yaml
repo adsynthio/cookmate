@@ -1,0 +1,53 @@
+slug: kanda-poha
+title: Kanda Poha
+titles: {hi: कांदा पोहा, hi-Latn: Kanda Poha}
+description: >-
+  Flattened rice tossed with onion, mustard seeds, curry leaves and crunchy peanuts, finished with lemon and coriander.
+cuisine_region: maharashtrian
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 12
+difficulty: 1
+spice_level: 2
+equipment: [kadai]
+tags: [quick, light, kids_friendly]
+flavor_profile: {rich: 0.2, heat: 0.3, acid: 0.5, crunch: 0.6, starch: 0.8, sweet: 0.2}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: poha, qty: 160, unit: g, local: 2 cup mota poha, role: base}
+  - {ingredient: onion, qty: 110, unit: g, local: 1 bada pyaaz, role: vegetable}
+  - {ingredient: peanuts, qty: 30, unit: g, local: 1 mutthi, role: garnish, optional: true}
+  - {ingredient: refined oil, qty: 28, unit: ml, local: 2 chammach, role: fat}
+  - {ingredient: mustard seeds, qty: 3.5, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: curry leaves, qty: 3, unit: g, local: 10 kadi patta, role: aromatic}
+  - {ingredient: green chilli, qty: 6, unit: g, local: 2 hari mirch, role: heat}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: sugar, qty: 4, unit: g, local: 1 chhota chammach, role: sweet}
+  - {ingredient: salt, qty: 5, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: lemon, qty: 1, unit: piece, local: 1 nimbu, role: acid}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+steps:
+  - text: Put the poha in a sieve and rinse under running water for a few seconds, 2 to 3 times. Do not soak. Sprinkle turmeric, salt and sugar, toss gently and leave for 5 minutes.
+    minutes: 5
+    timer: true
+    cue: A flake pressed between two fingers mashes easily but the poha is not mushy or wet.
+  - text: Heat the oil in a kadai and fry the peanuts until crunchy. Lift them out.
+    technique: shallow_fry
+    minutes: 3
+    cue: The peanuts turn a shade darker and smell roasted.
+  - text: In the same oil add mustard seeds. When they pop, add curry leaves and green chilli, then the onion. Cook until soft.
+    technique: saute_onion
+    minutes: 3
+    cue: The onion turns translucent, not brown.
+  - text: Add the poha and toss gently on low heat. Cover and steam for 2 minutes.
+    minutes: 2
+    timer: true
+    cue: The poha is hot all the way through and every flake is yellow.
+  - text: Turn off the heat. Add the peanuts, lemon juice and coriander leaves and toss once.
+    minutes: 1
+variation_rules:
+  - {type: omit, condition: {allergen: peanut}, action: {omit: [peanuts]}, note: Leave out the peanuts; add a handful of roasted chana dal or none.}
+  - {type: add, condition: {have: [potato]}, action: {add: [{ingredient: potato, qty: 150, unit: g}], at_step: 3}, note: Add one small diced potato with the onion and cook covered until soft for batata poha.}

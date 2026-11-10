@@ -12,7 +12,7 @@ The product is **Cookmate** everywhere (repo, app, package and bundle IDs, docs)
 `scripts/db/test-local.sh` runs migrations and pgTAP tests on plain Postgres with a small Supabase shim (`supabase/tests/shim`). This works in CI and in cloud dev containers without Docker.
 
 ## Hosted project and migration history
-The ChefMate project was set up through the Supabase MCP connector, so its migration history versions do not match the repo's file timestamps. Before using `supabase db push` from CI, run `supabase migration repair` once to mark the repo's four migrations as applied.
+The ChefMate project was set up through the Supabase MCP connector, so its migration history versions do not match the repo's file timestamps. Before using `supabase db push` from CI, run `supabase migration repair` once to mark the repo's migrations (all files in `supabase/migrations`) as applied.
 
 ## Versions (verified 10 Nov 2026)
 Expo SDK 58.0.23 (React Native 0.88.1, React 19.3), expo-router 58.0.30, @supabase/supabase-js 2.119, livekit-agents 1.8.11 with sarvam/anthropic/silero plugins 1.8.11, Postgres 17 on Supabase. The Sarvam STT plugin defaults to `saaras:v4`; we pin `saaras:v3` per the architecture docs via `SARVAM_STT_MODEL`.

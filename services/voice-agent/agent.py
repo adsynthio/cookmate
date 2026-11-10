@@ -68,7 +68,7 @@ async def entrypoint(ctx: JobContext) -> None:
 
     # voice-token puts {member_id, household_id, language_code, cooking_session_id} in the job metadata.
     meta = json.loads(ctx.job.metadata or "{}")
-    language = meta.get("language_code", "hi-IN")
+    language = meta.get("language_code", "en-IN")
 
     session = AgentSession(
         vad=ctx.proc.userdata["vad"],

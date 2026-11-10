@@ -13,8 +13,10 @@ import { localHour, slotForHour } from "@/domain/ranking";
 import { applyRules, ingredientFitsDiet, summarise, validateAdaptation } from "@/domain/adapt";
 import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
+import { deductionPreview } from "@/domain/cooking";
+
 import { buildPicks } from "./picks";
-import type { HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
+import type { CookSession, HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -95,6 +97,11 @@ function readMembers(): Member[] {
 const recent: { recipeId: string; at: number }[] = [];
 const shown = new Map<string, string>(); // recommendationId -> recipeId
 let batchNo = 1;
+/** Cooking sessions (KIT-070), kept for the app session. */
+const sessions = new Map<string, CookSession>();
+const deducted = new Set<string>();
+let sessionNo = 1;
+
 /** The household's adapted variants (KIT-051), kept for the session. */
 const adapted = new Map<string, RecipeDoc>();
 let adaptedNo = 1;
@@ -323,6 +330,76 @@ export const mockServices: Services = {
         const c = byName.get(k);
         return c ? [c.hi ?? "", c.latn ?? "", ...(c.aliases ?? [])] : [];
       }).map(toSummary);
+    },
+  },
+  cooking: {
+    async startSession({ recipeId, servings, whoEating, recommendationId }) {
+      await delay(250);
+      if (!adapted.get(recipeId) && !recipeBySlug(recipeId)) throw new Error("recipe not found");
+      for (const s of sessions.values()) if (s.status === "active") s.status = "abandoned";
+      const id = `s${sessionNo++}`;
+      sessions.set(id, { id, recipeId, currentStep: 1, servings, whoEating, status: "active" });
+      if (recommendationId) await mockServices.recipe.respondToPick(recommendationId, "accepted");
+      return id;
+    },
+    async getSession(sessionId) {
+      const s = sessions.get(sessionId);
+      if (!s) throw new Error("session not found");
+      return { ...s };
+    },
+    async getActiveSession() {
+      return [...sessions.values()].find((s) => s.status === "active") ?? null;
+    },
+    async advanceStep(sessionId, delta) {
+      const s = sessions.get(sessionId);
+      if (!s) throw new Error("session not found");
+      const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
+      s.currentStep = Math.max(1, Math.min(doc.steps.length, s.currentStep + delta));
+      return { currentStep: s.currentStep, total: doc.steps.length };
+    },
+    async completeSession(sessionId) {
+      await delay(300);
+      const s = sessions.get(sessionId);
+      if (!s) throw new Error("session not found");
+      s.status = "completed";
+      const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
+      return deductionPreview(
+        doc,
+        s.servings,
+        pantry.filter((p) => p.confidence >= 0.5 || p.stapleLevel).map((p) => ({ ...p, unit: p.unit })),
+        (k) => catalogEntry(k)?.measures,
+      );
+    },
+    async applyDeduction(sessionId, adjustments) {
+      await delay(300);
+      if (deducted.has(sessionId)) throw new Error("already deducted for this session");
+      const lines = await mockServices.cooking.completeSession(sessionId);
+      const changedIds: string[] = [];
+      for (const line of lines) {
+        const adj = adjustments.find((a) => a.itemId === line.itemId);
+        if (adj?.skip) continue;
+        const item = pantry.find((p) => p.id === line.itemId);
+        if (!item) continue;
+        if (line.staple) {
+          if (adj?.stapleLevel) {
+            item.stapleLevel = adj.stapleLevel;
+            changedIds.push(item.id);
+          }
+          continue;
+        }
+        const used = adj?.quantity ?? line.quantity;
+        if (!used || item.quantity === null) continue;
+        item.quantity = Math.max(0, Math.round((item.quantity - used) * 1000) / 1000);
+        item.confidence = 0.95;
+        if (item.quantity === 0) pantry = pantry.filter((p) => p.id !== item.id);
+        changedIds.push(item.id);
+      }
+      deducted.add(sessionId);
+      changed();
+      return changedIds;
+    },
+    async submitFeedback() {
+      await delay(200);
     },
   },
 };

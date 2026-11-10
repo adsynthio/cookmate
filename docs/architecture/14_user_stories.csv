@@ -1,0 +1,208 @@
+﻿story_id,epic_id,title,user_story,acceptance_criteria,priority,release,milestone,story_points,area,prd_requirements,depends_on,labels
+KIT-001,E01,"Set up monorepo, tooling and branch protection","As a developer, I want a monorepo with lint, format, typecheck and branch protection, so that everyone works the same way from the first commit.","- [ ] main is protected: PR + 1 review + green CI required
+- [ ] npm workspaces run lint and typecheck from the root
+- [ ] CONTRIBUTING explains branches feature/<area>-<short> and PR flow",P0,V1,Sprint 1,2,devops,NFR-12,,"type:story, priority:P0, release:V1, area:devops, epic:E01"
+KIT-002,E01,Create Supabase staging and production projects in Mumbai,"As a developer, I want staging and production Supabase projects in ap-south-1 with migrations applied from CI, so that data stays in India and schema changes are reviewed.","- [ ] Both projects in Mumbai region
+- [ ] supabase db push runs from GitHub Actions on merge to main (staging) and on release tag (production)
+- [ ] pgvector and pg_trgm enabled",P0,V1,Sprint 1,3,devops,NFR-13,KIT-001,"type:story, priority:P0, release:V1, area:devops, epic:E01"
+KIT-003,E01,Apply generated schema migration and pgTAP RLS test,"As a developer, I want the generated schema applied with a test proving RLS is on for every table, so that no table ships without row-level security.","- [ ] supabase test db passes locally and in CI
+- [ ] Test fails if any public table has RLS disabled
+- [ ] tools/archgen/build.py --check passes in CI",P0,V1,Sprint 1,3,backend,NFR-12,KIT-002,"type:story, priority:P0, release:V1, area:backend, epic:E01"
+KIT-004,E01,EAS development and preview builds,"As a developer, I want EAS development builds for Android and iOS and preview builds on every PR, so that we test real-time audio on real phones.","- [ ] Development build installs on a 3 GB RAM Android
+- [ ] Preview build link posted on PRs touching apps/mobile
+- [ ] Secrets set as EAS secrets, none in the repo",P0,V1,Sprint 1,3,devops,NFR-06,KIT-001,"type:story, priority:P0, release:V1, area:devops, epic:E01"
+KIT-005,E01,Service layer with mock and live implementations,"As a developer, I want each service defined as an interface with mock and Supabase implementations switchable by flag, so that screens can be built before the backend is ready.","- [ ] Kitchen, Recipe, Cooking, Preference, Feedback, Shopping, AI, Voice services exist as interfaces
+- [ ] EXPO_PUBLIC_USE_MOCKS toggles implementations
+- [ ] No component imports supabase-js directly (lint rule)",P0,V1,Sprint 1,3,mobile,NFR-12,KIT-001,"type:story, priority:P0, release:V1, area:mobile, epic:E01"
+KIT-010,E02,Design tokens and primitives,"As a home cook, I want a calm, warm, consistent interface, so that the app feels premium and easy.","- [ ] tokens.ts holds the PRD palette (light and dark), type scale, spacing, radius, motion
+- [ ] Primitives: Button, Chip, Card, Sheet, ListRow, TimerRing, StepView
+- [ ] Contrast checked at WCAG AA",P0,V1,Sprint 1,5,design,NFR-09,KIT-001,"type:story, priority:P0, release:V1, area:design, epic:E02"
+KIT-011,E02,"Tab navigation: Home, Kitchen, Cook, You","As a user, I want four simple tabs, so that I always know where I am.","- [ ] Expo Router tabs with icons and labels in the chosen language
+- [ ] Cook tab shows the active session or 'Start cooking'
+- [ ] Touch targets ≥ 48 dp",P0,V1,Sprint 1,2,mobile,,KIT-010,"type:story, priority:P0, release:V1, area:mobile, epic:E02"
+KIT-012,E02,"Loading, empty, offline and error states","As a user, I want every screen to tell me what is happening and what to do, so that I never face a blank or broken screen.","- [ ] Shared components for loading ('Thinking about tonight…'), empty, offline banner and error with retry
+- [ ] Every screen in Figma has all four states implemented",P0,V1,Sprint 1,3,mobile,HOME-08,KIT-010,"type:story, priority:P0, release:V1, area:mobile, epic:E02"
+KIT-013,E02,Localisation framework,"As a user, I want the app in Hindi, Hinglish or English, so that I can use it in my language.","- [ ] All strings in i18n catalogues; lint fails on hard-coded copy
+- [ ] Devanagari renders with matched Noto font
+- [ ] Language switch applies without restart",P0,V1,Sprint 1,3,mobile,NFR-08,KIT-011,"type:story, priority:P0, release:V1, area:mobile, epic:E02"
+KIT-020,E03,Start without email or password,"As a user, I want to tap 'Try now' and start, so that I can use the app on a shared phone without an account.","- [ ] Anonymous sign-in creates a profile via trigger
+- [ ] Home reached in ≤ 60 s on first launch
+- [ ] No email field anywhere",P0,V1,Sprint 1,3,mobile,ONB-01,KIT-003,"type:story, priority:P0, release:V1, area:mobile, epic:E03"
+KIT-021,E03,Upgrade to phone OTP without losing data,"As a user, I want to verify my phone later, so that my kitchen is safe if I change phones.","- [ ] Phone OTP links to the anonymous user
+- [ ] All household data remains
+- [ ] SMS via Send SMS hook to an Indian DLT-registered provider",P1,V1,Sprint 5,3,backend,ONB-01,KIT-020,"type:story, priority:P1, release:V1, area:backend, epic:E03"
+KIT-022,E03,Choose language by voice or tap,"As a voice-first cook who reads little, I want to pick my language by speaking or tapping a big button, so that I don't need to read to start.","- [ ] Language screen shows spoken prompt and large buttons
+- [ ] Choice saved to profile and voice profile",P0,V1,Sprint 1,2,mobile,ONB-02,KIT-013,"type:story, priority:P0, release:V1, area:mobile, epic:E03"
+KIT-023,E03,"Who eats here, spice and diet in three steps","As a family cook, I want to tell the app who eats here and how spicy we like it, so that picks suit my family from day one.","- [ ] Three screens: members, spice slider, diet chips
+- [ ] create_household RPC creates household, members, voice and taste profiles, locations and list
+- [ ] Up to 6 members",P0,V1,Sprint 1,5,mobile,"ONB-03, HH-01",KIT-020,"type:story, priority:P0, release:V1, area:mobile, epic:E03"
+KIT-024,E03,Voice-only onboarding,"As a voice-first cook who reads little, I want to set up the app only by talking, so that I can start even if I can't read the screens.","- [ ] Spoken prompts for each step; answers parsed into the same onboarding draft
+- [ ] Field test: 4 of 5 rural users complete setup without help",P0,V1,Sprint 4,5,voice,ONB-05,"KIT-023, KIT-060","type:story, priority:P0, release:V1, area:voice, epic:E03"
+KIT-025,E03,Kitchen equipment checklist,"As a home cook, I want to tick the equipment I have, so that recipes match my kitchen.","- [ ] Checklist of 13 equipment types
+- [ ] Saved to kitchen_equipment; recipes needing missing equipment are adapted or ranked down",P1,V1,Sprint 2,2,mobile,ONB-06,KIT-023,"type:story, priority:P1, release:V1, area:mobile, epic:E03"
+KIT-026,E03,Quick start from yesterday's meal,"As a home cook, I want to say what I cooked yesterday, so that the app guesses some of my pantry and taste.","- [ ] Parses dish into likely ingredients added as unconfirmed (confidence ≤ 0.5)
+- [ ] User can clear them in one tap",P1,V1,Sprint 3,3,ai,ONB-07,KIT-031,"type:story, priority:P1, release:V1, area:ai, epic:E03"
+KIT-040,E04,"Tonight, decided hero pick","As a family cook, I want one dinner pick with two alternates and a reason, so that I don't have to decide every day.","- [ ] suggest-meals returns 3 picks with reason_text citing a real factor
+- [ ] Hero card with photo, time, reason, 'Cook this'
+- [ ] Recommendations stored with score breakdown",P0,V1,Sprint 3,8,backend,"HOME-01, HOME-02","KIT-031, KIT-050","type:story, priority:P0, release:V1, area:backend, epic:E04"
+KIT-041,E04,Deterministic ranking engine,"As a developer, I want a transparent scoring function for picks, so that ranking is debuggable and the model only writes reasons.","- [ ] Score = coverage + use-soon + taste fit + novelty (no repeat in 3 days) + time + equipment + calendar
+- [ ] Weights in feature_flags.rules for tuning
+- [ ] Unit tests for each factor",P0,V1,Sprint 3,5,backend,HOME-02,KIT-031,"type:story, priority:P0, release:V1, area:backend, epic:E04"
+KIT-042,E04,Craving search by voice or text,"As a home cook, I want to say what I feel like eating, so that I get picks that match my mood.","- [ ] Chips: Comforting, Under 20 min, High protein, Kids friendly, Light
+- [ ] Free text in Hindi/Hinglish/English understood
+- [ ] Results reuse the pick cards",P0,V1,Sprint 3,5,mobile,HOME-03,KIT-040,"type:story, priority:P0, release:V1, area:mobile, epic:E04"
+KIT-043,E04,Use Soon strip,"As a home cook, I want to see what will spoil soon, so that I cook it before it goes bad.","- [ ] get_use_soon RPC drives the strip
+- [ ] Tap opens waste-aware picks",P0,V1,Sprint 3,2,mobile,"HOME-04, LEFT-01",KIT-031,"type:story, priority:P0, release:V1, area:mobile, epic:E04"
+KIT-044,E04,Dismiss a pick with a reason,"As a home cook, I want to say why I don't want a pick, so that future picks get better.","- [ ] Reasons: not today, don't like, no time, missing item
+- [ ] 'Don't like' proposes a memory for confirmation",P1,V1,Sprint 5,2,mobile,HOME-06,KIT-040,"type:story, priority:P1, release:V1, area:mobile, epic:E04"
+KIT-045,E04,Daily pick notification,"As a family cook, I want a gentle nudge at my chosen time, so that dinner is decided before I start worrying.","- [ ] Opt-in with time picker (default 16:00)
+- [ ] notify job sends ≤ 1 proactive notification a day, respects quiet hours
+- [ ] Pick precomputed so the app opens instantly",P1,V1,Sprint 6,3,backend,"HOME-07, NOTIF-01",KIT-040,"type:story, priority:P1, release:V1, area:backend, epic:E04"
+KIT-046,E04,Meal-slot awareness,"As a home cook, I want picks for breakfast, lunch, tiffin or dinner depending on the time, so that suggestions fit the moment.","- [ ] Slot inferred from household timezone
+- [ ] Switch slot by tap or voice",P1,V1,Sprint 3,2,mobile,HOME-05,KIT-040,"type:story, priority:P1, release:V1, area:mobile, epic:E04"
+KIT-030,E05,Kitchen locations and item list,"As a home cook, I want to see my fridge, freezer, pantry, staples and ready-made items, so that I know what I have.","- [ ] Tabs per location from storage_locations
+- [ ] Items show quantity, estimated expiry marker and low-confidence hint
+- [ ] Realtime updates from other household phones within 3 s",P0,V1,Sprint 2,5,mobile,"KIT-01, KIT-02, KIT-10",KIT-023,"type:story, priority:P0, release:V1, area:mobile, epic:E05"
+KIT-031,E05,Add items by voice or text,"As a home cook, I want to say 'do kilo aloo, ek dozen ande' and have them added, so that updating the pantry takes seconds.","- [ ] parse-inventory returns structured items with confidence
+- [ ] Read-back confirmation before commit
+- [ ] add_inventory_items estimates expiry from shelf life
+- [ ] 90% item accuracy on the 300-utterance test set",P0,V1,Sprint 2,8,ai,KIT-03,KIT-030,"type:story, priority:P0, release:V1, area:ai, epic:E05"
+KIT-032,E05,"Edit, finish or discard an item","As a home cook, I want to change or finish an item in one tap or sentence, so that the pantry stays right.","- [ ] Every change writes an inventory_events row
+- [ ] Undo for 5 seconds",P0,V1,Sprint 2,3,mobile,KIT-04,KIT-030,"type:story, priority:P0, release:V1, area:mobile, epic:E05"
+KIT-033,E05,Staples as Full / Low / Out,"As a home cook, I want to track atta, rice, dal and spices by level, so that I don't have to weigh anything.","- [ ] Staples use staple_level, not quantity
+- [ ] Low/Out offers 'Add to list'",P0,V1,Sprint 2,2,mobile,KIT-06,KIT-030,"type:story, priority:P0, release:V1, area:mobile, epic:E05"
+KIT-034,E05,Homemade components,"As a home cook, I want to save chutneys, pickles and masala bases as ready-made items, so that the app uses them in future meals.","- [ ] Ready-made location with flavour roles
+- [ ] Components appear in picks and Why this works",P0,V1,Sprint 2,3,mobile,KIT-07,KIT-030,"type:story, priority:P0, release:V1, area:mobile, epic:E05"
+KIT-035,E05,Confidence decay and targeted checks,"As a home cook, I want the app to ask me only when it really matters, so that I'm not nagged but the pantry stays accurate.","- [ ] Nightly decay job lowers confidence by age and state
+- [ ] At most one check question a day, only when it changes the current pick",P1,V1,Sprint 6,5,backend,KIT-08,KIT-031,"type:story, priority:P1, release:V1, area:backend, epic:E05"
+KIT-036,E05,Storage advice and shelf life,"As a home cook, I want to know how to store an item and how long it lasts, so that less food is wasted.",- [ ] Item detail shows storage tip and shelf-life estimate per location,P1,V1,Sprint 2,2,mobile,KIT-09,KIT-030,"type:story, priority:P1, release:V1, area:mobile, epic:E05"
+KIT-037,E05,Automatic deduction after cooking,"As a home cook, I want the pantry to update after I cook, so that I don't update it by hand.","- [ ] complete_cooking_session returns a preview scaled by servings
+- [ ] User corrects lines, apply_session_deduction commits with events",P0,V1,Sprint 4,5,backend,KIT-05,KIT-070,"type:story, priority:P0, release:V1, area:backend, epic:E05"
+KIT-050,E06,Recipe detail with pantry match,"As a home cook, I want to see what I have and what's missing for a dish, so that I know if I can cook it now.","- [ ] 'You have 9 of 10' from confident items only
+- [ ] Missing items show substitutes and Add to list
+- [ ] Ingredients in my units (katori/chammach or grams)",P0,V1,Sprint 3,5,mobile,"REC-02, REC-04",KIT-030,"type:story, priority:P0, release:V1, area:mobile, epic:E06"
+KIT-051,E06,Adapt a recipe,"As a home cook, I want to change spice, servings, equipment or missing items, so that I can cook it with what I have.","- [ ] adapt-recipe adapts only within variation rules and substitutes
+- [ ] Validator rejects unsafe or incomplete plans
+- [ ] Adapted variant saved and linked to the base recipe",P0,V1,Sprint 3,8,ai,REC-03,KIT-050,"type:story, priority:P0, release:V1, area:ai, epic:E06"
+KIT-052,E06,Family plates,"As a family cook, I want branch instructions for each family member inside one recipe, so that one pot works for everyone.","- [ ] Branch steps appear at the right step, naming the member
+- [ ] Kid branch removes portion before chilli; 'less oil' note honoured",P0,V1,Sprint 3,5,backend,HH-02,KIT-051,"type:story, priority:P0, release:V1, area:backend, epic:E06"
+KIT-053,E06,Why this works,"As a home cook, I want to see why a dish combination works, so that I trust and learn from suggestions.","- [ ] Flavour bars for rich, heat, crunch, acid with one sentence",P1,V1,Sprint 3,2,mobile,REC-05,KIT-050,"type:story, priority:P1, release:V1, area:mobile, epic:E06"
+KIT-054,E06,Search recipes in any language,"As a home cook, I want to search 'rajma', 'राजमा' or 'kidney bean curry', so that I find dishes however I spell them.","- [ ] search_recipes uses trigram + aliases
+- [ ] Same dish returned for all three queries",P1,V1,Sprint 3,3,backend,REC-08,KIT-050,"type:story, priority:P1, release:V1, area:backend, epic:E06"
+KIT-055,E06,Save and favourite recipes,"As a home cook, I want to save dishes I like, so that I can find them again.","- [ ] Favourites and named collections, synced to household",P1,V1,Sprint 5,2,mobile,REC-07,KIT-050,"type:story, priority:P1, release:V1, area:mobile, epic:E06"
+KIT-056,E06,Invent a combination from what's here,"As a home cook, I want the app to invent a good dish from my odds and ends, so that nothing goes to waste.","- [ ] Uses components and flavour logic
+- [ ] Passes safety validator and is labelled 'new creation'",P1,V1,Sprint 6,5,ai,REC-06,KIT-051,"type:story, priority:P1, release:V1, area:ai, epic:E06"
+KIT-057,E06,Who's eating today,"As a family cook, I want to choose who is eating today, so that servings and picks fit.","- [ ] Defaults to everyone; affects servings, branches and picks",P1,V1,Sprint 3,2,mobile,HH-03,KIT-023,"type:story, priority:P1, release:V1, area:mobile, epic:E06"
+KIT-070,E07,Cook step view,"As a home cook, I want one big instruction at a time with progress, so that I can follow it while cooking.","- [ ] Instruction ≥ 28 pt, progress, large swipe areas
+- [ ] Screen stays awake; start_cooking_session and advance_session_step drive state",P0,V1,Sprint 4,5,mobile,"COOK-01, COOK-09",KIT-050,"type:story, priority:P0, release:V1, area:mobile, epic:E07"
+KIT-071,E07,Timers that work with the app closed,"As a home cook, I want several labelled timers with loud alarms, so that nothing burns while I do other things.","- [ ] Timers mirrored to local notifications
+- [ ] Fire correctly with app backgrounded or killed",P0,V1,Sprint 4,5,mobile,COOK-02,KIT-070,"type:story, priority:P0, release:V1, area:mobile, epic:E07"
+KIT-072,E07,Sensory cues and reference photos,"As a beginner cook, I want to know what 'done' looks, smells and sounds like, so that I cook with confidence.","- [ ] Every curated step shows its sensory cue
+- [ ] 'It should look like this' photo for top 50 dishes",P0,V1,Sprint 4,3,mobile,COOK-04,KIT-140,"type:story, priority:P0, release:V1, area:mobile, epic:E07"
+KIT-073,E07,Photo checkpoint,"As a beginner cook, I want to show the app my pan and ask if it's right, so that I fix things before it's too late.","- [ ] checkpoint returns verdict and advice within 4 s
+- [ ] Uncertainty stated; unsafe verdict for raw meat",P1,V1,Sprint 4,5,ai,COOK-05,KIT-070,"type:story, priority:P1, release:V1, area:ai, epic:E07"
+KIT-074,E07,Ask a question mid-step,"As a home cook, I want to ask anything without losing my place, so that I get help in context.","- [ ] Answer references current step and ingredients
+- [ ] Session state unchanged after answering",P0,V1,Sprint 4,3,ai,COOK-06,KIT-070,"type:story, priority:P0, release:V1, area:ai, epic:E07"
+KIT-075,E07,I changed something,"As a home cook, I want to tell the app I did something differently, so that the next steps adapt.",- [ ] Remaining steps updated; change logged; offer to remember,P0,V1,Sprint 4,3,ai,COOK-07,KIT-070,"type:story, priority:P0, release:V1, area:ai, epic:E07"
+KIT-076,E07,Offline cooking bundle,"As a home cook, I want cooking to keep working if the network drops, so that I'm never stuck mid-recipe.","- [ ] session-bundle downloads steps, photos, step audio at start
+- [ ] Airplane mode after start completes the dish
+- [ ] Queued writes sync later",P0,V1,Sprint 6,5,mobile,"COOK-08, NFR-04",KIT-070,"type:story, priority:P0, release:V1, area:mobile, epic:E07"
+KIT-077,E07,Finish sheet,"As a home cook, I want a simple finish: celebrate, rate, review pantry, save leftovers, so that the app learns and stays accurate.","- [ ] One sheet with feedback, deduction review and leftover prompt
+- [ ] All parts skippable",P0,V1,Sprint 4,3,mobile,COOK-10,KIT-037,"type:story, priority:P0, release:V1, area:mobile, epic:E07"
+KIT-078,E07,Whistle counting,"As a home cook, I want to count cooker whistles by tap or voice, so that I don't lose count.",- [ ] Count shown and spoken; step advances at target,P1,V1,Sprint 4,2,mobile,COOK-03,KIT-070,"type:story, priority:P1, release:V1, area:mobile, epic:E07"
+KIT-079,E07,Resume an interrupted session,"As a home cook, I want to come back to the same step, so that interruptions don't ruin cooking.",- [ ] Resume prompt within 24 h; abandon job after 24 h idle,P1,V1,Sprint 6,2,mobile,COOK-11,KIT-070,"type:story, priority:P1, release:V1, area:mobile, epic:E07"
+KIT-060,E08,Voice agent worker skeleton,"As a developer, I want a LiveKit Agents worker with Sarvam STT/TTS and Claude Haiku, so that voice has a working pipeline.","- [ ] Agent joins via explicit dispatch 'cookmate-voice-cook'
+- [ ] Speaks a greeting in the member's language
+- [ ] Deployed in Mumbai region with health checks",P0,V1,Sprint 4,5,voice,VOICE-02,KIT-002,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-061,E08,Voice token Edge Function,"As a developer, I want a function that mints a LiveKit token with dispatch metadata, so that only signed-in members reach the agent with their own identity.","- [ ] Token scoped to one room; metadata carries household, member, session and user JWT
+- [ ] voice_sessions row created",P0,V1,Sprint 4,3,backend,VOICE-07,KIT-060,"type:story, priority:P0, release:V1, area:backend, epic:E08"
+KIT-062,E08,Voice context packet,"As a developer, I want get_voice_context RPC returning profile, household, pantry, taste, memories and session, so that the agent never asks what it already knows.","- [ ] Packet ≤ 3,000 tokens for a typical household
+- [ ] Refreshed after every write tool",P0,V1,Sprint 4,3,backend,VOICE-07,KIT-060,"type:story, priority:P0, release:V1, area:backend, epic:E08"
+KIT-063,E08,Mic button on every tab,"As a user, I want one mic button in the same place everywhere, so that I can always just talk.","- [ ] VoiceService.connect joins room; state shown (listening, thinking, speaking)
+- [ ] Works on Home, Kitchen, Cook, You",P0,V1,Sprint 4,3,mobile,VOICE-01,KIT-061,"type:story, priority:P0, release:V1, area:mobile, epic:E08"
+KIT-064,E08,Hands-free Cook mode,"As a voice-first cook who reads little, I want to cook start to finish by voice without touching the phone, so that my hands can stay in the dough.","- [ ] After 'shuru karo' the agent keeps listening for the session
+- [ ] Field test: dish completed with zero taps after start",P0,V1,Sprint 4,5,voice,VOICE-03,"KIT-063, KIT-070","type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-065,E08,Barge-in,"As a user, I want to interrupt the assistant any time, so that I'm in control of the conversation.",- [ ] Agent audio stops within 300 ms of user speech,P0,V1,Sprint 4,2,voice,VOICE-04,KIT-060,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-066,E08,Fast-path cooking commands,"As a home cook, I want next, repeat, timer and whistle to respond instantly, so that voice feels as quick as a button.","- [ ] Matched without the LLM in Hindi, Hinglish, English
+- [ ] Reply ≤ 400 ms using cached step audio
+- [ ] Works when the LLM is unreachable",P0,V1,Sprint 4,5,voice,VOICE-06,KIT-060,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-067,E08,Voice tools mapped to services,"As a developer, I want every voice tool in 07_voice_agent_tools.csv implemented, so that voice can do what the screens do.","- [ ] Tools call RPCs/Edge Functions with the user's JWT
+- [ ] Spoken confirmation before every write tool
+- [ ] Audit shows zero unconfirmed writes",P0,V1,Sprint 4,8,voice,"VOICE-07, VOICE-08",KIT-062,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-068,E08,Personal voice behaviour,"As a user, I want the assistant to speak my way: units, pace, detail, so that it feels made for me.","- [ ] voice_profiles drive units, pace, verbosity, skill-level cues
+- [ ] Beginner gets sensory cues; expert gets short prompts",P0,V1,Sprint 5,3,voice,VOICE-09,KIT-067,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-069,E08,Latency budget and telemetry,"As a developer, I want per-turn latency and per-session cost recorded, so that we hit p50 ≤ 1.0 s and ≤ ₹5 per session.","- [ ] voice_turn event with latency; voice_sessions with tokens, seconds, characters, cost_inr
+- [ ] Dashboard of p50/p95 and cost per session",P0,V1,Sprint 6,5,voice,"VOICE-05, VOICE-14",KIT-060,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-080,E08,Step audio cache,"As a developer, I want step speech pre-generated per language and voice, so that TTS cost and latency drop.","- [ ] tts-cache job fills step_audio_cache for published recipes
+- [ ] Agent plays cached audio for step reads",P0,V1,Sprint 5,5,voice,VOICE-14,KIT-140,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-081,E08,VAD-gated speech-to-text,"As a developer, I want only speech segments sent to Sarvam, so that STT cost matches talk time, not session time.","- [ ] STT_MODE=gated uses Silero VAD + StreamAdapter
+- [ ] Measured STT seconds ≤ 40% of session length in tests",P0,V1,Sprint 5,3,voice,VOICE-14,KIT-060,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-082,E08,Kitchen noise robustness,"As a voice-first cook who reads little, I want the assistant to ignore the cooker whistle and the TV, so that it doesn't interrupt or mishear me.","- [ ] Noise test set (whistle, frying, TV, children)
+- [ ] ≤ 1 false trigger per 15-min session; low-confidence asks to repeat",P0,V1,Sprint 6,5,voice,VOICE-10,KIT-064,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-083,E08,Switch speaker on a shared phone,"As a user, I want to say 'Main Sunita hoon' to switch profiles, so that it uses my taste and voice settings.","- [ ] switch_speaker tool loads member profile
+- [ ] Confirmation spoken",P1,V1,Sprint 5,2,voice,VOICE-13,KIT-067,"type:story, priority:P1, release:V1, area:voice, epic:E08"
+KIT-084,E08,Voice offline fallback,"As a home cook, I want next/repeat/timers to keep working offline, so that voice cooking survives bad network.","- [ ] On-device keyword fallback for next, repeat, timer; cached audio playback",P1,V1,Sprint 6,5,voice,VOICE-12,KIT-076,"type:story, priority:P1, release:V1, area:voice, epic:E08"
+KIT-085,E08,Regional launch language,"As a voice-first cook who reads little, I want the assistant in my regional language, so that I understand it fully.","- [ ] Language chosen at BRD sign-off; WER ≤ 15% on kitchen test set
+- [ ] Prompts and step text translated and reviewed",P0,V1,Sprint 6,5,voice,VOICE-02,KIT-140,"type:story, priority:P0, release:V1, area:voice, epic:E08"
+KIT-090,E09,Something's wrong sheet,"As a home cook, I want one tap or sentence to say what went wrong, so that I get help immediately.","- [ ] Options: too salty, burning, too watery, too thick, too spicy, undercooked, missing ingredient",P0,V1,Sprint 4,2,mobile,RES-01,KIT-070,"type:story, priority:P0, release:V1, area:mobile, epic:E09"
+KIT-091,E09,State-aware rescue fix,"As a home cook, I want a fix for my exact dish and step using what I have, so that I can save the meal.","- [ ] rescue returns ≤ 3 steps using pantry items
+- [ ] Rescue scenario test set passes",P0,V1,Sprint 4,5,ai,RES-02,KIT-090,"type:story, priority:P0, release:V1, area:ai, epic:E09"
+KIT-092,E09,Food-safety guards,"As a home cook, I want safety advice that's never skipped, so that my family stays safe.","- [ ] Pinned safety playbook: undercooked meat, raw egg, reheated rice, spoiled food
+- [ ] Safety notes copied verbatim to voice and screen",P0,V1,Sprint 4,3,ai,RES-03,KIT-091,"type:story, priority:P0, release:V1, area:ai, epic:E09"
+KIT-100,E10,One-tap feedback after cooking,"As a home cook, I want to rate a meal with one tap and a few chips, so that the app learns what we like.","- [ ] submit_feedback stores per-member feedback and nudges taste dials
+- [ ] Voice feedback supported",P0,V1,Sprint 5,3,mobile,"LRN-01, LRN-06",KIT-077,"type:story, priority:P0, release:V1, area:mobile, epic:E10"
+KIT-101,E10,Memory model and rules,"As a developer, I want memories with scope, source, confidence and provenance, so that learning is explainable and controllable.","- [ ] save_memory supersedes conflicting memories on corrections
+- [ ] Temporary scope never changes taste profiles",P0,V1,Sprint 5,5,backend,"LRN-02, LRN-03, LRN-04",KIT-003,"type:story, priority:P0, release:V1, area:backend, epic:E10"
+KIT-102,E10,What I've learned screen,"As a user, I want to see, edit, keep or forget what the app learned, so that I stay in control.","- [ ] List with Edit · Keep · Forget
+- [ ] Forget deletes derived data; voice 'yeh bhool jao' works",P0,V1,Sprint 5,3,mobile,LRN-05,KIT-101,"type:story, priority:P0, release:V1, area:mobile, epic:E10"
+KIT-103,E10,Memory extraction from speech and feedback,"As a developer, I want explicit statements turned into memory candidates, so that 'agli baar lahsun zyada' becomes a memory.","- [ ] memory_extraction task with 200-utterance test set
+- [ ] Candidate confirmed before saving",P0,V1,Sprint 5,5,ai,LRN-02,KIT-101,"type:story, priority:P0, release:V1, area:ai, epic:E10"
+KIT-104,E10,Picks reflect memories,"As a user, I want suggestions to show they remember me, so that I trust the app.","- [ ] Reasons reference relevant memories ('less spicy, as you asked')
+- [ ] Adapted recipes apply attribute memories (e.g. garlic multiplier)",P1,V1,Sprint 5,3,backend,LRN-08,"KIT-101, KIT-040","type:story, priority:P1, release:V1, area:backend, epic:E10"
+KIT-105,E10,Ingredient likes and dislikes,"As a user, I want the app to know which ingredients each of us likes, so that picks avoid what we hate.","- [ ] ingredient_preferences per member; disliked items ranked down, flagged in shared dishes",P0,V1,Sprint 5,3,backend,LRN-07,KIT-101,"type:story, priority:P0, release:V1, area:backend, epic:E10"
+KIT-110,E11,Add missing items to the list,"As a home cook, I want to add missing ingredients in one tap or sentence, so that shopping is easy.",- [ ] add_to_shopping_list merges duplicates and links recipe,P0,V1,Sprint 5,2,mobile,"SHOP-01, SHOP-02",KIT-050,"type:story, priority:P0, release:V1, area:mobile, epic:E11"
+KIT-111,E11,Mark bought into pantry,"As a home cook, I want items I mark bought to go into the pantry, so that I don't enter them twice.","- [ ] mark_list_items_bought adds inventory with estimated expiry
+- [ ] 'Sab le aaye' marks all",P0,V1,Sprint 5,3,mobile,SHOP-04,KIT-110,"type:story, priority:P0, release:V1, area:mobile, epic:E11"
+KIT-112,E11,Share list on WhatsApp,"As a family cook, I want to share the list as WhatsApp text, so that anyone can shop for us.",- [ ] Grouped by shop section; readable without the app,P1,V1,Sprint 5,1,mobile,SHOP-03,KIT-110,"type:story, priority:P1, release:V1, area:mobile, epic:E11"
+KIT-120,E12,Consent per purpose,"As a user, I want to choose what I allow (voice, memory, analytics) in plain language, so that I trust the app with my data.","- [ ] Shown and spoken; stored in consents with policy version
+- [ ] Voice declined → app works by touch",P0,V1,Sprint 2,3,backend,"ONB-04, NFR-10",KIT-023,"type:story, priority:P0, release:V1, area:backend, epic:E12"
+KIT-121,E12,Export my data,"As a user, I want to download all my household data, so that I can see what is stored.",- [ ] export-data produces zip in exports bucket; signed URL 24 h,P0,V1,Sprint 6,3,backend,NFR-10,KIT-003,"type:story, priority:P0, release:V1, area:backend, epic:E12"
+KIT-122,E12,Delete my account,"As a user, I want to delete my account and data, so that I leave cleanly.","- [ ] delete-account removes auth user and sole-owner households
+- [ ] Confirmation required; completes ≤ 30 days",P0,V1,Sprint 6,3,backend,NFR-10,KIT-003,"type:story, priority:P0, release:V1, area:backend, epic:E12"
+KIT-123,E12,Retention jobs,"As a developer, I want scheduled cleanup per retention rules, so that we keep only what we promised.","- [ ] retention_cleanup removes forgotten memories > 30 d, utterances > 30 d, images > 90 d
+- [ ] Job verified in staging",P0,V1,Sprint 6,3,backend,NFR-11,KIT-003,"type:story, priority:P0, release:V1, area:backend, epic:E12"
+KIT-124,E12,Security review before beta,"As a product owner, I want an independent RLS and secrets review, so that we don't leak family data.","- [ ] pgTAP RLS tests per table pass
+- [ ] No service key in app bundle (CI check)
+- [ ] Findings fixed or accepted in writing",P0,V1,Sprint 6,3,devops,NFR-12,KIT-003,"type:story, priority:P0, release:V1, area:devops, epic:E12"
+KIT-130,E13,Analytics events,"As a product owner, I want every event in 12_analytics_events.csv tracked, so that beta gates can be measured.","- [ ] PostHog wired through AIService; no PII or transcripts
+- [ ] KPI dashboard for section 15 metrics",P0,V1,Sprint 6,5,data,BR-20,KIT-005,"type:story, priority:P0, release:V1, area:data, epic:E13"
+KIT-131,E13,Crash and error monitoring,"As a developer, I want Sentry in app, Edge Functions and agent, so that we fix problems fast.","- [ ] Source maps uploaded from EAS
+- [ ] Alerts on new crash types",P0,V1,Sprint 1,2,devops,NFR-15,KIT-004,"type:story, priority:P0, release:V1, area:devops, epic:E13"
+KIT-132,E13,AI request logging,"As a developer, I want every model call logged with tokens and latency, so that AI cost and quality are visible.","- [ ] ai_requests rows from all functions and agent
+- [ ] Weekly cost report by task",P0,V1,Sprint 6,3,backend,NFR-15,KIT-003,"type:story, priority:P0, release:V1, area:backend, epic:E13"
+KIT-133,E13,AI evaluation harness,"As a developer, I want fixed test sets for parsing, adaptation, rescue and memory, so that prompt or model changes never regress quality.",- [ ] CI job runs evals on prompt changes; blocks merge on regression,P1,V1,Sprint 6,5,ai,NFR-17,KIT-031,"type:story, priority:P1, release:V1, area:ai, epic:E13"
+KIT-140,E14,Recipe content format and pipeline,"As a culinary lead, I want a YAML format and loader for curated recipes, so that content flows into the database reliably.","- [ ] content/recipes/*.yaml validated against schema
+- [ ] Loader upserts recipes, ingredients, steps, rules with review_status",P0,V1,Sprint 2,5,content,REC-01,KIT-003,"type:story, priority:P0, release:V1, area:content, epic:E14"
+KIT-141,E14,First 100 curated dishes,"As a culinary lead, I want 100 tested dishes with cues and variation rules, so that sprint 3 picks have real content.","- [ ] Each dish cooked and approved
+- [ ] Local measures and sensory cues for every step",P0,V1,Sprint 3,13,content,REC-01,KIT-140,"type:story, priority:P0, release:V1, area:content, epic:E14"
+KIT-142,E14,300 dishes and reference photos,"As a culinary lead, I want 300 dishes with photos for the top 50, so that launch content is complete.","- [ ] 300 approved; top 50 with checkpoint photos
+- [ ] Translations reviewed by native speakers",P0,V1,Sprint 6,13,content,"REC-01, COOK-04",KIT-141,"type:story, priority:P0, release:V1, area:content, epic:E14"
+KIT-143,E14,Ingredient catalog with local names and measures,"As a culinary lead, I want ingredients with aliases, shelf life and gram-per-measure, so that parsing and units work.","- [ ] ≥ 500 ingredients with Hindi names and aliases
+- [ ] katori/chammach/mutthi weights for common items",P0,V1,Sprint 2,8,content,"REC-04, KIT-03",KIT-140,"type:story, priority:P0, release:V1, area:content, epic:E14"
+KIT-144,E14,Festival and fasting calendar,"As a culinary lead, I want festival and fast rules for the launch region, so that picks respect Navratri, Ekadashi and others.",- [ ] calendar_events with rules for the next 12 months,P1,V1,Sprint 6,3,content,HOME-02,KIT-140,"type:story, priority:P1, release:V1, area:content, epic:E14"
+KIT-150,E15,Beta recruitment and onboarding,"As a product owner, I want 150 urban and 30 rural beta households enrolled, so that we validate with real kitchens.","- [ ] Consent forms; device loan plan for rural pilot
+- [ ] Partner NGO/SHG signed",P0,V1,Beta,5,product,,KIT-124,"type:story, priority:P0, release:V1, area:product, epic:E15"
+KIT-151,E15,Rural field observation protocol,"As a product owner, I want a protocol to observe first-time voice use without helping, so that we find every friction point.","- [ ] Script, consent, recording rules; 5 sessions per dialect
+- [ ] Findings logged as issues with label field-test",P0,V1,Beta,3,product,VOICE-03,KIT-150,"type:story, priority:P0, release:V1, area:product, epic:E15"
+KIT-152,E15,Beta gate review,"As a product owner, I want a review of BRD section 3 targets, so that we decide to launch or extend.",- [ ] Dashboard snapshot; decision recorded,P0,V1,Beta,2,product,,KIT-130,"type:story, priority:P0, release:V1, area:product, epic:E15"
+KIT-160,E16,Barcode scanning,"As a home cook, I want to scan packets to add them, so that adding groceries is instant.",- [ ] Open Food Facts lookup; rapid sequential scanning; known barcode ≤ 2 s,P0,V1.5,V1.5,5,mobile,INP-01,KIT-031,"type:story, priority:P0, release:V1.5, area:mobile, epic:E16"
+KIT-161,E16,Fridge photo scan,"As a home cook, I want to photograph my fridge and confirm what it found, so that I set up my pantry fast.",- [ ] Detected items with confidence; nothing committed without confirmation,P0,V1.5,V1.5,8,ai,INP-02,KIT-160,"type:story, priority:P0, release:V1.5, area:ai, epic:E16"
+KIT-162,E16,Receipt scan,"As a home cook, I want to photograph a receipt and add all items, so that a whole haul is added at once.",- [ ] Line accuracy ≥ 85% on test receipts; bulk confirm,P1,V1.5,V1.5,5,ai,INP-03,KIT-160,"type:story, priority:P1, release:V1.5, area:ai, epic:E16"
+KIT-170,E17,In-dish balance nudge,"As a family cook, I want one gentle tip per meal to make it more balanced, so that we eat better without counting calories.",- [ ] ≤ 1 nudge per meal aligned with ICMR-NIN; dismissable,P1,V1.5,V1.5,3,ai,HLTH-01,KIT-070,"type:story, priority:P1, release:V1.5, area:ai, epic:E17"
+KIT-171,E17,Weekly plate,"As a family cook, I want a weekly summary by food group, so that I see how balanced our week was.",- [ ] nutrition_weekly computed from sessions; no calories shown,P1,V1.5,V1.5,5,backend,HLTH-02,KIT-100,"type:story, priority:P1, release:V1.5, area:backend, epic:E17"
+KIT-180,E18,Save and track leftovers,"As a home cook, I want to save leftovers and get ideas to use them, so that nothing is thrown away.",- [ ] Leftovers in Ready-made with use-by; transformation suggestions,P1,V2,V2,5,backend,"LEFT-02, LEFT-03",KIT-077,"type:story, priority:P1, release:V2, area:backend, epic:E18"
+KIT-181,E18,Predictive restocking,"As a family cook, I want to be asked before staples run out, so that we never run out of atta.","- [ ] purchase_patterns from events; question, never an order",P1,V2,V2,5,backend,GROC-03,KIT-111,"type:story, priority:P1, release:V2, area:backend, epic:E18"
+KIT-190,E19,Provider adapter interface,"As a developer, I want one adapter interface for official provider APIs, so that providers can be added safely.","- [ ] find, cart, add, update, remove, checkout; no scraping",P0,V2,V2,8,backend,GROC-01,,"type:story, priority:P0, release:V2, area:backend, epic:E19"
+KIT-191,E19,Cart approval,"As a family cook, I want to approve items and total before any order, so that nothing is bought without me.",- [ ] Approval screen + spoken summary; approved_at required before placed,P0,V2,V2,5,mobile,GROC-02,KIT-190,"type:story, priority:P0, release:V2, area:mobile, epic:E19"
+KIT-200,E20,WhatsApp voice notes,"As a voice-first cook who reads little, I want to send a voice note on WhatsApp and get a voice reply, so that I don't even need the app.",- [ ] whatsapp-webhook verifies signature; reply ≤ 5 s; same tools and memories,P1,V2,V2,8,voice,VOICE-15,KIT-067,"type:story, priority:P1, release:V2, area:voice, epic:E20"
+KIT-201,E20,Cook handoff,"As a family cook, I want to send today's menu to our cook in her language, so that I don't explain it every day.",- [ ] Voice note in cook's language with consent; meal_plans.handoff_sent_at set,P1,V2,V2,5,voice,HH-05,KIT-200,"type:story, priority:P1, release:V2, area:voice, epic:E20"

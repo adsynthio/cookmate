@@ -1,0 +1,8 @@
+﻿bucket,public,path_pattern,contents,written_by,read_by,max_file_size,allowed_types,retention,release
+avatars,no,{household_id}/{member_id}.jpg,Member photos,Household members,Household members (signed URL),2 MB,"image/jpeg, image/png, image/webp",Until member removed,V1
+recipe-media,yes,curated/{recipe_id}/hero.webp; curated/{recipe_id}/steps/{step_no}.webp,Curated recipe and checkpoint reference photos,Service role (content pipeline),Anyone (CDN),1 MB,"image/webp, image/jpeg",Permanent,V1
+household-media,no,{household_id}/recipes/{recipe_id}/{file},Photos of household recipes and variants,Household members,Household members,3 MB,image/*,Until recipe deleted,V1
+step-audio,yes,{language_code}/{voice_id}/{step_id}/{variant_hash}.mp3,Pre-generated step speech (non-personal),Service role (tts-cache job),Anyone (CDN),1 MB,audio/mpeg,Until recipe text changes,V1
+checkpoints,no,{household_id}/{session_id}/{step_no}-{timestamp}.jpg,Photo checkpoints taken while cooking,Household members,Household members; checkpoint Edge Function,3 MB,"image/jpeg, image/webp",90 days (retention job),V1
+scans,no,{household_id}/{scan_id}.jpg,"Fridge, shelf and receipt photos",Household members,Household members; process-scan Edge Function,5 MB,"image/jpeg, image/webp",90 days (retention job),V1.5
+exports,no,{household_id}/{export_id}.zip,Personal data exports (DPDP right to access),Service role (export-data),"Requesting member (signed URL, 24 h)",50 MB,application/zip,7 days,V1

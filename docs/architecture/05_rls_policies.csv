@@ -1,0 +1,148 @@
+﻿table,policy,command,roles,using,with_check,template,note
+profiles,profiles_own_select,select,authenticated,id = (select auth.uid()),,self,A user sees only their own profile
+profiles,profiles_own_insert,insert,authenticated,,id = (select auth.uid()),self,Created by trigger; allowed for self
+profiles,profiles_own_update,update,authenticated,id = (select auth.uid()),id = (select auth.uid()),self,Edit own profile
+households,households_member_select,select,authenticated,private.is_household_member(id),,households,Members see their households
+households,households_creator_insert,insert,authenticated,,created_by = (select auth.uid()),households,Prefer create_household() RPC
+households,households_admin_update,update,authenticated,"private.has_household_role(id, array['owner','admin'])","private.has_household_role(id, array['owner','admin'])",households,Owner/admin edits
+households,households_owner_delete,delete,authenticated,"private.has_household_role(id, array['owner'])",,households,Only owner deletes the kitchen
+household_members,household_members_member_select,select,authenticated,private.is_household_member(household_id),,members,Members see each other
+household_members,household_members_admin_insert,insert,authenticated,,"private.has_household_role(household_id, array['owner','admin'])",members,Owner/admin adds members (create_household() adds the owner)
+household_members,household_members_admin_or_self_update,update,authenticated,"private.has_household_role(household_id, array['owner','admin']) or user_id = (select auth.uid())","private.has_household_role(household_id, array['owner','admin']) or user_id = (select auth.uid())",members,Admins edit anyone; members edit themselves
+household_members,household_members_admin_delete,delete,authenticated,"private.has_household_role(household_id, array['owner','admin'])",,members,Owner/admin removes members
+voice_profiles,voice_profiles_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+voice_profiles,voice_profiles_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+voice_profiles,voice_profiles_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+voice_profiles,voice_profiles_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+consents,consents_member_select,select,authenticated,private.is_household_member(household_id),,hh_append,Household members read
+consents,consents_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_append,Append-only: no update or delete policies
+kitchen_equipment,kitchen_equipment_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+kitchen_equipment,kitchen_equipment_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+kitchen_equipment,kitchen_equipment_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+kitchen_equipment,kitchen_equipment_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+ingredients,ingredients_authenticated_select,select,authenticated,true,,global_read,Global catalog; written by service role only
+products,products_authenticated_select,select,authenticated,true,,global_read,Global catalog; written by service role only
+techniques,techniques_authenticated_select,select,authenticated,true,,global_read,Global catalog; written by service role only
+calendar_events,calendar_events_visible_select,select,authenticated,household_id is null or private.is_household_member(household_id),,calendar,Global events + own household events
+calendar_events,calendar_events_own_insert,insert,authenticated,,household_id is not null and private.is_household_member(household_id),calendar,Household events only
+calendar_events,calendar_events_own_update,update,authenticated,household_id is not null and private.is_household_member(household_id),household_id is not null and private.is_household_member(household_id),calendar,Household events only
+calendar_events,calendar_events_own_delete,delete,authenticated,household_id is not null and private.is_household_member(household_id),,calendar,Household events only
+feature_flags,feature_flags_authenticated_select,select,authenticated,true,,global_read,Global catalog; written by service role only
+storage_locations,storage_locations_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+storage_locations,storage_locations_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+storage_locations,storage_locations_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+storage_locations,storage_locations_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+inventory_items,inventory_items_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+inventory_items,inventory_items_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+inventory_items,inventory_items_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+inventory_items,inventory_items_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+inventory_events,inventory_events_member_select,select,authenticated,private.is_household_member(household_id),,hh_append,Household members read
+inventory_events,inventory_events_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_append,Append-only: no update or delete policies
+scans,scans_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+scans,scans_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+scans,scans_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+scans,scans_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+scan_items,scan_items_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+scan_items,scan_items_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+scan_items,scan_items_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+scan_items,scan_items_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+recipes,recipes_visible_select,select,authenticated,(household_id is null and is_published) or private.is_household_member(household_id),,recipes,Curated published recipes + own household recipes
+recipes,recipes_own_insert,insert,authenticated,,household_id is not null and private.is_household_member(household_id),recipes,Households create variants; curated rows by service role
+recipes,recipes_own_update,update,authenticated,household_id is not null and private.is_household_member(household_id),household_id is not null and private.is_household_member(household_id),recipes,Edit own household recipes only
+recipes,recipes_own_delete,delete,authenticated,household_id is not null and private.is_household_member(household_id),,recipes,Delete own household recipes only
+recipe_ingredients,recipe_ingredients_visible_select,select,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and ((r.household_id is null and r.is_published) or private.is_household_member(r.household_id))),,recipe_child,Visible when parent recipe is visible
+recipe_ingredients,recipe_ingredients_own_insert,insert,authenticated,,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+recipe_ingredients,recipe_ingredients_own_update,update,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+recipe_ingredients,recipe_ingredients_own_delete,delete,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),,recipe_child,Only on own household recipes
+recipe_steps,recipe_steps_visible_select,select,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and ((r.household_id is null and r.is_published) or private.is_household_member(r.household_id))),,recipe_child,Visible when parent recipe is visible
+recipe_steps,recipe_steps_own_insert,insert,authenticated,,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+recipe_steps,recipe_steps_own_update,update,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+recipe_steps,recipe_steps_own_delete,delete,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),,recipe_child,Only on own household recipes
+recipe_variation_rules,recipe_variation_rules_visible_select,select,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and ((r.household_id is null and r.is_published) or private.is_household_member(r.household_id))),,recipe_child,Visible when parent recipe is visible
+recipe_variation_rules,recipe_variation_rules_own_insert,insert,authenticated,,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+recipe_variation_rules,recipe_variation_rules_own_update,update,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+recipe_variation_rules,recipe_variation_rules_own_delete,delete,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),,recipe_child,Only on own household recipes
+step_audio_cache,step_audio_cache_visible_select,select,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and ((r.household_id is null and r.is_published) or private.is_household_member(r.household_id))),,recipe_child,Visible when parent recipe is visible
+step_audio_cache,step_audio_cache_own_insert,insert,authenticated,,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+step_audio_cache,step_audio_cache_own_update,update,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),recipe_child,Only on own household recipes
+step_audio_cache,step_audio_cache_own_delete,delete,authenticated,exists (select 1 from public.recipes r where r.id = recipe_id and r.household_id is not null and private.is_household_member(r.household_id)),,recipe_child,Only on own household recipes
+saved_recipes,saved_recipes_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+saved_recipes,saved_recipes_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+saved_recipes,saved_recipes_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+saved_recipes,saved_recipes_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+recommendations,recommendations_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+recommendations,recommendations_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+recommendations,recommendations_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+recommendations,recommendations_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+meal_plans,meal_plans_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+meal_plans,meal_plans_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+meal_plans,meal_plans_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+meal_plans,meal_plans_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+cooking_sessions,cooking_sessions_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+cooking_sessions,cooking_sessions_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+cooking_sessions,cooking_sessions_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+cooking_sessions,cooking_sessions_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+session_timers,session_timers_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+session_timers,session_timers_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+session_timers,session_timers_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+session_timers,session_timers_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+session_events,session_events_member_select,select,authenticated,private.is_household_member(household_id),,hh_append,Household members read
+session_events,session_events_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_append,Append-only: no update or delete policies
+photo_checkpoints,photo_checkpoints_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+photo_checkpoints,photo_checkpoints_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+photo_checkpoints,photo_checkpoints_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+photo_checkpoints,photo_checkpoints_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+meal_feedback,meal_feedback_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+meal_feedback,meal_feedback_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+meal_feedback,meal_feedback_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+meal_feedback,meal_feedback_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+memories,memories_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+memories,memories_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+memories,memories_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+memories,memories_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+taste_profiles,taste_profiles_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+taste_profiles,taste_profiles_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+taste_profiles,taste_profiles_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+taste_profiles,taste_profiles_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+ingredient_preferences,ingredient_preferences_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+ingredient_preferences,ingredient_preferences_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+ingredient_preferences,ingredient_preferences_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+ingredient_preferences,ingredient_preferences_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+member_skills,member_skills_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+member_skills,member_skills_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+member_skills,member_skills_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+member_skills,member_skills_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+nutrition_weekly,nutrition_weekly_member_select,select,authenticated,private.is_household_member(household_id),,hh_read,Read-only for members; written by service role
+shopping_lists,shopping_lists_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+shopping_lists,shopping_lists_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+shopping_lists,shopping_lists_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+shopping_lists,shopping_lists_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+shopping_list_items,shopping_list_items_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+shopping_list_items,shopping_list_items_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+shopping_list_items,shopping_list_items_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+shopping_list_items,shopping_list_items_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+purchase_patterns,purchase_patterns_member_select,select,authenticated,private.is_household_member(household_id),,hh_read,Read-only for members; written by service role
+grocery_providers,grocery_providers_authenticated_select,select,authenticated,true,,global_read,Global catalog; written by service role only
+provider_connections,provider_connections_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+provider_connections,provider_connections_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+provider_connections,provider_connections_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+provider_connections,provider_connections_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+carts,carts_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+carts,carts_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+carts,carts_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+carts,carts_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+cart_items,cart_items_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+cart_items,cart_items_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+cart_items,cart_items_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+cart_items,cart_items_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+devices,devices_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+devices,devices_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+devices,devices_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+devices,devices_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+notifications,notifications_member_select,select,authenticated,private.is_household_member(household_id),,hh_read,Read-only for members; written by service role
+channel_identities,channel_identities_member_select,select,authenticated,private.is_household_member(household_id),,hh_rw,Household members read
+channel_identities,channel_identities_member_insert,insert,authenticated,,private.is_household_member(household_id),hh_rw,Household members create
+channel_identities,channel_identities_member_update,update,authenticated,private.is_household_member(household_id),private.is_household_member(household_id),hh_rw,Household members edit
+channel_identities,channel_identities_member_delete,delete,authenticated,private.is_household_member(household_id),,hh_rw,Household members delete
+voice_sessions,voice_sessions_member_select,select,authenticated,private.is_household_member(household_id),,hh_read,Read-only for members; written by service role
+ai_requests,(none),all,service_role only,,,service_only,RLS enabled with no policies: clients cannot read or write

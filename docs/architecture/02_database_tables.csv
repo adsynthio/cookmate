@@ -1,0 +1,47 @@
+﻿table,domain,purpose,owning_service,rls_template,written_by,release,retention,column_count,primary_key,unique_constraints
+profiles,Identity,One row per Supabase auth user (including anonymous users). Holds language and onboarding state.,PreferenceService,self,trigger on auth.users + app,V1,Until account deletion,9,id,
+households,Identity,A kitchen shared by its members. The unit of the Kitchen Brain.,PreferenceService,households,create_household() RPC + app,V1,Until owner deletes,10,id,
+household_members,Identity,People who eat or cook in the household. Children and elders without phones are members with no user_id.,PreferenceService,members,app (RLS),V1,Until removed,12,id,"(household_id, user_id)"
+voice_profiles,Identity,"How the Voice Cook should talk to this member: language, dialect, units, pace, detail, voice.",PreferenceService,hh_rw,app (RLS),V1,Until member removed,11,member_id,
+consents,Privacy,Consent records per purpose (DPDP Act 2023). Append-only history; latest row per type wins.,PreferenceService,hh_append,app (RLS),V1,Kept for the life of the account + 3 years (legal),8,id,
+kitchen_equipment,Kitchen,Equipment the household owns; recipes adapt to it.,KitchenService,hh_rw,app (RLS),V1,Until removed,5,id,"(household_id, equipment_type)"
+ingredients,Catalog,"Global ingredient catalog with local names, unit conversions, shelf life and food groups.",KitchenService,global_read,service role (content pipeline),V1,Permanent,15,id,
+products,Catalog,Barcode products mapped to ingredients (Open Food Facts + confirmed user scans).,KitchenService,global_read,service role (process-scan),V1.5,Permanent,10,id,
+techniques,Catalog,"Cooking techniques (tadka, bhuna, dum…) used by steps and the technique ladder.",RecipeService,global_read,service role (content pipeline),V1,Permanent,7,id,
+calendar_events,Catalog,Festivals and fasts (global rows) plus household events like guests or exams.,RecipeService,calendar,app (RLS),V1,Global permanent; household rows 1 year,9,id,
+feature_flags,Platform,Remote feature flags and rollout percentages.,AIService,global_read,service role,V1,Permanent,5,key,
+storage_locations,Kitchen,"Fridge, Freezer, Pantry, Staples, Ready-made and any custom places in this kitchen.",KitchenService,hh_rw,app (RLS),V1,Until removed,6,id,"(household_id, name)"
+inventory_items,Kitchen,"The living pantry. One row per thing in the kitchen, with confidence that decays over time.",KitchenService,hh_rw,app (RLS),V1,Finished/discarded rows purged after 180 days,23,id,
+inventory_events,Kitchen,"Append-only log of every pantry change: who, what, why. Feeds learning, undo and purchase patterns.",KitchenService,hh_append,app (RLS),V1,2 years,11,id,
+scans,Kitchen,"Camera, barcode and receipt scans awaiting or after confirmation.",KitchenService,hh_rw,app (RLS),V1.5,Images 90 days; rows 1 year,10,id,
+scan_items,Kitchen,"Items detected in a scan, each confirmed or rejected by the user.",KitchenService,hh_rw,app (RLS),V1.5,1 year,11,id,
+recipes,Recipes,"Curated global dishes (household_id null) and household variants, generated dishes and family recipes.",RecipeService,recipes,app (RLS),V1,Permanent (household rows until deleted),28,id,
+recipe_ingredients,Recipes,"Ingredients of a recipe with quantities, local measures, roles and substitutes.",RecipeService,recipe_child,app (RLS),V1,With recipe,12,id,
+recipe_steps,Recipes,"Steps with sensory cues, timers, whistles, checkpoint photos and per-member branches.",RecipeService,recipe_child,app (RLS),V1,With recipe,14,id,"(recipe_id, step_no)"
+recipe_variation_rules,Recipes,"Rules the AI must adapt within: substitutions, equipment swaps, diet, spice, servings, member branches.",RecipeService,recipe_child,app (RLS),V1,With recipe,8,id,
+step_audio_cache,Recipes,Pre-generated speech for recipe steps per language and voice; the biggest TTS cost saver.,CookingService,recipe_child,service role (tts-cache job),V1,Until recipe text changes,9,id,"(step_id, language_code, voice_id, variant_hash)"
+saved_recipes,Recipes,Favourites and collections per member.,RecipeService,hh_rw,app (RLS),V1,Until removed,6,id,"(member_id, recipe_id, collection)"
+recommendations,Planning,"Every pick shown (Tonight, decided; craving results) with score breakdown and outcome. Training data for ranking.",RecipeService,hh_rw,suggest-meals edge function + app,V1,1 year,17,id,
+meal_plans,Planning,"Planned meals by date and slot (daily pick accepted, weekly plans, cook handoff in V2).",RecipeService,hh_rw,app (RLS),V1,1 year,11,id,"(household_id, plan_date, meal_slot, recipe_id)"
+cooking_sessions,Cooking,Live and past Cook With Me sessions: the state the voice agent and the screen share.,CookingService,hh_rw,app (RLS),V1,2 years,17,id,
+session_timers,Cooking,Timers in a cooking session; mirrored to local notifications on the phone.,CookingService,hh_rw,app (RLS),V1,With session,9,id,
+session_events,Cooking,Append-only log of everything that happened while cooking (touch and voice). No audio.,CookingService,hh_append,app (RLS),V1,Utterance text 30 days (if consented); rest 2 years,10,id,
+photo_checkpoints,Cooking,Photos the user shows at a step and the AI's assessment.,CookingService,hh_rw,app (RLS),V1,Images 90 days,10,id,
+meal_feedback,Learning,Per-member feedback after a cooking session.,FeedbackService,hh_rw,app (RLS),V1,Permanent,9,id,"(session_id, member_id)"
+memories,Learning,"What Cookmate has learned, with scope, source, confidence and provenance. Users can edit, keep or forget each one.",PreferenceService,hh_rw,app (RLS),V1,Until forgotten; forgotten rows hard-deleted after 30 days,20,id,
+taste_profiles,Learning,"Current taste dials per member, updated from feedback and memories.",PreferenceService,hh_rw,app (RLS),V1,Until member removed,11,member_id,
+ingredient_preferences,Learning,Likes and dislikes per member and ingredient.,PreferenceService,hh_rw,app (RLS),V1,Until member removed,8,id,"(member_id, ingredient_id)"
+member_skills,Learning,Technique ladder progress per member (V2).,PreferenceService,hh_rw,app (RLS),V2,Until member removed,7,id,"(member_id, technique_id)"
+nutrition_weekly,Health,"Weekly plate summary by food group, computed from sessions (V1.5).",PreferenceService,hh_read,service role (nutrition-weekly job),V1.5,1 year,7,id,"(household_id, member_id, week_start)"
+shopping_lists,Shopping,Shopping lists per household.,ShoppingService,hh_rw,app (RLS),V1,Archived lists 1 year,5,id,
+shopping_list_items,Shopping,"Items to buy, with why they are on the list.",ShoppingService,hh_rw,app (RLS),V1,1 year,14,id,
+purchase_patterns,Shopping,Learned buying rhythm per ingredient for predictive restocking (V2).,ShoppingService,hh_read,service role (restock-predict job),V2,Rolling,12,id,"(household_id, ingredient_id)"
+grocery_providers,Shopping,Grocery providers with official integrations (V2).,ShoppingService,global_read,service role,V2,Permanent,7,id,
+provider_connections,Shopping,"A household's linked provider account; tokens live in Supabase Vault, never in this table (V2).",ShoppingService,hh_rw,app (RLS),V2,Until disconnected,7,id,"(household_id, provider_id)"
+carts,Shopping,Provider carts built by the grocery agent. Nothing is placed without approval.,ShoppingService,hh_rw,app (RLS),V2,2 years,12,id,
+cart_items,Shopping,Lines in a provider cart (V2).,ShoppingService,hh_rw,app (RLS),V2,With cart,9,id,
+devices,Platform,"Phones signed in to a member, with push tokens.",AIService,hh_rw,app (RLS),V1,Removed 90 days after last seen,9,id,
+notifications,Platform,Scheduled and sent notifications; enforces the one-proactive-nudge-a-day cap.,AIService,hh_read,service role (notify jobs),V1,90 days,11,id,
+channel_identities,Platform,WhatsApp or phone identities linked to a member (V2). Numbers stored hashed.,AIService,hh_rw,app (RLS),V2,Until unlinked,7,id,"(channel, external_id_hash)"
+voice_sessions,Telemetry,"One row per Voice Cook connection: usage, latency and cost. No audio, no transcript.",AIService,hh_read,service role (voice agent),V1,2 years,21,id,
+ai_requests,Telemetry,"Log of every model call made by Edge Functions and the agent, for cost and quality monitoring.",AIService,service_only,service role,V1,90 days,12,id,

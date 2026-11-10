@@ -1,0 +1,8 @@
+﻿field,data_type,options,notes
+Status,SINGLE_SELECT,"Todo, In progress, In review, Done",Board columns
+Priority,SINGLE_SELECT,"P0, P1, P2",From label priority:*
+Release,SINGLE_SELECT,"V1, V1.5, V2, V3",From label release:*
+Sprint,SINGLE_SELECT,"Sprint 1, Sprint 2, Sprint 3, Sprint 4, Sprint 5, Sprint 6, Beta, V1.5, V2, V3",Mirrors milestone; use for board grouping
+Area,SINGLE_SELECT,"mobile, backend, voice, ai, design, content, devops, data, product",From label area:*
+Epic,SINGLE_SELECT,"E01, E02, E03, E04, E05, E06, E07, E08, E09, E10, E11, E12, E13, E14, E15, E16, E17, E18, E19, E20",Epic id
+Estimate,NUMBER,"Story points (1, 2, 3, 5, 8, 13)",Fibonacci

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { clock, convertQty, countWhistle, deductionPreview, remaining, stepSeconds } from "./cooking.ts";
+import { adjustmentFor, offersTimer, readableLine, clock, convertQty, countWhistle, deductionPreview, remaining, stepSeconds } from "./cooking.ts";
 
 test("step times and clocks", () => {
   assert.equal(stepSeconds({ minutes: 5 }), 300);
@@ -46,4 +46,50 @@ test("deduction preview: scaled by servings, in the pantry's units, staples with
     { itemId: "c", ingredient: "cumin seeds", quantity: null, unit: "g", currentQuantity: null, staple: true },
     { itemId: "p0", ingredient: "potato", quantity: 0.25, unit: "kg", currentQuantity: 1, staple: false },
   ]);
+});
+
+test("finish sheet: a reviewed line becomes the smallest adjustment", () => {
+  const line = { itemId: "i1", ingredient: "paneer", quantity: 200, unit: "g", currentQuantity: 250, staple: false };
+  const staple = { itemId: "i2", ingredient: "turmeric", quantity: null, unit: null, currentQuantity: null, staple: true };
+  const unknown = { itemId: "i3", ingredient: "curd", quantity: null, unit: "katori", currentQuantity: 1, staple: false };
+
+  // Left as suggested: nothing to send, the preview applies.
+  assert.equal(adjustmentFor(line, { on: true, qty: "200", level: null }), null);
+  assert.deepEqual(adjustmentFor(line, { on: true, qty: "150", level: null }), { itemId: "i1", quantity: 150 });
+  assert.deepEqual(adjustmentFor(line, { on: true, qty: "1,5", level: null }), { itemId: "i1", quantity: 1.5 });
+  assert.deepEqual(adjustmentFor(line, { on: false, qty: "200", level: null }), { itemId: "i1", skip: true });
+  // A cleared or unreadable amount never falls back to the suggested amount.
+  assert.deepEqual(adjustmentFor(line, { on: true, qty: "", level: null }), { itemId: "i1", skip: true });
+  assert.deepEqual(adjustmentFor(line, { on: true, qty: "lots", level: null }), { itemId: "i1", skip: true });
+
+  // Staples only change when the cook picks a level.
+  assert.equal(adjustmentFor(staple, { on: true, qty: "", level: null }), null);
+  assert.deepEqual(adjustmentFor(staple, { on: true, qty: "", level: "low" }), { itemId: "i2", stapleLevel: "low" });
+  assert.deepEqual(adjustmentFor(staple, { on: false, qty: "", level: "low" }), { itemId: "i2", skip: true });
+
+  // Units we couldn't compare: nothing is taken off unless the cook types an amount.
+  assert.equal(adjustmentFor(unknown, { on: true, qty: "", level: null }), null);
+  assert.deepEqual(adjustmentFor(unknown, { on: true, qty: "0.5", level: null }), { itemId: "i3", quantity: 0.5 });
+});
+
+test("small amounts of kg and litre items are reviewed in g and ml", () => {
+  const onion = { itemId: "i6", ingredient: "onion", quantity: 0.055, unit: "kg", currentQuantity: 1, staple: false };
+  const r = readableLine(onion);
+  assert.equal(r.line.quantity, 55);
+  assert.equal(r.line.unit, "g");
+  assert.equal(r.factor, 1000);
+  // Typed in grams, sent in the item's unit.
+  const adj = adjustmentFor(r.line, { on: true, qty: "80", level: null });
+  assert.equal(adj!.quantity! / r.factor, 0.08);
+  assert.equal(readableLine({ ...onion, quantity: 1.5 }).factor, 1);
+  assert.equal(readableLine({ ...onion, unit: "g", quantity: 0.5 }).factor, 1);
+});
+
+test("timers are offered for waits worth timing", () => {
+  assert.equal(offersTimer({ minutes: 10 }), true);
+  assert.equal(offersTimer({ minutes: 1 }), false);
+  assert.equal(offersTimer({ minutes: 1, timer: true }), true);
+  assert.equal(offersTimer({ minutes: 480 }), false);
+  assert.equal(offersTimer({ minutes: 30, whistles: 3 }), false);
+  assert.equal(offersTimer({}), false);
 });

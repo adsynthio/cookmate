@@ -15,7 +15,9 @@ Everything reads from and writes to one **Kitchen Brain** per household: pantry,
 | `apps/mobile/` | Expo (SDK 58) React Native app, TypeScript, Expo Router |
 | `services/voice-agent/` | Voice Cook worker: LiveKit Agents 1.8 (Python), Sarvam speech, Claude |
 | `supabase/` | Migrations, pgTAP tests, CLI config (Edge Functions arrive per sprint) |
+| `content/` | Ingredient catalog, techniques, feature flags and curated recipes (YAML) |
 | `tools/archgen/` | Generates the schema migration and TypeScript types from the architecture CSVs |
+| `tools/content/` | Validates `content/` and generates `supabase/seed.sql` |
 | `scripts/` | Local database test runner, GitHub backlog bootstrap |
 
 ## Getting started
@@ -33,6 +35,15 @@ Run every migration and the RLS/isolation tests against a throwaway local Postgr
 ```bash
 scripts/db/test-local.sh
 ```
+
+Ingredients, techniques, flags and recipes live in `content/` as YAML. After editing them:
+
+```bash
+python3 tools/content/build.py              # validate and regenerate supabase/seed.sql
+python3 -m unittest discover -s tools/content
+```
+
+Recipes are published only when `review_status: approved` (see `content/recipes/README.md`).
 
 The hosted project is **ChefMate** (Supabase, Mumbai `ap-south-1`).
 

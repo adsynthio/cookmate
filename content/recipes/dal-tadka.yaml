@@ -1,0 +1,58 @@
+slug: dal-tadka
+title: Dal Tadka
+titles: {hi: दाल तड़का, hi-Latn: Dal Tadka}
+description: >-
+  Everyday arhar dal, pressure-cooked soft and finished with a ghee tadka of cumin, garlic, onion and tomato.
+cuisine_region: generic_north
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 25
+cook_time_min: 25
+difficulty: 2
+spice_level: 2
+equipment: [pressure_cooker, kadai]
+tags: [comforting, high_protein]
+flavor_profile: {rich: 0.5, heat: 0.3, acid: 0.3, crunch: 0, starch: 0.4, sweet: 0}
+food_groups: [dal]
+review_status: draft
+ingredients:
+  - {ingredient: toor dal, qty: 200, unit: g, local: 1 cup arhar dal, role: base, substitutes: [{ingredient: masoor dal, ratio: 1, note: "cooks faster, 2 whistles"}]}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: salt, qty: 7, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: ghee, qty: 26, unit: g, local: 2 chammach, role: fat, group: Tadka, substitutes: [{ingredient: refined oil, ratio: 1}]}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice, group: Tadka}
+  - {ingredient: asafoetida, qty: 0.2, unit: g, local: 1 chutki, role: aromatic, group: Tadka}
+  - {ingredient: garlic, qty: 16, unit: g, local: 4 kali lahsun, role: aromatic, group: Tadka}
+  - {ingredient: onion, qty: 110, unit: g, local: 1 pyaaz, role: aromatic, group: Tadka}
+  - {ingredient: ginger, qty: 8, unit: g, local: 1 inch, role: aromatic, group: Tadka}
+  - {ingredient: green chilli, qty: 3, unit: g, local: 1 hari mirch, role: heat, group: Tadka}
+  - {ingredient: tomato, qty: 100, unit: g, local: 1 tamatar, role: acid, group: Tadka}
+  - {ingredient: red chilli powder, qty: 1.25, unit: g, local: aadha chhota chammach, role: heat, group: Tadka}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+  - {ingredient: lemon, qty: 0.5, unit: piece, local: aadha nimbu, role: acid, optional: true}
+steps:
+  - text: Rinse the dal 2 to 3 times until the water runs almost clear, then soak in fresh water.
+    technique: soak
+    minutes: 20
+    timer: true
+    cue: Soaking is optional but makes the dal cook softer and faster.
+  - text: Drain and pressure-cook the dal with 600 ml water and the turmeric on medium heat.
+    technique: pressure_cook
+    whistles: 4
+    minutes: 15
+    cue: Let the pressure drop by itself. The dal should mash completely when pressed with a spoon.
+  - text: Whisk the dal smooth, add the salt and hot water until it pours like thick soup, and simmer.
+    technique: simmer
+    minutes: 5
+  - text: For the tadka heat the ghee in a kadai. Add cumin, hing and garlic; when the garlic is golden add onion, ginger and green chilli and cook until the onion is light golden. Add the tomato and chilli powder and cook until soft.
+    technique: tadka
+    minutes: 7
+    cue: Garlic should be golden, not brown. The tomato breaks down and the ghee shines at the edges.
+    branch: {age_group: child, action: Take out the child's dal before adding the chilli tadka; give it a little ghee and cumin only}
+  - text: Pour the tadka into the dal, simmer 2 minutes, then add coriander leaves and lemon juice.
+    technique: simmer
+    minutes: 2
+variation_rules:
+  - {type: diet, condition: {diet: jain}, action: {omit: [onion, garlic, ginger], add: [{ingredient: asafoetida, qty: 0.2, unit: g}]}, note: A pinch more hing and a little tomato keep the flavour.}
+  - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: simmer, minutes: 45, at_step: 2}, note: "Simmer in a covered pot with extra water, stirring, until soft."}

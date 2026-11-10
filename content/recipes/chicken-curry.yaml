@@ -1,0 +1,64 @@
+slug: chicken-curry
+title: Chicken Curry
+titles: {hi: चिकन करी, hi-Latn: Chicken Curry}
+description: >-
+  Home-style bone-in chicken in a browned onion and tomato gravy with whole spices. Good with rice or roti.
+cuisine_region: generic_north
+course: main
+diet: nonveg
+base_servings: 4
+prep_time_min: 40
+cook_time_min: 50
+difficulty: 3
+spice_level: 3
+equipment: [kadai]
+tags: [comforting, high_protein]
+flavor_profile: {rich: 0.7, heat: 0.5, acid: 0.4, crunch: 0, starch: 0, sweet: 0.1}
+food_groups: [protein]
+review_status: draft
+ingredients:
+  - {ingredient: chicken, qty: 750, unit: g, local: 750 gram curry cut, role: protein}
+  - {ingredient: curd, qty: 100, unit: g, local: aadha katori dahi, role: acid, group: Marinade}
+  - {ingredient: ginger garlic paste, qty: 22, unit: g, local: 1.5 chammach, role: aromatic}
+  - {ingredient: onion, qty: 330, unit: g, local: 3 pyaaz, role: aromatic}
+  - {ingredient: tomato, qty: 200, unit: g, local: 2 tamatar, role: acid}
+  - {ingredient: refined oil, qty: 56, unit: ml, local: 4 chammach, role: fat}
+  - {ingredient: bay leaf, qty: 0.2, unit: g, local: 1 tej patta, role: aromatic, group: Whole spices}
+  - {ingredient: cloves, qty: 0.3, unit: g, local: 3 laung, role: aromatic, group: Whole spices}
+  - {ingredient: green cardamom, qty: 0.45, unit: g, local: 3 elaichi, role: aromatic, group: Whole spices}
+  - {ingredient: cinnamon, qty: 1, unit: g, local: 1 inch dalchini, role: aromatic, group: Whole spices}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: kashmiri chilli powder, qty: 5, unit: g, local: 2 chhota chammach, role: heat}
+  - {ingredient: coriander powder, qty: 6, unit: g, local: 1 chammach, role: spice}
+  - {ingredient: garam masala, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: salt, qty: 9, unit: g, local: 1.5 chhota chammach, role: spice}
+  - {ingredient: coriander leaves, qty: 10, unit: g, local: 1 mutthi, role: garnish}
+steps:
+  - text: Mix the chicken with the curd, half the ginger garlic paste, half the turmeric, half the chilli powder and a little salt. Cover and keep in the fridge.
+    technique: marinate
+    minutes: 30
+    timer: true
+    safety: Wash your hands, the board and the knife with soap after handling raw chicken, and keep raw chicken away from food that will not be cooked. Marinate in the fridge, not on the counter.
+  - text: Heat the oil in a heavy kadai. Add the whole spices for 30 seconds, then the sliced onions. Cook, stirring more often as they colour.
+    technique: saute_onion
+    minutes: 14
+    cue: The onions are deep golden brown all over, not black at the edges.
+  - text: Add the rest of the ginger garlic paste for a minute, then the chopped tomatoes, the remaining turmeric and chilli powder, coriander powder and salt. Cook, stirring.
+    technique: bhuna
+    minutes: 8
+    cue: The tomatoes melt into the masala and oil shines at the edges.
+  - text: Add the chicken with all its marinade. Cook on high heat, stirring, so it sears and the masala coats every piece.
+    technique: bhuna
+    minutes: 6
+    cue: The chicken turns opaque on the outside.
+  - text: Add 300 ml hot water, cover and simmer on low heat, stirring now and then.
+    technique: simmer
+    minutes: 25
+    timer: true
+    cue: The meat pulls away from the bone easily.
+    safety: Chicken must be cooked through. Cut the thickest piece open to the bone; the meat should be white with no pink and the juices clear. If unsure, cook 5 more minutes and check again.
+  - text: Add the garam masala and coriander leaves, cover and rest for 5 minutes before serving.
+    minutes: 5
+variation_rules:
+  - {type: spice, condition: {member_age_group: child}, action: {reduce: {kashmiri chilli powder: 0.5}}, note: Kashmiri chilli is mild in heat; halve it for young children.}
+  - {type: equipment, condition: {have_equipment: pressure_cooker}, action: {method: pressure_cook, whistles: 3, at_step: 5, water_ml: 150}, note: Pressure-cook for 3 whistles with less water instead of simmering; still check that the chicken is cooked through.}

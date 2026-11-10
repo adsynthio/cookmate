@@ -1,0 +1,32 @@
+name: Seed hosted database
+
+# Loads supabase/seed.sql (catalog, techniques, recipes) into the hosted project. The seed is idempotent, so
+# re-running it is safe. It is too large to send through the Supabase MCP, hence this job.
+# Needs the repository secret SUPABASE_DB_URL (Supabase dashboard > Connect > Session pooler URI, with the
+# database password filled in). Without it the job says so and does nothing.
+
+on:
+  push:
+    branches: [main]
+    paths: [supabase/seed.sql]
+  workflow_dispatch:
+
+concurrency:
+  group: seed-hosted
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply seed.sql
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::notice::SUPABASE_DB_URL is not set; skipping the hosted seed."
+            exit 0
+          fi
+          psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -q -f supabase/seed.sql
+          psql "$SUPABASE_DB_URL" -At -c "select 'ingredients: ' || count(*) from ingredients union all select 'recipes: ' || count(*) from recipes"

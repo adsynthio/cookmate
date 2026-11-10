@@ -159,5 +159,6 @@
   "duration.day": "{n} days",
   "duration.week": "{n} weeks",
   "duration.month": "{n} months",
-  "duration.year": "{n} years"
+  "duration.year": "{n} years",
+  "kitchen.unit": "Unit"
 }

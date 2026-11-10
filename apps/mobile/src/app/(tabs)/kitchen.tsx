@@ -5,22 +5,18 @@ import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import { UndoBar } from "@/components/UndoBar";
-import { catalogEntry } from "@/data/catalog";
+import { itemName } from "@/components/kitchen/names";
 import { illustrations } from "@/design-system/media";
 import { Button, Card, Chip, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space, touch } from "@/design-system/tokens";
-import { displayName, expiryInfo, formatQuantity, LOW_CONFIDENCE } from "@/domain/kitchen";
-import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { expiryInfo, formatQuantity, LOW_CONFIDENCE } from "@/domain/kitchen";
+import { t, useLocale, type StringKey } from "@/i18n";
 import { services, type LocationKind, type PantryItem, type StapleLevel } from "@/services";
 import { useSession } from "@/state/session";
 
 const ORDER: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready_made"];
 const LEVELS: StapleLevel[] = ["full", "low", "out"];
-
-export function itemName(item: Pick<PantryItem, "ingredientKey" | "name">): string {
-  return displayName(catalogEntry(item.ingredientKey), item.name, getLocale());
-}
 
 export default function KitchenScreen() {
   useLocale();
@@ -62,7 +58,7 @@ export default function KitchenScreen() {
             {t("kitchen.title")}
           </Text>
         </View>
-        <Button label={`+ ${t("kitchen.add")}`} onPress={() => router.push("/pantry/add")} />
+        <Button label={t("kitchen.add")} onPress={() => router.push("/pantry/add")} />
 
         {kitchen.isPending ? (
           <StateView state="loading" title={t("state.loading.home")} />

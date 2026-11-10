@@ -1,5 +1,7 @@
 # Cookmate media: prompts for Antigravity
 
+How to hand this file to Antigravity and get the images back into the repo: see `ANTIGRAVITY.md` next to it.
+
 This folder holds the images the app needs and that code can't draw. Generate each one with the prompt given, save it at the exact path, then run:
 
 ```

@@ -6,9 +6,14 @@ export type MealSlot = Row<"recommendations">["meal_slot"];
 export type LocationKind = Row<"storage_locations">["kind"];
 export type StapleLevel = NonNullable<Row<"inventory_items">["staple_level"]>;
 export type MemorySource = Row<"memories">["source"];
+export type ItemState = Row<"inventory_items">["state"];
+export type FlavorRole = "rich" | "heat" | "acid" | "crunch" | "starch" | "sweet";
 
 export type PantryItem = {
   id: string;
+  /** Canonical catalog name, or null for things not in the catalog (homemade chutney). */
+  ingredientKey: string | null;
+  /** Name as stored: catalog name or what the user called it. Show it through displayName(). */
   name: string;
   quantity: number | null;
   unit: string | null;
@@ -17,7 +22,35 @@ export type PantryItem = {
   expiryDate: string | null; // ISO date
   expiryEstimated: boolean;
   confidence: number;
+  state: ItemState;
+  flavorRoles: FlavorRole[];
 };
+
+/** An item on the confirm sheet, before it is added (KIT-031 read-back). */
+export type DraftItem = {
+  key: string;
+  said: string;
+  ingredientKey: string | null;
+  quantity: number | null;
+  unit: string | null;
+  locationKind: LocationKind | null;
+  state: ItemState | null;
+  flavorRoles: FlavorRole[];
+  confidence: number;
+};
+
+export type ItemChanges = {
+  quantity?: number | null;
+  unit?: string;
+  stapleLevel?: StapleLevel;
+  locationKind?: LocationKind;
+  expiryDate?: string;
+  customName?: string;
+  /** "Still have this?" -> yes */
+  confirm?: boolean;
+};
+
+export type AddedVia = "manual" | "voice" | "text";
 
 export type Pick = {
   recommendationId: string;
@@ -75,6 +108,19 @@ export interface KitchenService {
   getKitchen(householdId: string): Promise<PantryItem[]>;
   /** HOME-04 */
   getUseSoon(householdId: string, days?: number): Promise<PantryItem[]>;
+  /** KIT-031: free text -> items to read back. Never writes. */
+  parseItems(input: { householdId: string; text: string; languageCode: string }): Promise<{ items: DraftItem[]; source: string }>;
+  /** KIT-031: add confirmed items; the same thing in the same place is topped up. */
+  addItems(input: { householdId: string; items: DraftItem[]; addedVia: AddedVia }): Promise<string[]>;
+  /** KIT-032: every change is logged as an inventory event. */
+  updateItem(itemId: string, changes: ItemChanges): Promise<void>;
+  finishItem(itemId: string, discarded: boolean): Promise<void>;
+  /** Undo of finish/discard. */
+  reopenItem(itemId: string): Promise<void>;
+  /** KIT-033: Low/Out staples -> shopping list. */
+  addToList(householdId: string, items: { name: string; reason: "running_low" | "manual" }[]): Promise<void>;
+  /** KIT-030: pantry changes from other phones; returns an unsubscribe function. */
+  subscribe(householdId: string, onChange: () => void): () => void;
 }
 
 export interface RecipeService {

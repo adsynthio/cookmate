@@ -30,6 +30,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTENT = ROOT / "content"
 ARCH = ROOT / "docs" / "architecture"
 OUT = ROOT / "supabase" / "seed.sql"
+CATALOG_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "catalog.json"
 
 UNITS = {"g", "ml", "piece", "bunch", "packet"}
 MEASURES = {"katori", "cup", "chammach", "chhota_chammach", "mutthi", "chutki", "piece", "clove", "inch", "bunch"}
@@ -462,6 +463,22 @@ def render(catalog: dict[str, dict], techniques: dict[str, dict], flags: list[di
     return "\n".join(out)
 
 
+def render_catalog(catalog: dict[str, dict]) -> str:
+    """Compact catalog for the app: offline parsing, display names and storage tips (KIT-036)."""
+    rows = []
+    for name, ing in catalog.items():
+        row = {"name": name, "hi": ing["hi"], "latn": ing["latn"], "category": ing["category"],
+               "location": ing["location"], "unit": ing.get("unit", "g"), "life": ing["life"]}
+        if ing.get("aliases"):
+            row["aliases"] = ing["aliases"]
+        if ing.get("staple"):
+            row["staple"] = True
+        if ing.get("measures"):
+            row["measures"] = ing["measures"]
+        rows.append(row)
+    return json.dumps(rows, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n"
+
+
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--check", action="store_true", help="exit 1 if supabase/seed.sql is stale")
@@ -486,14 +503,18 @@ def main() -> int:
     approved = sum(r["review_status"] == "approved" for r in recipes)
     summary = (f"{len(catalog)} ingredients, {len(techniques)} techniques, {len(flags)} flags, "
                f"{len(recipes)} recipes ({approved} approved)")
+    catalog_json = render_catalog(catalog)
     if a.check:
-        if not OUT.exists() or OUT.read_text(encoding="utf-8") != sql:
-            print(f"stale: {OUT.relative_to(ROOT)} (run python3 tools/content/build.py)", file=sys.stderr)
-            return 1
+        for path, text in ((OUT, sql), (CATALOG_OUT, catalog_json)):
+            if not path.exists() or path.read_text(encoding="utf-8") != text:
+                print(f"stale: {path.relative_to(ROOT)} (run python3 tools/content/build.py)", file=sys.stderr)
+                return 1
         print(f"content OK: {summary}")
         return 0
     OUT.write_text(sql, encoding="utf-8")
-    print(f"wrote {OUT.relative_to(ROOT)}: {summary}")
+    CATALOG_OUT.parent.mkdir(parents=True, exist_ok=True)
+    CATALOG_OUT.write_text(catalog_json, encoding="utf-8")
+    print(f"wrote {OUT.relative_to(ROOT)} and {CATALOG_OUT.relative_to(ROOT)}: {summary}")
     return 0
 
 

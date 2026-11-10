@@ -1,6 +1,6 @@
 -- Onboarding writes: create_household then consents, exactly as the app does (consent.tsx).
 begin;
-select plan(6);
+select plan(8);
 
 create function pg_temp.login(p_user uuid) returns void language plpgsql as $$
 begin
@@ -52,6 +52,17 @@ select throws_ok(
   $$insert into public.consents (household_id, member_id, consent_type, granted, policy_version)
     select household_id, member_id, 'marketing', true, 'x' from hh$$,
   '42501', null, 'other users cannot write consent for this household');
+
+-- English is the default for everyone when no language was chosen.
+select pg_temp.logout();
+insert into auth.users (id, is_anonymous) values ('00000000-0000-0000-0000-0000000000d3', true);
+select is((select preferred_language from public.profiles where id = '00000000-0000-0000-0000-0000000000d3'),
+  'en-IN', 'a new user starts in English');
+select pg_temp.login('00000000-0000-0000-0000-0000000000d3');
+select set_config('test.member', public.create_household('x', '', '[{"display_name":"x","is_self":true}]'::jsonb) ->> 'member_id', true);
+select is(
+  (select v.language_code from public.voice_profiles v where v.member_id = current_setting('test.member')::uuid),
+  'en-IN', 'a household created without a language speaks English');
 
 select * from finish();
 rollback;

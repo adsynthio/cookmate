@@ -1,0 +1,61 @@
+﻿flow_id,journey,step,from,to,action,data,tables,notes
+J1,First setup,1,User,App,Taps 'Try now' or says it,—,—,Anonymous Supabase sign-in; JWT stored securely
+J1,First setup,2,App,Supabase Auth,signInAnonymously(),—,"auth.users, profiles (trigger)",handle_new_user trigger creates profiles row
+J1,First setup,3,User,App,"Chooses language, members, spice, diet (tap or voice)",Onboarding draft,—,Voice path uses parse-inventory style extraction
+J1,First setup,4,App,Supabase RPC,create_household(),Household + members,"households, household_members, voice_profiles, taste_profiles, storage_locations, shopping_lists",One transaction
+J1,First setup,5,App,Supabase,recordConsent() per purpose,Consents,consents,Voice can be declined; app still works
+J1,First setup,6,App,suggest-meals,First pick,Craving none; pantry may be empty,recommendations,"Empty pantry → picks from staples assumptions, marked as such"
+J2,I'm hungry (craving),1,User,App,Types or says craving + chips,'kuch halka aur chatpata',—,
+J2,I'm hungry (craving),2,App,suggest-meals,POST craving context,"household_id, member_id, chips, who_eating",—,
+J2,I'm hungry (craving),3,suggest-meals,Postgres,Candidate retrieval: pgvector + tags + diet + equipment filters; pantry coverage via SQL,Top 30 candidates,"recipes, recipe_ingredients, inventory_items, taste_profiles, memories, calendar_events",Deterministic scoring first
+J2,I'm hungry (craving),4,suggest-meals,Claude Haiku 5.5,Write one-line reasons for top 3 from structured scores,Scores JSON,ai_requests,Model never changes the ranking
+J2,I'm hungry (craving),5,suggest-meals,Postgres,Insert recommendations with score_breakdown,"3 rows, one batch_id",recommendations,
+J2,I'm hungry (craving),6,App,User,Shows hero + 2 alternates,—,—,Tap → recipe detail
+J3,"Tonight, decided (proactive)",1,pg_cron,notify Edge Function,Every 15 min: find members whose pick time has come,—,"devices, notifications",Respects one-a-day cap and quiet hours
+J3,"Tonight, decided (proactive)",2,notify,suggest-meals,Precompute pick for dinner slot,—,recommendations,Pick cached so the app opens instantly
+J3,"Tonight, decided (proactive)",3,notify,Expo Push,Send push with deep link,"Title, reason line",notifications,
+J3,"Tonight, decided (proactive)",4,User,App,"Opens, taps 'Cook this' or says 'haan'",—,recommendations (accepted),
+J4,Voice Cook session,1,App,voice-token,Request token,"household_id, member_id, session_id, language",voice_sessions,Token carries explicit agent dispatch with metadata
+J4,Voice Cook session,2,App,LiveKit Cloud,"Join room, publish mic",Audio,—,
+J4,Voice Cook session,3,LiveKit Cloud,Voice agent,Dispatch job cookmate-voice-cook,"Job metadata (ids, user JWT)",—,JWT lets tools run under RLS
+J4,Voice Cook session,4,Voice agent,Supabase RPC,get_voice_context(),Context packet,"voice_profiles, household_members, inventory_items, taste_profiles, memories, cooking_sessions, recipe_steps",Refreshed after every write
+J4,Voice Cook session,5,Voice agent,Sarvam STT,VAD-gated speech segments,Audio → text + language,—,Only speech is sent (cost control)
+J4,Voice Cook session,6,Voice agent,Voice agent,Fast path match (next/repeat/timer…),Command,session_events (fast_path),No LLM; cached step audio played
+J4,Voice Cook session,7,Voice agent,Claude Haiku 5.5,Otherwise: turn with tools,Context + transcript,ai_requests,Prompt caching on system + context
+J4,Voice Cook session,8,Voice agent,Supabase,Tool calls (07_voice_agent_tools.csv),Tool args,Per tool,Writes only after spoken confirmation
+J4,Voice Cook session,9,Voice agent,Sarvam TTS,Stream reply sentence by sentence,Text → audio,—,
+J4,Voice Cook session,10,Voice agent,App,Data message cook-state,"current_step, timers",—,Screen follows voice and vice versa
+J4,Voice Cook session,11,Voice agent,Supabase,On disconnect: write usage and cost,Telemetry,voice_sessions,
+J5,Cooking problem (rescue),1,User,App/agent,'Namak zyada ho gaya!',Problem type,—,
+J5,Cooking problem (rescue),2,App/agent,rescue,POST session_id + problem,—,—,
+J5,Cooking problem (rescue),3,rescue,Postgres,"Load step, dish, pantry",—,"cooking_sessions, recipe_steps, inventory_items",
+J5,Cooking problem (rescue),4,rescue,Claude Haiku 5.5,Fix from rescue playbook + context; safety rules pinned,≤3 steps,ai_requests,Safety notes never softened
+J5,Cooking problem (rescue),5,rescue,Postgres,Log rescue event,—,session_events,
+J5,Cooking problem (rescue),6,App/agent,User,"Speaks/shows fix, 'Done, continue'",—,—,
+J6,After dinner (complete → learn → deduct),1,User,App/agent,'Ho gaya',—,—,
+J6,After dinner (complete → learn → deduct),2,App/agent,Supabase RPC,complete_cooking_session(),Session,cooking_sessions,Returns deduction preview scaled by servings
+J6,After dinner (complete → learn → deduct),3,User,App/agent,Confirms or corrects deduction,Adjustments,—,
+J6,After dinner (complete → learn → deduct),4,App/agent,Supabase RPC,apply_session_deduction(),—,"inventory_items, inventory_events",
+J6,After dinner (complete → learn → deduct),5,User,App/agent,"Rating + chips, 'agli baar lahsun zyada'",—,—,
+J6,After dinner (complete → learn → deduct),6,App/agent,Supabase RPC,submit_feedback(),Feedback,"meal_feedback, taste_profiles, memories",Explicit statements become memories after confirmation
+J7,Grocery haul by voice or text,1,User,App/agent,'Do kilo aloo aur ek dozen ande laayi hoon',—,—,
+J7,Grocery haul by voice or text,2,App,parse-inventory,Parse text,Text + language,ai_requests,Agent parses inside its own turn
+J7,Grocery haul by voice or text,3,App/agent,User,Read back parsed list,—,—,Confirmation required
+J7,Grocery haul by voice or text,4,App/agent,Supabase RPC,add_inventory_items(),Items,"inventory_items, inventory_events",Expiry estimated from ingredients.shelf_life_days
+J8,Food at risk,1,pg_cron,Postgres,Nightly confidence decay and expiry check,—,"inventory_items, inventory_events",private.decay_inventory_confidence()
+J8,Food at risk,2,App,Supabase RPC,get_use_soon(),—,inventory_items,Home strip
+J8,Food at risk,3,App,suggest-meals,Picks with use-soon weight,item ids,recommendations,
+J9,Missing items → list,1,App,RecipeService.getRecipe,Pantry match shows missing,—,inventory_items,
+J9,Missing items → list,2,User,App/agent,'Tamatar list mein daal do',—,—,
+J9,Missing items → list,3,App/agent,Supabase RPC,add_to_shopping_list(),Items,shopping_list_items,
+J9,Missing items → list,4,User,App,Marks bought,—,—,
+J9,Missing items → list,5,App,Supabase RPC,mark_list_items_bought(),—,"shopping_list_items, inventory_items, inventory_events",Bought items enter the pantry
+J10,Restock (V2),1,pg_cron,restock-predict,Nightly,—,purchase_patterns,From inventory_events (added/finished)
+J10,Restock (V2),2,notify,User,'Atta usually runs out this week. Add to list?',—,notifications,"Question, never an order"
+J10,Restock (V2),3,User,grocery-agent,Approve cart,Items + total,"carts, cart_items",Official provider APIs only
+J11,WhatsApp voice note (V2),1,User,WhatsApp,Sends voice note,Audio,—,
+J11,WhatsApp voice note (V2),2,Meta,whatsapp-webhook,Webhook with media id,—,channel_identities,Signature verified with app secret
+J11,WhatsApp voice note (V2),3,whatsapp-webhook,Sarvam STT,Transcribe,Audio → text,—,Batch API
+J11,WhatsApp voice note (V2),4,whatsapp-webhook,Claude Haiku 5.5,Turn with the same tools,Context packet,ai_requests,
+J11,WhatsApp voice note (V2),5,whatsapp-webhook,Sarvam TTS,Synthesize reply,Text → audio,—,
+J11,WhatsApp voice note (V2),6,whatsapp-webhook,WhatsApp,Send voice reply + deep link,—,—,

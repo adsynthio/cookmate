@@ -1,0 +1,25 @@
+name: User story
+description: A user-facing change traced to the PRD
+labels: ["type:story"]
+body:
+  - type: input
+    id: ids
+    attributes:
+      label: Requirement IDs
+      placeholder: "KIT-031 · KIT-03 · BR-03"
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      placeholder: "As a …, I want …, so that …"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] …"
+    validations:
+      required: true

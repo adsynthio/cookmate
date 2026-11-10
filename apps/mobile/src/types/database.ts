@@ -3244,6 +3244,10 @@ export type Database = {
         Args: { p_household: string; p_items: Json };
         Returns: string[];
       };
+      search_recipes: {
+        Args: { p_query: string; p_limit?: number };
+        Returns: { id: string; slug: string | null; title: string; titles: Json; course: string; diet: string; prep_time_min: number | null; cook_time_min: number | null; spice_level: number; tags: string[] | null; score: number }[];
+      };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

@@ -4,11 +4,16 @@ import "expo-sqlite/localStorage/install";
 
 import { useSoon } from "@/domain/pantry";
 
-import { catalogEntry, catalogIndex } from "@/data/catalog";
+import { catalog, catalogEntry, catalogIndex } from "@/data/catalog";
 import { parsePantryText } from "@/domain/pantryParse";
 
 import { toDraft } from "./drafts";
-import type { HouseholdRef, Memory, PantryItem, PickBatch, Services } from "./types";
+import { recipeBySlug, recipeDocs } from "@/data/recipes";
+import { localHour, slotForHour } from "@/domain/ranking";
+import { searchRecipes, toSummary } from "@/domain/recipes";
+
+import { buildPicks } from "./picks";
+import type { HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -66,24 +71,27 @@ let memories: Memory[] = [
   { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null },
 ];
 
-const picks: PickBatch = {
-  batchId: "b1",
-  mealSlot: "dinner",
-  hero: {
-    recommendationId: "r1",
-    recipeId: "palak-paneer",
-    title: "Palak paneer",
-    reason: "Uses your palak before it wilts — kept mild for Aarav",
-    uses: ["Palak", "Paneer", "Pyaaz"],
-    missing: [],
-    totalTimeMin: 35,
-    imageUrl: null,
-  },
-  alternates: [
-    { recommendationId: "r2", recipeId: "besan-aloo-sabzi", title: "Besan wali aloo sabzi", reason: "Quick, all from your kitchen", uses: ["Aloo", "Besan", "Dahi"], missing: [], totalTimeMin: 25, imageUrl: null },
-    { recommendationId: "r3", recipeId: "aloo-pyaaz-pakode", title: "Aloo pyaaz pakode", reason: "Goes with your hari chutney", uses: ["Aloo", "Pyaaz", "Besan", "Hari chutney"], missing: [], totalTimeMin: 20, imageUrl: null },
-  ],
-};
+// The Sunita household from the PRD, used when the mock household was created before members were stored.
+const PERSONA: Member[] = [
+  { id: "mock-member", displayName: "Sunita", ageGroup: "adult", diet: "veg", spice: 3, notes: null },
+  { id: "mock-rakesh", displayName: "Rakesh", ageGroup: "adult", diet: "veg", spice: 4, notes: "less oil" },
+  { id: "mock-aarav", displayName: "Aarav", ageGroup: "child", diet: "veg", spice: 1, notes: null },
+];
+const MEMBERS_KEY = "cookmate.mock.members";
+
+function readMembers(): Member[] {
+  try {
+    const raw = globalThis.localStorage?.getItem(MEMBERS_KEY);
+    return raw ? (JSON.parse(raw) as Member[]) : PERSONA;
+  } catch {
+    return PERSONA;
+  }
+}
+
+/** Recipes cooked or accepted, for "no repeat within 3 days". */
+const recent: { recipeId: string; at: number }[] = [];
+const shown = new Map<string, string>(); // recommendationId -> recipeId
+let batchNo = 1;
 
 export const mockServices: Services = {
   auth: {
@@ -100,10 +108,23 @@ export const mockServices: Services = {
       if (members.length < 1 || members.length > 6) throw new Error("a household has 1 to 6 members");
       const ref: HouseholdRef = { householdId: "mock-household", memberId: "mock-member", languageCode: language };
       globalThis.localStorage?.setItem(HOUSEHOLD_KEY, JSON.stringify(ref));
+      const stored: Member[] = members.map((m, i) => ({
+        id: m.isSelf ? "mock-member" : `mock-m${i}`,
+        displayName: m.displayName,
+        ageGroup: m.ageGroup ?? "adult",
+        diet: m.diet ?? "veg",
+        spice: m.spice ?? 3,
+        notes: null,
+      }));
+      globalThis.localStorage?.setItem(MEMBERS_KEY, JSON.stringify(stored));
       return { householdId: ref.householdId, memberId: ref.memberId };
     },
     async recordConsents() {
       await delay(100);
+    },
+    async listMembers() {
+      await delay(150);
+      return readMembers();
     },
     async listMemories() {
       await delay(200);
@@ -203,9 +224,39 @@ export const mockServices: Services = {
     },
   },
   recipe: {
-    async getPicks() {
-      await delay(700);
-      return picks;
+    async getPicks(input) {
+      await delay(600);
+      const slot = input.mealSlot ?? slotForHour(localHour(new Date(), "Asia/Kolkata"));
+      const now = Date.now();
+      const batch = buildPicks({
+        docs: recipeDocs,
+        items: pantry,
+        members: readMembers(),
+        input,
+        slot,
+        recent: recent.map((r) => ({ recipeId: r.recipeId, daysAgo: Math.floor((now - r.at) / 86_400_000) })),
+        batchId: `b${batchNo++}`,
+      });
+      for (const p of [batch.hero, ...batch.alternates]) if (p) shown.set(p.recommendationId, p.recipeId);
+      return batch;
+    },
+    async respondToPick(recommendationId, status) {
+      const recipeId = shown.get(recommendationId);
+      if (status === "accepted" && recipeId) recent.push({ recipeId, at: Date.now() });
+    },
+    async getRecipe(idOrSlug) {
+      await delay(200);
+      const doc = recipeBySlug(idOrSlug);
+      if (!doc) throw new Error("recipe not found");
+      return doc;
+    },
+    async searchRecipes(query) {
+      await delay(150);
+      const byName = new Map(catalog.map((c) => [c.name, c]));
+      return searchRecipes(recipeDocs, query, (k) => {
+        const c = byName.get(k);
+        return c ? [c.hi ?? "", c.latn ?? "", ...(c.aliases ?? [])] : [];
+      }).map(toSummary);
     },
   },
 };

@@ -7,7 +7,9 @@ import { requireSupabase } from "./supabase";
 import type { Json } from "@/types/database";
 
 import { toDraft, toRpcItem } from "./drafts";
-import type { FlavorRole, LocationKind, Memory, PantryItem, Services } from "./types";
+import { RECIPE_SELECT, recipeDocFromRow, type RecipeRow } from "@/domain/recipes";
+
+import type { FlavorRole, LocationKind, MealSlot, Member, Memory, PantryItem, Pick, RecipeSummary, Services } from "./types";
 
 type UseSoonRow = {
   id: string;
@@ -109,6 +111,28 @@ export const liveServices: Services = {
         })),
       );
       if (error) throw error;
+    },
+
+    async listMembers(householdId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb
+        .from("household_members")
+        .select("id, display_name, age_group, diet, notes, taste_profiles(spice)")
+        .eq("household_id", householdId)
+        .eq("status", "active")
+        .order("created_at");
+      if (error) throw error;
+      return (data ?? []).map((m) => {
+        const tp = (Array.isArray(m.taste_profiles) ? m.taste_profiles[0] : m.taste_profiles) as { spice: number | null } | null;
+        return {
+          id: m.id,
+          displayName: m.display_name,
+          ageGroup: (m.age_group ?? "adult") as Member["ageGroup"],
+          diet: (m.diet ?? "veg") as Member["diet"],
+          spice: tp?.spice ?? (m.age_group === "child" ? 1 : 3),
+          notes: m.notes,
+        };
+      });
     },
 
     async listMemories(householdId) {
@@ -282,8 +306,88 @@ export const liveServices: Services = {
   },
 
   recipe: {
-    async getPicks() {
-      throw new NotImplemented("suggest-meals Edge Function (Sprint 3)");
+    async getPicks(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<SuggestMealsResponse>("suggest-meals", {
+        body: {
+          household_id: input.householdId,
+          member_id: input.memberId,
+          meal_slot: input.mealSlot,
+          craving: input.craving,
+          chips: input.chips,
+          who_eating: input.whoEating,
+          focus: input.focus,
+          language_code: input.languageCode,
+        },
+      });
+      if (error || !data) throw error ?? new Error("suggest-meals returned nothing");
+      const picks: Pick[] = data.picks.map((p) => ({
+        recommendationId: p.recommendation_id,
+        recipeId: p.recipe.id,
+        slug: p.recipe.slug,
+        title: p.recipe.title,
+        titles: p.recipe.titles ?? undefined,
+        reason: p.reason_text,
+        uses: p.uses,
+        missing: p.missing,
+        totalTimeMin: p.recipe.total_time_min,
+        imageUrl: null,
+        have: p.have,
+        total: p.total,
+        score: p.score,
+      }));
+      return { batchId: data.batch_id, mealSlot: data.meal_slot, hero: picks[0] ?? null, alternates: picks.slice(1) };
+    },
+
+    async respondToPick(recommendationId, status, reason) {
+      const sb = requireSupabase();
+      const { error } = await sb
+        .from("recommendations")
+        .update({ status, dismiss_reason: reason ?? null, acted_at: new Date().toISOString() })
+        .eq("id", recommendationId);
+      if (error) throw error;
+    },
+
+    async getRecipe(idOrSlug) {
+      const sb = requireSupabase();
+      const isId = /^[0-9a-f-]{36}$/i.test(idOrSlug);
+      const q = sb.from("recipes").select(RECIPE_SELECT);
+      const { data, error } = await (isId ? q.eq("id", idOrSlug) : q.eq("slug", idOrSlug).is("household_id", null)).maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("recipe not found");
+      return recipeDocFromRow(data as unknown as RecipeRow);
+    },
+
+    async searchRecipes(query) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("search_recipes", { p_query: query, p_limit: 20 });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        id: r.id,
+        slug: r.slug ?? r.id,
+        title: r.title,
+        titles: (r.titles ?? undefined) as RecipeSummary["titles"],
+        course: r.course,
+        diet: r.diet,
+        totalTimeMin: (r.prep_time_min ?? 0) + (r.cook_time_min ?? 0) || null,
+        spiceLevel: r.spice_level,
+        tags: r.tags ?? [],
+      }));
     },
   },
+};
+
+type SuggestMealsResponse = {
+  batch_id: string;
+  meal_slot: MealSlot;
+  picks: {
+    recommendation_id: string;
+    recipe: { id: string; slug: string; title: string; titles: RecipeSummary["titles"] | null; total_time_min: number | null };
+    reason_text: string;
+    uses: string[];
+    missing: string[];
+    have: number;
+    total: number;
+    score: number;
+  }[];
 };

@@ -185,6 +185,21 @@ export function searchScore(query: string, text: { title: string; body: string }
   return score / terms.length;
 }
 
+/** List-row view of a recipe (search results, saved recipes). */
+export function toSummary(doc: RecipeDoc) {
+  return {
+    id: doc.id ?? doc.slug,
+    slug: doc.slug,
+    title: doc.title,
+    titles: doc.titles,
+    course: doc.course,
+    diet: doc.diet,
+    totalTimeMin: totalTime(doc) || null,
+    spiceLevel: doc.spice_level,
+    tags: doc.tags ?? [],
+  };
+}
+
 export function searchRecipes<T extends RecipeDoc>(docs: T[], query: string, names: SearchNames, limit = 20): T[] {
   return docs
     .map((d) => ({ d, s: searchScore(query, searchText(d, names)) }))
@@ -192,4 +207,122 @@ export function searchRecipes<T extends RecipeDoc>(docs: T[], query: string, nam
     .sort((a, b) => b.s - a.s || a.d.title.localeCompare(b.d.title))
     .slice(0, limit)
     .map((x) => x.d);
+}
+
+// --- database rows -> documents (live mode and the Edge Functions) -------------------------------------------------
+
+export type RecipeRow = {
+  id: string;
+  slug: string | null;
+  title: string;
+  titles: RecipeDoc["titles"] | null;
+  description: string | null;
+  cuisine_region: string | null;
+  course: Course;
+  diet: Diet;
+  base_servings: number;
+  prep_time_min: number | null;
+  cook_time_min: number | null;
+  difficulty: number;
+  spice_level: number;
+  equipment: string[] | null;
+  tags: string[] | null;
+  flavor_profile: RecipeDoc["flavor_profile"] | null;
+  food_groups: string[] | null;
+  review_status: RecipeDoc["review_status"];
+  recipe_ingredients?: {
+    display_name: string;
+    quantity: number | null;
+    unit: string | null;
+    local_measure: string | null;
+    is_optional: boolean;
+    group_name: string | null;
+    role: string | null;
+    substitutes: { ingredient?: string; ratio?: number; note?: string | null }[] | null;
+    sort_order: number | null;
+    ingredients: { canonical_name: string } | null;
+  }[];
+  recipe_steps?: {
+    step_no: number;
+    instruction: string;
+    duration_sec: number | null;
+    timer_required: boolean;
+    whistles: number | null;
+    sensory_cue: string | null;
+    member_branch: { age_group: AgeGroup; action: string } | null;
+    safety_note: string | null;
+    techniques: { slug: string } | null;
+  }[];
+  recipe_variation_rules?: { rule_type: string; condition: Record<string, unknown> | null; action: Record<string, unknown>; note: string | null }[];
+};
+
+/** PostgREST select for a full recipe (used by the app and the Edge Functions). */
+export const RECIPE_SELECT =
+  "id, slug, title, titles, description, cuisine_region, course, diet, base_servings, prep_time_min, cook_time_min, " +
+  "difficulty, spice_level, equipment, tags, flavor_profile, food_groups, review_status, " +
+  "recipe_ingredients(display_name, quantity, unit, local_measure, is_optional, group_name, role, substitutes, sort_order, ingredients(canonical_name)), " +
+  "recipe_steps(step_no, instruction, duration_sec, timer_required, whistles, sensory_cue, member_branch, safety_note, techniques(slug)), " +
+  "recipe_variation_rules(rule_type, condition, action, note)";
+
+export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
+  const ingredients = [...(row.recipe_ingredients ?? [])]
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    .map((i) => {
+      const out: RecipeIngredientDoc = {
+        ingredient: i.ingredients?.canonical_name ?? i.display_name,
+        qty: Number(i.quantity ?? 0),
+        unit: i.unit ?? "g",
+        role: i.role ?? "base",
+      };
+      if (i.local_measure) out.local = i.local_measure;
+      if (i.is_optional) out.optional = true;
+      if (i.group_name) out.group = i.group_name;
+      const subs = (i.substitutes ?? []).filter((s) => s.ingredient);
+      if (subs.length) out.substitutes = subs.map((s) => ({ ingredient: s.ingredient!, ratio: s.ratio ?? 1, ...(s.note ? { note: s.note } : {}) }));
+      return out;
+    });
+  const steps = [...(row.recipe_steps ?? [])]
+    .sort((a, b) => a.step_no - b.step_no)
+    .map((s) => {
+      const out: RecipeStepDoc = { text: s.instruction };
+      if (s.techniques?.slug) out.technique = s.techniques.slug;
+      if (s.duration_sec) {
+        if (s.duration_sec % 60 === 0) out.minutes = s.duration_sec / 60;
+        else out.seconds = s.duration_sec;
+      }
+      if (s.timer_required) out.timer = true;
+      if (s.whistles) out.whistles = s.whistles;
+      if (s.sensory_cue) out.cue = s.sensory_cue;
+      if (s.safety_note) out.safety = s.safety_note;
+      if (s.member_branch?.age_group && s.member_branch.action) out.branch = s.member_branch;
+      return out;
+    });
+  return {
+    id: row.id,
+    slug: row.slug ?? row.id,
+    title: row.title,
+    titles: row.titles ?? undefined,
+    description: row.description ?? "",
+    cuisine_region: row.cuisine_region ?? undefined,
+    course: row.course,
+    diet: row.diet,
+    base_servings: row.base_servings,
+    prep_time_min: row.prep_time_min ?? undefined,
+    cook_time_min: row.cook_time_min ?? undefined,
+    difficulty: row.difficulty,
+    spice_level: row.spice_level,
+    equipment: row.equipment ?? [],
+    tags: row.tags ?? [],
+    flavor_profile: row.flavor_profile ?? {},
+    food_groups: row.food_groups ?? [],
+    review_status: row.review_status,
+    ingredients,
+    steps,
+    variation_rules: (row.recipe_variation_rules ?? []).map((r) => ({
+      type: r.rule_type,
+      ...(r.condition ? { condition: r.condition } : {}),
+      action: r.action,
+      ...(r.note ? { note: r.note } : {}),
+    })),
+  };
 }

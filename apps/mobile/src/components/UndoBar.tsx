@@ -13,13 +13,13 @@ export function UndoBar({ onUndone }: { onUndone?: () => void }) {
   const clear = useUndo((s) => s.clear);
   if (!pending) return null;
   return (
-    <View style={[styles.bar, { backgroundColor: colors.text }]} accessibilityLiveRegion="polite">
-      <Text color={colors.bg} style={{ flex: 1 }}>
+    <View style={[styles.bar, { backgroundColor: colors.ink }]} accessibilityLiveRegion="polite">
+      <Text color={colors.canvas} style={{ flex: 1 }}>
         {pending.message}
       </Text>
       <Button
         kind="quiet"
-        textColor={colors.highlight}
+        textColor={colors.lime}
         label={t("item.undo")}
         onPress={async () => {
           clear(pending.id);
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     left: space.lg,
     right: space.lg,
     bottom: space.lg,
-    borderRadius: radius.chip,
+    borderRadius: radius.tag,
     paddingLeft: space.lg,
     flexDirection: "row",
     alignItems: "center",

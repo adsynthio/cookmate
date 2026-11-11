@@ -76,6 +76,15 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
         "{ p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean }",
         "string",
     ),
+    "save_memory": (
+        "{ p_household: string; p_statement: string; p_member?: string; p_category?: string; p_scope?: string; "
+        "p_source?: string; p_polarity?: number; p_attributes?: Json; p_subject_ingredient?: string; "
+        "p_subject_recipe?: string; p_provenance?: Json; p_expires_at?: string }",
+        "string",
+    ),
+    "forget_memory": ("{ p_memory: string }", "undefined"),
+    "keep_memory": ("{ p_memory: string }", "undefined"),
+    "update_memory": ("{ p_memory: string; p_statement: string }", "undefined"),
     "log_session_change": ("{ p_session: string; p_change: string; p_notes?: Json; p_channel?: string }", "Json"),
     "get_voice_context": ("{ p_household: string; p_member?: string; p_session?: string }", "Json"),
     "search_recipes": (

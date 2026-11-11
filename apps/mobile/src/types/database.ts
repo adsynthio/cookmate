@@ -3288,6 +3288,14 @@ export type Database = {
         Args: { p_memory: string; p_statement: string };
         Returns: undefined;
       };
+      mark_list_items_bought: {
+        Args: { p_household: string; p_item_ids?: string[]; p_add_to_pantry?: boolean };
+        Returns: string[];
+      };
+      remove_list_item: {
+        Args: { p_item: string };
+        Returns: undefined;
+      };
       log_session_change: {
         Args: { p_session: string; p_change: string; p_notes?: Json; p_channel?: string };
         Returns: Json;

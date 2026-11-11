@@ -466,5 +466,20 @@
   "you.phone.linked": "Linked to {phone}",
   "you.phone.wrongCode": "That code didn't work. Check it, or send a new one.",
   "you.phone.taken": "This number is already used by another account.",
-  "you.phone.notReady": "Phone sign-in isn't switched on yet. Your kitchen is still saved on this phone."
+  "you.phone.notReady": "Phone sign-in isn't switched on yet. Your kitchen is still saved on this phone.",
+  "you.privacy.title": "Privacy",
+  "you.privacy.exportTitle": "Download my data",
+  "you.privacy.exportBody": "Everything Cookmate keeps about your household, in one file.",
+  "you.privacy.export": "Prepare my download",
+  "you.privacy.preparing": "Preparing…",
+  "you.privacy.open": "Open the download",
+  "you.privacy.expires": "The link works for 24 hours.",
+  "you.privacy.deleteTitle": "Delete my account",
+  "you.privacy.deleteHint": "Removes your account and the kitchens only you own.",
+  "you.privacy.delete": "Delete my account…",
+  "you.privacy.deleteBody": "This deletes your account now. Kitchens that only you own are deleted with everything in them: pantry, memories, cooking history. In a kitchen someone else also runs, you are removed and they keep it. This can't be undone.",
+  "you.privacy.word": "DELETE",
+  "you.privacy.typeWord": "Type {word} to confirm",
+  "you.privacy.deleteNow": "Delete everything",
+  "you.privacy.deleting": "Deleting…"
 }

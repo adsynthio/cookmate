@@ -85,6 +85,8 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
     "forget_memory": ("{ p_memory: string }", "undefined"),
     "keep_memory": ("{ p_memory: string }", "undefined"),
     "update_memory": ("{ p_memory: string; p_statement: string }", "undefined"),
+    "mark_list_items_bought": ("{ p_household: string; p_item_ids?: string[]; p_add_to_pantry?: boolean }", "string[]"),
+    "remove_list_item": ("{ p_item: string }", "undefined"),
     "log_session_change": ("{ p_session: string; p_change: string; p_notes?: Json; p_channel?: string }", "Json"),
     "get_voice_context": ("{ p_household: string; p_member?: string; p_session?: string }", "Json"),
     "search_recipes": (

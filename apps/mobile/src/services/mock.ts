@@ -17,11 +17,11 @@ import { deductionPreview } from "@/domain/cooking";
 
 import { localeFromLanguageCode } from "@/domain/onboarding";
 
-import { buildPicks } from "./picks";
+import { buildPicks, findIngredients } from "./picks";
 import { changeReply, fallbackAnswer } from "@/domain/assist";
 
 import { localRescue } from "./rescue";
-import type { CookSession, HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
+import type { CookSession, HouseholdRef, ListLine, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -75,6 +75,7 @@ function cookedLife(state: PantryItem["state"], location: PantryItem["location"]
   if (state !== "cooked" && state !== "leftover" && state !== "homemade") return null;
   return location === "freezer" ? 30 : location === "ready_made" ? 5 : location === "fridge" ? 3 : 1;
 }
+let list: ListLine[] = [];
 const finished = new Map<string, PantryItem>();
 /** Items added as guesses from yesterday's dish (KIT-026). */
 const guesses = new Set<string>();
@@ -301,8 +302,38 @@ export const mockServices: Services = {
       changed();
       return before - pantry.length;
     },
-    async addToList() {
+    async addToList(_householdId, items) {
       await delay(150);
+      for (const i of items) {
+        const key = catalogEntry(i.name)?.name ?? findIngredients(i.name)[0] ?? null;
+        const same = list.find((l) => (key ? l.ingredientKey === key : l.name.toLowerCase() === i.name.trim().toLowerCase()));
+        if (!same) list = [...list, { id: `l${nextId++}`, ingredientKey: key, name: key ?? i.name.trim(), quantity: null, unit: null, reason: i.reason }];
+      }
+    },
+    async getList() {
+      await delay(200);
+      return [...list];
+    },
+    async markBought(householdId, itemIds) {
+      await delay(250);
+      const bought = list.filter((l) => !itemIds || itemIds.includes(l.id));
+      list = list.filter((l) => !bought.includes(l));
+      if (!bought.length) return [];
+      const ids = await mockServices.kitchen.addItems({
+        householdId,
+        addedVia: "manual",
+        items: bought.map((l) => ({
+          key: l.id, said: l.name, ingredientKey: l.ingredientKey, quantity: l.quantity, unit: l.unit,
+          locationKind: null, state: null, flavorRoles: [], confidence: 1,
+        })),
+      });
+      // A staple that was Low or Out is Full again.
+      for (const p of pantry) if (ids.includes(p.id) && p.stapleLevel) p.stapleLevel = "full";
+      changed();
+      return ids;
+    },
+    async removeFromList(itemId) {
+      list = list.filter((l) => l.id !== itemId);
     },
     subscribe(_householdId, onChange) {
       listeners.add(onChange);

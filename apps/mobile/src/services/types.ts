@@ -2,6 +2,7 @@
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
 import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
 import type { Problem } from "@/domain/rescue";
+import type { ListLine } from "@/domain/shopping";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
@@ -212,6 +213,11 @@ export interface KitchenService {
   clearGuesses(householdId: string, itemIds?: string[]): Promise<number>;
   /** KIT-033: Low/Out staples -> shopping list. */
   addToList(householdId: string, items: { name: string; reason: "running_low" | "manual" }[]): Promise<void>;
+  /** KIT-110: what still needs buying. */
+  getList(householdId: string): Promise<ListLine[]>;
+  /** KIT-111: bought items go into the pantry; no ids means everything on the list. Returns pantry item ids. */
+  markBought(householdId: string, itemIds?: string[]): Promise<string[]>;
+  removeFromList(itemId: string): Promise<void>;
   /** KIT-030: pantry changes from other phones; returns an unsubscribe function. */
   subscribe(householdId: string, onChange: () => void): () => void;
 }
@@ -254,6 +260,7 @@ export type DeductionAdjustment = { itemId: string; quantity?: number; skip?: bo
 export type Rating = "loved" | "good" | "meh" | "bad";
 
 export type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+export type { ListLine } from "@/domain/shopping";
 export type RescueInput = { sessionId: string; problem: Problem; missing?: string; details?: string; languageCode: string };
 /** At most three things to do now, plus the pinned safety line when one applies (KIT-091/092). */
 export type RescueFix = { steps: string[]; safetyNote: string | null; source: "rules" | "model" };

@@ -84,6 +84,7 @@ function RootNavigator() {
           <Stack.Screen name="adapt/[id]" options={{ presentation: "modal" }} />
           <Stack.Screen name="cook/[id]" options={{ gestureEnabled: false }} />
           <Stack.Screen name="rescue/[id]" options={{ presentation: "modal" }} />
+          <Stack.Screen name="assist/[id]" options={{ presentation: "modal" }} />
           <Stack.Screen name="voice" options={{ presentation: "modal" }} />
         </Stack.Protected>
         <Stack.Protected guard={!onboarded}>

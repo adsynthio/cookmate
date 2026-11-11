@@ -1,5 +1,6 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
+import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
 import type { Problem } from "@/domain/rescue";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
@@ -218,6 +219,8 @@ export type CookSession = {
   servings: number;
   whoEating: string[];
   status: "active" | "paused" | "completed" | "abandoned";
+  /** KIT-075: what the cook did differently, with notes for later steps. */
+  changes: { change: string; notes: StepNote[] }[];
 };
 
 export type DeductionLine = {
@@ -233,6 +236,7 @@ export type DeductionAdjustment = { itemId: string; quantity?: number; skip?: bo
 
 export type Rating = "loved" | "good" | "meh" | "bad";
 
+export type { Answer, ChangeResult, StepNote } from "@/domain/assist";
 export type RescueInput = { sessionId: string; problem: Problem; missing?: string; details?: string; languageCode: string };
 /** At most three things to do now, plus the pinned safety line when one applies (KIT-091/092). */
 export type RescueFix = { steps: string[]; safetyNote: string | null; source: "rules" | "model" };
@@ -254,6 +258,10 @@ export interface CookingService {
   advanceStep(sessionId: string, delta: number, channel?: "touch" | "voice"): Promise<{ currentStep: number; total: number }>;
   /** Stop without finishing: nothing is deducted and the Cook tab stops offering to resume. */
   abandonSession(sessionId: string): Promise<void>;
+  /** KIT-074: answer a question about the current step. The cook's place never moves. */
+  ask(input: { sessionId: string; question: string; languageCode: string }): Promise<Answer>;
+  /** KIT-075: record what the cook did differently; returns notes for the steps still ahead. */
+  reportChange(input: { sessionId: string; change: string; languageCode: string }): Promise<ChangeResult>;
   /** KIT-091: a fix for this dish and step with what is in the kitchen. */
   rescue(input: RescueInput): Promise<RescueFix>;
   /** KIT-037: finish and preview what comes off the pantry. */

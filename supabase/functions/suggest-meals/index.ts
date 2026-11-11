@@ -7,6 +7,7 @@ import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.119.0";
 import { z } from "npm:zod@4.6.5";
 
+import { timedAiCall } from "../_shared/aiLog.ts";
 import { buildIndex, normalise } from "../_shared/pantryParse.ts";
 import {
   choosePicks,
@@ -78,8 +79,8 @@ const CravingOut = z.object({
   course: z.enum(["breakfast", "main", "side", "snack", "tiffin"]).nullable(),
 });
 
-async function modelCraving(client: Anthropic, text: string): Promise<Partial<Craving> | null> {
-  const r = await client.messages.parse(
+async function modelCraving(client: Anthropic, householdId: string, text: string): Promise<Partial<Craving> | null> {
+  const r = await timedAiCall({ householdId, task: "craving_interpret", model: MODEL, promptVersion: "craving_interpret@1" }, () => client.messages.parse(
     {
       model: MODEL,
       max_tokens: 150,
@@ -95,7 +96,7 @@ tags: only from ${KNOWN_TAGS.join(", ")}. max_time_min: only if they mention tim
       messages: [{ role: "user", content: text }],
     },
     { timeout: 1500 },
-  );
+  ));
   if (r.stop_reason === "refusal" || !r.parsed_output) return null;
   const o = r.parsed_output;
   return { tags: o.tags, maxTimeMin: o.max_time_min, spiceDelta: o.spice_delta, course: o.course };
@@ -105,10 +106,11 @@ const ReasonsOut = z.object({ reasons: z.array(z.object({ id: z.string(), text: 
 
 async function modelReasons(
   client: Anthropic,
+  householdId: string,
   language: string,
   items: { id: string; title: string; template: string; facts: Record<string, number> }[],
 ): Promise<Map<string, string>> {
-  const r = await client.messages.parse(
+  const r = await timedAiCall({ householdId, task: "pick_reasons", model: MODEL, promptVersion: "pick_reasons@1" }, () => client.messages.parse(
     {
       model: MODEL,
       max_tokens: 300,
@@ -125,7 +127,7 @@ No health or nutrition claims. No emoji.`,
       messages: [{ role: "user", content: `Language: ${language}\n${JSON.stringify(items)}` }],
     },
     { timeout: 1500 },
-  );
+  ));
   const out = new Map<string, string>();
   for (const x of r.parsed_output?.reasons ?? []) out.set(x.id, x.text);
   return out;
@@ -235,7 +237,7 @@ Deno.serve(async (req) => {
   const cravingText = (body.craving ?? "").trim();
   if (client && cravingText && !craving.tags.length && !craving.ingredients.length && craving.maxTimeMin === null) {
     try {
-      craving = mergeCraving(craving, await modelCraving(client, cravingText), KNOWN_TAGS);
+      craving = mergeCraving(craving, await modelCraving(client, householdId, cravingText), KNOWN_TAGS);
     } catch (err) {
       console.error("craving_interpret failed", err instanceof Error ? err.message : err);
     }
@@ -274,7 +276,7 @@ Deno.serve(async (req) => {
   let reasons = templates;
   if (client && picks.length) {
     try {
-      const reworded = await modelReasons(client, body.language_code ?? "en-IN", picks.map((p, i) => ({
+      const reworded = await modelReasons(client, householdId, body.language_code ?? "en-IN", picks.map((p, i) => ({
         id: String(i),
         title: p.recipe.title,
         template: templates[i]!,

@@ -19,6 +19,7 @@ import {
 } from "@/domain/onboarding";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services } from "@/services";
+import { track } from "@/services/analytics";
 import { useOnboarding } from "@/state/onboarding";
 import { useSession } from "@/state/session";
 
@@ -51,6 +52,7 @@ export default function ConsentScreen() {
     },
     onSuccess: ({ householdId, memberId }) => {
       setHousehold(householdId, memberId);
+      track("onboarding_completed", { members_count: members.length, language: LANGUAGE_CODES[getLocale()], voice_consent: !!consents.voice_processing });
       router.replace("/");
     },
   });

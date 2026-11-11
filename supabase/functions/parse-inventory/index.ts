@@ -2,16 +2,13 @@
 // Rules first (fast, free, works offline-ish); Claude Haiku only for what the rules can't place.
 // Nothing is written to the pantry here: the app shows the items back and calls add_inventory_items on confirm.
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
-import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.119.0";
-import { z } from "npm:zod@4.6.5";
 
+import { logAiRequest } from "../_shared/aiLog.ts";
 import { allConfident, buildIndex, type CatalogIndex, parsePantryText, type ParsedItem } from "../_shared/pantryParse.ts";
 import { type CatalogRow, catalogHints, toCatalog, toResponseItem, wasMentioned } from "./logic.ts";
+import { callModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
 
-const TASK = "parse_inventory_text";
-const MODEL = "claude-haiku-5-5";
-const PROMPT_VERSION = "parse_inventory_text@1";
 const MAX_TEXT = 600;
 
 const CORS = {
@@ -43,50 +40,6 @@ async function loadCatalog(sb: SupabaseClient) {
   return cached;
 }
 
-const ModelItems = z.object({
-  items: z.array(
-    z.object({
-      said: z.string(),
-      ingredient_key: z.string().nullable(),
-      quantity: z.number().nullable(),
-      unit: z.string().nullable(),
-      location_kind: z.enum(["fridge", "freezer", "pantry", "staples", "ready_made", "counter"]).nullable(),
-      state: z.enum(["raw", "opened", "cooked", "homemade", "leftover"]).nullable(),
-      confidence: z.number(),
-    }),
-  ),
-});
-
-const INSTRUCTIONS = `You turn what an Indian home cook says about their kitchen into pantry items.
-The text may be Hindi (Devanagari), Hinglish or English, often mixed, and may come from speech recognition.
-
-Rules:
-- One item per thing mentioned. Never add anything that was not mentioned.
-- said: the item in the user's own words, without quantity words.
-- ingredient_key: the canonical name from the catalog below when the item is clearly one of those; otherwise null.
-- quantity and unit: only when stated. Convert number words (ek, do, dedh, dhai, sawa, paune, aadha; एक, दो, डेढ़).
-  Units: kg, g, l, ml, piece, packet, bunch, katori, cup, bottle, box. "dozen" = 12 piece. "paav kilo" = 0.25 kg.
-- location_kind: only if the user said where it is, or for homemade things (ready_made).
-- state: "homemade" for things made at home (ghar ki chutney), "leftover" for leftovers (bachi hui dal), else null.
-- confidence: 0.9+ when certain, lower when unsure what the item is or how much.
-
-Catalog (canonical | hinglish | hindi | aliases):
-`;
-
-async function callModel(text: string, language: string, hints: string) {
-  const client = new Anthropic(); // reads ANTHROPIC_API_KEY
-  const started = Date.now();
-  const response = await client.messages.parse({
-    model: MODEL,
-    max_tokens: 1500,
-    // Extraction with a fixed format: no thinking, lowest effort, for the 1.2 s latency budget.
-    thinking: { type: "disabled" },
-    output_config: { effort: "low", format: zodOutputFormat(ModelItems) },
-    system: [{ type: "text", text: INSTRUCTIONS + hints, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: `Language: ${language}\nText: ${text}` }],
-  });
-  return { response, latencyMs: Date.now() - started };
-}
 
 async function logRequest(entry: {
   household_id: string;
@@ -95,24 +48,16 @@ async function logRequest(entry: {
   usage?: Anthropic.Usage;
   error?: string;
 }) {
-  // ai_requests has no RLS policies: only the service role writes it.
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !key) return;
-  const admin = createClient(url, key, { auth: { persistSession: false } });
-  const { error } = await admin.from("ai_requests").insert({
-    household_id: entry.household_id,
+  await logAiRequest({
+    householdId: entry.household_id,
     task: TASK,
     model: MODEL,
-    prompt_version: PROMPT_VERSION,
-    input_tokens: entry.usage?.input_tokens ?? null,
-    cached_tokens: entry.usage?.cache_read_input_tokens ?? null,
-    output_tokens: entry.usage?.output_tokens ?? null,
-    latency_ms: entry.latency_ms,
+    promptVersion: PROMPT_VERSION,
     status: entry.status,
-    error: entry.error?.slice(0, 500) ?? null,
+    latencyMs: entry.latency_ms,
+    usage: entry.usage,
+    error: entry.error,
   });
-  if (error) console.error("ai_requests insert failed", error.message);
 }
 
 Deno.serve(async (req) => {
@@ -156,7 +101,7 @@ Deno.serve(async (req) => {
 
   const started = Date.now();
   try {
-    const { response, latencyMs } = await callModel(text, body.language_code ?? "en-IN", catalog.hints);
+    const { response, latencyMs } = await callModel(new Anthropic(), text, body.language_code ?? "en-IN", catalog.hints);
     if (response.stop_reason === "refusal" || !response.parsed_output) {
       await logRequest({
         household_id: householdId,

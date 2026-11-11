@@ -22,6 +22,19 @@ class QueryError(RuntimeError):
     pass
 
 
+def redact(text: str, url: str) -> str:
+    """Hides every piece of the URL's user and password, even when the password holds an @ or a colon and psql
+    misreads part of it as the host name."""
+    rest = url.split("://", 1)[-1]
+    userinfo = rest.rsplit("@", 1)[0] if "@" in rest else ""
+    pieces = {p for chunk in userinfo.split("@") for p in chunk.split(":") if len(p) >= 3}
+    pieces.add(userinfo)
+    for p in sorted(pieces, key=len, reverse=True):
+        if p:
+            text = text.replace(p, "***")
+    return text
+
+
 def query(url: str, sql: str) -> list[list[str]]:
     r = subprocess.run(
         ["psql", url, "-X", "-q", "-A", "-t", "-F", "\t", "-v", "ON_ERROR_STOP=1", "-c", sql],
@@ -29,8 +42,8 @@ def query(url: str, sql: str) -> list[list[str]]:
         text=True,
     )
     if r.returncode != 0:
-        # psql's own message names the host and the problem, never the password.
-        raise QueryError(f"psql exit {r.returncode}: {r.stderr.strip()}")
+        # psql's message says what went wrong; anything from the URL's login part is hidden.
+        raise QueryError(f"psql exit {r.returncode}: {redact(r.stderr.strip(), url)}")
     out = r.stdout
     return [line.split("\t") for line in out.splitlines() if line.strip()]
 

@@ -19,6 +19,7 @@ import { localeFromLanguageCode } from "@/domain/onboarding";
 import { setLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
 import { track } from "@/services/analytics";
+import { listenForPickTaps } from "@/state/push";
 import { useSession } from "@/state/session";
 
 /**
@@ -49,6 +50,9 @@ function useBootstrap() {
   useEffect(() => {
     void boot();
   }, [boot]);
+
+  // KIT-045: a tap on the daily pick notification opens its batch on Home.
+  useEffect(() => listenForPickTaps(), []);
 
   // KIT-130: app_open on launch and whenever the app comes back to the front (retention KPI).
   useEffect(() => {
@@ -93,6 +97,7 @@ function RootNavigator() {
           <Stack.Screen name="search" />
           <Stack.Screen name="list" />
           <Stack.Screen name="adapt/[id]" options={{ presentation: "modal" }} />
+          <Stack.Screen name="invent" options={{ presentation: "modal" }} />
           <Stack.Screen name="cook/[id]" options={{ gestureEnabled: false }} />
           <Stack.Screen name="rescue/[id]" options={{ presentation: "modal" }} />
           <Stack.Screen name="assist/[id]" options={{ presentation: "modal" }} />

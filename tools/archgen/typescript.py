@@ -60,6 +60,24 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
     "add_to_shopping_list": ("{ p_household: string; p_items: Json }", "string[]"),
     "guess_pantry_from_recipe": ("{ p_household: string; p_recipe: string }", "string[]"),
     "clear_pantry_guesses": ("{ p_household: string; p_items?: string[] }", "number"),
+    "start_cooking_session": (
+        "{ p_household: string; p_recipe: string; p_servings?: number; p_who_eating?: string[]; p_mode?: string; "
+        "p_recommendation?: string; p_language?: string }",
+        "string",
+    ),
+    "advance_session_step": ("{ p_session: string; p_delta?: number; p_channel?: string }", "Json"),
+    "complete_cooking_session": (
+        "{ p_session: string }",
+        "{ item_id: string; ingredient: string; quantity: number | null; unit: string | null; "
+        "current_quantity: number | null; staple: boolean }[]",
+    ),
+    "apply_session_deduction": ("{ p_session: string; p_adjustments?: Json }", "string[]"),
+    "submit_feedback": (
+        "{ p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean }",
+        "string",
+    ),
+    "log_session_change": ("{ p_session: string; p_change: string; p_notes?: Json; p_channel?: string }", "Json"),
+    "get_voice_context": ("{ p_household: string; p_member?: string; p_session?: string }", "Json"),
     "search_recipes": (
         "{ p_query: string; p_limit?: number }",
         "{ id: string; slug: string | null; title: string; titles: Json; course: string; diet: string; "

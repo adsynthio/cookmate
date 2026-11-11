@@ -59,7 +59,7 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] Dish photos are temporary placeholders: replace before any release; redo three cropped illustrations and the produce pile (PROMPTS.md checklist)
 - [ ] Voice add (KIT-031 by voice) arrives with the voice session in Sprint 4; the mic button is in place
 
-### Sprint 3 status (10 Nov 2026, branch `sprint-3/craving`, draft PR adsynthio/cookmate#4)
+### Sprint 3 status (10 Nov 2026, merged to `main` in adsynthio/cookmate#4)
 - [x] Ranking engine (KIT-041), shared by the app and the Edge Functions (`apps/mobile/src/domain/ranking.ts`): hard filters for slot, every eater's diet, avoided ingredients, time, equipment and "use these first"; nine factors (coverage², use soon, taste, novelty, time, equipment, calendar, craving, slot); weights in `feature_flags.ranking_weights`; reasons built only from factors that scored, in three languages, ≤ 90 characters
 - [x] `suggest-meals` Edge Function (KIT-040): ranks under the user's own RLS; Haiku only reads free-text cravings and rewords reasons, both with rule fallbacks; a reworded reason must keep the same facts and make no health claims; every batch stored in `recommendations` with its score breakdown
 - [x] Home: meal-slot switch (KIT-046), who's eating (KIT-057), craving chips and typed cravings in Hindi, Hinglish or English (KIT-042), "You have X of Y", Use Soon cards that ask for picks using that item (KIT-043), empty state when nothing fits
@@ -73,6 +73,25 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] **You:** before production, set `show_draft_recipes` off in `feature_flags`
 - [ ] KIT-141 (100 curated dishes) needs the culinary lead; there are 10 drafts, so picks repeat quickly
 - [ ] Omitted ingredients stay mentioned in step text after a rules-only adaptation (the summary says to leave them out); rewording needs the model
+
+### Sprint 4 status (11 Nov 2026, branch `sprint-4/cook`, adsynthio/cookmate#5)
+- [x] Cooking sessions and deduction (KIT-037, KIT-070): `start_cooking_session`, `advance_session_step`, `complete_cooking_session`, `apply_session_deduction` (once per session, every line adjustable), `submit_feedback`; unit conversion in the database
+- [x] Cook screen (KIT-070/072): one instruction at a time in 30 pt type, progress, safety notes and sensory cues on every step, notes for who is eating, scaled ingredients on demand, swipe or 56 dp Back / Next, read-aloud, screen kept awake, dish photo on the last step
+- [x] Timers (KIT-071): several labelled timers kept as end times, mirrored to scheduled local notifications, saved on the device, spoken in-app alarm on any tab
+- [x] Whistle counter (KIT-078): tap per whistle, count shown and spoken, moves on at the target
+- [x] Finish sheet (KIT-077): rate, review what comes off the pantry (55 g rather than 0.055 kg, any line off, staple levels), save leftovers, cooked-rice storage line for rice dishes; every part optional
+- [x] Resume (KIT-079): the Cook tab offers the dish in progress with its timers, or stops it
+- [x] Something's wrong (KIT-090/091/092): seven problems, at most three steps using what is in the kitchen, in three languages; pinned safety playbook used word for word; undercooked meat, egg and kidney beans always answered from the playbook; `rescue` Edge Function with a validated Haiku answer and the same rules on the phone when offline
+- [x] Ask mid-step and "I changed something" (KIT-074/075): `cook-assist` Edge Function and `log_session_change`; the cook's place never moves; reminders appear on later steps
+- [x] Voice backend (KIT-061/062): `get_voice_context` packet (capped, under 12,000 characters for a 150-item kitchen) and `voice-token` (membership, voice consent, one room, agent dispatch with the user's JWT)
+- [x] Tests: 79 mobile unit tests, 24 Edge Function tests, 37 new pgTAP tests (cooking, voice context, session changes); cook, finish, rescue and help flows walked in a browser build
+- [ ] **You:** have the culinary lead or a food-safety reviewer sign off the safety playbook and rescue fixes in `apps/mobile/src/domain/rescue.ts` (English, Hindi, Hinglish) before real users see them
+- [ ] **You:** approve the Supabase tool's prompt so I can apply migrations `recipes`, `quick_start`, `cooking`, `voice` and `session_changes` to ChefMate and deploy `suggest-meals`, `adapt-recipe`, `rescue`, `cook-assist` and `voice-token`
+- [ ] **You:** LiveKit and Sarvam accounts, then `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` as Edge Function secrets. Until then the mic says voice isn't switched on
+- [ ] Mic joins the room (KIT-063), hands-free cooking (KIT-064), barge-in (KIT-065) and voice tools (KIT-067) need the LiveKit client in a device build and the accounts above; the agent skeleton, fast-path matcher and confirmation gate are in `services/voice-agent`
+- [ ] Timers ringing with the app killed can only be confirmed on a phone (needs the first EAS build); the alarm uses the default notification sound until a louder one is added
+- [ ] Photo checkpoint (KIT-073) not started: needs camera capture in a device build and labelled photos to evaluate against
+- [ ] Recipe step text is English only, so read-aloud of a step uses the English voice; Hindi and Hinglish step text comes with the curated dishes (KIT-140/141)
 
 ---
 

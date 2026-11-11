@@ -447,5 +447,19 @@
   "you.privacy.word": "HATAO",
   "you.privacy.typeWord": "Confirm karne ke liye {word} likhein",
   "you.privacy.deleteNow": "Sab hatayein",
-  "you.privacy.deleting": "Hat raha hai…"
+  "you.privacy.deleting": "Hat raha hai…",
+  "cook.offline": "Network nahi hai. Pakate rahiye: sab is phone par save hai aur network aate hi sync ho jayega.",
+  "cook.hf.start": "Hands-free: agla, pichla, phir se aur timer suniye",
+  "cook.hf.stop": "Sunna band karein",
+  "cook.hf.listening": "Sun rahe hain. Boliye \"agla\", \"pichla\", \"phir se\" ya \"10 minute ka timer\". Bina network ke bhi chalta hai.",
+  "cook.hf.denied": "Cookmate ke liye microphone band hai. Hands-free pakane ke liye phone ki settings mein ise on karein.",
+  "cook.hf.unavailable": "Is phone par hands-free sunna available nahi hai. Agla aur Pichla dabaiye.",
+  "cook.hf.hint": "Agla, pichla, phir se ya timer boliye.",
+  "cook.hf.lastStep": "Yeh aakhri step hai. Khana ban jaye to \"ban gaya\" boliye.",
+  "cook.hf.stepsLeft": "Abhi {n} step baaki hain.",
+  "cook.hf.slower": "Theek hai, ab dheere-dheere.",
+  "cook.hf.timerSet": "{time} ka timer laga diya.",
+  "cook.hf.timeLeft": "{label}: {time} baaki.",
+  "cook.hf.noTimer": "Koi timer nahi chal raha.",
+  "finish.offline": "Aap offline hain, isliye network aate hi recipe ki quantity aapki kitchen se ghata denge. Uske baad Kitchen mein koi bhi cheez theek kar sakte hain."
 }

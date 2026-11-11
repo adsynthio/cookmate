@@ -64,7 +64,7 @@ jobs:
         with:
           deno-version: "2.9.6"
       - run: deno check supabase/functions/*/index.ts
-      - run: deno test supabase/functions/
+      - run: deno test --allow-read --allow-write --allow-run=python3 supabase/functions/
 
   voice-agent:
     name: Voice agent (lint + tests)

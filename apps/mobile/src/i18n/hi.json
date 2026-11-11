@@ -462,5 +462,20 @@
   "you.phone.linked": "{phone} से जुड़ा है",
   "you.phone.wrongCode": "यह कोड नहीं चला। जाँचें, या नया कोड मँगाएँ।",
   "you.phone.taken": "यह नंबर किसी और खाते में है।",
-  "you.phone.notReady": "फ़ोन से साइन-इन अभी चालू नहीं है। आपकी रसोई इस फ़ोन पर सेव है।"
+  "you.phone.notReady": "फ़ोन से साइन-इन अभी चालू नहीं है। आपकी रसोई इस फ़ोन पर सेव है।",
+  "you.privacy.title": "निजता",
+  "you.privacy.exportTitle": "मेरा डेटा डाउनलोड करें",
+  "you.privacy.exportBody": "Cookmate आपके घर के बारे में जो कुछ रखता है, सब एक फ़ाइल में।",
+  "you.privacy.export": "डाउनलोड तैयार करें",
+  "you.privacy.preparing": "तैयार हो रहा है…",
+  "you.privacy.open": "डाउनलोड खोलें",
+  "you.privacy.expires": "यह लिंक 24 घंटे चलेगा।",
+  "you.privacy.deleteTitle": "मेरा खाता हटाएँ",
+  "you.privacy.deleteHint": "आपका खाता और वे रसोई हटाता है जो सिर्फ़ आपकी हैं।",
+  "you.privacy.delete": "मेरा खाता हटाएँ…",
+  "you.privacy.deleteBody": "इससे आपका खाता अभी हट जाएगा। जो रसोई सिर्फ़ आपकी है, वह सब कुछ समेत हट जाएगी: सामान, यादें, खाना बनाने का इतिहास। जिस रसोई को कोई और भी चलाता है, उसमें से सिर्फ़ आप हटेंगे। इसे वापस नहीं किया जा सकता।",
+  "you.privacy.word": "हटाएँ",
+  "you.privacy.typeWord": "पक्का करने के लिए {word} लिखें",
+  "you.privacy.deleteNow": "सब हटाएँ",
+  "you.privacy.deleting": "हट रहा है…"
 }

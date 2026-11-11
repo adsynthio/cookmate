@@ -52,7 +52,7 @@ update public.memories set updated_at = now() - interval '31 days';
 alter table public.memories enable trigger memories_set_updated_at;
 
 select is(
-  (private.retention_cleanup() ->> 'memories')::int,
+  (private.retention_cleanup() ->> 'memories_forgotten')::int,
   1,
   'forgotten memories older than 30 days are hard-deleted'
 );

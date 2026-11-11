@@ -2,13 +2,14 @@
 // staples only), substitutes from your own kitchen, Add to list, quantities scaled to who's eating in katori /
 // pieces where we know the measure, Why this works (KIT-053), family plates naming who each branch is for (KIT-052)
 // and the steps with cues and safety notes.
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
-import { amountLabel } from "@/components/recipe/amount";
+import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
+import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage } from "@/design-system/media";
 import { Button, Card, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
@@ -54,6 +55,7 @@ export default function RecipeScreen() {
         <IconButton label={t("onb.back")} onPress={() => router.back()}>
           <Icon name="back" />
         </IconButton>
+        {recipe.data && householdId ? <SaveHeart householdId={householdId} recipeId={recipe.data.parent_id ?? recipe.data.id ?? recipe.data.slug} /> : null}
       </View>
       {recipe.isPending ? (
         <StateView state="loading" title={t("state.loading.home")} />
@@ -69,6 +71,25 @@ export default function RecipeScreen() {
         <RecipeBody doc={recipe.data} items={kitchen.data ?? []} members={members.data ?? []} householdId={householdId!} />
       )}
     </Screen>
+  );
+}
+
+/** KIT-055: save the dish for the household (an adapted version saves the dish it came from). */
+function SaveHeart({ householdId, recipeId }: { householdId: string; recipeId: string }) {
+  const { colors } = useTheme();
+  const memberId = useSession((s) => s.memberId);
+  const qc = useQueryClient();
+  const favourites = useQuery({ queryKey: ["favourites", householdId], queryFn: () => services.recipe.listFavourites(householdId) });
+  const saved = (favourites.data ?? []).some((d) => d.id === recipeId || d.slug === recipeId);
+  const toggle = useMutation({
+    mutationFn: (on: boolean) => services.recipe.setFavourite({ householdId, memberId: memberId!, recipeId, on }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["favourites", householdId] }),
+  });
+  if (!memberId || !favourites.data) return null;
+  return (
+    <IconButton label={saved ? t("recipe.unsave") : t("recipe.save")} onPress={() => !toggle.isPending && toggle.mutate(!saved)}>
+      <Icon name="heart" color={saved ? colors.alert : undefined} fill={saved ? colors.alert : undefined} />
+    </IconButton>
   );
 }
 
@@ -104,6 +125,7 @@ function RecipeBody({
   const memories = useQuery({ queryKey: ["memories", householdId], queryFn: () => services.preference.listMemories(householdId) });
   const dishIds = [doc.id, doc.parent_id, doc.slug].filter(Boolean);
   const remembered = (memories.data ?? []).filter((m) => m.recipeId !== null && dishIds.includes(m.recipeId));
+  const changes = useAmountChanges(householdId, doc);
 
   // Opened from a pick on Home: the session remembers which suggestion it came from.
   const { rec } = useLocalSearchParams<{ rec?: string }>();
@@ -230,6 +252,7 @@ function RecipeBody({
             nameOf={nameOf}
             listed={listed.includes(ing.ingredient)}
             onAdd={() => addToList.mutate([ing.ingredient])}
+            change={changes.get(ing.ingredient)}
           />
         ))}
       </Card>
@@ -327,7 +350,9 @@ function IngredientRow({
   nameOf,
   listed,
   onAdd,
+  change,
 }: {
+  change?: AmountChange;
   ing: RecipeIngredientDoc;
   match: IngredientMatch | undefined;
   servings: number;
@@ -337,7 +362,7 @@ function IngredientRow({
   onAdd: () => void;
 }) {
   const { colors } = useTheme();
-  const amount = amountLabel(ing, base, servings);
+  const { label: amount, note: changeNote } = rememberedAmount(ing, base, servings, change);
   const status = ing.optional ? "optional" : (match?.status ?? "missing");
   const detail =
     status === "have"
@@ -353,7 +378,7 @@ function IngredientRow({
               : t("recipe.missing");
   const icon = status === "have" || status === "assumed" ? "check" : status === "substitute" ? "forward" : null;
   return (
-    <View style={styles.ingRow} accessible accessibilityLabel={`${nameOf(ing.ingredient)}, ${amount}, ${detail}`}>
+    <View style={styles.ingRow} accessible accessibilityLabel={[nameOf(ing.ingredient), amount, changeNote, detail].filter(Boolean).join(", ")}>
       <View style={[styles.ingIcon, { backgroundColor: status === "missing" ? colors.amberSoft : colors.surfaceMuted }]}>
         {icon ? <Icon name={icon} size={16} color={status === "have" ? colors.limeText : colors.inkSecondary} /> : null}
       </View>
@@ -367,6 +392,11 @@ function IngredientRow({
         <Text variant="label" muted style={{ textAlign: "right" }}>
           {amount}
         </Text>
+        {changeNote ? (
+          <Text variant="caption" color={colors.limeText} style={{ textAlign: "right" }}>
+            {changeNote}
+          </Text>
+        ) : null}
         {status === "missing" ? (
           listed ? (
             <Text variant="caption" color={colors.limeText}>
@@ -384,7 +414,7 @@ function IngredientRow({
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: "row" },
+  top: { flexDirection: "row", justifyContent: "space-between" },
   titleRow: { flexDirection: "row", alignItems: "center", gap: space.md },
   photo: { width: 112, height: 112, borderRadius: 56 },
   badge: { alignSelf: "flex-start", borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: space.xs },

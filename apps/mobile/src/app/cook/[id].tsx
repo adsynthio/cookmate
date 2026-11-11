@@ -13,7 +13,7 @@ import { FinishSheet } from "@/components/cook/FinishSheet";
 import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
 import { WhistleCounter } from "@/components/cook/WhistleCounter";
-import { amountLabel } from "@/components/recipe/amount";
+import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { dishImage } from "@/design-system/media";
@@ -106,6 +106,8 @@ function durationLabel(sec: number): string {
 }
 
 function Cooking({ session, doc, members, householdId }: { session: CookSession; doc: RecipeDoc; members: Member[]; householdId: string }) {
+  // Remembered "more garlic" and the like (KIT-104), shown in the ingredient list.
+  const changes = useAmountChanges(householdId, doc);
   const { colors } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -369,7 +371,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
               <View key={`${ing.ingredient}-${i}`} style={styles.ingRow}>
                 <Text style={{ flex: 1 }}>{displayName(catalogEntry(ing.ingredient), ing.ingredient, locale)}</Text>
                 <Text variant="label" muted>
-                  {amountLabel(ing, doc.base_servings, session.servings)}
+                  {Object.values(rememberedAmount(ing, doc.base_servings, session.servings, changes.get(ing.ingredient))).filter(Boolean).join(" · ")}
                 </Text>
               </View>
             ))}

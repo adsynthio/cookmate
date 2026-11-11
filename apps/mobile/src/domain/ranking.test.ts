@@ -204,3 +204,9 @@ test("reasons cite real factors and stay short", () => {
   const bare = rankRecipes([recipe({ id: "x", spiceLevel: 4, timeMin: 40, ingredients: [ing("okra")] })], ctx())[0]!;
   assert.equal(reasonFor(bare, ctx(), "en", (k) => k), "A good fit for today");
 });
+
+test("reasons: a liked ingredient is named (KIT-104)", () => {
+  const c = ctx({ like: ["okra"] });
+  const [top] = rankRecipes([recipe({ id: "y", spiceLevel: 2, timeMin: 40, ingredients: [ing("okra")] })], c);
+  assert.equal(reasonFor(top!, c, "en", (k) => (k === "okra" ? "bhindi" : k)), "Has bhindi, a favourite here");
+});

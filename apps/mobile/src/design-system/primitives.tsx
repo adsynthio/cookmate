@@ -89,7 +89,8 @@ export function Button({
   textColor?: string;
 }) {
   const { colors } = useTheme();
-  const bg = kind === "primary" ? colors.lime : kind === "secondary" ? colors.surface : "transparent";
+  // Secondary buttons get a pale lime fill so they read as buttons on white cards as well as on the canvas.
+  const bg = kind === "primary" ? colors.lime : kind === "secondary" ? colors.limePale : "transparent";
   const fg = textColor ?? (kind === "primary" ? colors.onLime : colors.ink);
   return (
     <Pressable

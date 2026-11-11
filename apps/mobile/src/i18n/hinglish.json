@@ -432,5 +432,20 @@
   "you.phone.linked": "{phone} se juda hai",
   "you.phone.wrongCode": "Yeh code nahi chala. Check karein, ya naya code mangaiye.",
   "you.phone.taken": "Yeh number kisi aur account mein hai.",
-  "you.phone.notReady": "Phone se sign-in abhi chalu nahi hai. Aapki rasoi is phone par save hai."
+  "you.phone.notReady": "Phone se sign-in abhi chalu nahi hai. Aapki rasoi is phone par save hai.",
+  "you.privacy.title": "Privacy",
+  "you.privacy.exportTitle": "Mera data download karein",
+  "you.privacy.exportBody": "Cookmate aapke ghar ke baare mein jo kuch rakhta hai, sab ek file mein.",
+  "you.privacy.export": "Download taiyaar karein",
+  "you.privacy.preparing": "Taiyaar ho raha hai…",
+  "you.privacy.open": "Download kholein",
+  "you.privacy.expires": "Yeh link 24 ghante chalega.",
+  "you.privacy.deleteTitle": "Mera account hatayein",
+  "you.privacy.deleteHint": "Aapka account aur woh rasoi hatata hai jo sirf aapki hain.",
+  "you.privacy.delete": "Mera account hatayein…",
+  "you.privacy.deleteBody": "Isse aapka account abhi hat jaayega. Jo rasoi sirf aapki hai, woh sab kuch samet hat jaayegi: saamaan, yaadein, khana banane ki history. Jis rasoi ko koi aur bhi chalata hai, usmein se sirf aap hatenge. Ise wapas nahi kiya ja sakta.",
+  "you.privacy.word": "HATAO",
+  "you.privacy.typeWord": "Confirm karne ke liye {word} likhein",
+  "you.privacy.deleteNow": "Sab hatayein",
+  "you.privacy.deleting": "Hat raha hai…"
 }

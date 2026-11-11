@@ -6,7 +6,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
@@ -17,7 +17,8 @@ import { displayName } from "@/domain/kitchen";
 import { parseNote, preferenceStatement } from "@/domain/learning";
 import { indianMobile, maskPhone, PACES, SKILLS, stepWords, UNITS, VERBOSITIES, type VoiceProfile } from "@/domain/voiceStyle";
 import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
-import { say } from "@/services/feedback";
+import { hush, say } from "@/services/feedback";
+import { useTimers } from "@/state/timers";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type Member, type Memory, type NewMemory } from "@/services";
@@ -84,6 +85,7 @@ export default function YouScreen() {
 
       <VoiceSettings />
       <PhoneLink />
+      {householdId ? <Privacy householdId={householdId} /> : null}
 
       <View style={{ gap: space.xs }}>
         <Text variant="heading">{t("you.learned")}</Text>
@@ -412,6 +414,92 @@ function PhoneLink() {
             {t(problem)}
           </Text>
         ) : null}
+      </Card>
+    </>
+  );
+}
+
+/** Privacy (KIT-121, KIT-122): download everything, or delete the account. Deleting needs a typed word. */
+function Privacy({ householdId }: { householdId: string }) {
+  const { colors } = useTheme();
+  const router = useRouter();
+  const qc = useQueryClient();
+  const clear = useSession((s) => s.clear);
+  const [link, setLink] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [word, setWord] = useState("");
+  const exportData = useMutation({
+    mutationFn: () => services.auth.exportData(householdId),
+    onSuccess: (r) => setLink(r.url),
+  });
+  const remove = useMutation({
+    mutationFn: () => services.auth.deleteAccount(word),
+    onSuccess: () => {
+      hush();
+      void useTimers.getState().clearAll();
+      qc.clear();
+      clear();
+      router.replace("/onboarding");
+    },
+  });
+  const typed = word.trim().toUpperCase() === t("you.privacy.word").toUpperCase();
+  return (
+    <>
+      <View style={{ gap: space.xs }}>
+        <Text variant="heading">{t("you.privacy.title")}</Text>
+      </View>
+      <Card>
+        <Text variant="bodyStrong">{t("you.privacy.exportTitle")}</Text>
+        <Text muted>{t("you.privacy.exportBody")}</Text>
+        {link ? (
+          <>
+            <Button kind="secondary" label={t("you.privacy.open")} onPress={() => void Linking.openURL(link)} />
+            <Text variant="caption" muted>
+              {t("you.privacy.expires")}
+            </Text>
+          </>
+        ) : (
+          <View style={styles.actions}>
+            <Button kind="secondary" label={exportData.isPending ? t("you.privacy.preparing") : t("you.privacy.export")} disabled={exportData.isPending} onPress={() => exportData.mutate()} />
+          </View>
+        )}
+        {exportData.isError ? (
+          <Text variant="caption" color={colors.alert} accessibilityLiveRegion="polite">
+            {t("state.error.body")}
+          </Text>
+        ) : null}
+      </Card>
+      <Card tint={deleting ? colors.alertSoft : undefined}>
+        <Text variant="bodyStrong">{t("you.privacy.deleteTitle")}</Text>
+        {deleting ? (
+          <>
+            <Text>{t("you.privacy.deleteBody")}</Text>
+            <Text variant="label">{t("you.privacy.typeWord", { word: t("you.privacy.word") })}</Text>
+            <Field value={word} onChangeText={setWord} autoCapitalize="characters" accessibilityLabel={t("you.privacy.typeWord", { word: t("you.privacy.word") })} maxLength={12} />
+            <View style={styles.actions}>
+              <Button
+                label={remove.isPending ? t("you.privacy.deleting") : t("you.privacy.deleteNow")}
+                textColor={colors.alert}
+                kind="secondary"
+                disabled={!typed || remove.isPending}
+                onPress={() => remove.mutate()}
+              />
+              <Button kind="quiet" label={t("you.cancel")} onPress={() => { setDeleting(false); setWord(""); }} />
+            </View>
+            {remove.isError ? (
+              <Text variant="caption" color={colors.alert} accessibilityLiveRegion="polite">
+                {t("state.error.body")}
+              </Text>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <Text muted>{t("you.privacy.deleteHint")}</Text>
+            <View style={styles.actions}>
+              <Button kind="quiet" textColor={colors.alert} label={t("you.privacy.delete")} onPress={() => setDeleting(true)} />
+            </View>
+          </>
+        )}
       </Card>
     </>
   );

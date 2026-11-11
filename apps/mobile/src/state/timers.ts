@@ -78,6 +78,8 @@ type TimerState = {
   cancel: (id: string) => Promise<void>;
   markRang: (id: string) => void;
   clearSession: (sessionId: string) => Promise<void>;
+  /** Every timer, e.g. when the account is deleted. */
+  clearAll: () => Promise<void>;
 };
 
 let seq = 0;
@@ -130,6 +132,11 @@ export const useTimers = create<TimerState>((set, get) => {
     clearSession: async (sessionId) => {
       const gone = get().timers.filter((y) => y.sessionId === sessionId);
       commit(get().timers.filter((y) => y.sessionId !== sessionId));
+      await Promise.all(gone.map(unschedule));
+    },
+    clearAll: async () => {
+      const gone = get().timers;
+      commit([]);
       await Promise.all(gone.map(unschedule));
     },
   };

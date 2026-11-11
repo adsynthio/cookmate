@@ -2,6 +2,8 @@
 // notes that are never hidden, labelled timers that ring with the app closed, a whistle counter, and big Back / Next
 // targets (or a swipe). The screen stays awake. The step shown here is the source of truth while cooking; the
 // session row is updated behind it and catches up if a save fails.
+// Offline (KIT-076/084): when cooking starts the phone keeps the recipe and downloads this cook's step recordings,
+// so with no network the dish can still be finished, read aloud, and driven hands-free; writes wait in the outbox.
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -14,7 +16,13 @@ import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
 import { WhistleCounter } from "@/components/cook/WhistleCounter";
 import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
+import { useHandsFree } from "@/components/cook/useHandsFree";
 import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
+import type { FastPathMatch } from "@/domain/fastPath";
+import type { Pace } from "@/domain/voiceStyle";
+import { getBundle, putBundle } from "@/offline/bundles";
+import { useOutbox } from "@/offline/outbox";
+import { downloadStepAudio, playStepAudio, removeStepAudio } from "@/offline/stepAudio";
 import { stepWords } from "@/domain/voiceStyle";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
@@ -23,19 +31,21 @@ import { Button, Card, IconButton, StateView, Text } from "@/design-system/primi
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
-import { countWhistle, offersTimer, stepSeconds } from "@/domain/cooking";
+import { countWhistle, offersTimer, remaining, stepSeconds } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
 import { leftoverSafety, safetyText } from "@/domain/rescue";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services, type CookSession, type Member } from "@/services";
-import { buzz, hush, say, tick } from "@/services/feedback";
+import { buzz, hush, say, setSpeechPace, tick } from "@/services/feedback";
 import { useSession } from "@/state/session";
 import { useTimers } from "@/state/timers";
 
 const KEEP_AWAKE = "cookmate-cook";
 /** How long "All 3 whistles" stays up before the next step. */
 const WHISTLE_ADVANCE_MS = 1600;
+/** Step recordings are made at normal pace; the cook's pace speeds them up or slows them down. Mirrors tts_pace in style.py. */
+const RECORDING_RATE: Record<Pace, number> = { slow: 0.85, normal: 1, fast: 1.15 };
 
 export default function CookScreen() {
   useLocale();
@@ -63,7 +73,8 @@ export default function CookScreen() {
 
   const home = () => router.replace("/");
   const body =
-    session.isPending || (session.isSuccess && recipe.isPending) ? (
+    // Wait for this visit's own read: a copy cached from an earlier visit may be steps behind.
+    session.isPending || !session.isFetchedAfterMount || (session.isSuccess && recipe.isPending) ? (
       <StateView state="loading" title={t("cook.title")} />
     ) : session.isError || recipe.isError || !recipe.data ? (
       <StateView
@@ -79,7 +90,7 @@ export default function CookScreen() {
       <Cooking session={session.data} doc={recipe.data} members={members.data ?? []} householdId={householdId!} />
     );
 
-  const framed = session.isSuccess && recipe.isSuccess && (session.data.status === "active" || session.data.status === "paused");
+  const framed = session.isSuccess && session.isFetchedAfterMount && recipe.isSuccess && (session.data.status === "active" || session.data.status === "paused");
   return (
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       {framed ? (
@@ -125,11 +136,26 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   const [showIngredients, setShowIngredients] = useState(false);
   const [reading, setReading] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
-  /** Step moves the server hasn't taken yet; sent with the next move. */
-  const owed = useRef(0);
+  /** "Dheere bolo" slows the voice for the rest of this dish. */
+  const [pace, setPace] = useState<Pace | null>(null);
+  const waiting = useOutbox((s) => s.ops.some((o) => o.sessionId === session.id));
   const scroll = useRef<ScrollViewInstance>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => void (advanceTimer.current && clearTimeout(advanceTimer.current)), []);
+
+  // KIT-076: keep what's needed to finish this dish with no network, and fetch this cook's step recordings once.
+  useEffect(() => {
+    const had = getBundle(session.id);
+    putBundle(session.id, { householdId, session, doc });
+    if (had && Object.keys(had.audio).length) return;
+    services.cooking
+      .getStepAudio(session.id)
+      .then((audio) => downloadStepAudio(session.id, audio))
+      .catch(() => {
+        // No recordings yet (or no network): steps are read by the phone's own voice.
+      });
+    // Once per session: later step moves update the bundle themselves.
+  }, [session.id]);
 
   const step: RecipeStepDoc = doc.steps[stepNo - 1]!;
   const last = stepNo === total;
@@ -148,25 +174,21 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     [doc, eaters, stepNo],
   );
 
-  const go = (delta: number) => {
+  const go = (delta: number): number => {
     const next = Math.max(1, Math.min(total, stepNo + delta));
-    if (next === stepNo) return;
+    if (next === stepNo) return stepNo;
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
     hush();
     setReading(false);
     tick();
     setStepNo(next);
     scroll.current?.scrollTo({ y: 0, animated: false });
-    const move = next - stepNo + owed.current;
-    owed.current = 0;
-    if (move === 0) return;
-    services.cooking.advanceStep(session.id, move).then(
+    // Offline, the move waits in the outbox and this resolves straight away.
+    services.cooking.advanceStep(session.id, next - stepNo).then(
       () => setUnsaved(false),
-      () => {
-        owed.current += move;
-        setUnsaved(true);
-      },
+      () => setUnsaved(true),
     );
+    return next;
   };
 
   const complete = useMutation({
@@ -199,6 +221,17 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     else router.replace("/");
   };
 
+  // Hands-free listening (KIT-084). The hook sits above the finish screen's early return; the handlers it calls are
+  // defined further down and reach it through refs. It stops listening once the dish is finished.
+  const commandRef = useRef<(m: FastPathMatch) => void>(() => {});
+  const unknownRef = useRef<() => void>(() => {});
+  const handsFree = useHandsFree({
+    lang: locale === "en" ? "en-IN" : "hi-IN",
+    paused: reading || complete.isSuccess,
+    onCommand: (m) => commandRef.current(m),
+    onUnknown: () => unknownRef.current(),
+  });
+
   if (complete.isSuccess) {
     return (
       <ScrollView contentContainerStyle={styles.finish} keyboardShouldPersistTaps="handled">
@@ -211,7 +244,9 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           memberId={memberId ?? undefined}
           changes={changes}
           leftoverNote={safetyText([leftoverSafety(doc.ingredients)].filter((x) => x !== null), locale)}
+          offline={getBundle(session.id)?.finishedOffline === true}
           onClose={() => {
+            removeStepAudio(session.id);
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
             void queryClient.invalidateQueries({ queryKey: ["memories"] });
             void queryClient.invalidateQueries({ queryKey: ["picks"] });
@@ -230,16 +265,32 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   const photo = last ? dishImage(doc.slug) : null;
   const photoSize = Math.min(screenWidth - space.gutter * 2, 320);
 
+  /** Reads a step: this cook's recording when the phone has it (works offline), else the phone's own voice. */
+  const readStep = (n: number) => {
+    const s = doc.steps[n - 1];
+    if (!s) return;
+    setReading(true);
+    const done = () => setReading(false);
+    const p = pace ?? voice.profile.pace;
+    if (playStepAudio(session.id, n, { rate: RECORDING_RATE[p], onEnd: done })) return;
+    // Recipe text is written in English for now, so it is read by the English voice.
+    // KIT-068: the same words the voice agent would say for this cook (cue for learners, safety always).
+    say(stepWords(s, voice.profile), { language: "en-IN", onEnd: done });
+  };
+
+  /** A short spoken reply; listening pauses until it ends. */
+  const speak = (text: string) => {
+    setReading(true);
+    say(text, { onEnd: () => setReading(false) });
+  };
+
   const read = () => {
     if (reading) {
       hush();
       setReading(false);
       return;
     }
-    setReading(true);
-    // Recipe text is written in English for now, so it is read by the English voice.
-    // KIT-068: the same words the voice agent would say for this cook (cue for learners, safety always).
-    say(stepWords(step, voice.profile), { language: "en-IN", onEnd: () => setReading(false) });
+    readStep(stepNo);
   };
 
   const whistle = () => {
@@ -255,6 +306,58 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     }
   };
 
+  // KIT-084: the same commands as the voice agent's fast path, heard on the phone.
+  const command = (m: FastPathMatch) => {
+    tick();
+    switch (m.command) {
+      case "next":
+        if (last) speak(t("cook.hf.lastStep"));
+        else readStep(go(1));
+        return;
+      case "back":
+        readStep(go(-1));
+        return;
+      case "repeat":
+      case "resume":
+        readStep(stepNo);
+        return;
+      case "slower": {
+        const slower: Pace = (pace ?? voice.profile.pace) === "fast" ? "normal" : "slow";
+        setPace(slower);
+        setSpeechPace(slower);
+        speak(t("cook.hf.slower"));
+        return;
+      }
+      case "pause":
+        hush();
+        setReading(false);
+        return;
+      case "done":
+        if (last) complete.mutate();
+        else speak(t("cook.hf.stepsLeft", { n: total - stepNo }));
+        return;
+      case "whistle":
+        if (step.whistles) whistle();
+        else speak(t("cook.hf.hint"));
+        return;
+      case "timer_set": {
+        const sec = Math.round((m.minutes ?? 0) * 60);
+        if (sec <= 0) return;
+        void startTimer({ sessionId: session.id, stepNo, label: m.label ?? t("cook.timer.label", { n: stepNo }), durationSec: sec });
+        speak(t("cook.hf.timerSet", { time: durationLabel(sec) }));
+        return;
+      }
+      case "timer_check": {
+        const at = Date.now();
+        const next = timers.filter((x) => x.endsAt > at).sort((a, b) => a.endsAt - b.endsAt)[0];
+        speak(next ? t("cook.hf.timeLeft", { label: next.label, time: durationLabel(remaining(next, at)) }) : t("cook.hf.noTimer"));
+        return;
+      }
+    }
+  };
+  commandRef.current = command;
+  unknownRef.current = () => speak(t("cook.hf.hint"));
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.header}>
@@ -269,10 +372,22 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
             {dish}
           </Text>
         </View>
+        <IconButton
+          label={handsFree.state === "listening" ? t("cook.hf.stop") : t("cook.hf.start")}
+          onPress={() => void handsFree.toggle()}
+          muted={handsFree.state !== "listening"}
+        >
+          <Icon name="mic" />
+        </IconButton>
         <IconButton label={reading ? t("cook.stopReading") : t("cook.read")} onPress={read} muted={reading}>
           <Icon name="speaker" />
         </IconButton>
       </View>
+      {handsFree.state !== "off" ? (
+        <Text variant="caption" muted style={styles.status} accessibilityLiveRegion="polite">
+          {t(handsFree.state === "listening" ? "cook.hf.listening" : handsFree.state === "denied" ? "cook.hf.denied" : "cook.hf.unavailable")}
+        </Text>
+      ) : null}
       <View
         style={[styles.track, { backgroundColor: colors.line }]}
         accessibilityRole="progressbar"
@@ -280,6 +395,12 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
       >
         <View style={[styles.fill, { backgroundColor: colors.lime, width: `${(stepNo / total) * 100}%` }]} />
       </View>
+
+      {waiting ? (
+        <Text variant="caption" muted style={[styles.status, { paddingTop: space.sm }]} accessibilityLiveRegion="polite">
+          {t("cook.offline")}
+        </Text>
+      ) : null}
 
       <ScrollView ref={scroll} style={{ flex: 1 }} contentContainerStyle={styles.content} {...pan.panHandlers}>
         <TimerChips timers={timers} now={now} onStop={(timerId) => void stopTimer(timerId)} />
@@ -383,7 +504,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           </Card>
         ) : null}
 
-        {unsaved ? (
+        {unsaved && !waiting ? (
           <Text variant="caption" muted accessibilityLiveRegion="polite">
             {t("cook.notSynced")}
           </Text>
@@ -420,6 +541,7 @@ const styles = StyleSheet.create({
   plain: { flex: 1, paddingHorizontal: space.gutter, paddingTop: space.lg, gap: space.lg },
   header: { flexDirection: "row", alignItems: "center", gap: space.md, paddingHorizontal: space.gutter, paddingTop: space.md, paddingBottom: space.md },
   headerText: { flex: 1, alignItems: "center", gap: 2 },
+  status: { textAlign: "center", paddingHorizontal: space.gutter, paddingBottom: space.sm },
   track: { height: 6, marginHorizontal: space.gutter, borderRadius: radius.pill, overflow: "hidden" },
   fill: { height: 6, borderRadius: radius.pill },
   content: { paddingHorizontal: space.gutter, paddingTop: space.xl, paddingBottom: space.xxl, gap: space.lg },

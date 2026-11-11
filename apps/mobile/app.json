@@ -26,7 +26,18 @@
       "expo-localization",
       "expo-secure-store",
       "expo-sqlite",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Cookmate listens for \"next\", \"repeat\" and timers while you cook hands-free.",
+          "speechRecognitionPermission": "Cookmate turns what you say while cooking into next, back, repeat and timers, on this phone when it can.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox",
+            "com.google.android.as"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

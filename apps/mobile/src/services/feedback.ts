@@ -5,6 +5,7 @@ import * as Speech from "expo-speech";
 
 import { speechRate, type Pace } from "@/domain/voiceStyle";
 import { getLocale } from "@/i18n";
+import { stopStepAudio } from "@/offline/stepAudio";
 
 export function tick() {
   try {
@@ -45,6 +46,7 @@ export function say(text: string, options: { language?: string; onEnd?: () => vo
 }
 
 export function hush() {
+  stopStepAudio();
   try {
     Speech.stop();
   } catch {

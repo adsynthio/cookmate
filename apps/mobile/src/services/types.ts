@@ -324,6 +324,8 @@ export interface CookingService {
   completeSession(sessionId: string): Promise<DeductionLine[]>;
   applyDeduction(sessionId: string, adjustments: DeductionAdjustment[]): Promise<string[]>;
   submitFeedback(input: { sessionId: string; rating: Rating; tags?: string[]; comment?: string; makeAgain?: boolean }): Promise<void>;
+  /** KIT-076: links to the cached step recordings this cook would hear, to download while there is network. */
+  getStepAudio(sessionId: string): Promise<{ stepNo: number; url: string }[]>;
 }
 
 export type VoiceToken = { url: string; token: string; roomName: string; languageCode: string };

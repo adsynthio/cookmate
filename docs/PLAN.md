@@ -121,6 +121,15 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] **You:** phone OTP upgrade (KIT-021) needs an SMS provider registered for DLT
 - [x] Migrations `memories` and `shopping` applied to ChefMate (11 Nov)
 
+### Sprint 6 status (11 Nov 2026) — in progress
+Part 1, privacy and security (branch `sprint-6/hardening`):
+- [x] Export my data (KIT-121): You → Privacy → a zip of every table of the household, read under the user's own row-level security, in the private `exports` bucket with a 24-hour link
+- [x] Delete my account (KIT-122): typed confirmation; households you alone own are deleted with everything in them, shared ones keep going without you; runs at once
+- [x] Retention (KIT-123): the daily job now covers every time limit in `02_database_tables.csv` (AI logs 90 days, suggestions 1 year, sessions 2 years, expired temporary memories, and the rest)
+- [x] Security review (KIT-124): `docs/SECURITY_REVIEW.md`; Supabase advisors run on ChefMate; two fixes (closed a dashboard-created definer function, indexed 40 foreign keys) and guard-rail tests so they stay fixed
+- [ ] **You:** sign off the accepted findings in `docs/SECURITY_REVIEW.md`; turn on CAPTCHA for anonymous sign-ins; decide how `tts-cache` is scheduled (GitHub secret or `pg_cron` + Vault)
+- [ ] Not doable from here: kitchen noise test set (KIT-082) needs real recordings; regional language (KIT-085) waits for the BRD decision; 300 dishes (KIT-142) need the culinary lead
+
 ---
 
 ## 1. What we are building (V1 in one page)

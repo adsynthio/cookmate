@@ -474,6 +474,20 @@ export const liveServices: Services = {
       const r = data as { current_step: number; total: number };
       return { currentStep: r.current_step, total: r.total };
     },
+    async rescue(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ steps: string[]; safety_note: string | null; source: "rules" | "model" }>("rescue", {
+        body: {
+          session_id: input.sessionId,
+          problem: input.problem,
+          missing: input.missing,
+          details: input.details,
+          language_code: input.languageCode,
+        },
+      });
+      if (error || !data) throw error ?? new Error("rescue returned nothing");
+      return { steps: data.steps, safetyNote: data.safety_note, source: data.source };
+    },
     async abandonSession(sessionId) {
       const sb = requireSupabase();
       const { error } = await sb

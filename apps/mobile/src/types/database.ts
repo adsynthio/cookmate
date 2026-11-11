@@ -3308,6 +3308,18 @@ export type Database = {
         Args: { p_query: string; p_limit?: number };
         Returns: { id: string; slug: string | null; title: string; titles: Json; course: string; diet: string; prep_time_min: number | null; cook_time_min: number | null; spice_level: number; tags: string[] | null; score: number }[];
       };
+      pantry_check_today: {
+        Args: { p_household: string; p_item?: string | null };
+        Returns: string | null;
+      };
+      get_notification_settings: {
+        Args: { p_household: string };
+        Returns: Json;
+      };
+      set_notification_settings: {
+        Args: { p_household: string; p_settings: Json; p_policy_version?: string };
+        Returns: Json;
+      };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

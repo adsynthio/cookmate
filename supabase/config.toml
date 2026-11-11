@@ -418,3 +418,7 @@ enabled = true
 # tts-cache checks the service-role key itself (it is run by a scheduler, never by a user).
 [functions.tts-cache]
 verify_jwt = false
+
+# Called by pg_cron with a shared secret from Vault, not a user's token (see the nudges migration).
+[functions.notify]
+verify_jwt = false

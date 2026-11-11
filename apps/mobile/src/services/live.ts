@@ -12,6 +12,7 @@ import type { Json } from "@/types/database";
 
 import { toDraft, toRpcItem } from "./drafts";
 import { RECIPE_SELECT, recipeDocFromRow, type RecipeRow } from "@/domain/recipes";
+import { keepFast, type CalendarEvent } from "@/domain/calendar";
 
 import type {
   CookSession,
@@ -20,8 +21,10 @@ import type {
   MealSlot,
   Member,
   Memory,
+  NotificationSettings,
   PantryItem,
   Pick,
+  PickBatch,
   RecipeSummary,
   Services,
 } from "./types";
@@ -266,6 +269,29 @@ export const liveServices: Services = {
       const { error } = await requireSupabase().rpc("update_memory", { p_memory: memoryId, p_statement: statement });
       if (error) throw error;
     },
+    async getNotificationSettings(householdId) {
+      const { data, error } = await requireSupabase().rpc("get_notification_settings", { p_household: householdId });
+      if (error) throw error;
+      return fromSettings((data ?? {}) as Record<string, unknown>);
+    },
+    async setNotificationSettings(householdId, changes) {
+      const settings = {
+        ...(changes.dailyPick !== undefined ? { daily_pick: changes.dailyPick } : {}),
+        ...(changes.pickTime ? { pick_time: changes.pickTime } : {}),
+        ...(changes.quietStart ? { quiet_start: changes.quietStart } : {}),
+        ...(changes.quietEnd ? { quiet_end: changes.quietEnd } : {}),
+      };
+      const { data, error } = await requireSupabase().rpc("set_notification_settings", { p_household: householdId, p_settings: settings });
+      if (error) throw error;
+      return fromSettings((data ?? {}) as Record<string, unknown>);
+    },
+    async registerDevice({ householdId, memberId, pushToken, platform, appVersion, locale }) {
+      const { error } = await requireSupabase().from("devices").upsert(
+        { household_id: householdId, member_id: memberId, push_token: pushToken, platform, app_version: appVersion ?? null, locale: locale ?? null, last_seen_at: new Date().toISOString() },
+        { onConflict: "push_token" },
+      );
+      if (error) throw error;
+    },
   },
 
   kitchen: {
@@ -485,7 +511,19 @@ export const liveServices: Services = {
         total: p.total,
         score: p.score,
       }));
-      return { batchId: data.batch_id, mealSlot: data.meal_slot, hero: picks[0] ?? null, alternates: picks.slice(1) };
+      return {
+        batchId: data.batch_id,
+        mealSlot: data.meal_slot,
+        hero: picks[0] ?? null,
+        alternates: picks.slice(1),
+        check: data.check ? { itemId: data.check.item_id, name: data.check.name, ifYes: data.check.if_yes, ifNo: data.check.if_no } : null,
+        calendar: data.calendar
+          ? {
+            today: data.calendar.today,
+            offerFast: data.calendar.offer_fast,
+          }
+          : null,
+      };
     },
 
     async respondToPick(recommendationId, status, reason) {
@@ -573,6 +611,69 @@ export const liveServices: Services = {
           )
         : await sb.from("saved_recipes").delete().eq("household_id", householdId).eq("recipe_id", recipeId).eq("collection", "favourites");
       if (error) throw error;
+    },
+    async getBatch(householdId, batchId) {
+      const { data, error } = await requireSupabase()
+        .from("recommendations")
+        .select("id, rank, meal_slot, reason_text, uses_item_ids, missing, score, recipes(id, slug, title, titles, prep_time_min, cook_time_min)")
+        .eq("household_id", householdId)
+        .eq("batch_id", batchId)
+        .order("rank");
+      if (error) throw error;
+      const rows = ((data ?? []) as unknown as BatchRow[]).filter((r) => r.recipes);
+      if (!rows.length) return null;
+      const picks: Pick[] = rows.map((r) => ({
+        recommendationId: r.id,
+        recipeId: r.recipes!.id,
+        slug: r.recipes!.slug ?? r.recipes!.id,
+        title: r.recipes!.title,
+        titles: r.recipes!.titles ?? undefined,
+        reason: r.reason_text,
+        uses: [],
+        missing: (r.missing ?? []).map((m) => m.ingredient),
+        totalTimeMin: (r.recipes!.prep_time_min ?? 0) + (r.recipes!.cook_time_min ?? 0) || null,
+        imageUrl: null,
+        have: 0,
+        total: 0,
+        score: Number(r.score ?? 0),
+      }));
+      const batch: PickBatch = { batchId, mealSlot: rows[0]!.meal_slot, hero: picks[0] ?? null, alternates: picks.slice(1) };
+      return batch;
+    },
+    async keepFast(householdId, eventId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.from("calendar_events").select("id, household_id, event_date, end_date, kind, name, regions, rules").eq("id", eventId).maybeSingle();
+      if (error) throw error;
+      if (!data) return;
+      const row = keepFast(data as unknown as CalendarEvent, householdId);
+      const { error: e2 } = await sb.from("calendar_events").insert({
+        household_id: householdId,
+        event_date: row.event_date,
+        end_date: row.end_date ?? null,
+        kind: "fast",
+        name: row.name,
+        regions: [],
+        rules: row.rules as Json,
+      });
+      if (e2) throw e2;
+    },
+    async inventDish(householdId) {
+      const { data, error } = await requireSupabase().functions.invoke<{
+        recipe_id: string | null;
+        reason?: "too_little" | "nothing_safe";
+        title?: string;
+        titles?: Record<string, string>;
+        description?: string;
+        uses?: string[];
+      }>("invent-dish", { body: { household_id: householdId } });
+      if (error) {
+        // 503: no model configured; the option is hidden (11_ai_tasks_and_models.csv).
+        const status = (error as { context?: { status?: number } }).context?.status;
+        if (status === 503) return { recipeId: null, reason: "unavailable" };
+        throw error;
+      }
+      if (!data?.recipe_id) return { recipeId: null, reason: data?.reason ?? "nothing_safe" };
+      return { recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? null, description: data.description ?? "", uses: data.uses ?? [] };
     },
     async searchRecipes(query) {
       const sb = requireSupabase();
@@ -786,4 +887,27 @@ type SuggestMealsResponse = {
     total: number;
     score: number;
   }[];
+  check?: { item_id: string; name: string; if_yes: string | null; if_no: string | null } | null;
+  calendar?: {
+    today: { id: string | null; name: string; kind: string; kept: boolean; names: Record<string, string> | null }[];
+    offer_fast: { id: string | null; name: string; names: Record<string, string> | null; note: string | null } | null;
+  };
 };
+
+type BatchRow = {
+  id: string;
+  rank: number;
+  meal_slot: MealSlot;
+  reason_text: string;
+  uses_item_ids: string[];
+  missing: { ingredient: string }[];
+  score: number | null;
+  recipes: { id: string; slug: string | null; title: string; titles: RecipeSummary["titles"] | null; prep_time_min: number | null; cook_time_min: number | null } | null;
+};
+
+const fromSettings = (x: Record<string, unknown>): NotificationSettings => ({
+  dailyPick: !!x.daily_pick,
+  pickTime: String(x.pick_time ?? "16:00"),
+  quietStart: String(x.quiet_start ?? "22:00"),
+  quietEnd: String(x.quiet_end ?? "07:00"),
+});

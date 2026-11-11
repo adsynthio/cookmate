@@ -69,7 +69,7 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [x] Quick start from yesterday's meal (KIT-026): guesses at confidence 0.4, cleared in one tap
 - [x] Draft recipes visible only while `show_draft_recipes` is on (staging)
 - [x] Tests: 59 mobile unit tests, 13 Edge Function tests, 17 new pgTAP tests (visibility, search, quick start); every screen walked in a browser build
-- [ ] **You:** approve the Supabase tool's prompt so I can apply migrations `20261201000000_recipes` and `20261202000000_quick_start` to ChefMate and deploy `suggest-meals` and `adapt-recipe` (the request timed out while you were away)
+- [x] Migrations `recipes` and `quick_start` applied to ChefMate (11 Nov)
 - [ ] **You:** before production, set `show_draft_recipes` off in `feature_flags`
 - [ ] KIT-141 (100 curated dishes) needs the culinary lead; there are 10 drafts, so picks repeat quickly
 - [ ] Omitted ingredients stay mentioned in step text after a rules-only adaptation (the summary says to leave them out); rewording needs the model
@@ -86,26 +86,32 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [x] Voice backend (KIT-061/062): `get_voice_context` packet (capped, under 12,000 characters for a 150-item kitchen) and `voice-token` (membership, voice consent, one room, agent dispatch with the user's JWT)
 - [x] Tests: 79 mobile unit tests, 24 Edge Function tests, 37 new pgTAP tests (cooking, voice context, session changes); cook, finish, rescue and help flows walked in a browser build
 - [ ] **You:** have the culinary lead or a food-safety reviewer sign off the safety playbook and rescue fixes in `apps/mobile/src/domain/rescue.ts` (English, Hindi, Hinglish) before real users see them
-- [ ] **You:** approve the Supabase tool's prompt so I can apply migrations `recipes`, `quick_start`, `cooking`, `voice` and `session_changes` to ChefMate and deploy `suggest-meals`, `adapt-recipe`, `rescue`, `cook-assist` and `voice-token`
+- [x] Migrations `cooking`, `voice` and `session_changes` applied to ChefMate (11 Nov)
+- [ ] **You:** add the repository secret `SUPABASE_ACCESS_TOKEN` (Supabase dashboard → Account → Access Tokens); `.github/workflows/deploy-functions.yml` then deploys `suggest-meals`, `adapt-recipe`, `rescue`, `cook-assist` and `voice-token` on every merge that touches them (they are too large for the Supabase tool). Only `parse-inventory` is deployed today
 - [ ] **You:** LiveKit and Sarvam accounts, then `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` as Edge Function secrets. Until then the mic says voice isn't switched on
 - [ ] Mic joins the room (KIT-063), hands-free cooking (KIT-064), barge-in (KIT-065) and voice tools (KIT-067) need the LiveKit client in a device build and the accounts above; the agent skeleton, fast-path matcher and confirmation gate are in `services/voice-agent`
 - [ ] Timers ringing with the app killed can only be confirmed on a phone (needs the first EAS build); the alarm uses the default notification sound until a louder one is added
 - [ ] Photo checkpoint (KIT-073) not started: needs camera capture in a device build and labelled photos to evaluate against
 - [ ] Recipe step text is English only, so read-aloud of a step uses the English voice; Hindi and Hinglish step text comes with the curated dishes (KIT-140/141)
 
-### Sprint 5 status (11 Nov 2026, branch `sprint-5/you`, adsynthio/cookmate#6) — partly done
+### Sprint 5 status (11 Nov 2026, adsynthio/cookmate#6 and branch `sprint-5/learning`)
 - [x] Memory model (KIT-101): `save_memory`, `forget_memory`, `keep_memory`, `update_memory`. Repeats strengthen a memory; what the user says replaces older memories about the same subject; observations never override it; temporary memories expire and never change preferences; forgetting removes what was derived
 - [x] Learning from feedback (KIT-100, KIT-103): the first feedback for a session nudges the taste dials one step; the finish sheet suggests what to remember about the dish and saves only what the cook taps
 - [x] What I've learned (KIT-102): Edit in the user's own words, Keep, Forget with a second tap
 - [x] Shopping list (KIT-110/111/112): grouped by shop section, add by typing, tick a line or "Sab le aaye" to move it into the pantry with an estimated expiry (staples refill), remove a line, share as plain text
 - [x] Dismiss a pick with a reason (KIT-044): not today, don't like, no time, missing something; the dish isn't offered again that day; "don't like" asks before remembering, and a remembered dislike keeps the dish out of picks
 - [x] Tests: 86 mobile unit tests, 25 Edge Function tests, 27 new pgTAP tests (memories, shopping); remember, You, shopping and dismiss flows walked in a browser build
-- [ ] Picks reflect memories (KIT-104) is partial: the recipe screen shows what was said about the dish last time, and disliked dishes and ingredients are left out, but a memory such as "extra garlic" is not yet applied to the recipe's quantities
-- [ ] Not started: ingredient likes and dislikes editor on You (KIT-105; the database side exists), favourites (KIT-055), voice personalisation (KIT-068), step audio cache (KIT-080), VAD-gated speech-to-text (KIT-081), switch speaker (KIT-083)
+- [x] Picks reflect memories (KIT-104), part 2: "Agli baar lahsun zyada" (typed on You, or "more garlic" on the finish sheet) raises garlic one step (×1.25) on the recipe and cook screens with "more, as you asked"; "less salt" lowers it (×0.75). A note about one dish wins over a general one. Picks that have something the household loves say so ("Has paneer, a favourite here")
+- [x] Likes and dislikes (KIT-105): per person on You, added by name or from a typed note ("Riya ko karela pasand nahi"); picks leave out what anyone eating avoids, household-wide dislikes always. Memory subjects are now ingredient + aspect + dish (migration `memory_subjects`), so "less salt" never reads as "avoids salt" and a note about one dish never replaces a like
+- [x] Saved dishes (KIT-055): heart on the recipe screen, list on You, shared by the household
+- [x] Polish: secondary buttons have a pale lime fill and read as buttons on white cards
+- [x] Tests (part 2): 93 mobile unit tests, 25 Edge Function tests, 10 new pgTAP tests (memory subjects); You, likes, saved dishes and remembered amounts walked in a browser build
+- [ ] Remembered amounts change what the screens show, not the pantry deduction at the end (that still uses the recipe's amounts) or amounts named inside step text
+- [ ] Named collections beyond Favourites (KIT-055) are not built
+- [ ] Not started: voice personalisation (KIT-068), step audio cache (KIT-080), VAD-gated speech-to-text (KIT-081), switch speaker (KIT-083)
 - [ ] Memory extraction from free speech (KIT-103's 200-utterance test set) is not built; memories come from feedback tags and what the user confirms
 - [ ] **You:** phone OTP upgrade (KIT-021) needs an SMS provider registered for DLT
-- [ ] **You:** approve the Supabase tool's prompt for migrations `memories` and `shopping` as well (the full list is under Sprint 4)
-- [ ] Polish: white buttons on white cards (You, the "Stop suggesting…?" card) need a tinted background to read as buttons
+- [x] Migrations `memories` and `shopping` applied to ChefMate (11 Nov)
 
 ---
 

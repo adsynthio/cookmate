@@ -23,7 +23,8 @@ export type IconName =
   | "fridge"
   | "freezer"
   | "pantry"
-  | "counter";
+  | "counter"
+  | "heart";
 
 const STROKE = 1.75;
 
@@ -111,12 +112,14 @@ function shapes(name: IconName) {
           <Circle cx={17} cy={19} r={1.4} />
         </>
       );
+    case "heart":
+      return <Path d="M12 19.5s-7.5-4.6-7.5-10.2A4.1 4.1 0 0 1 12 7a4.1 4.1 0 0 1 7.5 2.3c0 5.6-7.5 10.2-7.5 10.2z" />;
     case "speaker":
       return <Path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />;
   }
 }
 
-export function Icon({ name, size = 24, color, muted }: { name: IconName; size?: number; color?: string; muted?: boolean }) {
+export function Icon({ name, size = 24, color, muted, fill }: { name: IconName; size?: number; color?: string; muted?: boolean; fill?: string }) {
   const { colors } = useTheme();
   const stroke = color ?? (muted ? colors.inkSecondary : colors.ink);
   return (
@@ -124,7 +127,7 @@ export function Icon({ name, size = 24, color, muted }: { name: IconName; size?:
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={fill ?? "none"}
       stroke={stroke}
       strokeWidth={STROKE}
       strokeLinecap="round"

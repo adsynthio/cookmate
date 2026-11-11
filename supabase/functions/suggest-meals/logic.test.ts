@@ -13,6 +13,7 @@ import {
   prefsFromMemories,
   recentFrom,
   weightsFrom,
+  excludedRecipes,
 } from "./logic.ts";
 
 Deno.test("dates in the household's timezone", () => {
@@ -79,4 +80,10 @@ Deno.test("reworded reasons must stay short, cite the same fact and make no heal
   assertEquals(acceptReason(t, "Palak is healthy for you", ["palak"]), t);
   assertEquals(acceptReason(t, "x".repeat(91), []), t);
   assertEquals(acceptReason(t, null, []), t);
+});
+
+Deno.test("disliked dishes and dishes turned down today are left out", () => {
+  const out = excludedRecipes([{ subject_recipe_id: "r1" }, { subject_recipe_id: null }], [{ recipe_id: "r2" }, { recipe_id: "r1" }]);
+  assertEquals([...out].sort(), ["r1", "r2"]);
+  assertEquals(excludedRecipes([], []).size, 0);
 });

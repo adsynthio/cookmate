@@ -26,6 +26,7 @@ import {
   acceptReason,
   type CalendarRow,
   eatersFromRows,
+  excludedRecipes,
   type InventoryRow,
   localDate,
   localeFor,
@@ -169,7 +170,7 @@ Deno.serve(async (req) => {
   const today = localDate(now, tz);
   const slot: MealSlot = SLOTS.includes(body.meal_slot as MealSlot) ? (body.meal_slot as MealSlot) : slotForHour(localHour(now, tz));
 
-  const [members, inventory, recipes, memories, calendar, recs, sessions, equipment] = await Promise.all([
+  const [members, inventory, recipes, memories, calendar, recs, sessions, equipment, disliked, dismissed] = await Promise.all([
     sb.from("household_members").select("id, display_name, age_group, diet, taste_profiles(spice)")
       .eq("household_id", householdId).eq("status", "active"),
     sb.from("inventory_items").select("id, confidence, expiry_date, staple_level, ingredients(canonical_name, names)")
@@ -185,6 +186,10 @@ Deno.serve(async (req) => {
     sb.from("cooking_sessions").select("recipe_id, completed_at").eq("household_id", householdId)
       .eq("status", "completed").gte("completed_at", weekAgo),
     sb.from("kitchen_equipment").select("equipment_type").eq("household_id", householdId),
+    sb.from("memories").select("subject_recipe_id").eq("household_id", householdId).eq("status", "active")
+      .lt("polarity", 0).eq("attributes->>about", "dislike").not("subject_recipe_id", "is", null),
+    sb.from("recommendations").select("recipe_id").eq("household_id", householdId).eq("status", "dismissed")
+      .gte("acted_at", new Date(now.getTime() - 18 * 3_600_000).toISOString()),
   ]);
   const failed = [members, inventory, recipes].find((r) => r.error);
   if (failed?.error) return json({ error: failed.error.message }, 500);
@@ -198,7 +203,11 @@ Deno.serve(async (req) => {
     if (flag?.enabled) weightsRules = flag.rules;
   }
 
-  const docs = ((recipes.data ?? []) as unknown as RecipeRow[]).map(recipeDocFromRow);
+  const excluded = excludedRecipes(
+    (disliked.data ?? []) as { subject_recipe_id: string | null }[],
+    (dismissed.data ?? []) as { recipe_id: string | null }[],
+  );
+  const docs = ((recipes.data ?? []) as unknown as RecipeRow[]).map(recipeDocFromRow).filter((d) => !excluded.has(d.id!));
   const invRows = (inventory.data ?? []) as unknown as InventoryRow[];
   const memPrefs = prefsFromMemories((memories.data ?? []) as unknown as MemoryRow[], now);
   // Events running today: single-day events on today, multi-day ones that haven't ended.

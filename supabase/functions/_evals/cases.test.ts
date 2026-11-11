@@ -33,6 +33,8 @@ Deno.test("item F1: exact items score 1, wrong amounts half, inventions and miss
   assertEquals(itemScore(exp, [g("potato", 1, "kg"), g("onion")]).tp, 1.5);
   assertEquals(f1(itemScore(exp, [g("potato", 2, "kg"), g("onion"), g("garlic")])), 0.8);
   assertEquals(f1(itemScore(exp, [g("potato", 2, "kg")])), 2 / 3);
+  assertEquals(itemScore([{ key: "ghee", quantity: 250, unit: "g" }], [g("ghee", 0.25, "kg")]).tp, 1, "same amount, other unit");
+  assertEquals(itemScore([{ key: "ghee", quantity: 250, unit: "g" }], [g("ghee", 250, "kg")]).tp, 0.5, "different amount");
   assertEquals(itemScore([{ key: null, said: "chutney" }], [{ said: "hari chutney", ingredient_key: null, quantity: null, unit: null }]).tp, 1);
 });
 
@@ -42,6 +44,10 @@ Deno.test("rescue grading uses the function's own validator plus the case's chec
   assertEquals(rescueProblems({ steps: ["Turn the flame down to low."], uses: [] }, ctx, { mentions_any: ["flame"] }), []);
   assert(rescueProblems({ steps: ["Add some chocolate."], uses: ["chocolate"] }, ctx, {}).length > 0, "not in the kitchen");
   assert(rescueProblems({ steps: ["Add salt."], uses: [] }, ctx, { mentions_any: ["flame"] }).length > 0, "missed the point");
+  // A missing ingredient may be named ("skip the curry leaves"), but the fix must not rely on it.
+  const poha = contextFor(recipes.get("kanda-poha")!, ["onion", "lemon"], "curry leaves");
+  assertEquals(rescueProblems({ steps: ["Curry leaves are missing, so skip them."], uses: [] }, poha, { without: "curry leaves" }), []);
+  assert(rescueProblems({ steps: ["Add curry leaves."], uses: ["curry leaves"] }, poha, { without: "curry leaves" }).length > 0);
 });
 
 Deno.test("a score under the floor, or well under the last accepted one, is a regression", () => {

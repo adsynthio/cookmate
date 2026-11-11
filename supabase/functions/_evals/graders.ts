@@ -10,6 +10,18 @@ export type ParsedItem = { said: string; ingredient_key: string | null; quantity
  * a parsed item with the same key; one without a key (not in the catalog) matches a parsed item whose "said" contains
  * the expected words. A match whose stated quantity or unit is wrong counts half.
  */
+// The same amount in another unit is the same answer: 250 g of ghee is 0.25 kg.
+const BASE: Record<string, [string, number]> = { kg: ["g", 1000], g: ["g", 1], l: ["ml", 1000], ml: ["ml", 1] };
+
+function amountMatches(e: ExpectedItem, g: ParsedItem): boolean {
+  if (e.quantity === undefined && e.unit === undefined) return true;
+  if (e.quantity === undefined) return g.unit === e.unit;
+  if (g.quantity === null) return false;
+  const want = e.unit && BASE[e.unit] ? [BASE[e.unit]![0], e.quantity * BASE[e.unit]![1]] as const : [e.unit, e.quantity] as const;
+  const got = g.unit && BASE[g.unit] ? [BASE[g.unit]![0], g.quantity * BASE[g.unit]![1]] as const : [g.unit, g.quantity] as const;
+  return (e.unit === undefined || want[0] === got[0]) && Math.abs(want[1] - got[1]) < 1e-6;
+}
+
 export type ItemTotals = { tp: number; got: number; expected: number };
 
 export function itemScore(expected: ExpectedItem[], got: ParsedItem[]): ItemTotals {
@@ -21,9 +33,7 @@ export function itemScore(expected: ExpectedItem[], got: ParsedItem[]): ItemTota
     );
     if (i < 0) continue;
     const g = left.splice(i, 1)[0]!;
-    const qtyOk = e.quantity === undefined || (g.quantity !== null && Math.abs(g.quantity - e.quantity) < 1e-6);
-    const unitOk = e.unit === undefined || g.unit === e.unit;
-    tp += qtyOk && unitOk ? 1 : 0.5;
+    tp += amountMatches(e, g) ? 1 : 0.5;
   }
   return { tp, got: got.length, expected: expected.length };
 }
@@ -38,6 +48,8 @@ export function f1(t: ItemTotals): number {
 }
 
 export type RescueExpect = {
+  /** The fix must not rely on this ingredient (it may still say it's missing). */
+  without?: string;
   /** At least one step must match one of these (case-insensitive regexes), e.g. a real fix for the problem. */
   mentions_any?: string[];
   /** No step may match any of these. */
@@ -52,6 +64,9 @@ export function rescueProblems(out: { steps: string[]; uses: string[] }, ctx: Re
     problems.push(`mentions none of: ${expect.mentions_any.join(", ")}`);
   }
   for (const p of expect.never ?? []) if (new RegExp(p, "i").test(text)) problems.push(`mentions forbidden: ${p}`);
+  if (expect.without && out.uses.some((u) => u.toLowerCase() === expect.without!.toLowerCase())) {
+    problems.push(`relies on ${expect.without}, which is missing`);
+  }
   return problems;
 }
 

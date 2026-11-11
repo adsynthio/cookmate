@@ -2,6 +2,7 @@
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
 import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
 import type { Problem } from "@/domain/rescue";
+import type { ListLine } from "@/domain/shopping";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
@@ -141,6 +142,19 @@ export type Memory = {
   source: MemorySource;
   scope: "permanent" | "temporary";
   memberName: string | null;
+  /** The dish this is about, when it is about one. */
+  recipeId: string | null;
+};
+
+export type NewMemory = {
+  householdId: string;
+  memberId?: string;
+  statement: string;
+  category: "taste" | "ingredient" | "technique" | "routine" | "household" | "diet" | "equipment" | "other";
+  polarity?: -1 | 0 | 1;
+  /** Subject key, so a newer memory about the same thing replaces the older one. */
+  about?: string;
+  recipeId?: string;
 };
 
 export type NewMember = {
@@ -174,6 +188,10 @@ export interface PreferenceService {
   listMemories(householdId: string): Promise<Memory[]>;
   forgetMemory(memoryId: string): Promise<void>;
   keepMemory(memoryId: string): Promise<void>;
+  /** KIT-101: something the user said or confirmed. Returns the memory's id. */
+  saveMemory(input: NewMemory): Promise<string>;
+  /** KIT-102 Edit: the user's own words replace ours. */
+  updateMemory(memoryId: string, statement: string): Promise<void>;
 }
 
 export interface KitchenService {
@@ -195,6 +213,11 @@ export interface KitchenService {
   clearGuesses(householdId: string, itemIds?: string[]): Promise<number>;
   /** KIT-033: Low/Out staples -> shopping list. */
   addToList(householdId: string, items: { name: string; reason: "running_low" | "manual" }[]): Promise<void>;
+  /** KIT-110: what still needs buying. */
+  getList(householdId: string): Promise<ListLine[]>;
+  /** KIT-111: bought items go into the pantry; no ids means everything on the list. Returns pantry item ids. */
+  markBought(householdId: string, itemIds?: string[]): Promise<string[]>;
+  removeFromList(itemId: string): Promise<void>;
   /** KIT-030: pantry changes from other phones; returns an unsubscribe function. */
   subscribe(householdId: string, onChange: () => void): () => void;
 }
@@ -237,6 +260,7 @@ export type DeductionAdjustment = { itemId: string; quantity?: number; skip?: bo
 export type Rating = "loved" | "good" | "meh" | "bad";
 
 export type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+export type { ListLine } from "@/domain/shopping";
 export type RescueInput = { sessionId: string; problem: Problem; missing?: string; details?: string; languageCode: string };
 /** At most three things to do now, plus the pinned safety line when one applies (KIT-091/092). */
 export type RescueFix = { steps: string[]; safetyNote: string | null; source: "rules" | "model" };

@@ -17,11 +17,11 @@ import { deductionPreview } from "@/domain/cooking";
 
 import { localeFromLanguageCode } from "@/domain/onboarding";
 
-import { buildPicks } from "./picks";
+import { buildPicks, findIngredients } from "./picks";
 import { changeReply, fallbackAnswer } from "@/domain/assist";
 
 import { localRescue } from "./rescue";
-import type { CookSession, HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
+import type { CookSession, HouseholdRef, ListLine, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -75,6 +75,7 @@ function cookedLife(state: PantryItem["state"], location: PantryItem["location"]
   if (state !== "cooked" && state !== "leftover" && state !== "homemade") return null;
   return location === "freezer" ? 30 : location === "ready_made" ? 5 : location === "fridge" ? 3 : 1;
 }
+let list: ListLine[] = [];
 const finished = new Map<string, PantryItem>();
 /** Items added as guesses from yesterday's dish (KIT-026). */
 const guesses = new Set<string>();
@@ -83,10 +84,13 @@ const changed = () => listeners.forEach((fn) => fn());
 let nextId = 100;
 
 let memories: Memory[] = [
-  { id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita" },
-  { id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav" },
-  { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null },
+  { id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita", recipeId: null },
+  { id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav", recipeId: null },
+  { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null, recipeId: null },
 ];
+const dismissedToday = new Set<string>();
+/** Subject of each saved memory ("recipe:about"), for the replace rule. */
+const subjects = new Map<string, string>();
 
 // The Sunita household from the PRD, used when the mock household was created before members were stored.
 const PERSONA: Member[] = [
@@ -157,8 +161,27 @@ export const mockServices: Services = {
     },
     async forgetMemory(id) {
       memories = memories.filter((m) => m.id !== id);
+      subjects.delete(id);
     },
     async keepMemory() {},
+    async saveMemory(input) {
+      await delay(150);
+      const same = memories.find((m) => m.statement.toLowerCase() === input.statement.trim().toLowerCase());
+      if (same) return same.id;
+      // A newer memory about the same subject and dish replaces the older one.
+      if (input.about) {
+        const tag = `${input.recipeId ?? ""}:${input.about}`;
+        memories = memories.filter((m) => subjects.get(m.id) !== tag);
+      }
+      const id = `m${nextId++}`;
+      if (input.about) subjects.set(id, `${input.recipeId ?? ""}:${input.about}`);
+      memories = [{ id, statement: input.statement.trim(), source: "explicit", scope: "permanent", memberName: null, recipeId: input.recipeId ?? null }, ...memories];
+      return id;
+    },
+    async updateMemory(id, statement) {
+      await delay(150);
+      memories = memories.map((m) => (m.id === id ? { ...m, statement: statement.trim(), source: "correction" } : m));
+    },
   },
   kitchen: {
     async getKitchen() {
@@ -281,8 +304,38 @@ export const mockServices: Services = {
       changed();
       return before - pantry.length;
     },
-    async addToList() {
+    async addToList(_householdId, items) {
       await delay(150);
+      for (const i of items) {
+        const key = catalogEntry(i.name)?.name ?? findIngredients(i.name)[0] ?? null;
+        const same = list.find((l) => (key ? l.ingredientKey === key : l.name.toLowerCase() === i.name.trim().toLowerCase()));
+        if (!same) list = [...list, { id: `l${nextId++}`, ingredientKey: key, name: key ?? i.name.trim(), quantity: null, unit: null, reason: i.reason }];
+      }
+    },
+    async getList() {
+      await delay(200);
+      return [...list];
+    },
+    async markBought(householdId, itemIds) {
+      await delay(250);
+      const bought = list.filter((l) => !itemIds || itemIds.includes(l.id));
+      list = list.filter((l) => !bought.includes(l));
+      if (!bought.length) return [];
+      const ids = await mockServices.kitchen.addItems({
+        householdId,
+        addedVia: "manual",
+        items: bought.map((l) => ({
+          key: l.id, said: l.name, ingredientKey: l.ingredientKey, quantity: l.quantity, unit: l.unit,
+          locationKind: null, state: null, flavorRoles: [], confidence: 1,
+        })),
+      });
+      // A staple that was Low or Out is Full again.
+      for (const p of pantry) if (ids.includes(p.id) && p.stapleLevel) p.stapleLevel = "full";
+      changed();
+      return ids;
+    },
+    async removeFromList(itemId) {
+      list = list.filter((l) => l.id !== itemId);
     },
     subscribe(_householdId, onChange) {
       listeners.add(onChange);
@@ -297,7 +350,8 @@ export const mockServices: Services = {
       const slot = input.mealSlot ?? slotForHour(localHour(new Date(), "Asia/Kolkata"));
       const now = Date.now();
       const batch = buildPicks({
-        docs: recipeDocs,
+        // Left out: dishes turned down today, and dishes the household said it doesn't like.
+        docs: recipeDocs.filter((d) => !dismissedToday.has(d.slug) && ![...subjects.values()].includes(`${d.slug}:dislike`)),
         items: pantry,
         members: readMembers(),
         input,
@@ -311,6 +365,8 @@ export const mockServices: Services = {
     async respondToPick(recommendationId, status) {
       const recipeId = shown.get(recommendationId);
       if (status === "accepted" && recipeId) recent.push({ recipeId, at: Date.now() });
+      // KIT-044: a dish turned down is not offered again today.
+      if (status === "dismissed" && recipeId) dismissedToday.add(recipeId);
     },
     async adaptRecipe(input) {
       await delay(500);

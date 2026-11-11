@@ -110,9 +110,7 @@
       "green chilli"
     ],
     "expect": {
-      "never": [
-        "curry leaves"
-      ]
+      "without": "curry leaves"
     }
   },
   {
@@ -179,7 +177,8 @@
     "expect": {
       "mentions_any": [
         "tofu|potato|aloo|peas|matar"
-      ]
+      ],
+      "without": "paneer"
     }
   }
 ]

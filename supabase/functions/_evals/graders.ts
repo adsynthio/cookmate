@@ -38,6 +38,8 @@ export function f1(t: ItemTotals): number {
 }
 
 export type RescueExpect = {
+  /** The fix must not rely on this ingredient (it may still say it's missing). */
+  without?: string;
   /** At least one step must match one of these (case-insensitive regexes), e.g. a real fix for the problem. */
   mentions_any?: string[];
   /** No step may match any of these. */
@@ -52,6 +54,9 @@ export function rescueProblems(out: { steps: string[]; uses: string[] }, ctx: Re
     problems.push(`mentions none of: ${expect.mentions_any.join(", ")}`);
   }
   for (const p of expect.never ?? []) if (new RegExp(p, "i").test(text)) problems.push(`mentions forbidden: ${p}`);
+  if (expect.without && out.uses.some((u) => u.toLowerCase() === expect.without!.toLowerCase())) {
+    problems.push(`relies on ${expect.without}, which is missing`);
+  }
   return problems;
 }
 

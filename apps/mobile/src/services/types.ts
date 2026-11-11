@@ -1,6 +1,7 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
 import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+import type { VoiceProfile } from "@/domain/voiceStyle";
 import type { Problem } from "@/domain/rescue";
 import type { ListLine } from "@/domain/shopping";
 import type { AgeGroup, Diet } from "@/domain/ranking";
@@ -189,7 +190,15 @@ export interface AuthService {
   ensureSignedIn(): Promise<{ userId: string; isAnonymous: boolean }>;
   /** The household this device last used, or null when onboarding is still needed. Never signs in. */
   getCurrentHousehold(): Promise<HouseholdRef | null>;
+  /** KIT-021: the verified phone on this account (E.164), or null while it is anonymous. */
+  getPhone(): Promise<string | null>;
+  /** KIT-021: text a code to this phone to link it to the current (anonymous) account. Same user, same data. */
+  startPhoneLink(phone: string): Promise<"sent" | "not_configured" | "taken">;
+  /** KIT-021: the code from the text message. False when the code is wrong or expired. */
+  confirmPhoneLink(phone: string, code: string): Promise<boolean>;
 }
+
+export type { VoiceProfile } from "@/domain/voiceStyle";
 
 export interface PreferenceService {
   createHousehold(input: { name: string; language: string; members: NewMember[] }): Promise<{ householdId: string; memberId: string }>;
@@ -204,6 +213,9 @@ export interface PreferenceService {
   saveMemory(input: NewMemory): Promise<string>;
   /** KIT-102 Edit: the user's own words replace ours. */
   updateMemory(memoryId: string, statement: string): Promise<void>;
+  /** KIT-068: how Cookmate talks to this member (by voice and when the app reads aloud). */
+  getVoiceProfile(memberId: string): Promise<VoiceProfile>;
+  updateVoiceProfile(memberId: string, changes: Partial<VoiceProfile>): Promise<void>;
 }
 
 export interface KitchenService {

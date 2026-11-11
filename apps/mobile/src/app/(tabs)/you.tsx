@@ -21,6 +21,8 @@ import { hush, say } from "@/services/feedback";
 import { useTimers } from "@/state/timers";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { clearBundles } from "@/offline/bundles";
+import { useOutbox } from "@/offline/outbox";
 import { services, type Member, type Memory, type NewMemory } from "@/services";
 import { findIngredients } from "@/services/picks";
 import { useSession } from "@/state/session";
@@ -437,6 +439,9 @@ function Privacy({ householdId }: { householdId: string }) {
     onSuccess: () => {
       hush();
       void useTimers.getState().clearAll();
+      // Nothing of the deleted account stays on the phone: no queued writes, no cooking bundles.
+      useOutbox.getState().clear();
+      clearBundles();
       qc.clear();
       clear();
       router.replace("/onboarding");

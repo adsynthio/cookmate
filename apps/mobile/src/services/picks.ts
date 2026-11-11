@@ -10,10 +10,12 @@ import {
   defaultBudget,
   DEFAULT_WEIGHTS,
   interpretCraving,
+  pantryCheck,
   rankRecipes,
   reasonFor,
   type Eater,
   type MealSlot,
+  type PantryCheck,
   type PantryEntry,
   type RankContext,
   type Ranked,
@@ -21,14 +23,16 @@ import {
 } from "@/domain/ranking";
 import { toRankRecipe, totalTime, type RecipeDoc } from "@/domain/recipes";
 
-import type { Member, PantryItem, Pick, PickBatch, PickInput } from "./types";
+import type { Member, PantryItem, PantryQuestion, Pick, PickBatch, PickInput } from "./types";
 
 export function pantryEntries(items: PantryItem[], today: Date = new Date()): PantryEntry[] {
   return items
-    .filter((i) => i.ingredientKey)
+    // Homemade things the catalog doesn't know ("hari chutney") match by name, so an invented dish that uses
+    // them shows them as in the kitchen (KIT-056). Catalog recipes never name them, so ranking is unchanged.
+    .filter((i) => i.ingredientKey || i.state !== "raw")
     .map((i) => ({
       itemId: i.id,
-      key: i.ingredientKey!,
+      key: i.ingredientKey ?? i.name.trim().toLowerCase(),
       confidence: i.confidence,
       daysLeft: i.expiryDate ? daysLeft(i.expiryDate, today) : null,
       out: i.stapleLevel === "out",
@@ -90,9 +94,13 @@ export function buildPicks(args: {
   recent?: RankContext["recent"];
   avoid?: string[];
   like?: string[];
+  /** Calendar preferences for today (KIT-144). */
+  prefer?: string[];
   weights?: Weights;
   batchId: string;
   today?: Date;
+  /** KIT-035: given the proposed check (or null), the item to ask about today, if any (the daily cap lives there). */
+  askCheck?: (proposed: PantryCheck | null) => string | null;
 }): PickBatch {
   const { docs, input, slot } = args;
   const ctx: RankContext = {
@@ -103,7 +111,7 @@ export function buildPicks(args: {
     equipment: null,
     avoid: args.avoid ?? [],
     like: args.like ?? [],
-    prefer: [],
+    prefer: args.prefer ?? [],
     recent: args.recent ?? [],
     craving: interpretCraving(input.craving ?? "", input.chips ?? [], findIngredients),
     timeBudgetMin: defaultBudget(slot),
@@ -114,5 +122,23 @@ export function buildPicks(args: {
   const picks = choosePicks(rankRecipes(docs.map(toRankRecipe), ctx)).map((r, i) =>
     toPick(r, bySlug.get(r.recipe.id)!, ctx, input, `${args.batchId}-${i}`),
   );
-  return { batchId: args.batchId, mealSlot: slot, hero: picks[0] ?? null, alternates: picks.slice(1) };
+  let check: PantryQuestion | null = null;
+  if (args.askCheck) {
+    const ordinary = !input.focus?.length && !ctx.craving.tags.length && !ctx.craving.ingredients.length;
+    const proposed = ordinary ? pantryCheck(docs.map(toRankRecipe), ctx) : null;
+    const itemId = args.askCheck(proposed);
+    const item = itemId ? args.items.find((i) => i.id === itemId) : undefined;
+    if (item) {
+      const locale = localeFromLanguageCode(input.languageCode) ?? "en";
+      const titleOf = (id?: string) => (id ? bySlug.get(id)?.title ?? null : null);
+      const same = proposed?.itemId === itemId;
+      check = {
+        itemId: item.id,
+        name: displayName(item.ingredientKey ? catalogEntry(item.ingredientKey) : undefined, item.name, locale),
+        ifYes: same ? titleOf(proposed!.ifYes) : null,
+        ifNo: same ? titleOf(proposed!.ifNo) : null,
+      };
+    }
+  }
+  return { batchId: args.batchId, mealSlot: slot, hero: picks[0] ?? null, alternates: picks.slice(1), check };
 }

@@ -22,7 +22,12 @@ import { changeReply, fallbackAnswer } from "@/domain/assist";
 
 import { localRescue } from "./rescue";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
-import type { CookSession, HouseholdRef, ListLine, Member, Memory, PantryItem, Services } from "./types";
+import calendarJson from "@/data/calendar.json";
+import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type CalendarEvent } from "@/domain/calendar";
+import { planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
+import { daysLeft as daysLeftOf } from "@/domain/pantry";
+
+import type { CookSession, HouseholdRef, ListLine, Member, Memory, NotificationSettings, PantryItem, PickBatch, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -118,6 +123,27 @@ function readMembers(): Member[] {
 /** Recipes cooked or accepted, for "no repeat within 3 days". */
 const recent: { recipeId: string; at: number }[] = [];
 const shown = new Map<string, string>(); // recommendationId -> recipeId
+const batches = new Map<string, PickBatch>();
+
+// KIT-144: the bundled calendar plus fasts this household keeps. Set localStorage "cookmate.mock.today"
+// (YYYY-MM-DD) to try a festival day in mock mode.
+const globalEvents: CalendarEvent[] = (calendarJson as { date: string; end: string | null; kind: string; name: string; regions: string[]; rules: CalendarEvent["rules"] }[])
+  .map((e, i) => ({ id: `cal-${i}`, household_id: null, event_date: e.date, end_date: e.end, kind: e.kind, name: e.name, regions: e.regions, rules: e.rules }));
+const keptEvents: CalendarEvent[] = [];
+function mockToday(): string {
+  try {
+    const forced = globalThis.localStorage?.getItem("cookmate.mock.today");
+    if (forced && /^\d{4}-\d{2}-\d{2}$/.test(forced)) return forced;
+  } catch {
+    // no storage: use the real date
+  }
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+/** KIT-035: the one check question per day, as pantry_check_today keeps it on the server. */
+let checkAsked: { day: string; itemId: string | null } | null = null;
+let notificationSettings: NotificationSettings = { dailyPick: false, pickTime: "16:00", quietStart: "22:00", quietEnd: "07:00" };
+const inQuiet = (t: string, a: string, b: string) => (a === b ? false : a < b ? t >= a && t < b : t >= a || t < b);
 let batchNo = 1;
 /** Cooking sessions (KIT-070), kept for the app session. */
 const sessions = new Map<string, CookSession>();
@@ -234,6 +260,20 @@ const mocks: Services = {
     async updateVoiceProfile(memberId, changes) {
       await delay(100);
       voiceProfiles.set(memberId, { ...DEFAULT_PROFILE, ...voiceProfiles.get(memberId), ...changes });
+    },
+    async getNotificationSettings() {
+      await delay(80);
+      return notificationSettings;
+    },
+    async setNotificationSettings(_householdId, changes) {
+      await delay(120);
+      const next = { ...notificationSettings, ...changes };
+      if (inQuiet(next.pickTime, next.quietStart, next.quietEnd)) throw new Error("pick time is inside quiet hours");
+      notificationSettings = next;
+      return next;
+    },
+    async registerDevice() {
+      await delay(50);
     },
     async updateMemory(id, statement) {
       await delay(150);
@@ -413,7 +453,10 @@ const mocks: Services = {
         (m) => m.ingredientKey && m.recipeId === null && (m.about ?? "preference") === "preference" && (!eating || !m.memberId || eating.includes(m.memberId)),
       );
       const batch = buildPicks({
-        avoid: prefs.filter((m) => m.polarity < 0).map((m) => m.ingredientKey!),
+        avoid: [
+          ...prefs.filter((m) => m.polarity < 0).map((m) => m.ingredientKey!),
+          ...calendarPrefs(eventsOn([...globalEvents, ...keptEvents], mockToday(), null)).avoid,
+        ],
         like: prefs.filter((m) => m.polarity > 0).map((m) => m.ingredientKey!),
         // Left out: dishes turned down today, and dishes the household said it doesn't like.
         docs: recipeDocs.filter((d) => !dismissedToday.has(d.slug) && ![...subjects.values()].includes(`${d.slug}:dislike`)),
@@ -423,8 +466,26 @@ const mocks: Services = {
         slot,
         recent: recent.map((r) => ({ recipeId: r.recipeId, daysAgo: Math.floor((now - r.at) / 86_400_000) })),
         batchId: `b${batchNo++}`,
+        ...(() => {
+          const today = eventsOn([...globalEvents, ...keptEvents], mockToday(), null);
+          const cal = calendarPrefs(today);
+          return { prefer: cal.prefer };
+        })(),
+        askCheck: (proposed) => {
+          const day = mockToday();
+          if (checkAsked?.day !== day) checkAsked = proposed ? { day, itemId: proposed.itemId } : null;
+          const item = checkAsked ? pantry.find((p) => p.id === checkAsked!.itemId) : undefined;
+          return item && item.confidence <= 0.6 ? item.id : null;
+        },
       });
+      const todayEvents = eventsOn([...globalEvents, ...keptEvents], mockToday(), null);
+      const offer = fastsToOffer(todayEvents)[0];
+      batch.calendar = {
+        today: todayEvents.map((e) => ({ id: e.id ?? null, name: e.name, kind: e.kind, kept: !!e.household_id, names: e.rules?.names ?? null })),
+        offerFast: offer ? { id: offer.id ?? null, name: offer.name, names: offer.rules?.names ?? null, note: offer.rules?.note ?? null } : null,
+      };
       for (const p of [batch.hero, ...batch.alternates]) if (p) shown.set(p.recommendationId, p.recipeId);
+      batches.set(batch.batchId, batch);
       return batch;
     },
     async respondToPick(recommendationId, status) {
@@ -466,6 +527,37 @@ const mocks: Services = {
       const at = favourites.indexOf(slug);
       if (on && at < 0) favourites.unshift(slug);
       if (!on && at >= 0) favourites.splice(at, 1);
+    },
+    async getBatch(_householdId, batchId) {
+      await delay(80);
+      return batches.get(batchId) ?? null;
+    },
+    async keepFast(householdId, eventId) {
+      await delay(120);
+      const e = globalEvents.find((x) => x.id === eventId);
+      if (e) keptEvents.push({ ...keepFastRow(e, householdId), id: `kept-${keptEvents.length}` });
+    },
+    async inventDish() {
+      await delay(900);
+      const cat = new Map((catalog as CatalogEntry[]).map((c) => [c.name, c]));
+      const items: InventItem[] = pantry.map((p) => ({
+        itemId: p.id,
+        key: p.ingredientKey ?? p.name.toLowerCase(),
+        state: p.state,
+        roles: p.flavorRoles,
+        confidence: p.confidence,
+        daysLeft: p.expiryDate ? daysLeftOf(p.expiryDate) : null,
+      }));
+      const diet = readMembers().some((m) => m.diet === "jain") ? "jain" : "veg";
+      const plan = planInvention(items, cat, diet);
+      if (!plan) return { recipeId: null, reason: "too_little" };
+      const doc = templateInvention(plan, diet);
+      if (validateInvention(doc, plan, { catalog: cat, diet, have: new Set(items.map((i) => i.key)) }).length) {
+        return { recipeId: null, reason: "nothing_safe" };
+      }
+      const id = `invented-${nextId++}`;
+      adapted.set(id, { ...doc, id, slug: id });
+      return { recipeId: id, title: doc.title, description: doc.description, uses: plan.use.map((u) => u.key) };
     },
     async searchRecipes(query) {
       await delay(150);

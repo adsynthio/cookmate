@@ -48,8 +48,8 @@ select is(
   (select array_agg(p.proname::text order by p.proname)
      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public' and p.prosecdef and has_function_privilege('authenticated', p.oid, 'execute')),
-  array['create_household', 'record_voice_session'],
-  'the only SECURITY DEFINER functions signed-in users can call are create_household and record_voice_session (reviewed)'
+  array['create_household', 'get_notification_settings', 'pantry_check_today', 'record_voice_session', 'set_notification_settings'],
+  'the only SECURITY DEFINER functions signed-in users can call are the reviewed ones (SECURITY_REVIEW.md)'
 );
 
 select * from finish();

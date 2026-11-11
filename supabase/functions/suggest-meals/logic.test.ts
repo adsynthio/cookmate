@@ -9,7 +9,6 @@ import {
   localeFor,
   mergeCraving,
   pantryFromRows,
-  prefsFromCalendar,
   prefsFromMemories,
   recentFrom,
   weightsFrom,
@@ -62,10 +61,6 @@ Deno.test("memories and calendar become avoid / like / prefer lists", () => {
   assertEquals(prefsFromMemories(rows, now, ["sunita", "riya"]).avoid, ["bitter gourd", "peanut"]);
   assertEquals(prefsFromMemories(rows, now, ["sunita"]).avoid, ["peanut"]);
   assertEquals(prefsFromMemories(rows, now).avoid, ["bitter gourd", "peanut"]);
-  assertEquals(prefsFromCalendar([{ rules: { avoid: ["onion", "garlic"], prefer: ["sabudana"] } }, { rules: null }]), {
-    avoid: ["onion", "garlic"],
-    prefer: ["sabudana"],
-  });
   assertEquals(recentFrom([{ recipe_id: "r", at: "2026-11-08T12:00:00Z" }], now), [{ recipeId: "r", daysAgo: 2 }]);
 });
 

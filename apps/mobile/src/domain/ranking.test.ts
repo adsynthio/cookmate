@@ -12,6 +12,7 @@ import {
   interpretCraving,
   NO_CRAVING,
   noveltyFactor,
+  pantryCheck,
   pantryMatch,
   rankRecipes,
   reasonFor,
@@ -209,4 +210,32 @@ test("reasons: a liked ingredient is named (KIT-104)", () => {
   const c = ctx({ like: ["okra"] });
   const [top] = rankRecipes([recipe({ id: "y", spiceLevel: 2, timeMin: 40, ingredients: [ing("okra")] })], c);
   assert.equal(reasonFor(top!, c, "en", (k) => (k === "okra" ? "bhindi" : k)), "Has bhindi, a favourite here");
+});
+
+test("pantry check: asks only about an unsure item whose answer changes the hero pick (KIT-035)", () => {
+  const dal = recipe({ id: "dal", ingredients: [ing("toor dal", { role: "base" }), ing("salt", { role: "spice" })] });
+  const sure = [item("spinach"), item("toor dal")];
+  // Paneer at 0.45: unsure. With paneer, palak paneer wins; without it, dal does.
+  const c = ctx({ pantry: [...sure, item("paneer", { confidence: 0.45 })] });
+  const check = pantryCheck([palakPaneer, dal], c);
+  assert.deepEqual(check, { itemId: "i-paneer", key: "paneer", ifYes: "palak-paneer", ifNo: "dal" });
+
+  // Confident or barely-known items are never asked about.
+  assert.equal(pantryCheck([palakPaneer, dal], ctx({ pantry: [...sure, item("paneer", { confidence: 0.9 })] })), null);
+  assert.equal(pantryCheck([palakPaneer, dal], ctx({ pantry: [...sure, item("paneer", { confidence: 0.1 })] })), null);
+  // An unsure item that no answer would change isn't worth a question.
+  const onlyDal = ctx({ pantry: [item("toor dal"), item("paneer", { confidence: 0.45 })] });
+  assert.equal(pantryCheck([dal], onlyDal), null);
+  // Unsure item no recipe uses: no question.
+  assert.equal(pantryCheck([palakPaneer, dal], ctx({ pantry: [...sure, item("paneer"), item("karela", { confidence: 0.45 })] })), null);
+});
+
+test("pantry check: the item that spoils first is asked about first", () => {
+  const dal = recipe({ id: "dal", ingredients: [ing("toor dal", { role: "base" })] });
+  const matarPaneer = recipe({ id: "matar-paneer", ingredients: [ing("peas", { role: "base" }), ing("paneer", { role: "protein" })] });
+  const c = ctx({
+    pantry: [item("toor dal"), item("spinach", { confidence: 0.5, daysLeft: 5 }), item("paneer", { confidence: 0.55, daysLeft: 1 }), item("peas")],
+  });
+  const check = pantryCheck([palakPaneer, matarPaneer, dal], c);
+  assert.equal(check?.key, "paneer");
 });

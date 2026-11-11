@@ -81,7 +81,32 @@ export type Pick = {
 };
 
 /** hero is null when nothing fits the filters; the screen offers to clear them. */
-export type PickBatch = { batchId: string; mealSlot: MealSlot; hero: Pick | null; alternates: Pick[] };
+export type PickBatch = {
+  batchId: string;
+  mealSlot: MealSlot;
+  hero: Pick | null;
+  alternates: Pick[];
+  /** KIT-035: today's one "Still have X?" question, only when the answer changes the pick. */
+  check?: PantryQuestion | null;
+  /** KIT-144: festivals and fasts today, and a fast the household might be keeping. */
+  calendar?: CalendarToday | null;
+};
+
+export type PantryQuestion = { itemId: string; name: string; ifYes: string | null; ifNo: string | null };
+
+export type EventNames = { en?: string; hi?: string; "hi-Latn"?: string } | null;
+export type CalendarToday = {
+  today: { id: string | null; name: string; kind: string; kept: boolean; names: EventNames }[];
+  offerFast: { id: string | null; name: string; names: EventNames; note: string | null } | null;
+};
+
+/** KIT-045: the daily pick notification. Times are HH:MM in the household's timezone. */
+export type NotificationSettings = { dailyPick: boolean; pickTime: string; quietStart: string; quietEnd: string };
+
+/** KIT-056: a dish invented from the odds and ends in the kitchen, saved as the household's own "new creation". */
+export type InventResult =
+  | { recipeId: string; title: string; titles?: EventNames; description: string; uses: string[] }
+  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" };
 
 export type PickInput = {
   householdId: string;
@@ -220,6 +245,12 @@ export interface PreferenceService {
   /** KIT-068: how Cookmate talks to this member (by voice and when the app reads aloud). */
   getVoiceProfile(memberId: string): Promise<VoiceProfile>;
   updateVoiceProfile(memberId: string, changes: Partial<VoiceProfile>): Promise<void>;
+  /** KIT-045: this member's daily pick notification (off until they turn it on). */
+  getNotificationSettings(householdId: string): Promise<NotificationSettings>;
+  /** Turning the daily pick on or off records the notifications consent. Rejects a pick time inside quiet hours. */
+  setNotificationSettings(householdId: string, changes: Partial<NotificationSettings>): Promise<NotificationSettings>;
+  /** This phone's push token, so the daily pick can reach it. */
+  registerDevice(input: { householdId: string; memberId: string; pushToken: string; platform: "android" | "ios"; appVersion?: string; locale?: string }): Promise<void>;
 }
 
 export interface KitchenService {
@@ -265,6 +296,12 @@ export interface RecipeService {
   listFavourites(householdId: string): Promise<RecipeSummary[]>;
   /** KIT-055: save or unsave a dish for the household. */
   setFavourite(input: { householdId: string; memberId: string; recipeId: string; on: boolean }): Promise<void>;
+  /** KIT-045: the batch the daily pick notification was about, already ranked (opens instantly). */
+  getBatch(householdId: string, batchId: string): Promise<PickBatch | null>;
+  /** KIT-144: the household keeps this fast today, so picks follow its food rules. */
+  keepFast(householdId: string, eventId: string): Promise<void>;
+  /** KIT-056: invent a dish from what's here; never returns one that failed the safety checks. */
+  inventDish(householdId: string): Promise<InventResult>;
 }
 
 export type CookSession = {

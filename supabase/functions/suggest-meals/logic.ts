@@ -80,11 +80,25 @@ export type MemoryRow = {
   scope: string;
   expires_at: string | null;
   ingredients: { canonical_name: string } | null;
+  member_id?: string | null;
+  subject_recipe_id?: string | null;
+  attributes?: { about?: string } | null;
 };
 
-/** Explicit or observed likes and dislikes about ingredients (only active, unexpired memories are passed in). */
-export function prefsFromMemories(rows: MemoryRow[], now: Date): { avoid: string[]; like: string[] } {
-  const live = rows.filter((m) => m.ingredients && (!m.expires_at || Date.parse(m.expires_at) > now.getTime()));
+/**
+ * Likes and dislikes about ingredients (KIT-105), from active, unexpired memories. Only plain likes and dislikes
+ * count: a note about one dish, or about how much of something to use ("less salt"), is not a dislike. With
+ * `eating`, a member's dislike only applies when they are eating; household-wide ones always apply.
+ */
+export function prefsFromMemories(rows: MemoryRow[], now: Date, eating?: string[]): { avoid: string[]; like: string[] } {
+  const live = rows.filter(
+    (m) =>
+      m.ingredients &&
+      (!m.expires_at || Date.parse(m.expires_at) > now.getTime()) &&
+      !m.subject_recipe_id &&
+      (m.attributes?.about ?? "preference") === "preference" &&
+      (!eating?.length || !m.member_id || eating.includes(m.member_id)),
+  );
   return {
     avoid: [...new Set(live.filter((m) => m.polarity < 0).map((m) => m.ingredients!.canonical_name))],
     like: [...new Set(live.filter((m) => m.polarity > 0).map((m) => m.ingredients!.canonical_name))],

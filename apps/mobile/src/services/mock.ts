@@ -83,11 +83,13 @@ const listeners = new Set<() => void>();
 const changed = () => listeners.forEach((fn) => fn());
 let nextId = 100;
 
+const plain = { memberId: null, recipeId: null, about: null, polarity: 0 as const, amount: null, ingredientKey: null };
 let memories: Memory[] = [
-  { id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita", recipeId: null },
-  { id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav", recipeId: null },
-  { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null, recipeId: null },
+  { ...plain, id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita", about: "amount", amount: "more", ingredientKey: "garlic" },
+  { ...plain, id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav" },
+  { ...plain, id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null },
 ];
+const favourites: string[] = [];
 const dismissedToday = new Set<string>();
 /** Subject of each saved memory ("recipe:about"), for the replace rule. */
 const subjects = new Map<string, string>();
@@ -168,19 +170,35 @@ export const mockServices: Services = {
       await delay(150);
       const same = memories.find((m) => m.statement.toLowerCase() === input.statement.trim().toLowerCase());
       if (same) return same.id;
-      // A newer memory about the same subject and dish replaces the older one.
-      if (input.about) {
-        const tag = `${input.recipeId ?? ""}:${input.about}`;
-        memories = memories.filter((m) => subjects.get(m.id) !== tag);
-      }
+      // A newer memory about the same person, ingredient, aspect and dish replaces the older one.
+      const subject = (m: { memberId?: string | null; ingredientKey?: string | null; about?: string | null; recipeId?: string | null }) =>
+        `${m.memberId ?? ""}:${m.ingredientKey ?? ""}:${m.about ?? ""}:${m.recipeId ?? ""}`;
+      if (input.about || input.ingredientKey) memories = memories.filter((m) => subject(m) !== subject(input));
       const id = `m${nextId++}`;
       if (input.about) subjects.set(id, `${input.recipeId ?? ""}:${input.about}`);
-      memories = [{ id, statement: input.statement.trim(), source: "explicit", scope: "permanent", memberName: null, recipeId: input.recipeId ?? null }, ...memories];
+      const member = readMembers().find((m) => m.id === input.memberId);
+      memories = [
+        {
+          id,
+          statement: input.statement.trim(),
+          source: "explicit",
+          scope: "permanent",
+          memberId: input.memberId ?? null,
+          memberName: member?.displayName ?? null,
+          recipeId: input.recipeId ?? null,
+          about: input.about ?? null,
+          polarity: input.polarity ?? 0,
+          amount: input.amount ?? null,
+          ingredientKey: input.ingredientKey ?? null,
+        },
+        ...memories,
+      ];
       return id;
     },
     async updateMemory(id, statement) {
       await delay(150);
-      memories = memories.map((m) => (m.id === id ? { ...m, statement: statement.trim(), source: "correction" } : m));
+      // The user's own words replace ours; what we had worked out from the old wording no longer applies.
+      memories = memories.map((m) => (m.id === id ? { ...m, statement: statement.trim(), source: "correction", polarity: 0, about: null, amount: null, ingredientKey: null } : m));
     },
   },
   kitchen: {
@@ -349,7 +367,14 @@ export const mockServices: Services = {
       await delay(600);
       const slot = input.mealSlot ?? slotForHour(localHour(new Date(), "Asia/Kolkata"));
       const now = Date.now();
+      // KIT-105: plain likes and dislikes of the people eating (or of the whole household).
+      const eating = input.whoEating?.length ? input.whoEating : null;
+      const prefs = memories.filter(
+        (m) => m.ingredientKey && m.recipeId === null && (m.about ?? "preference") === "preference" && (!eating || !m.memberId || eating.includes(m.memberId)),
+      );
       const batch = buildPicks({
+        avoid: prefs.filter((m) => m.polarity < 0).map((m) => m.ingredientKey!),
+        like: prefs.filter((m) => m.polarity > 0).map((m) => m.ingredientKey!),
         // Left out: dishes turned down today, and dishes the household said it doesn't like.
         docs: recipeDocs.filter((d) => !dismissedToday.has(d.slug) && ![...subjects.values()].includes(`${d.slug}:dislike`)),
         items: pantry,
@@ -390,6 +415,17 @@ export const mockServices: Services = {
       const doc = adapted.get(idOrSlug) ?? recipeBySlug(idOrSlug);
       if (!doc) throw new Error("recipe not found");
       return doc;
+    },
+    async listFavourites() {
+      await delay(120);
+      return favourites.map((slug) => recipeBySlug(slug)).filter((d): d is RecipeDoc => !!d).map(toSummary);
+    },
+    async setFavourite({ recipeId, on }) {
+      await delay(80);
+      const slug = adapted.get(recipeId)?.slug ?? recipeId;
+      const at = favourites.indexOf(slug);
+      if (on && at < 0) favourites.unshift(slug);
+      if (!on && at >= 0) favourites.splice(at, 1);
     },
     async searchRecipes(query) {
       await delay(150);

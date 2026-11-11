@@ -91,6 +91,14 @@ export function prefsFromMemories(rows: MemoryRow[], now: Date): { avoid: string
   };
 }
 
+/**
+ * Recipes to leave out of this batch (KIT-044): dishes the household said it doesn't like (a confirmed memory about
+ * the dish), and dishes already turned down today, whatever the reason.
+ */
+export function excludedRecipes(disliked: { subject_recipe_id: string | null }[], dismissedToday: { recipe_id: string | null }[]): Set<string> {
+  return new Set([...disliked.map((d) => d.subject_recipe_id), ...dismissedToday.map((d) => d.recipe_id)].filter((x): x is string => !!x));
+}
+
 export type CalendarRow = { rules: { avoid?: string[]; prefer?: string[] } | null };
 
 export function prefsFromCalendar(rows: CalendarRow[]): { avoid: string[]; prefer: string[] } {

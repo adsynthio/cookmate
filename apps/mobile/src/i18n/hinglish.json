@@ -366,5 +366,16 @@
   "list.section.meat": "Meat aur machhli",
   "list.section.other": "Baaki",
   "list.reason.running_low": "Kam pad raha hai",
-  "list.reason.recipe_missing": "Recipe ke liye"
+  "list.reason.recipe_missing": "Recipe ke liye",
+  "home.notThis": "Yeh nahi",
+  "home.whyNot": "Kyun nahi?",
+  "home.reason.not_today": "Aaj nahi",
+  "home.reason.dont_like": "Pasand nahi",
+  "home.reason.no_time": "Time nahi hai",
+  "home.reason.missing_item": "Kuch cheez nahi hai",
+  "home.rememberDislike": "{dish} suggest karna band karein?",
+  "home.rememberYes": "Haan, yaad rakhein",
+  "home.rememberNo": "Nahi, bas abhi nahi",
+  "home.dislikeMemory": "{dish} pasand nahi",
+  "home.remembered": "Yaad rakh liya. 'You' mein badal sakte hain."
 }

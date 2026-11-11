@@ -30,8 +30,11 @@ export function FinishSheet({
   recipeId,
   memberId,
   changes,
+  offline = false,
   onClose,
 }: {
+  /** Finished with no network (KIT-076): the kitchen is updated with the recipe's amounts once back online. */
+  offline?: boolean;
   /** Remembered amounts for this dish (KIT-104), keyed by ingredient. */
   changes?: Map<string, AmountChange>;
   sessionId: string;
@@ -168,7 +171,9 @@ export function FinishSheet({
       ) : null}
 
       <Text variant="heading">{t("finish.deduct")}</Text>
-      {lines.length === 0 ? (
+      {offline ? (
+        <Text muted>{t("finish.offline")}</Text>
+      ) : lines.length === 0 ? (
         <Text muted>{t("finish.deductNone")}</Text>
       ) : (
         <>

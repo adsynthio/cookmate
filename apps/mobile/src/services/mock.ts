@@ -128,7 +128,7 @@ let sessionNo = 1;
 const adapted = new Map<string, RecipeDoc>();
 let adaptedNo = 1;
 
-export const mockServices: Services = {
+const mocks: Services = {
   auth: {
     async ensureSignedIn() {
       return { userId: "mock-user", isAnonymous: mockPhone === null };
@@ -570,6 +570,11 @@ export const mockServices: Services = {
     async submitFeedback() {
       await delay(200);
     },
+    async getStepAudio() {
+      // Mock mode has no recordings: steps are read by the phone's own voice.
+      await delay(150);
+      return [];
+    },
   },
   voice: {
     // Mock mode has no voice backend.
@@ -579,3 +584,24 @@ export const mockServices: Services = {
     },
   },
 };
+
+/**
+ * With the browser offline (navigator.onLine false, e.g. Playwright's setOffline), every mock call fails the way a
+ * dropped connection does, so offline cooking (KIT-076) can be walked through without a backend.
+ */
+function likeTheNetwork<T extends object>(group: T): T {
+  return new Proxy(group, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver);
+      if (typeof value !== "function") return value;
+      return (...args: unknown[]) => {
+        if (typeof navigator !== "undefined" && navigator.onLine === false) return Promise.reject(new TypeError("Network request failed"));
+        return (value as (...a: unknown[]) => unknown).apply(target, args);
+      };
+    },
+  });
+}
+
+export const mockServices: Services = Object.fromEntries(
+  Object.entries(mocks).map(([name, group]) => [name, likeTheNetwork(group as object)]),
+) as Services;

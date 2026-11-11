@@ -536,6 +536,27 @@ export const liveServices: Services = {
       if (error) throw error;
     },
   },
+  voice: {
+    async getToken(input) {
+      const sb = requireSupabase();
+      const { data, error, response } = await sb.functions.invoke<{ livekit_url: string; token: string; room_name: string; language_code: string }>(
+        "voice-token",
+        { body: { household_id: input.householdId, cooking_session_id: input.cookingSessionId, language_code: input.languageCode } },
+      );
+      if (error || !data) {
+        // The function says why in the body: voice not set up on the server (503) or no consent (403).
+        const reason = await (response ?? (error as { context?: Response } | null)?.context)
+          ?.clone()
+          .json()
+          .then((b: { error?: string }) => b.error)
+          .catch(() => undefined);
+        if (reason === "voice_not_configured") return "not_configured";
+        if (reason === "voice_consent_needed") return "consent_needed";
+        throw error ?? new Error("voice-token returned nothing");
+      }
+      return { url: data.livekit_url, token: data.token, roomName: data.room_name, languageCode: data.language_code };
+    },
+  },
 };
 
 function toSession(r: {

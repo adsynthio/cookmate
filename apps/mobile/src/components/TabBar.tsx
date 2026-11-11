@@ -1,5 +1,6 @@
 // Bottom bar from the brand kit: four outline tabs on surface-muted around a raised lime mic (VOICE-01:
 // one mic, same place on every tab). The mic is wired to the LiveKit voice session in Sprint 4.
+import { useRouter } from "expo-router";
 import type { BottomTabBarProps } from "expo-router/js-tabs";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -58,13 +59,14 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
 
 function MicFab() {
   const { colors } = useTheme();
+  const router = useRouter();
   const voice = useSession((s) => s.voice);
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={t("mic.label")}
       accessibilityState={{ busy: voice === "connecting" || voice === "thinking" }}
-      onPress={() => {}}
+      onPress={() => router.push("/voice")}
       style={({ pressed }) => [
         styles.fab,
         shadow.glow,

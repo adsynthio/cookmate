@@ -345,5 +345,14 @@
   "rescue.other": "Something else is wrong",
   "rescue.offline": "Showing our standard fix; we couldn't reach the kitchen brain.",
   "rescue.close": "Close",
-  "finish.riceNote": "About the leftover rice"
+  "finish.riceNote": "About the leftover rice",
+  "voice.title": "Talk to Cookmate",
+  "voice.connecting": "Getting ready to listen…",
+  "voice.soon.title": "Voice isn't switched on yet",
+  "voice.soon.body": "Until it is, you can type what you have or what you feel like eating.",
+  "voice.consent.title": "Voice needs your permission",
+  "voice.consent.body": "You haven't allowed Cookmate to process your voice. You can keep using it by typing.",
+  "voice.ready.title": "Voice is ready on our side",
+  "voice.ready.body": "Talking arrives with the next app update. Until then, type instead.",
+  "voice.type": "Type what you have"
 }

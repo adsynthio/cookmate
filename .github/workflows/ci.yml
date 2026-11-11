@@ -28,9 +28,14 @@ jobs:
       - name: Generated media map is up to date with assets/media
         run: python3 tools/media/sync.py --check
       - name: Install Postgres 16 with pgvector and pgTAP
+        # GitHub's runners list Azure's Ubuntu mirror first; when it can't be resolved, apt fails. Use Ubuntu's own
+        # servers instead, and retry flaky downloads.
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            printf 'http://archive.ubuntu.com/ubuntu/\tpriority:1\n' | sudo tee /etc/apt/apt-mirrors.txt
+          fi
+          sudo apt-get -o Acquire::Retries=3 update -q
+          sudo apt-get -o Acquire::Retries=3 install -y -q postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
       - name: Apply migrations and run pgTAP tests
         run: sudo -E bash scripts/db/test-local.sh
 

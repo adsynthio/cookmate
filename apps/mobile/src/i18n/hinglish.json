@@ -320,5 +320,19 @@
   "voice.consent.body": "Aapne Cookmate ko apni voice process karne ki permission nahi di hai. Aap type karke use karte reh sakte hain.",
   "voice.ready.title": "Hamari taraf se voice ready hai",
   "voice.ready.body": "Baat-cheet agle app update ke saath aayegi. Tab tak type karke batayein.",
-  "voice.type": "Jo hai woh type karein"
+  "voice.type": "Jo hai woh type karein",
+  "assist.ask": "Sawaal poochhein",
+  "assist.changed": "Maine kuch alag kiya",
+  "assist.ask.title": "Kya jaanna hai?",
+  "assist.ask.hint": "Jaise: ghee ki jagah tel daal sakte hain?",
+  "assist.ask.send": "Poochhein",
+  "assist.changed.title": "Aapne kya badla?",
+  "assist.changed.hint": "Jaise: tamatar pehle daal diye",
+  "assist.changed.send": "Cookmate ko batayein",
+  "assist.thinking": "Ek pal…",
+  "assist.step": "Aap step {n} par hain: aapki jagah wahi rahegi.",
+  "assist.noteFor": "Step {n}",
+  "assist.another": "Kuch aur poochhein",
+  "assist.offline": "Yeh hamara standard jawaab hai; abhi server se contact nahi ho paaya.",
+  "cook.youChanged": "Kyunki aapne bataya: {change}"
 }

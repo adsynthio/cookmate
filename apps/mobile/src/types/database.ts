@@ -3272,6 +3272,10 @@ export type Database = {
         Args: { p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean };
         Returns: string;
       };
+      log_session_change: {
+        Args: { p_session: string; p_change: string; p_notes?: Json; p_channel?: string };
+        Returns: Json;
+      };
       get_voice_context: {
         Args: { p_household: string; p_member?: string; p_session?: string };
         Returns: Json;

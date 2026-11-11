@@ -1,6 +1,8 @@
 // Live services backed by Supabase. Features whose backend has not shipped yet throw NotImplemented,
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogIndex } from "@/data/catalog";
+import { changeReply, type StepNote } from "@/domain/assist";
+import { localeFromLanguageCode } from "@/domain/onboarding";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
 
 import { requireSupabase } from "./supabase";
@@ -448,7 +450,7 @@ export const liveServices: Services = {
       const sb = requireSupabase();
       const { data, error } = await sb
         .from("cooking_sessions")
-        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status")
+        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status, modifications")
         .eq("id", sessionId)
         .single();
       if (error) throw error;
@@ -458,7 +460,7 @@ export const liveServices: Services = {
       const sb = requireSupabase();
       const { data, error } = await sb
         .from("cooking_sessions")
-        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status")
+        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status, modifications")
         .eq("household_id", householdId)
         .eq("status", "active")
         .order("last_activity_at", { ascending: false })
@@ -473,6 +475,25 @@ export const liveServices: Services = {
       if (error) throw error;
       const r = data as { current_step: number; total: number };
       return { currentStep: r.current_step, total: r.total };
+    },
+    async ask(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ answer: string; safety_note: string | null; source: "rules" | "model" }>("cook-assist", {
+        body: { session_id: input.sessionId, mode: "ask", text: input.question, language_code: input.languageCode },
+      });
+      if (error || !data) throw error ?? new Error("cook-assist returned nothing");
+      return { answer: data.answer, safetyNote: data.safety_note, source: data.source };
+    },
+    async reportChange(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ reply: string; notes: StepNote[]; source: "rules" | "model" }>("cook-assist", {
+        body: { session_id: input.sessionId, mode: "changed", text: input.change, language_code: input.languageCode },
+      });
+      if (!error && data) return data;
+      // The function is unreachable: still record the change, without notes, so it isn't lost.
+      const { error: e2 } = await sb.rpc("log_session_change", { p_session: input.sessionId, p_change: input.change });
+      if (e2) throw e2;
+      return { reply: changeReply([], localeFromLanguageCode(input.languageCode) ?? "en"), notes: [], source: "rules" };
     },
     async rescue(input) {
       const sb = requireSupabase();
@@ -567,6 +588,7 @@ function toSession(r: {
   servings: number;
   who_eating: string[];
   status: string;
+  modifications?: unknown;
 }): CookSession {
   return {
     id: r.id,
@@ -575,6 +597,11 @@ function toSession(r: {
     servings: r.servings,
     whoEating: r.who_eating ?? [],
     status: r.status as CookSession["status"],
+    changes: Array.isArray(r.modifications)
+      ? (r.modifications as { change?: string; notes?: StepNote[] }[])
+          .filter((m) => typeof m.change === "string")
+          .map((m) => ({ change: m.change!, notes: Array.isArray(m.notes) ? m.notes : [] }))
+      : [],
   };
 }
 

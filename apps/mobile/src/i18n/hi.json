@@ -350,5 +350,19 @@
   "voice.consent.body": "आपने Cookmate को अपनी आवाज़ प्रोसेस करने की अनुमति नहीं दी है। आप लिखकर इस्तेमाल करते रह सकते हैं।",
   "voice.ready.title": "हमारी तरफ़ से आवाज़ तैयार है",
   "voice.ready.body": "बातचीत अगले ऐप अपडेट के साथ आएगी। तब तक लिखकर बताएँ।",
-  "voice.type": "जो है वह लिखें"
+  "voice.type": "जो है वह लिखें",
+  "assist.ask": "सवाल पूछें",
+  "assist.changed": "मैंने कुछ अलग किया",
+  "assist.ask.title": "क्या जानना है?",
+  "assist.ask.hint": "जैसे: घी की जगह तेल डाल सकते हैं?",
+  "assist.ask.send": "पूछें",
+  "assist.changed.title": "आपने क्या बदला?",
+  "assist.changed.hint": "जैसे: टमाटर पहले डाल दिए",
+  "assist.changed.send": "Cookmate को बताएँ",
+  "assist.thinking": "एक पल…",
+  "assist.step": "आप स्टेप {n} पर हैं: आपकी जगह वही रहेगी।",
+  "assist.noteFor": "स्टेप {n}",
+  "assist.another": "कुछ और पूछें",
+  "assist.offline": "यह हमारा सामान्य जवाब है; अभी सर्वर से संपर्क नहीं हो पाया।",
+  "cook.youChanged": "क्योंकि आपने बताया: {change}"
 }

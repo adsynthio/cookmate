@@ -9,7 +9,7 @@ import { Icon } from "@/design-system/icons";
 import { illustrations } from "@/design-system/media";
 import { Button, Card, Chip, Field, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { space } from "@/design-system/tokens";
+import { radius, space } from "@/design-system/tokens";
 import { adjustmentFor, readableLine, type LineReview } from "@/domain/cooking";
 import { displayName, formatQuantity } from "@/domain/kitchen";
 import { getLocale, t, type StringKey } from "@/i18n";
@@ -25,12 +25,15 @@ export function FinishSheet({
   householdId,
   dish,
   lines,
+  leftoverNote,
   onClose,
 }: {
   sessionId: string;
   householdId: string;
   dish: string;
   lines: DeductionLine[];
+  /** Pinned safety line for leftovers of this dish (cooked rice), shown word for word when leftovers are saved. */
+  leftoverNote?: string | null;
   onClose: (saved: boolean) => void;
 }) {
   const { colors } = useTheme();
@@ -199,6 +202,15 @@ export function FinishSheet({
         ))}
       </View>
 
+      {leftover > 0 && leftoverNote ? (
+        <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
+          <Text variant="bodyStrong" color={colors.alert}>
+            {t("finish.riceNote")}
+          </Text>
+          <Text color={colors.alert}>{leftoverNote}</Text>
+        </View>
+      ) : null}
+
       {save.isError ? (
         <Text color={colors.alert} accessibilityLiveRegion="polite">
           {t("finish.failed")}
@@ -217,5 +229,6 @@ const styles = StyleSheet.create({
   line: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 56, paddingVertical: space.xs },
   check: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   amount: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  note: { borderRadius: radius.card, padding: space.lg, gap: space.xs },
   qty: { width: 76, textAlign: "center", paddingHorizontal: space.sm },
 });

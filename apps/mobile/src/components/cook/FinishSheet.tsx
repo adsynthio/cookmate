@@ -12,6 +12,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { adjustmentFor, readableLine, type LineReview } from "@/domain/cooking";
 import { displayName, formatQuantity } from "@/domain/kitchen";
+import { feedbackCandidates } from "@/domain/learning";
 import { getLocale, t, type StringKey } from "@/i18n";
 import { services, type DeductionAdjustment, type DeductionLine, type Rating, type StapleLevel } from "@/services";
 
@@ -26,6 +27,8 @@ export function FinishSheet({
   dish,
   lines,
   leftoverNote,
+  recipeId,
+  memberId,
   onClose,
 }: {
   sessionId: string;
@@ -34,6 +37,9 @@ export function FinishSheet({
   lines: DeductionLine[];
   /** Pinned safety line for leftovers of this dish (cooked rice), shown word for word when leftovers are saved. */
   leftoverNote?: string | null;
+  /** The dish (its base recipe) and the cook, for what is remembered about it. */
+  recipeId?: string;
+  memberId?: string;
   onClose: (saved: boolean) => void;
 }) {
   const { colors } = useTheme();
@@ -48,7 +54,10 @@ export function FinishSheet({
   );
   const [leftover, setLeftover] = useState(0);
   // Each part is saved once, so "Try again" after a failure doesn't repeat the parts that went through.
-  const saved = useRef({ feedback: false, deduction: false, leftover: false });
+  const saved = useRef({ feedback: false, deduction: false, leftover: false, memories: new Set<string>() });
+  // KIT-103: feedback only suggests memories; the cook taps the ones to keep.
+  const [remember, setRemember] = useState<string[]>([]);
+  const candidates = feedbackCandidates(tags, again, dish, locale);
 
   const patch = (id: string, change: Partial<LineReview>) => setState((s) => ({ ...s, [id]: { ...s[id]!, ...change } }));
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
@@ -58,6 +67,11 @@ export function FinishSheet({
       if (rating && !saved.current.feedback) {
         await services.cooking.submitFeedback({ sessionId, rating, tags, makeAgain: again || undefined });
         saved.current.feedback = true;
+      }
+      for (const c of candidates) {
+        if (!remember.includes(c.about) || saved.current.memories.has(c.about)) continue;
+        await services.preference.saveMemory({ householdId, memberId, statement: c.statement, category: c.category, polarity: c.polarity, about: c.about, recipeId });
+        saved.current.memories.add(c.about);
       }
       if (lines.length && !saved.current.deduction) {
         const adjustments = view
@@ -122,6 +136,23 @@ export function FinishSheet({
               />
             ))}
             <Chip label={t("finish.again")} selected={again} onPress={() => setAgain((a) => !a)} />
+          </View>
+        </>
+      ) : null}
+
+      {candidates.length ? (
+        <>
+          <Text variant="heading">{t("finish.remember")}</Text>
+          <Text muted>{t("finish.rememberBody")}</Text>
+          <View style={styles.chips}>
+            {candidates.map((c) => (
+              <Chip
+                key={c.about}
+                label={c.statement}
+                selected={remember.includes(c.about)}
+                onPress={() => setRemember((l) => (l.includes(c.about) ? l.filter((x) => x !== c.about) : [...l, c.about]))}
+              />
+            ))}
           </View>
         </>
       ) : null}

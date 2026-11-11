@@ -111,6 +111,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   const queryClient = useQueryClient();
   const locale = getLocale();
   const { width: screenWidth } = useWindowDimensions();
+  const memberId = useSession((s) => s.memberId);
   const total = doc.steps.length;
   const dish = recipeTitle(doc, locale);
 
@@ -201,9 +202,12 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           householdId={householdId}
           dish={dish}
           lines={complete.data}
+          recipeId={doc.parent_id ?? doc.id ?? doc.slug}
+          memberId={memberId ?? undefined}
           leftoverNote={safetyText([leftoverSafety(doc.ingredients)].filter((x) => x !== null), locale)}
           onClose={() => {
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
+            void queryClient.invalidateQueries({ queryKey: ["memories"] });
             void queryClient.invalidateQueries({ queryKey: ["picks"] });
             void queryClient.invalidateQueries({ queryKey: ["cook-active"] });
             router.replace("/");

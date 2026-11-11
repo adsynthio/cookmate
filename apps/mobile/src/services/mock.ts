@@ -83,10 +83,12 @@ const changed = () => listeners.forEach((fn) => fn());
 let nextId = 100;
 
 let memories: Memory[] = [
-  { id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita" },
-  { id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav" },
-  { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null },
+  { id: "m1", statement: "You like extra garlic", source: "explicit", scope: "permanent", memberName: "Sunita", recipeId: null },
+  { id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav", recipeId: null },
+  { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null, recipeId: null },
 ];
+/** Subject of each saved memory ("recipe:about"), for the replace rule. */
+const subjects = new Map<string, string>();
 
 // The Sunita household from the PRD, used when the mock household was created before members were stored.
 const PERSONA: Member[] = [
@@ -159,6 +161,24 @@ export const mockServices: Services = {
       memories = memories.filter((m) => m.id !== id);
     },
     async keepMemory() {},
+    async saveMemory(input) {
+      await delay(150);
+      const same = memories.find((m) => m.statement.toLowerCase() === input.statement.trim().toLowerCase());
+      if (same) return same.id;
+      // A newer memory about the same subject and dish replaces the older one.
+      if (input.about) {
+        const tag = `${input.recipeId ?? ""}:${input.about}`;
+        memories = memories.filter((m) => subjects.get(m.id) !== tag);
+      }
+      const id = `m${nextId++}`;
+      if (input.about) subjects.set(id, `${input.recipeId ?? ""}:${input.about}`);
+      memories = [{ id, statement: input.statement.trim(), source: "explicit", scope: "permanent", memberName: null, recipeId: input.recipeId ?? null }, ...memories];
+      return id;
+    },
+    async updateMemory(id, statement) {
+      await delay(150);
+      memories = memories.map((m) => (m.id === id ? { ...m, statement: statement.trim(), source: "correction" } : m));
+    },
   },
   kitchen: {
     async getKitchen() {

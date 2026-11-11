@@ -141,6 +141,19 @@ export type Memory = {
   source: MemorySource;
   scope: "permanent" | "temporary";
   memberName: string | null;
+  /** The dish this is about, when it is about one. */
+  recipeId: string | null;
+};
+
+export type NewMemory = {
+  householdId: string;
+  memberId?: string;
+  statement: string;
+  category: "taste" | "ingredient" | "technique" | "routine" | "household" | "diet" | "equipment" | "other";
+  polarity?: -1 | 0 | 1;
+  /** Subject key, so a newer memory about the same thing replaces the older one. */
+  about?: string;
+  recipeId?: string;
 };
 
 export type NewMember = {
@@ -174,6 +187,10 @@ export interface PreferenceService {
   listMemories(householdId: string): Promise<Memory[]>;
   forgetMemory(memoryId: string): Promise<void>;
   keepMemory(memoryId: string): Promise<void>;
+  /** KIT-101: something the user said or confirmed. Returns the memory's id. */
+  saveMemory(input: NewMemory): Promise<string>;
+  /** KIT-102 Edit: the user's own words replace ours. */
+  updateMemory(memoryId: string, statement: string): Promise<void>;
 }
 
 export interface KitchenService {

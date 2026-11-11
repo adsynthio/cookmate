@@ -8,19 +8,18 @@ import { useMemo, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
+import { amountLabel } from "@/components/recipe/amount";
 import { Icon } from "@/design-system/icons";
 import { dishImage } from "@/design-system/media";
 import { Button, Card, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
+import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { pantryMatch, type IngredientMatch } from "@/domain/ranking";
 import {
   familyBranches,
-  inLocalUnits,
-  prettyQty,
   recipeTitle,
-  scaleQty,
   toRankRecipe,
   totalTime,
   whyThisWorks,
@@ -31,8 +30,6 @@ import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type Member } from "@/services";
 import { pantryEntries, STAPLES } from "@/services/picks";
 import { useSession } from "@/state/session";
-
-const MEASURES = ["katori", "cup", "chammach", "chhota_chammach", "chutki"];
 
 export default function RecipeScreen() {
   useLocale();
@@ -103,6 +100,20 @@ function RecipeBody({
     mutationFn: (keys: string[]) => services.kitchen.addToList(householdId, keys.map((k) => ({ name: k, reason: "manual" as const }))),
     onSuccess: (_, keys) => setListed((l) => [...l, ...keys]),
   });
+  // Opened from a pick on Home: the session remembers which suggestion it came from.
+  const { rec } = useLocalSearchParams<{ rec?: string }>();
+  const start = useMutation({
+    mutationFn: () =>
+      services.cooking.startSession({
+        householdId,
+        recipeId: doc.id ?? doc.slug,
+        servings,
+        whoEating: eaters.map((e) => e.id),
+        recommendationId: rec || undefined,
+        languageCode: LANGUAGE_CODES[locale],
+      }),
+    onSuccess: (sessionId) => router.push(`/cook/${sessionId}`),
+  });
 
   const title = recipeTitle(doc, locale);
   const photo = dishImage(doc.slug);
@@ -164,6 +175,17 @@ function RecipeBody({
         ) : null}
       </Card>
 
+      <Button
+        size="cook"
+        label={start.isPending ? t("cook.starting") : t("cook.start")}
+        disabled={start.isPending}
+        onPress={() => start.mutate()}
+      />
+      {start.isError ? (
+        <Text color={colors.alert} accessibilityLiveRegion="polite">
+          {t("state.error.body")}
+        </Text>
+      ) : null}
       <Button kind="secondary" label={t("recipe.adapt")} onPress={() => router.push(`/adapt/${doc.id ?? doc.slug}`)} />
 
       <View style={styles.servings}>
@@ -297,17 +319,7 @@ function IngredientRow({
   onAdd: () => void;
 }) {
   const { colors } = useTheme();
-  const qty = scaleQty(ing.qty, base, servings);
-  // The recipe's own spoken measure ("2 chammach") only fits the servings it was written for.
-  const amount =
-    servings === base && ing.local
-      ? ing.local
-      : (() => {
-          const local = inLocalUnits(qty, ing.unit, catalogEntry(ing.ingredient)?.measures);
-          if (local.unit === "piece") return prettyQty(local.qty);
-          const label = MEASURES.includes(local.unit) ? t(`measure.${local.unit}` as StringKey) : local.unit;
-          return `${prettyQty(local.qty)} ${label}`;
-        })();
+  const amount = amountLabel(ing, base, servings);
   const status = ing.optional ? "optional" : (match?.status ?? "missing");
   const detail =
     status === "have"

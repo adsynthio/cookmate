@@ -1,6 +1,8 @@
 // Live services backed by Supabase. Features whose backend has not shipped yet throw NotImplemented,
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogIndex } from "@/data/catalog";
+import { changeReply, type StepNote } from "@/domain/assist";
+import { localeFromLanguageCode } from "@/domain/onboarding";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
 
 import { requireSupabase } from "./supabase";
@@ -9,7 +11,18 @@ import type { Json } from "@/types/database";
 import { toDraft, toRpcItem } from "./drafts";
 import { RECIPE_SELECT, recipeDocFromRow, type RecipeRow } from "@/domain/recipes";
 
-import type { FlavorRole, LocationKind, MealSlot, Member, Memory, PantryItem, Pick, RecipeSummary, Services } from "./types";
+import type {
+  CookSession,
+  FlavorRole,
+  LocationKind,
+  MealSlot,
+  Member,
+  Memory,
+  PantryItem,
+  Pick,
+  RecipeSummary,
+  Services,
+} from "./types";
 
 type UseSoonRow = {
   id: string;
@@ -418,7 +431,179 @@ export const liveServices: Services = {
       }));
     },
   },
+  cooking: {
+    async startSession(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("start_cooking_session", {
+        p_household: input.householdId,
+        p_recipe: input.recipeId,
+        p_servings: input.servings,
+        p_who_eating: input.whoEating,
+        p_mode: input.mode ?? "touch",
+        p_recommendation: input.recommendationId,
+        p_language: input.languageCode,
+      });
+      if (error) throw error;
+      return data;
+    },
+    async getSession(sessionId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb
+        .from("cooking_sessions")
+        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status, modifications")
+        .eq("id", sessionId)
+        .single();
+      if (error) throw error;
+      return toSession(data);
+    },
+    async getActiveSession(householdId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb
+        .from("cooking_sessions")
+        .select("id, recipe_id, adapted_recipe_id, current_step, servings, who_eating, status, modifications")
+        .eq("household_id", householdId)
+        .eq("status", "active")
+        .order("last_activity_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? toSession(data) : null;
+    },
+    async advanceStep(sessionId, delta, channel = "touch") {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("advance_session_step", { p_session: sessionId, p_delta: delta, p_channel: channel });
+      if (error) throw error;
+      const r = data as { current_step: number; total: number };
+      return { currentStep: r.current_step, total: r.total };
+    },
+    async ask(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ answer: string; safety_note: string | null; source: "rules" | "model" }>("cook-assist", {
+        body: { session_id: input.sessionId, mode: "ask", text: input.question, language_code: input.languageCode },
+      });
+      if (error || !data) throw error ?? new Error("cook-assist returned nothing");
+      return { answer: data.answer, safetyNote: data.safety_note, source: data.source };
+    },
+    async reportChange(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ reply: string; notes: StepNote[]; source: "rules" | "model" }>("cook-assist", {
+        body: { session_id: input.sessionId, mode: "changed", text: input.change, language_code: input.languageCode },
+      });
+      if (!error && data) return data;
+      // The function is unreachable: still record the change, without notes, so it isn't lost.
+      const { error: e2 } = await sb.rpc("log_session_change", { p_session: input.sessionId, p_change: input.change });
+      if (e2) throw e2;
+      return { reply: changeReply([], localeFromLanguageCode(input.languageCode) ?? "en"), notes: [], source: "rules" };
+    },
+    async rescue(input) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ steps: string[]; safety_note: string | null; source: "rules" | "model" }>("rescue", {
+        body: {
+          session_id: input.sessionId,
+          problem: input.problem,
+          missing: input.missing,
+          details: input.details,
+          language_code: input.languageCode,
+        },
+      });
+      if (error || !data) throw error ?? new Error("rescue returned nothing");
+      return { steps: data.steps, safetyNote: data.safety_note, source: data.source };
+    },
+    async abandonSession(sessionId) {
+      const sb = requireSupabase();
+      const { error } = await sb
+        .from("cooking_sessions")
+        .update({ status: "abandoned", last_activity_at: new Date().toISOString() })
+        .eq("id", sessionId)
+        .in("status", ["active", "paused"]);
+      if (error) throw error;
+    },
+    async completeSession(sessionId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("complete_cooking_session", { p_session: sessionId });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        itemId: r.item_id,
+        ingredient: r.ingredient,
+        quantity: r.quantity === null ? null : Number(r.quantity),
+        unit: r.unit,
+        currentQuantity: r.current_quantity === null ? null : Number(r.current_quantity),
+        staple: r.staple,
+      }));
+    },
+    async applyDeduction(sessionId, adjustments) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("apply_session_deduction", {
+        p_session: sessionId,
+        p_adjustments: adjustments.map((a) => ({
+          item_id: a.itemId,
+          ...(a.quantity !== undefined ? { quantity: a.quantity } : {}),
+          ...(a.skip ? { skip: true } : {}),
+          ...(a.stapleLevel ? { staple_level: a.stapleLevel } : {}),
+        })),
+      });
+      if (error) throw error;
+      return data ?? [];
+    },
+    async submitFeedback({ sessionId, rating, tags, comment, makeAgain }) {
+      const sb = requireSupabase();
+      const { error } = await sb.rpc("submit_feedback", {
+        p_session: sessionId,
+        p_rating: rating,
+        p_tags: tags ?? [],
+        p_comment: comment,
+        p_make_again: makeAgain,
+      });
+      if (error) throw error;
+    },
+  },
+  voice: {
+    async getToken(input) {
+      const sb = requireSupabase();
+      const { data, error, response } = await sb.functions.invoke<{ livekit_url: string; token: string; room_name: string; language_code: string }>(
+        "voice-token",
+        { body: { household_id: input.householdId, cooking_session_id: input.cookingSessionId, language_code: input.languageCode } },
+      );
+      if (error || !data) {
+        // The function says why in the body: voice not set up on the server (503) or no consent (403).
+        const reason = await (response ?? (error as { context?: Response } | null)?.context)
+          ?.clone()
+          .json()
+          .then((b: { error?: string }) => b.error)
+          .catch(() => undefined);
+        if (reason === "voice_not_configured") return "not_configured";
+        if (reason === "voice_consent_needed") return "consent_needed";
+        throw error ?? new Error("voice-token returned nothing");
+      }
+      return { url: data.livekit_url, token: data.token, roomName: data.room_name, languageCode: data.language_code };
+    },
+  },
 };
+
+function toSession(r: {
+  id: string;
+  recipe_id: string;
+  adapted_recipe_id: string | null;
+  current_step: number;
+  servings: number;
+  who_eating: string[];
+  status: string;
+  modifications?: unknown;
+}): CookSession {
+  return {
+    id: r.id,
+    recipeId: r.adapted_recipe_id ?? r.recipe_id,
+    currentStep: r.current_step,
+    servings: r.servings,
+    whoEating: r.who_eating ?? [],
+    status: r.status as CookSession["status"],
+    changes: Array.isArray(r.modifications)
+      ? (r.modifications as { change?: string; notes?: StepNote[] }[])
+          .filter((m) => typeof m.change === "string")
+          .map((m) => ({ change: m.change!, notes: Array.isArray(m.notes) ? m.notes : [] }))
+      : [],
+  };
+}
 
 type SuggestMealsResponse = {
   batch_id: string;

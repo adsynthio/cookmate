@@ -81,7 +81,7 @@ export default function HomeScreen() {
     setFocus(null);
     setWhoEating(null);
   };
-  const open = (p: Pick) => router.push(`/recipe/${p.recipeId}`);
+  const open = (p: Pick) => router.push(`/recipe/${p.recipeId}?rec=${encodeURIComponent(p.recommendationId)}`);
   const cook = (p: Pick) => {
     accept.mutate(p);
     open(p);

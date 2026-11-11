@@ -1,5 +1,7 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
+import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+import type { Problem } from "@/domain/rescue";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
@@ -210,9 +212,78 @@ export interface RecipeService {
   searchRecipes(query: string): Promise<RecipeSummary[]>;
 }
 
+export type CookSession = {
+  id: string;
+  recipeId: string;
+  currentStep: number;
+  servings: number;
+  whoEating: string[];
+  status: "active" | "paused" | "completed" | "abandoned";
+  /** KIT-075: what the cook did differently, with notes for later steps. */
+  changes: { change: string; notes: StepNote[] }[];
+};
+
+export type DeductionLine = {
+  itemId: string;
+  ingredient: string;
+  quantity: number | null;
+  unit: string | null;
+  currentQuantity: number | null;
+  staple: boolean;
+};
+
+export type DeductionAdjustment = { itemId: string; quantity?: number; skip?: boolean; stapleLevel?: StapleLevel };
+
+export type Rating = "loved" | "good" | "meh" | "bad";
+
+export type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+export type RescueInput = { sessionId: string; problem: Problem; missing?: string; details?: string; languageCode: string };
+/** At most three things to do now, plus the pinned safety line when one applies (KIT-091/092). */
+export type RescueFix = { steps: string[]; safetyNote: string | null; source: "rules" | "model" };
+
+export interface CookingService {
+  /** KIT-070: start cooking a recipe (or its adapted variant). */
+  startSession(input: {
+    householdId: string;
+    recipeId: string;
+    servings: number;
+    whoEating: string[];
+    mode?: "touch" | "voice" | "hands_free";
+    recommendationId?: string;
+    languageCode: string;
+  }): Promise<string>;
+  getSession(sessionId: string): Promise<CookSession>;
+  /** The cook's session in progress, to resume from the Cook tab. */
+  getActiveSession(householdId: string): Promise<CookSession | null>;
+  advanceStep(sessionId: string, delta: number, channel?: "touch" | "voice"): Promise<{ currentStep: number; total: number }>;
+  /** Stop without finishing: nothing is deducted and the Cook tab stops offering to resume. */
+  abandonSession(sessionId: string): Promise<void>;
+  /** KIT-074: answer a question about the current step. The cook's place never moves. */
+  ask(input: { sessionId: string; question: string; languageCode: string }): Promise<Answer>;
+  /** KIT-075: record what the cook did differently; returns notes for the steps still ahead. */
+  reportChange(input: { sessionId: string; change: string; languageCode: string }): Promise<ChangeResult>;
+  /** KIT-091: a fix for this dish and step with what is in the kitchen. */
+  rescue(input: RescueInput): Promise<RescueFix>;
+  /** KIT-037: finish and preview what comes off the pantry. */
+  completeSession(sessionId: string): Promise<DeductionLine[]>;
+  applyDeduction(sessionId: string, adjustments: DeductionAdjustment[]): Promise<string[]>;
+  submitFeedback(input: { sessionId: string; rating: Rating; tags?: string[]; comment?: string; makeAgain?: boolean }): Promise<void>;
+}
+
+export type VoiceToken = { url: string; token: string; roomName: string; languageCode: string };
+/** Why a voice session couldn't start; anything else is an ordinary error. */
+export type VoiceUnavailable = "not_configured" | "consent_needed";
+
+export interface VoiceService {
+  /** KIT-061: a token for one new room with the cooking agent dispatched to it. */
+  getToken(input: { householdId: string; cookingSessionId?: string; languageCode: string }): Promise<VoiceToken | VoiceUnavailable>;
+}
+
 export type Services = {
   auth: AuthService;
   preference: PreferenceService;
   kitchen: KitchenService;
   recipe: RecipeService;
+  cooking: CookingService;
+  voice: VoiceService;
 };

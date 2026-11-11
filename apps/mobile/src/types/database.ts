@@ -3272,6 +3272,22 @@ export type Database = {
         Args: { p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean };
         Returns: string;
       };
+      save_memory: {
+        Args: { p_household: string; p_statement: string; p_member?: string; p_category?: string; p_scope?: string; p_source?: string; p_polarity?: number; p_attributes?: Json; p_subject_ingredient?: string; p_subject_recipe?: string; p_provenance?: Json; p_expires_at?: string };
+        Returns: string;
+      };
+      forget_memory: {
+        Args: { p_memory: string };
+        Returns: undefined;
+      };
+      keep_memory: {
+        Args: { p_memory: string };
+        Returns: undefined;
+      };
+      update_memory: {
+        Args: { p_memory: string; p_statement: string };
+        Returns: undefined;
+      };
       log_session_change: {
         Args: { p_session: string; p_change: string; p_notes?: Json; p_channel?: string };
         Returns: Json;

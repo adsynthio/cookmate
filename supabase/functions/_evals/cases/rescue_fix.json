@@ -90,7 +90,7 @@
     ],
     "expect": {
       "mentions_any": [
-        "water|pani|buttermilk|curd"
+        "water|pa+ni|पानी|buttermilk|curd"
       ]
     }
   },
@@ -110,9 +110,7 @@
       "green chilli"
     ],
     "expect": {
-      "never": [
-        "curry leaves"
-      ]
+      "without": "curry leaves"
     }
   },
   {
@@ -127,7 +125,7 @@
     ],
     "expect": {
       "mentions_any": [
-        "pani|water"
+        "pa+ni|पानी|water"
       ]
     }
   },
@@ -179,7 +177,8 @@
     "expect": {
       "mentions_any": [
         "tofu|potato|aloo|peas|matar"
-      ]
+      ],
+      "without": "paneer"
     }
   }
 ]

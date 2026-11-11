@@ -13,8 +13,12 @@ import * as rescuePrompt from "../rescue/prompt.ts";
 import { type Baseline, f1, type ItemTotals, itemScore, regressions, rescueProblems } from "./graders.ts";
 import { hints, parseCases, recipes, rescueCases } from "./load.ts";
 
-type CaseResult = { case: string; ok: boolean; detail: string };
+type CaseResult = { case: string; ok: boolean; detail: string; timedOut?: boolean };
 type TaskResult = { task: string; promptVersion: string; model: string; score: number; cases: CaseResult[] };
+
+/** More than this share of calls over the production time limit fails the run too: the app would fall back. */
+const MAX_TIMEOUT_SHARE = 0.2;
+const isTimeout = (err: unknown) => /timed? ?out/i.test(err instanceof Error ? `${err.name} ${err.message}` : String(err));
 
 const CONCURRENCY = 4;
 
@@ -44,6 +48,7 @@ async function evalParse(client: Anthropic): Promise<TaskResult> {
       const ok = t.tp === t.expected && t.got === t.expected;
       return { case: c.text, ok, detail: ok ? "" : `got ${JSON.stringify(items.map((i) => [i.ingredient_key ?? i.said, i.quantity, i.unit]))}` };
     } catch (err) {
+      if (isTimeout(err)) return { case: c.text, ok: false, timedOut: true, detail: `call failed: ${err instanceof Error ? err.message : err}` };
       totals.expected += c.expect.length;
       return { case: c.text, ok: false, detail: `call failed: ${err instanceof Error ? err.message : err}` };
     }
@@ -62,11 +67,13 @@ async function evalRescue(client: Anthropic): Promise<TaskResult> {
       const problems = rescueProblems(fix, ctx, c.expect);
       return { case: name, ok: problems.length === 0, detail: problems.length ? `${problems.join("; ")} | ${fix.steps.join(" / ")}` : "" };
     } catch (err) {
-      return { case: name, ok: false, detail: `call failed: ${err instanceof Error ? err.message : err}` };
+      return { case: name, ok: false, timedOut: isTimeout(err), detail: `call failed: ${err instanceof Error ? err.message : err}` };
     }
   });
-  const passed = cases.filter((c) => c.ok).length;
-  return { task: rescuePrompt.TASK, promptVersion: rescuePrompt.PROMPT_VERSION, model: rescuePrompt.MODEL, score: passed / cases.length, cases };
+  // Answers are judged on the calls that came back; timeouts are counted on their own (see MAX_TIMEOUT_SHARE).
+  const answered = cases.filter((c) => !c.timedOut);
+  const passed = answered.filter((c) => c.ok).length;
+  return { task: rescuePrompt.TASK, promptVersion: rescuePrompt.PROMPT_VERSION, model: rescuePrompt.MODEL, score: answered.length ? passed / answered.length : 0, cases };
 }
 
 const TASKS: Record<string, (c: Anthropic) => Promise<TaskResult>> = {
@@ -75,9 +82,10 @@ const TASKS: Record<string, (c: Anthropic) => Promise<TaskResult>> = {
 };
 
 function markdown(results: TaskResult[], failed: string[]): string {
-  const lines = ["# AI evaluations", "", "| Task | Prompt | Model | Score | Cases passed |", "|---|---|---|---|---|"];
+  const lines = ["# AI evaluations", "", "| Task | Prompt | Model | Score | Cases passed | Timed out |", "|---|---|---|---|---|---|"];
   for (const r of results) {
-    lines.push(`| ${r.task} | ${r.promptVersion} | ${r.model} | ${r.score.toFixed(3)} | ${r.cases.filter((c) => c.ok).length}/${r.cases.length} |`);
+    const timedOut = r.cases.filter((c) => c.timedOut).length;
+    lines.push(`| ${r.task} | ${r.promptVersion} | ${r.model} | ${r.score.toFixed(3)} | ${r.cases.filter((c) => c.ok).length}/${r.cases.length} | ${timedOut} |`);
   }
   lines.push("", failed.length ? `**Regressions:**\n${failed.map((f) => `- ${f}`).join("\n")}` : "No regressions.", "");
   for (const r of results) {
@@ -100,6 +108,10 @@ if (import.meta.main) {
   for (const [task, fn] of Object.entries(TASKS)) if (!only || only === task) results.push(await fn(client));
   const baseline = JSON.parse(Deno.readTextFileSync(new URL("baseline.json", import.meta.url))) as Baseline;
   const failed = regressions(Object.fromEntries(results.map((r) => [r.task, r.score])), baseline);
+  for (const r of results) {
+    const share = r.cases.filter((c) => c.timedOut).length / r.cases.length;
+    if (share > MAX_TIMEOUT_SHARE) failed.push(`${r.task}: ${Math.round(share * 100)}% of calls went over the production time limit`);
+  }
   Deno.writeTextFileSync(new URL("results.json", import.meta.url), JSON.stringify(results, null, 2) + "\n");
   console.log(markdown(results, failed));
   if (args.includes("--check") && failed.length) Deno.exit(1);

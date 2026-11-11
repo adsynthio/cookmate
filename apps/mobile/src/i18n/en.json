@@ -368,5 +368,16 @@
   "assist.noteFor": "Step {n}",
   "assist.another": "Ask something else",
   "assist.offline": "This is our standard answer; the kitchen brain couldn't be reached.",
-  "cook.youChanged": "Because you said: {change}"
+  "cook.youChanged": "Because you said: {change}",
+  "you.empty": "Nothing yet. Cookmate learns as you cook and say how it went.",
+  "you.learnedBody": "Everything here can be changed or forgotten.",
+  "you.save": "Save",
+  "you.cancel": "Cancel",
+  "you.kept": "Kept",
+  "you.forgetSure": "Forget for good?",
+  "you.temporary": "For now",
+  "you.editLabel": "Change what Cookmate remembers",
+  "finish.remember": "Remember for next time?",
+  "finish.rememberBody": "Tap what Cookmate should remember. You can change it later in You.",
+  "recipe.remembered": "From last time"
 }

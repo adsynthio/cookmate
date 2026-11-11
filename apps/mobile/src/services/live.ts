@@ -152,7 +152,7 @@ export const liveServices: Services = {
       const sb = requireSupabase();
       const { data, error } = await sb
         .from("memories")
-        .select("id, statement, source, scope, household_members(display_name)")
+        .select("id, statement, source, scope, subject_recipe_id, household_members(display_name)")
         .eq("household_id", householdId)
         .eq("status", "active")
         .order("updated_at", { ascending: false });
@@ -164,15 +164,36 @@ export const liveServices: Services = {
           source: m.source,
           scope: m.scope as Memory["scope"],
           memberName: (m as { household_members?: { display_name: string } | null }).household_members?.display_name ?? null,
+          recipeId: m.subject_recipe_id,
         }),
       );
     },
 
-    async forgetMemory() {
-      throw new NotImplemented("forget_memory RPC (Sprint 5)");
+    async forgetMemory(memoryId) {
+      const { error } = await requireSupabase().rpc("forget_memory", { p_memory: memoryId });
+      if (error) throw error;
     },
-    async keepMemory() {
-      throw new NotImplemented("confirm_memory RPC (Sprint 5)");
+    async keepMemory(memoryId) {
+      const { error } = await requireSupabase().rpc("keep_memory", { p_memory: memoryId });
+      if (error) throw error;
+    },
+    async saveMemory(input) {
+      const { data, error } = await requireSupabase().rpc("save_memory", {
+        p_household: input.householdId,
+        p_statement: input.statement,
+        p_member: input.memberId,
+        p_category: input.category,
+        p_source: "explicit",
+        p_polarity: input.polarity ?? 0,
+        p_attributes: input.about ? { about: input.about } : {},
+        p_subject_recipe: input.recipeId,
+      });
+      if (error) throw error;
+      return data;
+    },
+    async updateMemory(memoryId, statement) {
+      const { error } = await requireSupabase().rpc("update_memory", { p_memory: memoryId, p_statement: statement });
+      if (error) throw error;
     },
   },
 

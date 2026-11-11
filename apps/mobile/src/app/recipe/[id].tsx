@@ -100,6 +100,11 @@ function RecipeBody({
     mutationFn: (keys: string[]) => services.kitchen.addToList(householdId, keys.map((k) => ({ name: k, reason: "manual" as const }))),
     onSuccess: (_, keys) => setListed((l) => [...l, ...keys]),
   });
+  // What was said about this dish last time (KIT-104): shown before cooking, so it is acted on.
+  const memories = useQuery({ queryKey: ["memories", householdId], queryFn: () => services.preference.listMemories(householdId) });
+  const dishIds = [doc.id, doc.parent_id, doc.slug].filter(Boolean);
+  const remembered = (memories.data ?? []).filter((m) => m.recipeId !== null && dishIds.includes(m.recipeId));
+
   // Opened from a pick on Home: the session remembers which suggestion it came from.
   const { rec } = useLocalSearchParams<{ rec?: string }>();
   const start = useMutation({
@@ -174,6 +179,19 @@ function RecipeBody({
           />
         ) : null}
       </Card>
+
+      {remembered.length ? (
+        <Card tint={colors.amberSoft}>
+          <Text variant="label" muted>
+            {t("recipe.remembered")}
+          </Text>
+          {remembered.map((m) => (
+            <Text key={m.id} variant="bodyStrong">
+              {m.statement}
+            </Text>
+          ))}
+        </Card>
+      ) : null}
 
       <Button
         size="cook"

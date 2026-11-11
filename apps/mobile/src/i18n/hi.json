@@ -364,5 +364,16 @@
   "assist.noteFor": "स्टेप {n}",
   "assist.another": "कुछ और पूछें",
   "assist.offline": "यह हमारा सामान्य जवाब है; अभी सर्वर से संपर्क नहीं हो पाया।",
-  "cook.youChanged": "क्योंकि आपने बताया: {change}"
+  "cook.youChanged": "क्योंकि आपने बताया: {change}",
+  "you.empty": "अभी कुछ नहीं। आप पकाते और बताते जाएँगे, Cookmate सीखता जाएगा।",
+  "you.learnedBody": "यहाँ की हर बात बदली या भुलाई जा सकती है।",
+  "you.save": "सेव करें",
+  "you.cancel": "रद्द करें",
+  "you.kept": "रखा गया",
+  "you.forgetSure": "हमेशा के लिए भूल जाएँ?",
+  "you.temporary": "फ़िलहाल",
+  "you.editLabel": "Cookmate जो याद रखता है उसे बदलें",
+  "finish.remember": "अगली बार के लिए याद रखें?",
+  "finish.rememberBody": "जो Cookmate को याद रखना है उस पर टैप करें। बाद में 'आप' में बदल सकते हैं।",
+  "recipe.remembered": "पिछली बार से"
 }

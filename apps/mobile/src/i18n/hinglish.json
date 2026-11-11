@@ -334,5 +334,16 @@
   "assist.noteFor": "Step {n}",
   "assist.another": "Kuch aur poochhein",
   "assist.offline": "Yeh hamara standard jawaab hai; abhi server se contact nahi ho paaya.",
-  "cook.youChanged": "Kyunki aapne bataya: {change}"
+  "cook.youChanged": "Kyunki aapne bataya: {change}",
+  "you.empty": "Abhi kuch nahi. Aap pakate aur batate jaayenge, Cookmate seekhta jaayega.",
+  "you.learnedBody": "Yahan ki har baat badli ya bhulayi ja sakti hai.",
+  "you.save": "Save karein",
+  "you.cancel": "Cancel karein",
+  "you.kept": "Rakha gaya",
+  "you.forgetSure": "Hamesha ke liye bhool jaayein?",
+  "you.temporary": "Filhaal",
+  "you.editLabel": "Cookmate jo yaad rakhta hai use badlein",
+  "finish.remember": "Agli baar ke liye yaad rakhein?",
+  "finish.rememberBody": "Jo Cookmate ko yaad rakhna hai us par tap karein. Baad mein 'You' mein badal sakte hain.",
+  "recipe.remembered": "Pichhli baar se"
 }

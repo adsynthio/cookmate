@@ -3272,6 +3272,10 @@ export type Database = {
         Args: { p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean };
         Returns: string;
       };
+      get_voice_context: {
+        Args: { p_household: string; p_member?: string; p_session?: string };
+        Returns: Json;
+      };
       search_recipes: {
         Args: { p_query: string; p_limit?: number };
         Returns: { id: string; slug: string | null; title: string; titles: Json; course: string; diet: string; prep_time_min: number | null; cook_time_min: number | null; spice_level: number; tags: string[] | null; score: number }[];

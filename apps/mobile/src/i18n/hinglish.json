@@ -311,5 +311,14 @@
   "rescue.other": "Kuch aur gadbad hai",
   "rescue.offline": "Yeh hamara standard upaay hai; abhi server se contact nahi ho paaya.",
   "rescue.close": "Band karein",
-  "finish.riceNote": "Bache chawal ke baare mein"
+  "finish.riceNote": "Bache chawal ke baare mein",
+  "voice.title": "Cookmate se baat karein",
+  "voice.connecting": "Sunne ki taiyaari ho rahi hai…",
+  "voice.soon.title": "Voice abhi chaalu nahi hui hai",
+  "voice.soon.body": "Tab tak aap type karke bata sakte hain ki ghar mein kya hai ya kya khane ka mann hai.",
+  "voice.consent.title": "Voice ke liye aapki permission chahiye",
+  "voice.consent.body": "Aapne Cookmate ko apni voice process karne ki permission nahi di hai. Aap type karke use karte reh sakte hain.",
+  "voice.ready.title": "Hamari taraf se voice ready hai",
+  "voice.ready.body": "Baat-cheet agle app update ke saath aayegi. Tab tak type karke batayein.",
+  "voice.type": "Jo hai woh type karein"
 }

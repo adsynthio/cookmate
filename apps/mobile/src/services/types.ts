@@ -262,10 +262,20 @@ export interface CookingService {
   submitFeedback(input: { sessionId: string; rating: Rating; tags?: string[]; comment?: string; makeAgain?: boolean }): Promise<void>;
 }
 
+export type VoiceToken = { url: string; token: string; roomName: string; languageCode: string };
+/** Why a voice session couldn't start; anything else is an ordinary error. */
+export type VoiceUnavailable = "not_configured" | "consent_needed";
+
+export interface VoiceService {
+  /** KIT-061: a token for one new room with the cooking agent dispatched to it. */
+  getToken(input: { householdId: string; cookingSessionId?: string; languageCode: string }): Promise<VoiceToken | VoiceUnavailable>;
+}
+
 export type Services = {
   auth: AuthService;
   preference: PreferenceService;
   kitchen: KitchenService;
   recipe: RecipeService;
   cooking: CookingService;
+  voice: VoiceService;
 };

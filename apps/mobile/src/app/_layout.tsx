@@ -9,7 +9,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { AppState, StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { TimerAlarm } from "@/components/cook/TimerAlarm";
@@ -18,6 +18,7 @@ import { ThemeProvider, useTheme } from "@/design-system/theme";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 import { setLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
+import { track } from "@/services/analytics";
 import { useSession } from "@/state/session";
 
 /**
@@ -48,6 +49,15 @@ function useBootstrap() {
   useEffect(() => {
     void boot();
   }, [boot]);
+
+  // KIT-130: app_open on launch and whenever the app comes back to the front (retention KPI).
+  useEffect(() => {
+    track("app_open");
+    const sub = AppState.addEventListener("change", (s) => {
+      if (s === "active") track("app_open");
+    });
+    return () => sub.remove();
+  }, []);
 
   return { failed, retry: boot };
 }

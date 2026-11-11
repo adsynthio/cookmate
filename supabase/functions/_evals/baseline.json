@@ -1,0 +1,4 @@
+{
+  "parse_inventory_text": { "min": 0.9, "tolerance": 0.03 },
+  "rescue_fix": { "min": 0.9, "tolerance": 0.05 }
+}

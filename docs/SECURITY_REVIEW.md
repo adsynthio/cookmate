@@ -30,6 +30,7 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 9 | Anonymous sign-ins can be abused to create many users (Supabase docs) | Medium | **Open (you)**: turn on CAPTCHA / Cloudflare Turnstile for anonymous sign-ins and review the auth rate limits before the beta |
 | 10 | Old exports of households that never export again stay in the `exports` bucket | Low | **Open (me, Sprint 6)**: each export removes the household's earlier ones, and links expire after 24 h, but a storage sweep for files older than 7 days is still to do |
 | 11 | Photo and scan images must be removed through the Storage API, not by deleting rows | Info | **Open (me)**: no image features have shipped; retention for their files comes with them (KIT-073, V1.5 scans) |
+| 12 | `record_voice_session` (Sprint 6 part 3) is a second SECURITY DEFINER function signed-in users can call | Low | **Accepted (needs your sign-off)**: it lets a member of the household close their own voice session once, writes only that row, its usage lines in `ai_requests` and turn latencies on that household's cooking session, and computes cost on the server. The guard-rail test lists it by name, so any other such function still fails CI |
 
 ## Privacy rights (DPDP)
 

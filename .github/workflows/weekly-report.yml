@@ -1,0 +1,43 @@
+name: Weekly cost and latency report
+
+# KIT-132 / KIT-069: AI and speech cost by task, and voice latency and cost per session, for the last seven days.
+# Reads the hosted database with the repository secret SUPABASE_DB_URL and writes the report to the run summary.
+# Without the secret the job says so and does nothing.
+
+on:
+  schedule:
+    - cron: "43 3 * * 1" # Mondays, 09:13 IST
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "How many days back"
+        default: "7"
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for the database secret
+        id: secret
+        env:
+          URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$URL" ]; then
+            echo "::notice::SUPABASE_DB_URL is not set; skipping the weekly report."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install psql
+        if: steps.secret.outputs.present == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      - name: Write the report
+        if: steps.secret.outputs.present == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DAYS: ${{ inputs.days || '7' }}
+        run: python3 scripts/ops/weekly_report.py --days "$DAYS" >> "$GITHUB_STEP_SUMMARY"

@@ -23,6 +23,7 @@ import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { clearBundles } from "@/offline/bundles";
 import { useOutbox } from "@/offline/outbox";
+import { resetAnalytics } from "@/services/analytics";
 import { services, type Member, type Memory, type NewMemory } from "@/services";
 import { findIngredients } from "@/services/picks";
 import { useSession } from "@/state/session";
@@ -442,6 +443,7 @@ function Privacy({ householdId }: { householdId: string }) {
       // Nothing of the deleted account stays on the phone: no queued writes, no cooking bundles.
       useOutbox.getState().clear();
       clearBundles();
+      resetAnalytics();
       qc.clear();
       clear();
       router.replace("/onboarding");

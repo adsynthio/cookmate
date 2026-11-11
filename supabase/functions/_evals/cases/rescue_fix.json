@@ -1,0 +1,185 @@
+[
+  {
+    "recipe": "dal-tadka",
+    "step": 4,
+    "problem": "too_salty",
+    "language": "en-IN",
+    "pantry": [
+      "potato",
+      "curd",
+      "lemon",
+      "onion",
+      "rice",
+      "toor dal"
+    ],
+    "expect": {
+      "mentions_any": [
+        "water",
+        "potato",
+        "curd",
+        "dal",
+        "lemon"
+      ],
+      "never": [
+        "sugar"
+      ]
+    }
+  },
+  {
+    "recipe": "dal-tadka",
+    "step": 3,
+    "problem": "too_watery",
+    "language": "hi-Latn-IN",
+    "pantry": [
+      "toor dal",
+      "rice",
+      "onion",
+      "tomato"
+    ],
+    "expect": {
+      "mentions_any": [
+        "ubaal|boil|simmer|pakao|mash|dhakkan|lid|khula|open|garha"
+      ]
+    }
+  },
+  {
+    "recipe": "jeera-aloo",
+    "step": 3,
+    "problem": "burning",
+    "language": "en-IN",
+    "pantry": [
+      "potato",
+      "onion",
+      "cumin seeds"
+    ],
+    "expect": {
+      "mentions_any": [
+        "heat|flame|gas|aanch"
+      ],
+      "never": [
+        "pour water (in|into) (the )?(hot )?oil"
+      ]
+    }
+  },
+  {
+    "recipe": "matar-paneer",
+    "step": 5,
+    "problem": "too_spicy",
+    "language": "hi-Latn-IN",
+    "pantry": [
+      "curd",
+      "fresh cream",
+      "milk",
+      "tomato",
+      "sugar"
+    ],
+    "expect": {
+      "mentions_any": [
+        "dahi|curd|cream|malai|doodh|milk|tamatar|tomato"
+      ]
+    }
+  },
+  {
+    "recipe": "kadhi-pakora",
+    "step": 3,
+    "problem": "too_thick",
+    "language": "en-IN",
+    "pantry": [
+      "curd",
+      "gram flour"
+    ],
+    "expect": {
+      "mentions_any": [
+        "water|pani|buttermilk|curd"
+      ]
+    }
+  },
+  {
+    "recipe": "kanda-poha",
+    "step": 2,
+    "problem": "missing_ingredient",
+    "missing": "curry leaves",
+    "language": "en-IN",
+    "pantry": [
+      "poha",
+      "onion",
+      "potato",
+      "peanuts",
+      "lemon",
+      "mustard seeds",
+      "green chilli"
+    ],
+    "expect": {
+      "never": [
+        "curry leaves"
+      ]
+    }
+  },
+  {
+    "recipe": "besan-chilla",
+    "step": 1,
+    "problem": "too_thick",
+    "language": "hi-Latn-IN",
+    "pantry": [
+      "gram flour",
+      "onion",
+      "tomato"
+    ],
+    "expect": {
+      "mentions_any": [
+        "pani|water"
+      ]
+    }
+  },
+  {
+    "recipe": "moong-dal-khichdi",
+    "step": 4,
+    "problem": "burning",
+    "language": "hi-IN",
+    "pantry": [
+      "rice",
+      "yellow moong dal",
+      "ghee"
+    ],
+    "expect": {
+      "never": [
+        "scrape|khurach"
+      ]
+    }
+  },
+  {
+    "recipe": "rajma",
+    "step": 5,
+    "problem": "too_watery",
+    "language": "en-IN",
+    "pantry": [
+      "kidney beans",
+      "onion",
+      "tomato"
+    ],
+    "expect": {
+      "mentions_any": [
+        "simmer|boil|mash|lid|uncover|reduce"
+      ]
+    }
+  },
+  {
+    "recipe": "matar-paneer",
+    "step": 4,
+    "problem": "missing_ingredient",
+    "missing": "paneer",
+    "language": "en-IN",
+    "pantry": [
+      "green peas",
+      "potato",
+      "tofu",
+      "onion",
+      "tomato"
+    ],
+    "expect": {
+      "mentions_any": [
+        "tofu|potato|aloo|peas|matar"
+      ]
+    }
+  }
+]

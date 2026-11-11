@@ -28,14 +28,22 @@ jobs:
       - name: Generated media map is up to date with assets/media
         run: python3 tools/media/sync.py --check
       - name: Install Postgres 16 with pgvector and pgTAP
-        # GitHub's runners list Azure's Ubuntu mirror first; when it can't be resolved, apt fails. Use Ubuntu's own
-        # servers instead, and retry flaky downloads.
+        # The runner already has PostgreSQL 16 from the PostgreSQL project's own apt repository (PGDG). Take the two
+        # extensions from there, reading only that repository's index, so an outage of Ubuntu's mirrors can't fail
+        # the job. Falls back to the full apt sources if the runner image ever stops shipping PGDG.
         run: |
-          if [ -f /etc/apt/apt-mirrors.txt ]; then
-            printf 'http://archive.ubuntu.com/ubuntu/\tpriority:1\n' | sudo tee /etc/apt/apt-mirrors.txt
+          set -x
+          pgdg="$(grep -rl 'apt.postgresql.org' /etc/apt/sources.list.d/ 2>/dev/null | head -1 || true)"
+          if [ -n "$pgdg" ]; then
+            sudo apt-get -o Acquire::Retries=3 update -q \
+              -o Dir::Etc::sourcelist="$pgdg" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+            sudo apt-get -o Acquire::Retries=3 install -y -q --no-install-recommends \
+              postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
+          else
+            sudo apt-get -o Acquire::Retries=3 update -q
+            sudo apt-get -o Acquire::Retries=3 install -y -q postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
           fi
-          sudo apt-get -o Acquire::Retries=3 update -q
-          sudo apt-get -o Acquire::Retries=3 install -y -q postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
+          ls /usr/share/postgresql/16/extension/ | grep -E '^(vector|pgtap)\.control$'
       - name: Apply migrations and run pgTAP tests
         run: sudo -E bash scripts/db/test-local.sh
 

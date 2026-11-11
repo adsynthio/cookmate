@@ -74,7 +74,7 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] KIT-141 (100 curated dishes) needs the culinary lead; there are 10 drafts, so picks repeat quickly
 - [ ] Omitted ingredients stay mentioned in step text after a rules-only adaptation (the summary says to leave them out); rewording needs the model
 
-### Sprint 4 status (11 Nov 2026, branch `sprint-4/cook`, adsynthio/cookmate#5)
+### Sprint 4 status (11 Nov 2026, merged to `main` in adsynthio/cookmate#5)
 - [x] Cooking sessions and deduction (KIT-037, KIT-070): `start_cooking_session`, `advance_session_step`, `complete_cooking_session`, `apply_session_deduction` (once per session, every line adjustable), `submit_feedback`; unit conversion in the database
 - [x] Cook screen (KIT-070/072): one instruction at a time in 30 pt type, progress, safety notes and sensory cues on every step, notes for who is eating, scaled ingredients on demand, swipe or 56 dp Back / Next, read-aloud, screen kept awake, dish photo on the last step
 - [x] Timers (KIT-071): several labelled timers kept as end times, mirrored to scheduled local notifications, saved on the device, spoken in-app alarm on any tab
@@ -92,6 +92,20 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] Timers ringing with the app killed can only be confirmed on a phone (needs the first EAS build); the alarm uses the default notification sound until a louder one is added
 - [ ] Photo checkpoint (KIT-073) not started: needs camera capture in a device build and labelled photos to evaluate against
 - [ ] Recipe step text is English only, so read-aloud of a step uses the English voice; Hindi and Hinglish step text comes with the curated dishes (KIT-140/141)
+
+### Sprint 5 status (11 Nov 2026, branch `sprint-5/you`, adsynthio/cookmate#6) — partly done
+- [x] Memory model (KIT-101): `save_memory`, `forget_memory`, `keep_memory`, `update_memory`. Repeats strengthen a memory; what the user says replaces older memories about the same subject; observations never override it; temporary memories expire and never change preferences; forgetting removes what was derived
+- [x] Learning from feedback (KIT-100, KIT-103): the first feedback for a session nudges the taste dials one step; the finish sheet suggests what to remember about the dish and saves only what the cook taps
+- [x] What I've learned (KIT-102): Edit in the user's own words, Keep, Forget with a second tap
+- [x] Shopping list (KIT-110/111/112): grouped by shop section, add by typing, tick a line or "Sab le aaye" to move it into the pantry with an estimated expiry (staples refill), remove a line, share as plain text
+- [x] Dismiss a pick with a reason (KIT-044): not today, don't like, no time, missing something; the dish isn't offered again that day; "don't like" asks before remembering, and a remembered dislike keeps the dish out of picks
+- [x] Tests: 86 mobile unit tests, 25 Edge Function tests, 27 new pgTAP tests (memories, shopping); remember, You, shopping and dismiss flows walked in a browser build
+- [ ] Picks reflect memories (KIT-104) is partial: the recipe screen shows what was said about the dish last time, and disliked dishes and ingredients are left out, but a memory such as "extra garlic" is not yet applied to the recipe's quantities
+- [ ] Not started: ingredient likes and dislikes editor on You (KIT-105; the database side exists), favourites (KIT-055), voice personalisation (KIT-068), step audio cache (KIT-080), VAD-gated speech-to-text (KIT-081), switch speaker (KIT-083)
+- [ ] Memory extraction from free speech (KIT-103's 200-utterance test set) is not built; memories come from feedback tags and what the user confirms
+- [ ] **You:** phone OTP upgrade (KIT-021) needs an SMS provider registered for DLT
+- [ ] **You:** approve the Supabase tool's prompt for migrations `memories` and `shopping` as well (the full list is under Sprint 4)
+- [ ] Polish: white buttons on white cards (You, the "Stop suggesting…?" card) need a tinted background to read as buttons
 
 ---
 

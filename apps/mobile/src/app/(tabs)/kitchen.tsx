@@ -35,6 +35,11 @@ export default function KitchenScreen() {
     queryFn: () => services.kitchen.getKitchen(householdId!),
     enabled: !!householdId,
   });
+  const list = useQuery({
+    queryKey: ["list", householdId],
+    queryFn: () => services.kitchen.getList(householdId!),
+    enabled: !!householdId,
+  });
 
   // KIT-030: changes from other phones in the household arrive over Realtime.
   useEffect(() => {
@@ -64,6 +69,11 @@ export default function KitchenScreen() {
           </Text>
         </View>
         <Button label={t("kitchen.add")} onPress={() => router.push("/pantry/add")} />
+        <Button
+          kind="secondary"
+          label={list.data?.length ? t("list.open", { n: list.data.length }) : t("list.openEmpty")}
+          onPress={() => router.push("/list")}
+        />
         {kitchen.data && kitchen.data.length < 12 ? (
           <Pressable accessibilityRole="button" onPress={() => router.push("/pantry/yesterday")}>
             {({ pressed }) => (

@@ -1,7 +1,7 @@
 // Home: "Tonight, decided" (HOME-01/02, KIT-040), craving chips and free text (HOME-03, KIT-042), Use Soon strip
 // that opens waste-aware picks (HOME-04, KIT-043), meal slot switch (HOME-05, KIT-046), who's eating today
 // (HH-03, KIT-057), and every screen state (HOME-08).
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
@@ -20,6 +20,9 @@ import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type MealSlot, type PantryItem, type Pick } from "@/services";
 import { useSession } from "@/state/session";
+
+const DISMISS_REASONS = ["not_today", "dont_like", "no_time", "missing_item"] as const;
+type DismissReason = (typeof DISMISS_REASONS)[number];
 
 const CHIPS: { key: string; label: StringKey }[] = [
   { key: "comforting", label: "chip.comforting" },
@@ -65,7 +68,39 @@ export default function HomeScreen() {
     queryFn: () => services.kitchen.getUseSoon(householdId!),
     enabled: !!householdId,
   });
+  const queryClient = useQueryClient();
   const accept = useMutation({ mutationFn: (p: Pick) => services.recipe.respondToPick(p.recommendationId, "accepted") });
+  // KIT-044: turn a pick down with a reason; "don't like" offers to remember it, and only saves on a yes.
+  const [asking, setAsking] = useState(false);
+  const [disliked, setDisliked] = useState<Pick | null>(null);
+  const [rememberedNote, setRememberedNote] = useState(false);
+  const dismiss = useMutation({
+    mutationFn: ({ pick, reason }: { pick: Pick; reason: DismissReason }) => services.recipe.respondToPick(pick.recommendationId, "dismissed", reason),
+    onSuccess: (_, { pick, reason }) => {
+      setAsking(false);
+      setRememberedNote(false);
+      if (reason === "dont_like") setDisliked(pick);
+      void queryClient.invalidateQueries({ queryKey: ["picks"] });
+    },
+  });
+  const rememberDislike = useMutation({
+    mutationFn: (pick: Pick) =>
+      services.preference.saveMemory({
+        householdId: householdId!,
+        memberId: memberId ?? undefined,
+        statement: t("home.dislikeMemory", { dish: recipeTitle(pick, getLocale()) }),
+        category: "taste",
+        polarity: -1,
+        about: "dislike",
+        recipeId: pick.recipeId,
+      }),
+    onSuccess: () => {
+      setDisliked(null);
+      setRememberedNote(true);
+      void queryClient.invalidateQueries({ queryKey: ["memories"] });
+      void queryClient.invalidateQueries({ queryKey: ["picks"] });
+    },
+  });
 
   const toggleChip = (key: string) => setChips((c) => (c.includes(key) ? c.filter((x) => x !== key) : [...c, key]));
   const toggleMember = (id: string) => {
@@ -159,6 +194,21 @@ export default function HomeScreen() {
         </View>
       ) : null}
 
+      {disliked ? (
+        <Card>
+          <Text variant="bodyStrong">{t("home.rememberDislike", { dish: recipeTitle(disliked, getLocale()) })}</Text>
+          <View style={styles.reasons}>
+            <Button label={t("home.rememberYes")} kind="secondary" disabled={rememberDislike.isPending} onPress={() => rememberDislike.mutate(disliked)} />
+            <Button label={t("home.rememberNo")} kind="quiet" onPress={() => setDisliked(null)} />
+          </View>
+          {rememberDislike.isError ? <Text>{t("state.error.body")}</Text> : null}
+        </Card>
+      ) : rememberedNote ? (
+        <Text variant="label" muted accessibilityLiveRegion="polite">
+          {t("home.remembered")}
+        </Text>
+      ) : null}
+
       {picks.isPending ? (
         <StateView state="loading" title={t("state.loading.home")} />
       ) : picks.isError ? (
@@ -181,6 +231,27 @@ export default function HomeScreen() {
       ) : (
         <>
           <HeroPick pick={picks.data.hero} onOpen={() => open(picks.data.hero!)} onCook={() => cook(picks.data.hero!)} />
+          {asking ? (
+            <View style={{ gap: space.sm }}>
+              <Text variant="label" muted>
+                {t("home.whyNot")}
+              </Text>
+              <View style={styles.reasons}>
+                {DISMISS_REASONS.map((r) => (
+                  <Chip
+                    key={r}
+                    label={t(`home.reason.${r}` as StringKey)}
+                    onPress={() => !dismiss.isPending && dismiss.mutate({ pick: picks.data.hero!, reason: r })}
+                  />
+                ))}
+              </View>
+              {dismiss.isError ? <Text>{t("state.error.body")}</Text> : null}
+            </View>
+          ) : (
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button kind="quiet" label={t("home.notThis")} onPress={() => setAsking(true)} />
+            </View>
+          )}
           {picks.data.alternates.length ? (
             <Text variant="label" muted>
               {t("home.alternates")}
@@ -328,6 +399,7 @@ function UseSoonStrip({ items, focused, onPick }: { items: PantryItem[]; focused
 }
 
 const styles = StyleSheet.create({
+  reasons: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   header: { flexDirection: "row", alignItems: "flex-end", gap: space.md },
   slotButton: { flexDirection: "row", alignItems: "center", gap: space.xs, alignSelf: "flex-start", minHeight: 32 },
   row: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, alignItems: "center" },

@@ -28,9 +28,28 @@ jobs:
       - name: Generated media map is up to date with assets/media
         run: python3 tools/media/sync.py --check
       - name: Install Postgres 16 with pgvector and pgTAP
+        # The runner already has PostgreSQL 16. Take the two extensions from the PostgreSQL project's own apt
+        # repository (PGDG), reading only that repository's index, so an outage of Ubuntu's mirrors can't fail the
+        # job. If PGDG can't be used, fall back to Ubuntu's packages.
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
+          set -x
+          from_pgdg() {
+            key=/usr/share/keyrings/pgdg.asc
+            sudo curl -fsSL --retry 3 -o "$key" https://www.postgresql.org/media/keys/ACCC4CF8.asc
+            echo "deb [signed-by=$key] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+              | sudo tee /etc/apt/sources.list.d/pgdg.list
+            sudo apt-get -o Acquire::Retries=3 update -q \
+              -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/pgdg.list -o Dir::Etc::sourceparts=- -o APT::Get::List-Cleanup=0
+            sudo apt-get -o Acquire::Retries=3 install -y -q --no-install-recommends \
+              postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
+          }
+          from_ubuntu() {
+            sudo rm -f /etc/apt/sources.list.d/pgdg.list
+            sudo apt-get -o Acquire::Retries=3 update -q
+            sudo apt-get -o Acquire::Retries=3 install -y -q postgresql-16 postgresql-16-pgvector postgresql-16-pgtap
+          }
+          from_pgdg || from_ubuntu
+          ls /usr/share/postgresql/16/extension/ | grep -E '^(vector|pgtap)\.control$'
       - name: Apply migrations and run pgTAP tests
         run: sudo -E bash scripts/db/test-local.sh
 

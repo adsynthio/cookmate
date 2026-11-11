@@ -10,6 +10,7 @@ import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import { z } from "npm:zod@4.6.5";
 
+import { logAiRequest } from "../_shared/aiLog.ts";
 import { answerSafety, changeReply, cleanNotes, fallbackAnswer, MAX_ANSWER_CHARS, MAX_NOTE_CHARS, MAX_NOTES, type StepNote, validateAnswer } from "../_shared/assist.ts";
 import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
 import { playbookText, type RescueLocale } from "../_shared/rescue.ts";
@@ -50,23 +51,7 @@ function situation(doc: RecipeDoc, stepNo: number, pantry: string[], locale: Res
 }
 
 async function logRequest(householdId: string, task: string, status: string, ms: number, usage?: Anthropic.Usage, error?: string) {
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !key) return;
-  const admin = createClient(url, key, { auth: { persistSession: false } });
-  const { error: e } = await admin.from("ai_requests").insert({
-    household_id: householdId,
-    task,
-    model: MODEL,
-    prompt_version: `${task}@1`,
-    input_tokens: usage?.input_tokens ?? null,
-    cached_tokens: usage?.cache_read_input_tokens ?? null,
-    output_tokens: usage?.output_tokens ?? null,
-    latency_ms: ms,
-    status,
-    error: error?.slice(0, 500) ?? null,
-  });
-  if (e) console.error("ai_requests insert failed", e.message);
+  await logAiRequest({ householdId, task, model: MODEL, promptVersion: `${task}@1`, status, latencyMs: ms, usage, error });
 }
 
 Deno.serve(async (req) => {

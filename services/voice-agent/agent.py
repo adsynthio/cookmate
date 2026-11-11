@@ -40,6 +40,7 @@ from cookmate_voice.metering import SttMeter, sarvam_language
 from cookmate_voice.speakers import find_member, greeting, not_found, parse_intro
 from cookmate_voice.step_audio import StepAudioCache
 from cookmate_voice.style import VoiceStyle, step_speech, style_instructions
+from cookmate_voice.telemetry import VoiceTelemetry
 
 log = logging.getLogger("cookmate.voice")
 SYSTEM_PROMPT = (Path(__file__).parent / "prompts" / "system.md").read_text(encoding="utf-8")
@@ -67,6 +68,7 @@ class CookAgent(Agent):
         brain: KitchenBrain | None,
         audio: StepAudioCache | None,
         tts_engine: Any,
+        telemetry: VoiceTelemetry | None = None,
     ) -> None:
         self.style = VoiceStyle.from_speaker(packet.get("speaker"))
         super().__init__(instructions=instructions_for(packet, self.style))
@@ -75,6 +77,7 @@ class CookAgent(Agent):
         self.brain = brain
         self.audio = audio
         self.tts_engine = tts_engine
+        self.telemetry = telemetry
         self.language = meta.get("language_code", "en-IN")
         self.gate = ConfirmationGate()
 
@@ -93,7 +96,10 @@ class CookAgent(Agent):
             raise StopResponse()
 
         command = match(text)
+        started = time.monotonic()
         if command is not None and await self.handle_fast_path(command):
+            if self.telemetry is not None:
+                self.telemetry.fast_path_turn(time.monotonic() - started)
             raise StopResponse()  # answered without the language model
 
     # --- KIT-083 ------------------------------------------------------------------------------------------------
@@ -164,6 +170,8 @@ class CookAgent(Agent):
             # Recordings are made at normal pace; a cook who asked for slower speech gets live TTS.
             path = await self.audio.fetch(sarvam_language(self.language), None, current.get("step_id"), text)
         if path:
+            if self.telemetry is not None:
+                self.telemetry.cached_speech(len(text))
             self.session.say(text, audio=utils.audio.audio_frames_from_file(path), allow_interruptions=True)
         else:
             self.session.say(text, allow_interruptions=True)
@@ -220,6 +228,13 @@ async def entrypoint(ctx: JobContext) -> None:
     )
 
     meter = SttMeter(started_at=time.monotonic())
+    # KIT-069: usage and latency for this session, recorded once when it ends (counts only, no transcript).
+    telemetry = VoiceTelemetry(
+        llm_model=settings.turn_model,
+        stt_model=settings.stt_model,
+        tts_model=settings.tts_model,
+        language=language,
+    )
 
     @session.on("metrics_collected")
     def _count(
@@ -228,14 +243,31 @@ async def entrypoint(ctx: JobContext) -> None:
         m = event.metrics
         if getattr(m, "type", None) == "stt_metrics":
             meter.add_segment(float(m.audio_duration or 0.0))
+        telemetry.on_metrics(m)
 
-    async def _close() -> None:
+    async def _close(reason: str) -> None:
         log.info("stt_usage", extra=meter.summary(time.monotonic()))
+        voice_session_id = meta.get("voice_session_id")
+        if brain is not None and voice_session_id:
+            try:
+                await brain.rpc(
+                    "record_voice_session",
+                    {
+                        "p_voice_session": voice_session_id,
+                        "p_stats": telemetry.summary(
+                            meter.sent_seconds, end_reason=(reason or "")[:40] or None
+                        ),
+                    },
+                )
+            except httpx.HTTPError as err:
+                log.warning("voice session not recorded: %s", err)
         await http.aclose()
 
     ctx.add_shutdown_callback(_close)
     audio = StepAudioCache(settings.supabase_url, http) if settings.supabase_url else None
-    agent = CookAgent(packet=packet, meta=meta, brain=brain, audio=audio, tts_engine=tts_engine)
+    agent = CookAgent(
+        packet=packet, meta=meta, brain=brain, audio=audio, tts_engine=tts_engine, telemetry=telemetry
+    )
     await session.start(room=ctx.room, agent=agent)
     if os.environ.get("COOKMATE_GREET", "1") == "1" and style.name:
         session.say(greeting(style.name, language))

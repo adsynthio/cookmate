@@ -141,9 +141,17 @@ export type Memory = {
   statement: string;
   source: MemorySource;
   scope: "permanent" | "temporary";
+  memberId: string | null;
   memberName: string | null;
   /** The dish this is about, when it is about one. */
   recipeId: string | null;
+  /** The aspect it is about: "preference" (a like or dislike), "amount", or a feedback subject such as "salt". */
+  about: string | null;
+  polarity: -1 | 0 | 1;
+  /** For about = "amount": use more or less of the ingredient. */
+  amount: "more" | "less" | null;
+  /** Catalog name of the ingredient this is about, when it is about one. */
+  ingredientKey: string | null;
 };
 
 export type NewMemory = {
@@ -155,6 +163,10 @@ export type NewMemory = {
   /** Subject key, so a newer memory about the same thing replaces the older one. */
   about?: string;
   recipeId?: string;
+  /** Catalog name of the ingredient this is about (KIT-105 likes and dislikes, KIT-104 amounts). */
+  ingredientKey?: string;
+  /** With about = "amount": more or less of the ingredient from now on. Keep polarity 0 for these. */
+  amount?: "more" | "less";
 };
 
 export type NewMember = {
@@ -233,6 +245,10 @@ export interface RecipeService {
   adaptRecipe(input: AdaptInput): Promise<AdaptResult>;
   /** KIT-054: search in any language and script. */
   searchRecipes(query: string): Promise<RecipeSummary[]>;
+  /** KIT-055: the household's saved dishes, newest first. */
+  listFavourites(householdId: string): Promise<RecipeSummary[]>;
+  /** KIT-055: save or unsave a dish for the household. */
+  setFavourite(input: { householdId: string; memberId: string; recipeId: string; on: boolean }): Promise<void>;
 }
 
 export type CookSession = {

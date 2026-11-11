@@ -20,6 +20,8 @@ type SessionState = {
   setMealSlot: (slot: MealSlot) => void;
   setWhoEating: (ids: string[] | null) => void;
   setVoice: (state: VoiceState) => void;
+  /** After the account is deleted: back to a fresh start (onboarding). */
+  clear: () => void;
 };
 
 /** HOME-05: meal slot from the time of day in the household's timezone (India for now). */
@@ -39,4 +41,5 @@ export const useSession = create<SessionState>((set) => ({
   setMealSlot: (mealSlot) => set({ mealSlot }),
   setWhoEating: (whoEating) => set({ whoEating }),
   setVoice: (voice) => set({ voice }),
+  clear: () => set({ householdId: null, memberId: null, whoEating: null, voice: "idle" }),
 }));

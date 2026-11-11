@@ -136,6 +136,18 @@ export const mockServices: Services = {
     async getPhone() {
       return mockPhone;
     },
+    async exportData() {
+      await delay(400);
+      // Mock mode: the export is a JSON file of what this device holds, as a data link.
+      const body = JSON.stringify({ household: readHousehold(), memories, pantry, favourites }, null, 2);
+      return { url: `data:application/json;charset=utf-8,${encodeURIComponent(body)}`, expiresAt: new Date(Date.now() + 86_400_000).toISOString() };
+    },
+    async deleteAccount(confirm) {
+      await delay(300);
+      if (!["DELETE", "हटाएँ", "HATAO"].includes(confirm.trim().toUpperCase())) throw new Error("confirmation_required");
+      resetMockHousehold();
+      mockPhone = null;
+    },
     async startPhoneLink(phone) {
       await delay(300);
       pendingPhone = phone;

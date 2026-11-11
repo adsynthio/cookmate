@@ -400,5 +400,16 @@
   "list.section.meat": "Meat and fish",
   "list.section.other": "Other",
   "list.reason.running_low": "Running low",
-  "list.reason.recipe_missing": "For a recipe"
+  "list.reason.recipe_missing": "For a recipe",
+  "home.notThis": "Not this one",
+  "home.whyNot": "Why not?",
+  "home.reason.not_today": "Not today",
+  "home.reason.dont_like": "Don't like it",
+  "home.reason.no_time": "No time",
+  "home.reason.missing_item": "Missing something",
+  "home.rememberDislike": "Stop suggesting {dish}?",
+  "home.rememberYes": "Yes, remember that",
+  "home.rememberNo": "No, just not now",
+  "home.dislikeMemory": "Doesn't like {dish}",
+  "home.remembered": "Remembered. You can change it in You."
 }

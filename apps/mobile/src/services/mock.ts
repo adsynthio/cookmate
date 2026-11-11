@@ -88,6 +88,7 @@ let memories: Memory[] = [
   { id: "m2", statement: "Aarav prefers mild food", source: "onboarding", scope: "permanent", memberName: "Aarav", recipeId: null },
   { id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null, recipeId: null },
 ];
+const dismissedToday = new Set<string>();
 /** Subject of each saved memory ("recipe:about"), for the replace rule. */
 const subjects = new Map<string, string>();
 
@@ -160,6 +161,7 @@ export const mockServices: Services = {
     },
     async forgetMemory(id) {
       memories = memories.filter((m) => m.id !== id);
+      subjects.delete(id);
     },
     async keepMemory() {},
     async saveMemory(input) {
@@ -348,7 +350,8 @@ export const mockServices: Services = {
       const slot = input.mealSlot ?? slotForHour(localHour(new Date(), "Asia/Kolkata"));
       const now = Date.now();
       const batch = buildPicks({
-        docs: recipeDocs,
+        // Left out: dishes turned down today, and dishes the household said it doesn't like.
+        docs: recipeDocs.filter((d) => !dismissedToday.has(d.slug) && ![...subjects.values()].includes(`${d.slug}:dislike`)),
         items: pantry,
         members: readMembers(),
         input,
@@ -362,6 +365,8 @@ export const mockServices: Services = {
     async respondToPick(recommendationId, status) {
       const recipeId = shown.get(recommendationId);
       if (status === "accepted" && recipeId) recent.push({ recipeId, at: Date.now() });
+      // KIT-044: a dish turned down is not offered again today.
+      if (status === "dismissed" && recipeId) dismissedToday.add(recipeId);
     },
     async adaptRecipe(input) {
       await delay(500);

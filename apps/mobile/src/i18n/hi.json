@@ -396,5 +396,16 @@
   "list.section.meat": "मीट और मछली",
   "list.section.other": "बाकी",
   "list.reason.running_low": "कम पड़ रहा है",
-  "list.reason.recipe_missing": "रेसिपी के लिए"
+  "list.reason.recipe_missing": "रेसिपी के लिए",
+  "home.notThis": "यह नहीं",
+  "home.whyNot": "क्यों नहीं?",
+  "home.reason.not_today": "आज नहीं",
+  "home.reason.dont_like": "पसंद नहीं",
+  "home.reason.no_time": "समय नहीं है",
+  "home.reason.missing_item": "कुछ चीज़ नहीं है",
+  "home.rememberDislike": "{dish} सुझाना बंद करें?",
+  "home.rememberYes": "हाँ, याद रखें",
+  "home.rememberNo": "नहीं, बस अभी नहीं",
+  "home.dislikeMemory": "{dish} पसंद नहीं",
+  "home.remembered": "याद रख लिया। 'आप' में बदल सकते हैं।"
 }

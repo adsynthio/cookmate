@@ -10,9 +10,9 @@ import { illustrations } from "@/design-system/media";
 import { Button, Card, Chip, Field, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
-import { adjustmentFor, readableLine, type LineReview } from "@/domain/cooking";
+import { adjustmentFor, readableLine, rememberedQty, type LineReview } from "@/domain/cooking";
 import { displayName, formatQuantity } from "@/domain/kitchen";
-import { feedbackCandidates } from "@/domain/learning";
+import { feedbackCandidates, type AmountChange } from "@/domain/learning";
 import { getLocale, t, type StringKey } from "@/i18n";
 import { services, type DeductionAdjustment, type DeductionLine, type Rating, type StapleLevel } from "@/services";
 
@@ -29,8 +29,11 @@ export function FinishSheet({
   leftoverNote,
   recipeId,
   memberId,
+  changes,
   onClose,
 }: {
+  /** Remembered amounts for this dish (KIT-104), keyed by ingredient. */
+  changes?: Map<string, AmountChange>;
   sessionId: string;
   householdId: string;
   dish: string;
@@ -50,7 +53,14 @@ export function FinishSheet({
   // Amounts are reviewed in the unit that reads best (55 g, not 0.055 kg) and sent back in the item's own unit.
   const view = useMemo(() => lines.map(readableLine), [lines]);
   const [state, setState] = useState<Record<string, LineReview>>(() =>
-    Object.fromEntries(view.map(({ line: l }) => [l.itemId, { on: true, qty: l.quantity === null ? "" : String(l.quantity), level: null }])),
+    Object.fromEntries(
+      view.map(({ line: l }) => {
+        // KIT-104: what was remembered for this dish ("more garlic") is what was used, so it starts that way.
+        const change = changes?.get(l.ingredient);
+        const qty = l.quantity === null ? "" : String(change && !l.staple ? rememberedQty(l.quantity, change.factor) : l.quantity);
+        return [l.itemId, { on: true, qty, level: null }];
+      }),
+    ),
   );
   const [leftover, setLeftover] = useState(0);
   // Each part is saved once, so "Try again" after a failure doesn't repeat the parts that went through.
@@ -182,6 +192,11 @@ export function FinishSheet({
                   </Pressable>
                   <View style={{ flex: 1, gap: 2, opacity: s.on ? 1 : 0.5 }}>
                     <Text variant="bodyStrong">{name}</Text>
+                    {!l.staple && changes?.get(l.ingredient) ? (
+                      <Text variant="caption" color={colors.limeText}>
+                        {t(changes.get(l.ingredient)!.amount === "more" ? "recipe.more" : "recipe.less")}
+                      </Text>
+                    ) : null}
                     {l.staple ? (
                       <Text variant="caption" muted>
                         {t("finish.stapleNow")}

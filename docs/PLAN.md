@@ -106,9 +106,17 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [x] Saved dishes (KIT-055): heart on the recipe screen, list on You, shared by the household
 - [x] Polish: secondary buttons have a pale lime fill and read as buttons on white cards
 - [x] Tests (part 2): 93 mobile unit tests, 25 Edge Function tests, 10 new pgTAP tests (memory subjects); You, likes, saved dishes and remembered amounts walked in a browser build
-- [ ] Remembered amounts change what the screens show, not the pantry deduction at the end (that still uses the recipe's amounts) or amounts named inside step text
+- [x] Remembered amounts also start the finish sheet's pantry deduction (40 g garlic remembered as "more" comes off as 50 g); amounts named inside step text are unchanged
 - [ ] Named collections beyond Favourites (KIT-055) are not built
-- [ ] Not started: voice personalisation (KIT-068), step audio cache (KIT-080), VAD-gated speech-to-text (KIT-081), switch speaker (KIT-083)
+- [x] Personal voice (KIT-068): You → "How I talk to you" sets speed, detail, experience and units. The voice agent adds them to its instructions and speaking rate; the app's read-aloud uses the same rate. Steps are read with the same words in both: a learner hears the sensory cue, an expert just the instruction, and the safety note is always read
+- [x] Switch speaker (KIT-083): "Main Sunita hoon", "मैं सुनीता हूँ" or "I'm Sunita" loads Sunita's profile and answers "Namaste Sunita ji." Names match across scripts and spellings; an unknown or ambiguous name lists who is in the household instead of guessing. The context packet now carries member and step ids (migration `voice_personal`)
+- [x] VAD-gated speech-to-text (KIT-081): `STT_MODE=gated` (the default) wraps Sarvam batch recognition in LiveKit's `StreamAdapter` with Silero VAD, so only speech segments are sent; each session logs STT seconds against its length (target ≤ 40%)
+- [x] Step audio cache (KIT-080): `tts-cache` Edge Function records published steps per language into the public `step-audio` bucket and `step_audio_cache`; the agent plays the recording when there is one and live speech otherwise. The cache key is pinned in both the Python and TypeScript tests so they can't drift
+- [x] Phone link (KIT-021): You → "Keep your kitchen safe" texts a code and links the number to the same anonymous account, so every row stays where it is; wrong codes, numbers already in use and SMS not being switched on each get a plain message
+- [ ] KIT-081's "≤ 40% in tests" is checked with a simulated session, not real kitchen audio; measuring it needs a device session
+- [ ] KIT-021's Send SMS hook to a DLT-registered provider is not built: Supabase's built-in SMS providers (Textlocal works for India) are enough to start, and a hook is only needed if you pick a provider Supabase doesn't support
+- [ ] **You:** to switch on phone linking: Authentication → Sign In / Providers → Phone (choose an SMS provider with a DLT-registered sender and template), and turn on manual linking
+- [ ] **You:** to record step audio: set `SARVAM_API_KEY` as an Edge Function secret and `SUPABASE_SERVICE_ROLE_KEY` as a repository secret; `.github/workflows/tts-cache.yml` then runs daily (or from the Actions tab). Only published recipes are recorded, and none are published yet
 - [ ] Memory extraction from free speech (KIT-103's 200-utterance test set) is not built; memories come from feedback tags and what the user confirms
 - [ ] **You:** phone OTP upgrade (KIT-021) needs an SMS provider registered for DLT
 - [x] Migrations `memories` and `shopping` applied to ChefMate (11 Nov)

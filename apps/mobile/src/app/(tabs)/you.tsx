@@ -15,6 +15,9 @@ import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { parseNote, preferenceStatement } from "@/domain/learning";
+import { indianMobile, maskPhone, PACES, SKILLS, stepWords, UNITS, VERBOSITIES, type VoiceProfile } from "@/domain/voiceStyle";
+import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
+import { say } from "@/services/feedback";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type Member, type Memory, type NewMemory } from "@/services";
@@ -78,6 +81,9 @@ export default function YouScreen() {
         <Text variant="heading">{t("you.saved")}</Text>
       </View>
       <SavedDishes dishes={favourites.data} />
+
+      <VoiceSettings />
+      <PhoneLink />
 
       <View style={{ gap: space.xs }}>
         <Text variant="heading">{t("you.learned")}</Text>
@@ -294,6 +300,120 @@ function Preferences({
         </Text>
       ) : null}
     </Card>
+  );
+}
+
+/** How Cookmate talks to you (KIT-068): pace, detail, experience and units, for voice and read-aloud. */
+function VoiceSettings() {
+  const qc = useQueryClient();
+  const { profile, query, memberId } = useVoiceProfile();
+  const save = useMutation({
+    mutationFn: (changes: Partial<VoiceProfile>) => services.preference.updateVoiceProfile(memberId!, changes),
+    onMutate: (changes) => qc.setQueryData(["voiceProfile", memberId], { ...profile, ...changes }),
+    onError: () => void qc.invalidateQueries({ queryKey: ["voiceProfile", memberId] }),
+  });
+  if (!memberId || !query.data) return null;
+  const row = <K extends keyof VoiceProfile>(key: K, values: VoiceProfile[K][], label: StringKey) => (
+    <View style={{ gap: space.xs }}>
+      <Text variant="label" muted>
+        {t(label)}
+      </Text>
+      <View style={styles.chips}>
+        {values.map((v) => (
+          <Chip key={v} label={t(`you.voice.${key}.${v}` as StringKey)} selected={profile[key] === v} onPress={() => save.mutate({ [key]: v } as Partial<VoiceProfile>)} />
+        ))}
+      </View>
+    </View>
+  );
+  return (
+    <>
+      <View style={{ gap: space.xs }}>
+        <Text variant="heading">{t("you.voice.title")}</Text>
+        <Text muted>{t("you.voice.body")}</Text>
+      </View>
+      <Card>
+        {row("pace", PACES, "you.voice.paceLabel")}
+        {row("verbosity", VERBOSITIES, "you.voice.verbosityLabel")}
+        {row("skill", SKILLS, "you.voice.skillLabel")}
+        {row("units", UNITS, "you.voice.unitsLabel")}
+        <Button kind="secondary" label={t("you.voice.try")} onPress={() => say(stepWords(SAMPLE_STEP[getLocale()], profile))} />
+      </Card>
+    </>
+  );
+}
+
+const SAMPLE_STEP: Record<"en" | "hi" | "hinglish", { text: string; cue: string; safety: string }> = {
+  en: { text: "Heat the ghee and add cumin", cue: "Wait until the seeds crackle", safety: "Keep your face away from the pan" },
+  hi: { text: "घी गरम करें और जीरा डालें", cue: "दाने चटकने तक रुकें", safety: "चेहरा कड़ाही से दूर रखें" },
+  hinglish: { text: "Ghee garam karke jeera daalein", cue: "Daane chatakne tak rukein", safety: "Chehra kadhai se door rakhein" },
+};
+
+/** Keep your kitchen safe (KIT-021): link a phone to this anonymous account. Same account, so nothing moves. */
+function PhoneLink() {
+  const { colors } = useTheme();
+  const qc = useQueryClient();
+  const phone = useQuery({ queryKey: ["phone"], queryFn: () => services.auth.getPhone() });
+  const [number, setNumber] = useState("");
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [problem, setProblem] = useState<StringKey | null>(null);
+  const send = useMutation({
+    mutationFn: (e164: string) => services.auth.startPhoneLink(e164),
+    onSuccess: (result, e164) => {
+      if (result === "sent") {
+        setSentTo(e164);
+        setProblem(null);
+      } else setProblem(result === "taken" ? "you.phone.taken" : "you.phone.notReady");
+    },
+    onError: () => setProblem("state.error.body"),
+  });
+  const verify = useMutation({
+    mutationFn: () => services.auth.confirmPhoneLink(sentTo!, code.trim()),
+    onSuccess: (ok) => {
+      if (!ok) return setProblem("you.phone.wrongCode");
+      setProblem(null);
+      void qc.invalidateQueries({ queryKey: ["phone"] });
+    },
+    onError: () => setProblem("state.error.body"),
+  });
+  if (phone.isPending) return null;
+  const e164 = indianMobile(number);
+  return (
+    <>
+      <View style={{ gap: space.xs }}>
+        <Text variant="heading">{t("you.phone.title")}</Text>
+        <Text muted>{t("you.phone.body")}</Text>
+      </View>
+      <Card>
+        {phone.data ? (
+          <View style={styles.dish}>
+            <Icon name="check" color={colors.limeText} />
+            <Text variant="bodyStrong">{t("you.phone.linked", { phone: maskPhone(phone.data) })}</Text>
+          </View>
+        ) : sentTo ? (
+          <>
+            <Text>{t("you.phone.sent", { phone: maskPhone(sentTo) })}</Text>
+            <Field value={code} onChangeText={(v) => setCode(v.replace(/\D/g, "").slice(0, 6))} placeholder="123456" keyboardType="number-pad" accessibilityLabel={t("you.phone.codeLabel")} maxLength={6} />
+            <View style={styles.actions}>
+              <Button label={verify.isPending ? t("finish.saving") : t("you.phone.verify")} disabled={verify.isPending || code.length !== 6} onPress={() => verify.mutate()} />
+              <Button kind="quiet" label={t("you.phone.change")} onPress={() => { setSentTo(null); setCode(""); }} />
+            </View>
+          </>
+        ) : (
+          <>
+            <Field value={number} onChangeText={setNumber} placeholder="98765 43210" keyboardType="phone-pad" accessibilityLabel={t("you.phone.numberLabel")} maxLength={16} />
+            <View style={styles.actions}>
+              <Button label={send.isPending ? t("finish.saving") : t("you.phone.send")} disabled={!e164 || send.isPending} onPress={() => e164 && send.mutate(e164)} />
+            </View>
+          </>
+        )}
+        {problem ? (
+          <Text variant="caption" color={colors.alert} accessibilityLiveRegion="polite">
+            {t(problem)}
+          </Text>
+        ) : null}
+      </Card>
+    </>
   );
 }
 

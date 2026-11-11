@@ -14,6 +14,8 @@ import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
 import { WhistleCounter } from "@/components/cook/WhistleCounter";
 import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
+import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
+import { stepWords } from "@/domain/voiceStyle";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { dishImage } from "@/design-system/media";
@@ -108,6 +110,7 @@ function durationLabel(sec: number): string {
 function Cooking({ session, doc, members, householdId }: { session: CookSession; doc: RecipeDoc; members: Member[]; householdId: string }) {
   // Remembered "more garlic" and the like (KIT-104), shown in the ingredient list.
   const changes = useAmountChanges(householdId, doc);
+  const voice = useVoiceProfile();
   const { colors } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -206,6 +209,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           lines={complete.data}
           recipeId={doc.parent_id ?? doc.id ?? doc.slug}
           memberId={memberId ?? undefined}
+          changes={changes}
           leftoverNote={safetyText([leftoverSafety(doc.ingredients)].filter((x) => x !== null), locale)}
           onClose={() => {
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
@@ -234,7 +238,8 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     }
     setReading(true);
     // Recipe text is written in English for now, so it is read by the English voice.
-    say([step.text, step.cue, step.safety].filter(Boolean).join(". "), { language: "en-IN", onEnd: () => setReading(false) });
+    // KIT-068: the same words the voice agent would say for this cook (cue for learners, safety always).
+    say(stepWords(step, voice.profile), { language: "en-IN", onEnd: () => setReading(false) });
   };
 
   const whistle = () => {

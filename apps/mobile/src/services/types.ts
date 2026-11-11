@@ -196,6 +196,10 @@ export interface AuthService {
   startPhoneLink(phone: string): Promise<"sent" | "not_configured" | "taken">;
   /** KIT-021: the code from the text message. False when the code is wrong or expired. */
   confirmPhoneLink(phone: string, code: string): Promise<boolean>;
+  /** KIT-121: a zip of everything about this household; the link works for 24 hours. */
+  exportData(householdId: string): Promise<{ url: string; expiresAt: string }>;
+  /** KIT-122: delete this account now. `confirm` is the word the cook typed. Signs out afterwards. */
+  deleteAccount(confirm: string): Promise<void>;
 }
 
 export type { VoiceProfile } from "@/domain/voiceStyle";

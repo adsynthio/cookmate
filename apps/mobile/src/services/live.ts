@@ -89,6 +89,18 @@ export const liveServices: Services = {
       throw error;
     },
 
+    async exportData(householdId) {
+      const { data, error } = await requireSupabase().functions.invoke("export-data", { body: { household_id: householdId } });
+      if (error) throw error;
+      return { url: data.url as string, expiresAt: data.expires_at as string };
+    },
+    async deleteAccount(confirm) {
+      const sb = requireSupabase();
+      const { error } = await sb.functions.invoke("delete-account", { body: { confirm } });
+      if (error) throw error;
+      await sb.auth.signOut({ scope: "local" });
+    },
+
     async getCurrentHousehold() {
       const sb = requireSupabase();
       const { data: auth } = await sb.auth.getSession();

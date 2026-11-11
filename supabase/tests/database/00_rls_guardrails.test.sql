@@ -1,6 +1,6 @@
 -- Guard rails: every table has RLS, anon can read nothing, service-only tables are closed.
 begin;
-select plan(4);
+select plan(6);
 
 select is(
   (select count(*)::int from pg_tables where schemaname = 'public' and not rowsecurity),
@@ -31,6 +31,25 @@ select is(
 select ok(
   not has_table_privilege('authenticated', 'public.ai_requests', 'select'),
   'authenticated cannot read ai_requests'
+);
+
+select is(
+  (select count(*)::int
+     from pg_constraint c join pg_namespace n on n.oid = c.connamespace
+    where c.contype = 'f' and n.nspname = 'public'
+      and not exists (select 1 from pg_index i
+                       where i.indrelid = c.conrelid
+                         and (i.indkey::int2[])[0:cardinality(c.conkey) - 1] = c.conkey)),
+  0,
+  'every foreign key has a covering index'
+);
+
+select is(
+  (select array_agg(p.proname::text order by p.proname)
+     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and p.prosecdef and has_function_privilege('authenticated', p.oid, 'execute')),
+  array['create_household'],
+  'the only SECURITY DEFINER function signed-in users can call is create_household (reviewed)'
 );
 
 select * from finish();

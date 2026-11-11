@@ -15,7 +15,10 @@ import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
 import { deductionPreview } from "@/domain/cooking";
 
+import { localeFromLanguageCode } from "@/domain/onboarding";
+
 import { buildPicks } from "./picks";
+import { localRescue } from "./rescue";
 import type { CookSession, HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
@@ -363,6 +366,13 @@ export const mockServices: Services = {
       const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
       s.currentStep = Math.max(1, Math.min(doc.steps.length, s.currentStep + delta));
       return { currentStep: s.currentStep, total: doc.steps.length };
+    },
+    async rescue({ sessionId, problem, missing, details, languageCode }) {
+      await delay(400);
+      const s = sessions.get(sessionId);
+      if (!s) throw new Error("session not found");
+      const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
+      return localRescue(doc, pantry, { problem, missing, details }, localeFromLanguageCode(languageCode) ?? "en");
     },
     async abandonSession(sessionId) {
       const s = sessions.get(sessionId);

@@ -23,6 +23,7 @@ import { radius, space } from "@/design-system/tokens";
 import { countWhistle, offersTimer, stepSeconds } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
+import { leftoverSafety, safetyText } from "@/domain/rescue";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services, type CookSession, type Member } from "@/services";
 import { buzz, hush, say, tick } from "@/services/feedback";
@@ -199,6 +200,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           householdId={householdId}
           dish={dish}
           lines={complete.data}
+          leftoverNote={safetyText([leftoverSafety(doc.ingredients)].filter((x) => x !== null), locale)}
           onClose={() => {
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
             void queryClient.invalidateQueries({ queryKey: ["picks"] });
@@ -335,6 +337,8 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
             <Image source={photo} style={{ width: photoSize, height: photoSize, borderRadius: radius.card }} resizeMode="cover" accessibilityLabel={dish} />
           </View>
         ) : null}
+
+        <Button kind="secondary" size="cook" label={t("cook.wrong")} onPress={() => router.push(`/rescue/${session.id}`)} />
 
         <Button
           kind="quiet"

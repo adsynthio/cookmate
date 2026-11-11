@@ -1,5 +1,6 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
+import type { Problem } from "@/domain/rescue";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
@@ -232,6 +233,10 @@ export type DeductionAdjustment = { itemId: string; quantity?: number; skip?: bo
 
 export type Rating = "loved" | "good" | "meh" | "bad";
 
+export type RescueInput = { sessionId: string; problem: Problem; missing?: string; details?: string; languageCode: string };
+/** At most three things to do now, plus the pinned safety line when one applies (KIT-091/092). */
+export type RescueFix = { steps: string[]; safetyNote: string | null; source: "rules" | "model" };
+
 export interface CookingService {
   /** KIT-070: start cooking a recipe (or its adapted variant). */
   startSession(input: {
@@ -249,6 +254,8 @@ export interface CookingService {
   advanceStep(sessionId: string, delta: number, channel?: "touch" | "voice"): Promise<{ currentStep: number; total: number }>;
   /** Stop without finishing: nothing is deducted and the Cook tab stops offering to resume. */
   abandonSession(sessionId: string): Promise<void>;
+  /** KIT-091: a fix for this dish and step with what is in the kitchen. */
+  rescue(input: RescueInput): Promise<RescueFix>;
   /** KIT-037: finish and preview what comes off the pantry. */
   completeSession(sessionId: string): Promise<DeductionLine[]>;
   applyDeduction(sessionId: string, adjustments: DeductionAdjustment[]): Promise<string[]>;

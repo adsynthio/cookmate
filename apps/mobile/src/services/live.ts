@@ -2,6 +2,7 @@
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
+import type { ListLine } from "@/domain/shopping";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
 
@@ -152,7 +153,7 @@ export const liveServices: Services = {
       const sb = requireSupabase();
       const { data, error } = await sb
         .from("memories")
-        .select("id, statement, source, scope, household_members(display_name)")
+        .select("id, statement, source, scope, subject_recipe_id, household_members(display_name)")
         .eq("household_id", householdId)
         .eq("status", "active")
         .order("updated_at", { ascending: false });
@@ -164,15 +165,36 @@ export const liveServices: Services = {
           source: m.source,
           scope: m.scope as Memory["scope"],
           memberName: (m as { household_members?: { display_name: string } | null }).household_members?.display_name ?? null,
+          recipeId: m.subject_recipe_id,
         }),
       );
     },
 
-    async forgetMemory() {
-      throw new NotImplemented("forget_memory RPC (Sprint 5)");
+    async forgetMemory(memoryId) {
+      const { error } = await requireSupabase().rpc("forget_memory", { p_memory: memoryId });
+      if (error) throw error;
     },
-    async keepMemory() {
-      throw new NotImplemented("confirm_memory RPC (Sprint 5)");
+    async keepMemory(memoryId) {
+      const { error } = await requireSupabase().rpc("keep_memory", { p_memory: memoryId });
+      if (error) throw error;
+    },
+    async saveMemory(input) {
+      const { data, error } = await requireSupabase().rpc("save_memory", {
+        p_household: input.householdId,
+        p_statement: input.statement,
+        p_member: input.memberId,
+        p_category: input.category,
+        p_source: "explicit",
+        p_polarity: input.polarity ?? 0,
+        p_attributes: input.about ? { about: input.about } : {},
+        p_subject_recipe: input.recipeId,
+      });
+      if (error) throw error;
+      return data;
+    },
+    async updateMemory(memoryId, statement) {
+      const { error } = await requireSupabase().rpc("update_memory", { p_memory: memoryId, p_statement: statement });
+      if (error) throw error;
     },
   },
 
@@ -309,6 +331,35 @@ export const liveServices: Services = {
       return data ?? 0;
     },
 
+    async getList(householdId) {
+      const { data, error } = await requireSupabase()
+        .from("shopping_list_items")
+        .select("id, display_name, quantity, unit, reason, ingredients(canonical_name)")
+        .eq("household_id", householdId)
+        .in("status", ["needed", "in_cart"])
+        .order("created_at");
+      if (error) throw error;
+      return (data ?? []).map((r) => {
+        const key = (r as { ingredients?: { canonical_name: string } | null }).ingredients?.canonical_name ?? null;
+        return {
+          id: r.id,
+          ingredientKey: key,
+          name: key ?? r.display_name,
+          quantity: r.quantity === null ? null : Number(r.quantity),
+          unit: r.unit,
+          reason: r.reason as ListLine["reason"],
+        };
+      });
+    },
+    async markBought(householdId, itemIds) {
+      const { data, error } = await requireSupabase().rpc("mark_list_items_bought", { p_household: householdId, p_item_ids: itemIds });
+      if (error) throw error;
+      return data ?? [];
+    },
+    async removeFromList(itemId) {
+      const { error } = await requireSupabase().rpc("remove_list_item", { p_item: itemId });
+      if (error) throw error;
+    },
     async addToList(householdId, items) {
       const { error } = await requireSupabase().rpc("add_to_shopping_list", {
         p_household: householdId,

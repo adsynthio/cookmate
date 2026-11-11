@@ -5,6 +5,8 @@ uv run python harness.py
 fast_path  next {}
 > dal ke liye das minute ka timer laga do
 fast_path  timer_set {'minutes': 10.0, 'label': 'dal'}
+> main Sunita hoon
+switch     speaker 'sunita'
 > tamatar nahi hai
 model      (would call Claude with tools)
 """
@@ -14,9 +16,13 @@ from __future__ import annotations
 import sys
 
 from cookmate_voice.fast_path import match
+from cookmate_voice.speakers import parse_intro
 
 
 def route(utterance: str) -> str:
+    name = parse_intro(utterance)
+    if name is not None:
+        return f"switch     speaker {name!r}"
     m = match(utterance)
     if m is not None:
         return f"fast_path  {m.command} {m.args}"

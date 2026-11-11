@@ -1,0 +1,40 @@
+name: Record step audio
+
+# Runs the tts-cache Edge Function (KIT-080): records any published recipe step that has no cached speech yet.
+# Needs the repository secret SUPABASE_SERVICE_ROLE_KEY, and SARVAM_API_KEY set as an Edge Function secret.
+# Without the repository secret the job says so and does nothing. Each run records at most 40 clips.
+
+on:
+  schedule:
+    - cron: "17 21 * * *" # daily, 02:47 IST
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Most clips to record in this run"
+        default: "40"
+
+concurrency:
+  group: tts-cache
+  cancel-in-progress: false
+
+env:
+  SUPABASE_URL: https://usuwwzkorhsbaaziaanl.supabase.co
+
+jobs:
+  record:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Call tts-cache
+        env:
+          KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          LIMIT: ${{ inputs.limit || '40' }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::notice::SUPABASE_SERVICE_ROLE_KEY is not set; skipping."
+            exit 0
+          fi
+          status=$(curl -sS -o out.json -w '%{http_code}' -X POST "$SUPABASE_URL/functions/v1/tts-cache" \
+            -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d "{\"limit\": $LIMIT}")
+          cat out.json; echo
+          if [ "$status" = "503" ]; then echo "::notice::SARVAM_API_KEY is not set on the function; nothing recorded."; exit 0; fi
+          [ "$status" = "200" ]

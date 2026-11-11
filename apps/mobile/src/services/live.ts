@@ -2,6 +2,7 @@
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
+import type { ListLine } from "@/domain/shopping";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
 
@@ -330,6 +331,35 @@ export const liveServices: Services = {
       return data ?? 0;
     },
 
+    async getList(householdId) {
+      const { data, error } = await requireSupabase()
+        .from("shopping_list_items")
+        .select("id, display_name, quantity, unit, reason, ingredients(canonical_name)")
+        .eq("household_id", householdId)
+        .in("status", ["needed", "in_cart"])
+        .order("created_at");
+      if (error) throw error;
+      return (data ?? []).map((r) => {
+        const key = (r as { ingredients?: { canonical_name: string } | null }).ingredients?.canonical_name ?? null;
+        return {
+          id: r.id,
+          ingredientKey: key,
+          name: key ?? r.display_name,
+          quantity: r.quantity === null ? null : Number(r.quantity),
+          unit: r.unit,
+          reason: r.reason as ListLine["reason"],
+        };
+      });
+    },
+    async markBought(householdId, itemIds) {
+      const { data, error } = await requireSupabase().rpc("mark_list_items_bought", { p_household: householdId, p_item_ids: itemIds });
+      if (error) throw error;
+      return data ?? [];
+    },
+    async removeFromList(itemId) {
+      const { error } = await requireSupabase().rpc("remove_list_item", { p_item: itemId });
+      if (error) throw error;
+    },
     async addToList(householdId, items) {
       const { error } = await requireSupabase().rpc("add_to_shopping_list", {
         p_household: householdId,

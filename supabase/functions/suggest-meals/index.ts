@@ -176,7 +176,7 @@ Deno.serve(async (req) => {
     sb.from("inventory_items").select("id, confidence, expiry_date, staple_level, ingredients(canonical_name, names)")
       .eq("household_id", householdId).eq("status", "active"),
     sb.from("recipes").select(RANK_SELECT).is("household_id", null).is("parent_recipe_id", null),
-    sb.from("memories").select("polarity, scope, expires_at, ingredients(canonical_name)")
+    sb.from("memories").select("polarity, scope, expires_at, member_id, subject_recipe_id, attributes, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active").not("subject_ingredient_id", "is", null),
     sb.from("calendar_events").select("rules, event_date, end_date").lte("event_date", today)
       .gte("event_date", localDate(new Date(now.getTime() - 60 * 86_400_000), tz))
@@ -209,7 +209,8 @@ Deno.serve(async (req) => {
   );
   const docs = ((recipes.data ?? []) as unknown as RecipeRow[]).map(recipeDocFromRow).filter((d) => !excluded.has(d.id!));
   const invRows = (inventory.data ?? []) as unknown as InventoryRow[];
-  const memPrefs = prefsFromMemories((memories.data ?? []) as unknown as MemoryRow[], now);
+  const eaters = eatersFromRows((members.data ?? []) as unknown as MemberRow[], body.who_eating);
+  const memPrefs = prefsFromMemories((memories.data ?? []) as unknown as MemoryRow[], now, eaters.map((e) => e.id));
   // Events running today: single-day events on today, multi-day ones that haven't ended.
   const calPrefs = prefsFromCalendar(
     ((calendar.data ?? []) as unknown as (CalendarRow & { event_date: string; end_date: string | null })[])
@@ -242,7 +243,7 @@ Deno.serve(async (req) => {
 
   const ctx: RankContext = {
     slot,
-    eaters: eatersFromRows((members.data ?? []) as unknown as MemberRow[], body.who_eating),
+    eaters,
     pantry: pantryFromRows(invRows, today),
     staples: [], // filled below from the catalog
     equipment: kit.length ? kit : null,

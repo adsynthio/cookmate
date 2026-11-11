@@ -52,6 +52,16 @@ Deno.test("memories and calendar become avoid / like / prefer lists", () => {
     { polarity: -1, scope: "temporary", expires_at: "2026-11-09T00:00:00Z", ingredients: { canonical_name: "onion" } },
   ], now);
   assertEquals(m, { avoid: ["brinjal"], like: ["garlic"] });
+  // Only plain likes and dislikes of the people eating count: not "less salt", not a note about one dish.
+  const rows = [
+    { polarity: -1, scope: "permanent", expires_at: null, ingredients: { canonical_name: "bitter gourd" }, member_id: "riya", attributes: { about: "preference" } },
+    { polarity: -1, scope: "permanent", expires_at: null, ingredients: { canonical_name: "salt" }, member_id: "sunita", attributes: { about: "amount" } },
+    { polarity: -1, scope: "permanent", expires_at: null, ingredients: { canonical_name: "garlic" }, member_id: "sunita", subject_recipe_id: "r1" },
+    { polarity: -1, scope: "permanent", expires_at: null, ingredients: { canonical_name: "peanut" }, member_id: null },
+  ];
+  assertEquals(prefsFromMemories(rows, now, ["sunita", "riya"]).avoid, ["bitter gourd", "peanut"]);
+  assertEquals(prefsFromMemories(rows, now, ["sunita"]).avoid, ["peanut"]);
+  assertEquals(prefsFromMemories(rows, now).avoid, ["bitter gourd", "peanut"]);
   assertEquals(prefsFromCalendar([{ rules: { avoid: ["onion", "garlic"], prefer: ["sabudana"] } }, { rules: null }]), {
     avoid: ["onion", "garlic"],
     prefer: ["sabudana"],

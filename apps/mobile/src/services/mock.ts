@@ -423,4 +423,11 @@ export const mockServices: Services = {
       await delay(200);
     },
   },
+  voice: {
+    // Mock mode has no voice backend.
+    async getToken() {
+      await delay(400);
+      return "not_configured";
+    },
+  },
 };

@@ -21,6 +21,7 @@ import { buildPicks, findIngredients } from "./picks";
 import { changeReply, fallbackAnswer } from "@/domain/assist";
 
 import { localRescue } from "./rescue";
+import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import type { CookSession, HouseholdRef, ListLine, Member, Memory, PantryItem, Services } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
@@ -90,6 +91,9 @@ let memories: Memory[] = [
   { ...plain, id: "m3", statement: "Weekday dinners under 30 minutes", source: "observed", scope: "permanent", memberName: null },
 ];
 const favourites: string[] = [];
+const voiceProfiles = new Map<string, VoiceProfile>();
+let mockPhone: string | null = null;
+let pendingPhone: string | null = null;
 const dismissedToday = new Set<string>();
 /** Subject of each saved memory ("recipe:about"), for the replace rule. */
 const subjects = new Map<string, string>();
@@ -127,7 +131,23 @@ let adaptedNo = 1;
 export const mockServices: Services = {
   auth: {
     async ensureSignedIn() {
-      return { userId: "mock-user", isAnonymous: true };
+      return { userId: "mock-user", isAnonymous: mockPhone === null };
+    },
+    async getPhone() {
+      return mockPhone;
+    },
+    async startPhoneLink(phone) {
+      await delay(300);
+      pendingPhone = phone;
+      return "sent";
+    },
+    async confirmPhoneLink(phone, code) {
+      await delay(300);
+      // Mock mode: the code is always 123456.
+      if (phone !== pendingPhone || code !== "123456") return false;
+      mockPhone = phone;
+      pendingPhone = null;
+      return true;
     },
     async getCurrentHousehold() {
       return readHousehold();
@@ -194,6 +214,14 @@ export const mockServices: Services = {
         ...memories,
       ];
       return id;
+    },
+    async getVoiceProfile(memberId) {
+      await delay(100);
+      return { ...DEFAULT_PROFILE, ...voiceProfiles.get(memberId) };
+    },
+    async updateVoiceProfile(memberId, changes) {
+      await delay(100);
+      voiceProfiles.set(memberId, { ...DEFAULT_PROFILE, ...voiceProfiles.get(memberId), ...changes });
     },
     async updateMemory(id, statement) {
       await delay(150);

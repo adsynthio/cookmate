@@ -146,3 +146,9 @@ export function offersTimer(step: Pick<RecipeStepDoc, "minutes" | "seconds" | "t
   if (step.timer) return true;
   return !step.whistles && sec >= 120 && sec <= 3 * 60 * 60;
 }
+
+/** A deduction amount after a remembered "more" or "less" (KIT-104): whole numbers from 10 up, one decimal below. */
+export function rememberedQty(qty: number, factor: number): number {
+  const q = qty * factor;
+  return q >= 10 ? Math.round(q) : Math.round(q * 10) / 10;
+}

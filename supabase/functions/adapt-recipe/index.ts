@@ -8,6 +8,7 @@ import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import { z } from "npm:zod@4.6.5";
 
+import { logAiRequest } from "../_shared/aiLog.ts";
 import {
   type Adaptation,
   type AdaptRequest,
@@ -87,23 +88,7 @@ Allowed ingredients: ${catalogNames.join(", ")}`,
 }
 
 async function logRequest(householdId: string, status: string, ms: number, usage?: Anthropic.Usage, error?: string) {
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !key) return;
-  const admin = createClient(url, key, { auth: { persistSession: false } });
-  const { error: e } = await admin.from("ai_requests").insert({
-    household_id: householdId,
-    task: TASK,
-    model: MODEL,
-    prompt_version: PROMPT_VERSION,
-    input_tokens: usage?.input_tokens ?? null,
-    cached_tokens: usage?.cache_read_input_tokens ?? null,
-    output_tokens: usage?.output_tokens ?? null,
-    latency_ms: ms,
-    status,
-    error: error?.slice(0, 500) ?? null,
-  });
-  if (e) console.error("ai_requests insert failed", e.message);
+  await logAiRequest({ householdId, task: TASK, model: MODEL, promptVersion: PROMPT_VERSION, status, latencyMs: ms, usage, error });
 }
 
 Deno.serve(async (req) => {

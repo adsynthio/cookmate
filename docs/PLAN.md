@@ -135,6 +135,14 @@ Part 2, cooking without network (branch `sprint-6/offline`):
 - [x] Voice offline (KIT-084): a hands-free mic on the cook screen listens on the phone (on-device recognition where the phone has it) for next, back, repeat, slower, pause, done, whistles and "10 minute ka timer", using a port of the voice agent's fast-path matcher tested against the same phrases. Steps play from the downloaded recordings, or the phone's own voice when there are none
 - [ ] Needs a device build to try: hands-free listening, downloads to the phone's storage and recording playback (the web build checks everything else). Pantry and shopping-list edits made offline are not queued yet
 
+Part 3, telemetry (branch `sprint-6/telemetry`, details in `docs/ANALYTICS.md`):
+- [x] Voice latency and cost (KIT-069): the agent counts tokens, speech seconds, characters and per-turn latency (end of speech + first token + first audio) and closes its `voice_sessions` row once through `record_voice_session`, which prices it in rupees; each turn's latency lands on the cooking session; `voice_report` gives p50/p95 and cost per session by day
+- [x] AI request logging (KIT-132): one shared logger; every model call in every Edge Function (now also `suggest-meals`), the step-recording job and the voice agent write `ai_requests`; prices in `private.usage_prices`; Monday report of cost by task and voice latency in the GitHub run summary
+- [x] Analytics (KIT-130): the V1 event catalog, sent to PostHog only with the analytics consent and a key; a guard drops anything that isn't an id, code or number; KPI dashboard definitions in `docs/ANALYTICS.md`
+- [x] Evaluations (KIT-133): the parse and rescue prompts moved to `prompt.ts`; 20 parse and 10 rescue cases with graders; a CI job runs them on prompt changes and fails on a regression
+- [ ] **You:** add `ANTHROPIC_API_KEY` and `SUPABASE_DB_URL` as repository secrets and make "AI evaluations / evals" a required check; set `EXPO_PUBLIC_POSTHOG_KEY` and turn on "Discard client IP data" in PostHog; confirm the two Sarvam prices in `private.usage_prices`; sign off security finding #12
+- [ ] Still to do: more evaluation tasks and cases, the screen events listed in `docs/ANALYTICS.md` as not emitted yet
+
 - [ ] **You:** sign off the accepted findings in `docs/SECURITY_REVIEW.md`; turn on CAPTCHA for anonymous sign-ins; decide how `tts-cache` is scheduled (GitHub secret or `pg_cron` + Vault)
 - [ ] Not doable from here: kitchen noise test set (KIT-082) needs real recordings; regional language (KIT-085) waits for the BRD decision; 300 dishes (KIT-142) need the culinary lead
 

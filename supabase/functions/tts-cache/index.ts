@@ -4,6 +4,7 @@
 // `limit` recordings. Without SARVAM_API_KEY it answers 503 tts_not_configured and does nothing.
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
+import { logAiRequest } from "../_shared/aiLog.ts";
 import { decodeAudios, plan, SARVAM_TTS_URL, sarvamBody, type CacheRow, type StepRow } from "./logic.ts";
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -45,6 +46,7 @@ Deno.serve(async (req) => {
   let characters = 0;
   const failed: string[] = [];
   for (const job of jobs) {
+    const started = Date.now();
     try {
       const res = await fetch(SARVAM_TTS_URL, {
         method: "POST",
@@ -64,8 +66,13 @@ Deno.serve(async (req) => {
       if (row.error) throw row.error;
       made++;
       characters += job.text.length;
+      await logAiRequest({ householdId: null, task: "tts_cache", model, promptVersion: "speech", status: "ok", latencyMs: Date.now() - started, units: job.text.length });
     } catch (err) {
       console.error("tts-cache job failed", job.path, err instanceof Error ? err.message : err);
+      await logAiRequest({
+        householdId: null, task: "tts_cache", model, promptVersion: "speech", status: "error", latencyMs: Date.now() - started,
+        error: err instanceof Error ? err.message : String(err),
+      });
       failed.push(job.path);
     }
   }

@@ -1,0 +1,53 @@
+name: AI evaluations
+
+# KIT-133: runs the evaluation cases in supabase/functions/_evals against the exact prompts the Edge Functions send,
+# on every pull request that changes a prompt, the shared rules it relies on, or the evals themselves. Fails when a
+# task scores under its floor or more than its tolerance below the last accepted score (_evals/baseline.json).
+# Needs the repository secret ANTHROPIC_API_KEY; without it the job says so and passes, since nothing can be
+# evaluated. To block merging on a regression, make "AI evaluations / evals" a required check on main.
+
+on:
+  pull_request:
+    paths:
+      - "supabase/functions/*/prompt.ts"
+      - "supabase/functions/_shared/rescue.ts"
+      - "supabase/functions/_shared/catalog.json"
+      - "supabase/functions/parse-inventory/logic.ts"
+      - "supabase/functions/rescue/logic.ts"
+      - "supabase/functions/_evals/**"
+      - ".github/workflows/evals.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evals-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evals:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.9.6"
+      - name: Check for the API key
+        id: key
+        env:
+          KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::notice::ANTHROPIC_API_KEY is not set; the AI evaluations cannot run."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run the evaluations
+        if: steps.key.outputs.present == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -o pipefail
+          deno run --allow-read --allow-write --allow-env --allow-net supabase/functions/_evals/run.ts --check | tee -a "$GITHUB_STEP_SUMMARY"

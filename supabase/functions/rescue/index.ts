@@ -4,28 +4,14 @@
 // asked about undercooked meat, fish, egg or kidney beans; and its answer is dropped unless it passes
 // validateModelRescue (at most three short steps, only things in the kitchen, no unsafe shortcuts).
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
-import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
-import { z } from "npm:zod@4.6.5";
 
-import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
-import {
-  MAX_STEP_CHARS,
-  MAX_STEPS,
-  missingResolved,
-  mustUseRules,
-  playbookText,
-  type Problem,
-  type RescueContext,
-  type RescueLocale,
-  staticRescue,
-  validateModelRescue,
-} from "../_shared/rescue.ts";
-import { type Body, cat, confidentPantry, contextFor, LANGUAGE_NAME, localeFor, type PantryRow, parseBody } from "./logic.ts";
+import { logAiRequest } from "../_shared/aiLog.ts";
+import { RECIPE_SELECT, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
+import { missingResolved, mustUseRules, staticRescue, validateModelRescue } from "../_shared/rescue.ts";
+import { askModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
+import { type Body, cat, confidentPantry, contextFor, localeFor, type PantryRow, parseBody } from "./logic.ts";
 
-const TASK = "rescue_fix";
-const MODEL = "claude-haiku-5-5";
-const PROMPT_VERSION = "rescue_fix@1";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -35,70 +21,9 @@ const CORS = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
-const Fix = z.object({ steps: z.array(z.string()), uses: z.array(z.string()) });
-
-async function askModel(doc: RecipeDoc, stepNo: number, problem: Problem, ctx: RescueContext, locale: RescueLocale) {
-  const client = new Anthropic();
-  const started = Date.now();
-  const r = await client.messages.parse(
-    {
-      model: MODEL,
-      max_tokens: 400,
-      thinking: { type: "disabled" },
-      output_config: { effort: "low", format: zodOutputFormat(Fix) },
-      system: [{
-        type: "text",
-        cache_control: { type: "ephemeral" },
-        text: `You help an Indian home cook fix a dish that is going wrong, right now, at the stove.
-Reply with at most ${MAX_STEPS} steps. Each step is one short instruction (under ${MAX_STEP_CHARS} characters) the cook can do immediately,
-with household measures (chammach, katori, chutki). Use ONLY ingredients from the "kitchen" list, the recipe's own
-ingredients, or water. List every ingredient you rely on in "uses", by its exact name from those lists.
-Never suggest tasting or serving undercooked meat, fish, egg or beans. Never shorten cooking for them. Never suggest
-pouring water on hot oil. Do not write safety warnings or health claims: the app adds its own safety text.
-If nothing in the kitchen helps, say how to serve the dish so the problem matters less.
-
-Safety playbook (pinned; never contradict it):
-${playbookText()}`,
-      }],
-      messages: [{
-        role: "user",
-        content: JSON.stringify({
-          write_in: LANGUAGE_NAME[locale],
-          dish: doc.title,
-          problem,
-          missing_ingredient: ctx.missing,
-          cook_said: ctx.details,
-          current_step: { number: stepNo, text: doc.steps[stepNo - 1]?.text },
-          next_step: doc.steps[stepNo]?.text,
-          recipe_ingredients: doc.ingredients.map((i) => i.ingredient),
-          kitchen: ctx.pantry,
-        }),
-      }],
-    },
-    { timeout: 2500 },
-  );
-  const ms = Date.now() - started;
-  return { fix: r.stop_reason === "refusal" ? null : r.parsed_output, usage: r.usage, ms, refused: r.stop_reason === "refusal" };
-}
 
 async function logRequest(householdId: string, status: string, ms: number, usage?: Anthropic.Usage, error?: string) {
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !key) return;
-  const admin = createClient(url, key, { auth: { persistSession: false } });
-  const { error: e } = await admin.from("ai_requests").insert({
-    household_id: householdId,
-    task: TASK,
-    model: MODEL,
-    prompt_version: PROMPT_VERSION,
-    input_tokens: usage?.input_tokens ?? null,
-    cached_tokens: usage?.cache_read_input_tokens ?? null,
-    output_tokens: usage?.output_tokens ?? null,
-    latency_ms: ms,
-    status,
-    error: error?.slice(0, 500) ?? null,
-  });
-  if (e) console.error("ai_requests insert failed", e.message);
+  await logAiRequest({ householdId, task: TASK, model: MODEL, promptVersion: PROMPT_VERSION, status, latencyMs: ms, usage, error });
 }
 
 Deno.serve(async (req) => {
@@ -147,7 +72,7 @@ Deno.serve(async (req) => {
   const rulesAreEnough = input.problem === "missing_ingredient" && (!ctx.missing || missingResolved(ctx));
   if (Deno.env.get("ANTHROPIC_API_KEY") && !mustUseRules(input.problem, ctx, cat) && !rulesAreEnough) {
     try {
-      const { fix, usage, ms, refused } = await askModel(doc, stepNo, input.problem, ctx, locale);
+      const { fix, usage, ms, refused } = await askModel(new Anthropic(), doc, stepNo, input.problem, ctx, locale);
       if (fix) {
         const problems = validateModelRescue(fix, ctx);
         await logRequest(householdId, problems.length ? "invalid_output" : "ok", ms, usage, problems.join("; ") || undefined);

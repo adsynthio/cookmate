@@ -2,6 +2,7 @@
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
+import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import type { ListLine } from "@/domain/shopping";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
@@ -65,6 +66,27 @@ export const liveServices: Services = {
       const { data, error } = await sb.auth.signInAnonymously();
       if (error || !data.user) throw error ?? new Error("anonymous sign-in failed");
       return { userId: data.user.id, isAnonymous: true };
+    },
+
+    async getPhone() {
+      const { data } = await requireSupabase().auth.getUser();
+      const phone = data.user?.phone;
+      return phone ? (phone.startsWith("+") ? phone : `+${phone}`) : null;
+    },
+    async startPhoneLink(phone) {
+      // Linking keeps the same user id, so every household row stays exactly where it is (ONB-01).
+      const { error } = await requireSupabase().auth.updateUser({ phone });
+      if (!error) return "sent";
+      const code = (error as { code?: string }).code ?? "";
+      if (code === "phone_exists") return "taken";
+      if (code === "phone_provider_disabled" || code === "sms_send_failed" || /provider|sms/i.test(error.message)) return "not_configured";
+      throw error;
+    },
+    async confirmPhoneLink(phone, code) {
+      const { error } = await requireSupabase().auth.verifyOtp({ phone, token: code, type: "phone_change" });
+      if (!error) return true;
+      if ((error as { code?: string }).code === "otp_expired" || /token|otp|expired|invalid/i.test(error.message)) return false;
+      throw error;
     },
 
     async getCurrentHousehold() {
@@ -207,6 +229,26 @@ export const liveServices: Services = {
       });
       if (error) throw error;
       return data;
+    },
+    async getVoiceProfile(memberId) {
+      const { data, error } = await requireSupabase()
+        .from("voice_profiles")
+        .select("pace, verbosity, skill_level, units_system")
+        .eq("member_id", memberId)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return { ...DEFAULT_PROFILE };
+      return { pace: data.pace, verbosity: data.verbosity, skill: data.skill_level, units: data.units_system } as VoiceProfile;
+    },
+    async updateVoiceProfile(memberId, changes) {
+      const row = {
+        ...(changes.pace ? { pace: changes.pace } : {}),
+        ...(changes.verbosity ? { verbosity: changes.verbosity } : {}),
+        ...(changes.skill ? { skill_level: changes.skill } : {}),
+        ...(changes.units ? { units_system: changes.units } : {}),
+      };
+      const { error } = await requireSupabase().from("voice_profiles").update(row).eq("member_id", memberId);
+      if (error) throw error;
     },
     async updateMemory(memoryId, statement) {
       const { error } = await requireSupabase().rpc("update_memory", { p_memory: memoryId, p_statement: statement });

@@ -42,6 +42,10 @@ Deno.test("rescue grading uses the function's own validator plus the case's chec
   assertEquals(rescueProblems({ steps: ["Turn the flame down to low."], uses: [] }, ctx, { mentions_any: ["flame"] }), []);
   assert(rescueProblems({ steps: ["Add some chocolate."], uses: ["chocolate"] }, ctx, {}).length > 0, "not in the kitchen");
   assert(rescueProblems({ steps: ["Add salt."], uses: [] }, ctx, { mentions_any: ["flame"] }).length > 0, "missed the point");
+  // A missing ingredient may be named ("skip the curry leaves"), but the fix must not rely on it.
+  const poha = contextFor(recipes.get("kanda-poha")!, ["onion", "lemon"], "curry leaves");
+  assertEquals(rescueProblems({ steps: ["Curry leaves are missing, so skip them."], uses: [] }, poha, { without: "curry leaves" }), []);
+  assert(rescueProblems({ steps: ["Add curry leaves."], uses: ["curry leaves"] }, poha, { without: "curry leaves" }).length > 0);
 });
 
 Deno.test("a score under the floor, or well under the last accepted one, is a regression", () => {

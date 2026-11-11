@@ -18,13 +18,20 @@ from datetime import date, datetime, timedelta, timezone
 IST = timezone(timedelta(hours=5, minutes=30))
 
 
+class QueryError(RuntimeError):
+    pass
+
+
 def query(url: str, sql: str) -> list[list[str]]:
-    out = subprocess.run(
+    r = subprocess.run(
         ["psql", url, "-X", "-q", "-A", "-t", "-F", "\t", "-v", "ON_ERROR_STOP=1", "-c", sql],
-        check=True,
         capture_output=True,
         text=True,
-    ).stdout
+    )
+    if r.returncode != 0:
+        # psql's own message names the host and the problem, never the password.
+        raise QueryError(f"psql exit {r.returncode}: {r.stderr.strip()}")
+    out = r.stdout
     return [line.split("\t") for line in out.splitlines() if line.strip()]
 
 
@@ -83,9 +90,13 @@ def main() -> int:
     end = datetime.now(IST).date()
     start = end - timedelta(days=args.days)
     span = f"'{start.isoformat()} 00:00+05:30'::timestamptz, '{end.isoformat()} 00:00+05:30'::timestamptz"
-    ai = query(url, f"select * from private.ai_cost_report({span})")
-    voice = query(url, f"select * from private.voice_report({span})")
-    targets = {k: num(v) for k, v in query(url, "select key, value from private.telemetry_settings")}
+    try:
+        ai = query(url, f"select * from private.ai_cost_report({span})")
+        voice = query(url, f"select * from private.voice_report({span})")
+        targets = {k: num(v) for k, v in query(url, "select key, value from private.telemetry_settings")}
+    except QueryError as err:
+        print(str(err), file=sys.stderr)
+        return 1
     print(render(start, end, ai, voice, targets))
     return 0
 

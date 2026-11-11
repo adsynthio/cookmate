@@ -90,7 +90,7 @@
     ],
     "expect": {
       "mentions_any": [
-        "water|pani|buttermilk|curd"
+        "water|pa+ni|पानी|buttermilk|curd"
       ]
     }
   },
@@ -125,7 +125,7 @@
     ],
     "expect": {
       "mentions_any": [
-        "pani|water"
+        "pa+ni|पानी|water"
       ]
     }
   },

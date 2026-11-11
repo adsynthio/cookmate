@@ -33,6 +33,8 @@ Deno.test("item F1: exact items score 1, wrong amounts half, inventions and miss
   assertEquals(itemScore(exp, [g("potato", 1, "kg"), g("onion")]).tp, 1.5);
   assertEquals(f1(itemScore(exp, [g("potato", 2, "kg"), g("onion"), g("garlic")])), 0.8);
   assertEquals(f1(itemScore(exp, [g("potato", 2, "kg")])), 2 / 3);
+  assertEquals(itemScore([{ key: "ghee", quantity: 250, unit: "g" }], [g("ghee", 0.25, "kg")]).tp, 1, "same amount, other unit");
+  assertEquals(itemScore([{ key: "ghee", quantity: 250, unit: "g" }], [g("ghee", 250, "kg")]).tp, 0.5, "different amount");
   assertEquals(itemScore([{ key: null, said: "chutney" }], [{ said: "hari chutney", ingredient_key: null, quantity: null, unit: null }]).tp, 1);
 });
 

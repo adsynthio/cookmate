@@ -153,21 +153,28 @@ export const liveServices: Services = {
       const sb = requireSupabase();
       const { data, error } = await sb
         .from("memories")
-        .select("id, statement, source, scope, subject_recipe_id, household_members(display_name)")
+        .select("id, statement, source, scope, polarity, attributes, member_id, subject_recipe_id, household_members(display_name), ingredients(canonical_name)")
         .eq("household_id", householdId)
         .eq("status", "active")
         .order("updated_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []).map(
-        (m): Memory => ({
+      return (data ?? []).map((row): Memory => {
+        const m = row as typeof row & { household_members?: { display_name: string } | null; ingredients?: { canonical_name: string } | null };
+        const attributes = (m.attributes ?? {}) as { about?: string; amount?: string };
+        return {
           id: m.id,
           statement: m.statement,
           source: m.source,
           scope: m.scope as Memory["scope"],
-          memberName: (m as { household_members?: { display_name: string } | null }).household_members?.display_name ?? null,
+          memberId: m.member_id,
+          memberName: m.household_members?.display_name ?? null,
           recipeId: m.subject_recipe_id,
-        }),
-      );
+          about: attributes.about ?? null,
+          polarity: (m.polarity > 0 ? 1 : m.polarity < 0 ? -1 : 0) as Memory["polarity"],
+          amount: attributes.amount === "more" || attributes.amount === "less" ? attributes.amount : null,
+          ingredientKey: m.ingredients?.canonical_name ?? null,
+        };
+      });
     },
 
     async forgetMemory(memoryId) {
@@ -179,14 +186,23 @@ export const liveServices: Services = {
       if (error) throw error;
     },
     async saveMemory(input) {
-      const { data, error } = await requireSupabase().rpc("save_memory", {
+      const sb = requireSupabase();
+      let ingredientId: string | undefined;
+      if (input.ingredientKey) {
+        const found = await sb.from("ingredients").select("id").eq("canonical_name", input.ingredientKey).maybeSingle();
+        if (found.error) throw found.error;
+        ingredientId = found.data?.id;
+      }
+      const { data, error } = await sb.rpc("save_memory", {
         p_household: input.householdId,
         p_statement: input.statement,
         p_member: input.memberId,
         p_category: input.category,
         p_source: "explicit",
-        p_polarity: input.polarity ?? 0,
-        p_attributes: input.about ? { about: input.about } : {},
+        // A note about how much is never a like or dislike.
+        p_polarity: input.amount ? 0 : (input.polarity ?? 0),
+        p_attributes: { ...(input.about ? { about: input.about } : {}), ...(input.amount ? { amount: input.amount } : {}) },
+        p_subject_ingredient: ingredientId,
         p_subject_recipe: input.recipeId,
       });
       if (error) throw error;
@@ -465,6 +481,45 @@ export const liveServices: Services = {
       return recipeDocFromRow(data as unknown as RecipeRow);
     },
 
+    async listFavourites(householdId) {
+      const { data, error } = await requireSupabase()
+        .from("saved_recipes")
+        .select("created_at, recipes(id, slug, title, titles, course, diet, prep_time_min, cook_time_min, spice_level, tags)")
+        .eq("household_id", householdId)
+        .eq("collection", "favourites")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const seen = new Set<string>();
+      const out: RecipeSummary[] = [];
+      for (const row of data ?? []) {
+        const r = (row as unknown as { recipes: { id: string; slug: string | null; title: string; titles: unknown; course: string; diet: string; prep_time_min: number | null; cook_time_min: number | null; spice_level: number; tags: string[] | null } | null }).recipes;
+        if (!r || seen.has(r.id)) continue;
+        seen.add(r.id);
+        out.push({
+          id: r.id,
+          slug: r.slug ?? r.id,
+          title: r.title,
+          titles: (r.titles ?? undefined) as RecipeSummary["titles"],
+          course: r.course,
+          diet: r.diet,
+          totalTimeMin: (r.prep_time_min ?? 0) + (r.cook_time_min ?? 0) || null,
+          spiceLevel: r.spice_level,
+          tags: r.tags ?? [],
+        });
+      }
+      return out;
+    },
+    async setFavourite({ householdId, memberId, recipeId, on }) {
+      const sb = requireSupabase();
+      // Favourites belong to the household: unsaving removes it whoever saved it.
+      const { error } = on
+        ? await sb.from("saved_recipes").upsert(
+            { household_id: householdId, member_id: memberId, recipe_id: recipeId, collection: "favourites" },
+            { onConflict: "member_id,recipe_id,collection", ignoreDuplicates: true },
+          )
+        : await sb.from("saved_recipes").delete().eq("household_id", householdId).eq("recipe_id", recipeId).eq("collection", "favourites");
+      if (error) throw error;
+    },
     async searchRecipes(query) {
       const sb = requireSupabase();
       const { data, error } = await sb.rpc("search_recipes", { p_query: query, p_limit: 20 });

@@ -399,6 +399,7 @@ export function defaultBudget(slot: MealSlot): number {
 const R = {
   useSoon: { en: "Uses your {item} before it goes off", hinglish: "Aapka {item} kharab hone se pehle use ho jayega", hi: "आपका {item} खराब होने से पहले इस्तेमाल हो जाएगा" },
   craving: { en: "{tag}, as you asked", hinglish: "{tag}, jaisa aapne kaha", hi: "{tag}, जैसा आपने कहा" },
+  liked: { en: "Has {item}, a favourite here", hinglish: "Isme {item} hai, jo yahan pasand hai", hi: "इसमें {item} है, जो यहाँ पसंद है" },
   all: { en: "Everything's in your kitchen", hinglish: "Sab kuch aapki rasoi mein hai", hi: "सब कुछ आपकी रसोई में है" },
   most: { en: "You have {have} of {total} things", hinglish: "{total} mein se {have} cheezein aapke paas hain", hi: "{total} में से {have} चीज़ें आपके पास हैं" },
   mild: { en: "Mild enough for {name}", hinglish: "{name} ke liye bhi theek, kam teekha", hi: "{name} के लिए भी ठीक, कम तीखा" },
@@ -430,6 +431,9 @@ export function reasonFor(p: Ranked, ctx: RankContext, locale: Locale, nameOf: (
   if (soon) parts.push(fill(R.useSoon[locale], { item: nameOf(soon.entry!.key) }));
   const tag = ctx.craving.tags.find((t) => p.recipe.tags.includes(t));
   if (tag && TAG_LABELS[tag]) parts.push(fill(R.craving[locale], { tag: TAG_LABELS[tag][locale] }));
+  // KIT-104: a pick that has something the household said it likes says so.
+  const liked = p.recipe.ingredients.find((i) => ctx.like.includes(i.key));
+  if (liked) parts.push(fill(R.liked[locale], { item: nameOf(liked.key) }));
   if (p.breakdown.calendar === 1) parts.push(R.festival[locale]);
   if (p.match.total && p.match.have === p.match.total) parts.push(R.all[locale]);
   else if (p.match.total >= 3 && p.match.have >= Math.max(p.match.total - 2, Math.ceil(p.match.total * 0.7))) parts.push(fill(R.most[locale], { have: p.match.have, total: p.match.total }));

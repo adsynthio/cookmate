@@ -114,7 +114,12 @@ function RootNavigator() {
 
 export default function RootLayout() {
   const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 2 } } }),
+    // networkMode "always": the services decide what to do with no network (KIT-076 falls back to what the phone
+    // kept and queues writes), so queries and mutations must still run instead of pausing until it's back.
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { staleTime: 60_000, retry: 2, networkMode: "always" }, mutations: { networkMode: "always" } },
+      }),
   );
   return (
     <SafeAreaProvider>

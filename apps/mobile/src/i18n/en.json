@@ -481,5 +481,19 @@
   "you.privacy.word": "DELETE",
   "you.privacy.typeWord": "Type {word} to confirm",
   "you.privacy.deleteNow": "Delete everything",
-  "you.privacy.deleting": "Deleting…"
+  "you.privacy.deleting": "Deleting…",
+  "cook.offline": "No network. Keep cooking: everything is saved on this phone and will sync when you're back online.",
+  "cook.hf.start": "Hands-free: listen for next, back, repeat and timers",
+  "cook.hf.stop": "Stop listening",
+  "cook.hf.listening": "Listening. Say \"next\", \"back\", \"repeat\", or \"10 minute timer\". Works without network.",
+  "cook.hf.denied": "The microphone is off for Cookmate. Turn it on in your phone's settings to cook hands-free.",
+  "cook.hf.unavailable": "Hands-free listening isn't available on this phone. Tap Next and Back instead.",
+  "cook.hf.hint": "Say next, back, repeat, or a timer.",
+  "cook.hf.lastStep": "This is the last step. Say \"done\" when the dish is ready.",
+  "cook.hf.stepsLeft": "{n} steps to go.",
+  "cook.hf.slower": "Okay, slower.",
+  "cook.hf.timerSet": "Timer set for {time}.",
+  "cook.hf.timeLeft": "{label}: {time} left.",
+  "cook.hf.noTimer": "No timer is running.",
+  "finish.offline": "You're offline, so we'll take the recipe's amounts off your kitchen when you're back online. You can fix any item in Kitchen after that."
 }

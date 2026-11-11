@@ -58,6 +58,7 @@ def test_questions_go_to_the_model(utterance):
         ("set a rice fifteen minute timer", 15, "rice"),
         ("chawal ke liye ek ghante ka timer", 60, "chawal"),
         ("aadha minute ka timer", 0.5, None),
+        ("चावल के लिए दस मिनट का टाइमर", 10, "चावल"),
     ],
 )
 def test_timer_set(utterance, minutes, label):

@@ -127,6 +127,14 @@ Part 1, privacy and security (branch `sprint-6/hardening`):
 - [x] Delete my account (KIT-122): typed confirmation; households you alone own are deleted with everything in them, shared ones keep going without you; runs at once
 - [x] Retention (KIT-123): the daily job now covers every time limit in `02_database_tables.csv` (AI logs 90 days, suggestions 1 year, sessions 2 years, expired temporary memories, and the rest)
 - [x] Security review (KIT-124): `docs/SECURITY_REVIEW.md`; Supabase advisors run on ChefMate; two fixes (closed a dashboard-created definer function, indexed 40 foreign keys) and guard-rail tests so they stay fixed
+
+Part 2, cooking without network (branch `sprint-6/offline`):
+- [x] Offline bundle (KIT-076): when cooking starts the phone keeps the session and recipe (steps, timers, cues, safety notes; dish photos ship with the app) and downloads this cook's step recordings from the new `session-bundle` function. With the network off, steps, timers, read-aloud, leaving and resuming from the Cook tab, and finishing all work
+- [x] Write queue (KIT-076): step moves, "I did something differently", finish, rating, memories and leftovers wait on the phone and replay in order every 20 s, on returning to the app, and after any call that gets through. A dish finished offline takes the recipe's own amounts off the kitchen once back online
+- [x] Resume (KIT-079): the Cook tab offers the dish in progress offline too; the phone keeps it for 24 hours, matching the server's abandon job
+- [x] Voice offline (KIT-084): a hands-free mic on the cook screen listens on the phone (on-device recognition where the phone has it) for next, back, repeat, slower, pause, done, whistles and "10 minute ka timer", using a port of the voice agent's fast-path matcher tested against the same phrases. Steps play from the downloaded recordings, or the phone's own voice when there are none
+- [ ] Needs a device build to try: hands-free listening, downloads to the phone's storage and recording playback (the web build checks everything else). Pantry and shopping-list edits made offline are not queued yet
+
 - [ ] **You:** sign off the accepted findings in `docs/SECURITY_REVIEW.md`; turn on CAPTCHA for anonymous sign-ins; decide how `tts-cache` is scheduled (GitHub secret or `pg_cron` + Vault)
 - [ ] Not doable from here: kitchen noise test set (KIT-082) needs real recordings; regional language (KIT-085) waits for the BRD decision; 300 dishes (KIT-142) need the culinary lead
 

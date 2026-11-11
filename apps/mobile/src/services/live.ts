@@ -716,6 +716,14 @@ export const liveServices: Services = {
       });
       if (error) throw error;
     },
+    async getStepAudio(sessionId) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.functions.invoke<{ audio: { step_no: number; url: string }[] }>("session-bundle", {
+        body: { session_id: sessionId },
+      });
+      if (error || !data) throw error ?? new Error("session-bundle returned nothing");
+      return data.audio.map((a) => ({ stepNo: a.step_no, url: a.url }));
+    },
   },
   voice: {
     async getToken(input) {

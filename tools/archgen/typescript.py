@@ -76,6 +76,7 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
         "{ p_session: string; p_rating: string; p_tags?: string[]; p_comment?: string; p_make_again?: boolean }",
         "string",
     ),
+    "log_session_change": ("{ p_session: string; p_change: string; p_notes?: Json; p_channel?: string }", "Json"),
     "get_voice_context": ("{ p_household: string; p_member?: string; p_session?: string }", "Json"),
     "search_recipes": (
         "{ p_query: string; p_limit?: number }",

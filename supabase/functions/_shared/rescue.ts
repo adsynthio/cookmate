@@ -385,7 +385,8 @@ export function staticRescue(problem: Problem, ctx: RescueContext, cat: CatalogL
 
 // --- model output ----------------------------------------------------------------------------------------------------
 
-const UNSAFE = /\b(raw egg|half[- ]cooked|undercook|still pink|slightly pink|medium rare|skip (the )?(boil|soak)|no need to (boil|cook)|reuse (the )?oil|room temperature overnight|pour water on (the )?(oil|fire))\b/i;
+/** Shortcuts no answer may contain, whoever wrote it. */
+export const UNSAFE = /\b(raw egg|half[- ]cooked|undercook|still pink|slightly pink|medium rare|skip (the )?(boil|soak)|no need to (boil|cook)|reuse (the )?oil|room temperature overnight|pour water on (the )?(oil|fire))\b/i;
 export const MAX_STEPS = 3;
 export const MAX_STEP_CHARS = 220;
 

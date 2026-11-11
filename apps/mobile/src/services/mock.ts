@@ -18,6 +18,8 @@ import { deductionPreview } from "@/domain/cooking";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 
 import { buildPicks } from "./picks";
+import { changeReply, fallbackAnswer } from "@/domain/assist";
+
 import { localRescue } from "./rescue";
 import type { CookSession, HouseholdRef, Member, Memory, PantryItem, Services } from "./types";
 
@@ -348,7 +350,7 @@ export const mockServices: Services = {
       if (!adapted.get(recipeId) && !recipeBySlug(recipeId)) throw new Error("recipe not found");
       for (const s of sessions.values()) if (s.status === "active") s.status = "abandoned";
       const id = `s${sessionNo++}`;
-      sessions.set(id, { id, recipeId, currentStep: 1, servings, whoEating, status: "active" });
+      sessions.set(id, { id, recipeId, currentStep: 1, servings, whoEating, status: "active", changes: [] });
       if (recommendationId) await mockServices.recipe.respondToPick(recommendationId, "accepted");
       return id;
     },
@@ -366,6 +368,20 @@ export const mockServices: Services = {
       const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
       s.currentStep = Math.max(1, Math.min(doc.steps.length, s.currentStep + delta));
       return { currentStep: s.currentStep, total: doc.steps.length };
+    },
+    async ask({ sessionId, question, languageCode }) {
+      await delay(400);
+      const s = sessions.get(sessionId);
+      if (!s) throw new Error("session not found");
+      const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
+      return fallbackAnswer(doc.steps[s.currentStep - 1]!, question, localeFromLanguageCode(languageCode) ?? "en");
+    },
+    async reportChange({ sessionId, change, languageCode }) {
+      await delay(400);
+      const s = sessions.get(sessionId);
+      if (!s || s.status !== "active") throw new Error("session not found");
+      s.changes = [...s.changes, { change: change.trim(), notes: [] }];
+      return { reply: changeReply([], localeFromLanguageCode(languageCode) ?? "en"), notes: [], source: "rules" };
     },
     async rescue({ sessionId, problem, missing, details, languageCode }) {
       await delay(400);

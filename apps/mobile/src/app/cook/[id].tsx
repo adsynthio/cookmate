@@ -20,6 +20,7 @@ import { dishImage } from "@/design-system/media";
 import { Button, Card, IconButton, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
+import { notesForStep } from "@/domain/assist";
 import { countWhistle, offersTimer, stepSeconds } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
@@ -308,6 +309,15 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           </View>
         ) : null}
 
+        {notesForStep(session.changes, stepNo).map((n, i) => (
+          <View key={i} style={[styles.note, { backgroundColor: colors.amberSoft }]}>
+            <Text variant="label" muted>
+              {t("cook.youChanged", { change: n.change })}
+            </Text>
+            <Text variant="bodyStrong">{n.note}</Text>
+          </View>
+        ))}
+
         {step.whistles ? (
           <WhistleCounter
             count={count}
@@ -339,6 +349,10 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
         ) : null}
 
         <Button kind="secondary" size="cook" label={t("cook.wrong")} onPress={() => router.push(`/rescue/${session.id}`)} />
+        <View>
+          <Button kind="quiet" label={t("assist.ask")} onPress={() => router.push(`/assist/${session.id}?mode=ask`)} />
+          <Button kind="quiet" label={t("assist.changed")} onPress={() => router.push(`/assist/${session.id}?mode=changed`)} />
+        </View>
 
         <Button
           kind="quiet"

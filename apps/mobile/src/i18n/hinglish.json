@@ -717,5 +717,15 @@
   "finish.badge": "Pak gaya · {n} steps",
   "finish.headline": "Ho gaya.",
   "finish.ready": "{dish} taiyaar hai. Ab aaraam se baithiye, rasoi ki khushboo kamaal ki hai.",
-  "finish.saveHome": "Save karein aur Home par jaayein"
+  "finish.saveHome": "Save karein aur Home par jaayein",
+  "rescue.badge": "Rescue · step {n}",
+  "rescue.first": "Pehle yeh karein",
+  "rescue.calm": "Ghabraiye mat. Zyaadatar khaana bach jaata hai.",
+  "rescue.thenTitle": "Phir",
+  "rescue.now": "Iske baad",
+  "rescue.check": "Bartan mein dekhein",
+  "rescue.goodSign": "Sahi hai",
+  "rescue.badSign": "Gadbad hai",
+  "rescue.fixed": "Theek ho gaya, step {n} par chalein",
+  "rescue.otherShort": "Kuch aur"
 }

@@ -457,6 +457,29 @@ Shown at the top of each Cook With Me step, so the cook can compare their pan wi
 | `media/steps/rajma-4.png` | Rajma, step 4: Add grated ginger, garlic and green chilli for a minute, then the tomato puree, turmeric, Kashmiri chilli and coriander powder. Cook, stirring. | The masala is thick and dark and the oil leaves the sides. |
 | `media/steps/rajma-5.png` | Rajma, step 5: Add the rajma with its cooking water. Mash a few beans against the side of the pan for body and simmer on low heat. | The gravy thickens and coats the beans. |
 
+### 5.3 Drink photos (`media/drinks/`, 1080 x 1080, 12 photos)
+
+Shown on the Drinks tab (as a rounded square about 1.5 cm wide) and at the top of each drink's page (cropped to a wide band, so keep the glass in the middle 60% of the height). Until a photo exists the drink shows a coloured tile. Prompt (after the shared style):
+
+> Three-quarter angle (about 30 degrees) photograph of **{DRINK}** in {GLASS}, on a wooden table or light stone counter at home, soft daylight from a window at the left. {GARNISH}. Condensation on the glass if it is cold, a little steam if it is hot. The glass is centred and fills about 60% of the frame; nothing important in the outer 15%. Real and refreshing, not glossy advertising. No bottles with labels, no brand names, no people.
+
+Cocktails (the last four rows) are shown only to adults who switched them on. Keep them homely too: no bar counter, no neon, no party scene.
+
+| File | DRINK | GLASS | GARNISH |
+| --- | --- | --- | --- |
+| `media/drinks/nimbu-pani.png` | masala nimbu pani, pale cloudy lemonade with a hint of cumin | a tall steel or clear glass tumbler | a lemon wheel on the rim and a few mint leaves |
+| `media/drinks/aam-panna.png` | aam panna, a pale green raw-mango cooler | a clear glass tumbler | a sprig of mint and a sprinkle of roasted cumin |
+| `media/drinks/jaljeera.png` | jaljeera, a dark green-brown cumin and mint drink with boondi floating on top | a clear glass tumbler | a few boondi and a mint leaf |
+| `media/drinks/sweet-lassi.png` | thick sweet lassi with a layer of malai on top | a tall glass or a kulhad (clay cup) | a pinch of crushed cardamom and pistachio |
+| `media/drinks/masala-chaas.png` | masala chaas, thin spiced buttermilk | a steel glass | chopped coriander and a pinch of roasted cumin on top |
+| `media/drinks/cold-coffee.png` | frothy Indian cold coffee | a tall clear glass | a light dusting of cocoa on the froth, a straw |
+| `media/drinks/masala-chai.png` | hot masala chai, milky light brown | a small clear glass (cutting chai) or a cup and saucer | a cinnamon stick and two cardamom pods beside it |
+| `media/drinks/virgin-mojito.png` | virgin mojito with lime, mint and soda, no alcohol | a tall clear glass with ice | lime wedges and plenty of mint |
+| `media/drinks/mojito.png` | classic mojito with white rum, lime, mint and soda | a tall clear glass with crushed ice | lime wedges and a mint sprig |
+| `media/drinks/cucumber-gin-tonic.png` | gin and tonic with long cucumber ribbons | a large round balloon glass with ice | a cucumber ribbon and a few black peppercorns |
+| `media/drinks/jaggery-whisky-sour.png` | whisky sour sweetened with jaggery, amber with a thin foam | a short heavy tumbler with one large ice cube | a lemon twist |
+| `media/drinks/rum-cola-lime.png` | dark rum and cola with lime | a tall clear glass with ice | a lime wedge on the rim |
+
 ---
 
 ## Checklist
@@ -470,4 +493,5 @@ Shown at the top of each Cook With Me step, so the cook can compare their pan wi
 - [ ] 4. App icon set and splash in olive
 - [ ] 5.1 Ten dish photos
 - [ ] 5.2 Cooking step photos (24)
+- [ ] 5.3 Drink photos (12)
 - [ ] `python3 tools/media/sync.py` reports no problems

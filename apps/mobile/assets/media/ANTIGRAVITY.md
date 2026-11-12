@@ -14,11 +14,11 @@ Paste it once, at the start. When it stops after a group, reply "next group" to 
 
 > You are making the photos and illustrations for Cookmate, a cooking app for Indian homes. Everything you need is in `PROMPTS.md` in this folder. Read all of it before you start.
 >
-> **What to make.** Work through `PROMPTS.md` in order, one group at a time: 1.1, 1.2, and so on to 1.19, then sections 2, 3, 4 and 5.1. Each table row is one picture. Make every row in the group before you stop.
+> **What to make.** Work through `PROMPTS.md` in order, one group at a time: 1.1, 1.2, and so on to 1.19, then sections 2, 3, 4, 5.1 and 5.3. Each table row is one picture. Make every row in the group before you stop.
 >
 > **How to write each image prompt.** For every picture, the prompt you give the image model is made of:
 > 1. the shared style block from section 0, word for word;
-> 2. the section's own prompt (for section 1, the "Ingredient prompt", with {ITEM}, {HINDI} and {HOW TO SHOW IT} filled in from the row and from the "Show it ..." line under the group heading; for section 5.1, the dish prompt with {DISH} and {VESSEL} filled in);
+> 2. the section's own prompt (for section 1, the "Ingredient prompt", with {ITEM}, {HINDI} and {HOW TO SHOW IT} filled in from the row and from the "Show it ..." line under the group heading; for section 5.1, the dish prompt with {DISH} and {VESSEL} filled in; for section 5.3, the drink prompt with {DRINK}, {GLASS} and {GARNISH} filled in);
 > 3. for the other sections, the prompt in that row.
 >
 > Use the Hindi name to get the Indian variety right (for example "capsicum" is green shimla mirch, "brinjal" is the purple Indian baingan, "curd" is homemade dahi in a bowl, "pav" is soft square bread rolls).

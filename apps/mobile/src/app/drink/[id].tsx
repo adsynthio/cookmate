@@ -2,13 +2,13 @@
 // A cocktail opened without the age confirmation shows nothing but a way back.
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
 import { catalogEntry } from "@/data/catalog";
 import { DRINKS } from "@/data/drinks";
 import { Icon } from "@/design-system/icons";
-import { ingredientImage } from "@/design-system/media";
+import { drinkImage, ingredientImage } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
 import { Button, Card, Photo, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
@@ -53,7 +53,11 @@ export default function DrinkScreen() {
     <Screen header={<AppHeader title={t("tab.drinks")} back mic={false} />} tabBar={false}>
       <Enter>
         <View style={[styles.hero, { backgroundColor: drink.colors[1] }]}>
-          <Icon name={drink.kind === "hot" ? "flame" : "drop"} size={44} color="#FFFFFF" />
+          {drinkImage(drink.id) ? (
+            <Image source={drinkImage(drink.id)!} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityIgnoresInvertColors />
+          ) : (
+            <Icon name={drink.kind === "hot" ? "flame" : "drop"} size={44} color="#FFFFFF" />
+          )}
         </View>
       </Enter>
       <Enter index={1} style={{ gap: space.xs }}>

@@ -14,6 +14,7 @@ import { applyRules, ingredientFitsDiet, summarise, validateAdaptation } from "@
 import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
 import { deductionPreview } from "@/domain/cooking";
+import { plateWeeks, type CookedMeal } from "@/domain/plate";
 
 import { localeFromLanguageCode } from "@/domain/onboarding";
 
@@ -146,6 +147,27 @@ let checkAsked: { day: string; itemId: string | null } | null = null;
 let notificationSettings: NotificationSettings = { dailyPick: false, pickTime: "16:00", quietStart: "22:00", quietEnd: "07:00" };
 const inQuiet = (t: string, a: string, b: string) => (a === b ? false : a < b ? t >= a && t < b : t >= a || t < b);
 let batchNo = 1;
+/** KIT-171: meals finished on this device, for the weekly plate; starts with a sample week so the preview has one. */
+const MEALS_KEY = "cookmate.mock.meals";
+function loadMeals(): CookedMeal[] {
+  try {
+    const raw = globalThis.localStorage?.getItem(MEALS_KEY);
+    if (raw) return JSON.parse(raw) as CookedMeal[];
+  } catch {}
+  const day = 24 * 60 * 60 * 1000;
+  const sample: [string, number][] = [
+    ["dal-tadka", 1], ["jeera-aloo", 1], ["kanda-poha", 2], ["matar-paneer", 3], ["rajma", 4], ["besan-chilla", 5],
+    ["moong-dal-khichdi", 6], ["chicken-curry", 8], ["kadhi-pakora", 9], ["egg-bhurji", 10], ["dal-tadka", 11], ["kanda-poha", 12],
+  ];
+  return sample.map(([slug, ago]) => ({ completedAt: new Date(Date.now() - ago * day).toISOString(), groups: recipeBySlug(slug)?.food_groups ?? [] }));
+}
+function rememberMeal(meal: CookedMeal) {
+  const meals = [...loadMeals(), meal].slice(-200);
+  try {
+    globalThis.localStorage?.setItem(MEALS_KEY, JSON.stringify(meals));
+  } catch {}
+}
+
 /** Cooking sessions (KIT-070), kept for the app session. */
 const sessions = new Map<string, CookSession>();
 const deducted = new Set<string>();
@@ -684,8 +706,9 @@ const mocks: Services = {
       await delay(300);
       const s = sessions.get(sessionId);
       if (!s) throw new Error("session not found");
-      s.status = "completed";
       const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
+      if (s.status !== "completed") rememberMeal({ completedAt: new Date().toISOString(), groups: doc.food_groups ?? [] });
+      s.status = "completed";
       return deductionPreview(
         doc,
         s.servings,
@@ -723,6 +746,10 @@ const mocks: Services = {
     },
     async submitFeedback() {
       await delay(200);
+    },
+    async weeklyPlate(_householdId, weeks = 4) {
+      await delay(200);
+      return plateWeeks(loadMeals(), Date.now(), weeks);
     },
     async getStepAudio() {
       // Mock mode has no recordings: steps are read by the phone's own voice.

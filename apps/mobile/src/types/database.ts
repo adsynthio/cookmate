@@ -3320,6 +3320,10 @@ export type Database = {
         Args: { p_household: string; p_settings: Json; p_policy_version?: string };
         Returns: Json;
       };
+      weekly_plate: {
+        Args: { p_household: string; p_weeks?: number };
+        Returns: { week_start: string; meals: number; food_groups: Json }[];
+      };
       community_circles: {
         Args: { p_household: string };
         Returns: { id: string; name: string; role: string; members: Json }[];

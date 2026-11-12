@@ -154,6 +154,17 @@ Part 4, nudges (branch `sprint-6/nudges`):
 - [ ] **You:** the daily pick reaches phones once there is an EAS build (push tokens need the EAS project id); then add the Vault secret `project_url` (I can do it) so the 15-minute job starts calling `notify`
 - [ ] Use Soon, leftover and restock nudges share the same one-a-day cap but aren't sent yet
 
+Part 5, loose ends and beta preparation (branch `sprint-6/loose-ends`):
+- [x] Analytics (KIT-130): every catalog event the app can know about is now sent, from the service layer: picks shown, accepted and turned down, cravings, Use Soon shown, pantry corrections and what cooking used up, recipe views and changes, timers, list edits, notification opens. `cook_completed` carries the mode, taps after starting and rescues, and spoken step moves are counted apart from taps, which is what the hands-free target needs
+- [x] Kitchen and shopping list without network (NFR-05): the phone keeps the last kitchen and list it saw. Edits, finishing an item (with Undo), adding items, adding to the list and ticking things off all show at once and replay in order when the network is back
+- [x] Export (security finding #15): "Download my data" includes notification settings and the daily pantry questions
+- [x] Beta gate report (KIT-152): `private.beta_gate_report` works out the ten launch targets from the database for every household, with the sample size behind each; the Monday report prints it with "too few to say" under 20 measurements
+- [x] Beta documents (KIT-150/151/152) in `docs/beta/`: recruitment plan, consent form to read aloud, loan-phone plan and partner terms; the rural observation protocol with the no-help rule, recording rules and how findings are filed; the gate review template
+- [x] CI: the database job takes pgvector and pgTAP from the PostgreSQL project's own package server, so an outage of Ubuntu's mirrors no longer fails it
+- [x] Tests: 122 mobile unit tests, 12 new pgTAP tests (export, gate report)
+- [ ] **You:** a lawyer reads the consent form; sign an NGO/SHG partner; book observers and 5 sessions per dialect (needs the regional language decision, D4)
+- [ ] Edits made offline to something that was itself added offline are dropped on reconnect (the item is still added as first entered)
+
 - [ ] **You:** sign off the accepted findings in `docs/SECURITY_REVIEW.md`; turn on CAPTCHA for anonymous sign-ins; decide how `tts-cache` is scheduled (GitHub secret or `pg_cron` + Vault)
 - [ ] Not doable from here: kitchen noise test set (KIT-082) needs real recordings; regional language (KIT-085) waits for the BRD decision; 300 dishes (KIT-142) need the culinary lead
 

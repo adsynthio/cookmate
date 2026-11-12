@@ -2,6 +2,7 @@
 // the terracotta "Use soon" card, place filters, "Needs care" (going off, or not sure it's still there) above
 // "Fresh and stocked", staples as Full / Low / Out, and a dish this kitchen can make right now. Live across phones.
 import { RestockCard } from "@/components/kitchen/RestockCard";
+import { amountChoices, needsAmount } from "@/domain/amounts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -76,6 +77,8 @@ export default function KitchenScreen() {
   }, [householdId, queryClient]);
 
   const all = kitchen.data ?? [];
+  // Things with no amount yet that Cookmate can offer amounts for (KIT-033: amounts make Use Soon and restock work).
+  const noAmount = all.filter((i) => needsAmount(i) && amountChoices(catalogEntry(i.ingredientKey)).length > 0).length;
   const counts = useMemo(() => {
     const c = new Map<Filter, number>([["all", all.length]]);
     for (const i of all) c.set(placeOf(i), (c.get(placeOf(i)) ?? 0) + 1);
@@ -144,6 +147,20 @@ export default function KitchenScreen() {
         </View>
 
         {householdId ? <RestockCard householdId={householdId} /> : null}
+
+        {noAmount > 0 ? (
+          <Enter index={3}>
+            <Card tone="primary" style={{ gap: space.sm }}>
+              <Text variant="subheading" color={colors.onPrimary}>
+                {t("amt.cardTitle")}
+              </Text>
+              <Text variant="label" color={colors.onPrimary} style={{ opacity: 0.9 }}>
+                {t("amt.cardBody", { n: noAmount })}
+              </Text>
+              <Button kind="light" icon="edit" label={t("amt.cardGo")} onPress={() => router.push("/pantry/amounts")} />
+            </Card>
+          </Enter>
+        ) : null}
 
         {goingOff.length && !hideSoon ? (
           <Enter index={3}>

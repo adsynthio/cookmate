@@ -8,6 +8,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 
 import { draftName, rematch } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
+import { AmountChips } from "@/components/pantry/AmountChips";
 import { AppHeader } from "@/components/AppHeader";
 import { Icon, type IconName } from "@/design-system/icons";
 import { ingredientImage } from "@/design-system/media";
@@ -206,6 +207,16 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
           <Icon name="trash" size={18} color={colors.inkSecondary} />
         </IconButton>
       </View>
+      <AmountChips
+        ingredientKey={draft.ingredientKey}
+        quantity={draft.quantity}
+        unit={draft.unit}
+        ask={draft.quantity === null}
+        onPick={(a) => {
+          setQty(String(a.quantity));
+          onChange({ quantity: a.quantity, unit: a.unit });
+        }}
+      />
       <View style={styles.pair}>
         <Field
           value={qty}

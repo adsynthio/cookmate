@@ -1000,5 +1000,22 @@
   "ready.heatEat": "{dish}, just heat it",
   "ready.body": "Already cooked in your kitchen: {items}. Dinner in five minutes, nothing new to cook.",
   "ready.heatRice": "Heat it until steaming hot, only once. Rice is best eaten within a day.",
-  "ready.ideas": "Other ways to use it"
+  "ready.ideas": "Other ways to use it",
+  "amt.g": "{n} g",
+  "amt.kg": "{n} kg",
+  "amt.ml": "{n} ml",
+  "amt.l": "{n} L",
+  "amt.piece": "{n}",
+  "amt.packet": "{n} packet",
+  "amt.bunch": "{n} bunch",
+  "amt.howMuch": "How much?",
+  "amt.other": "Other",
+  "amt.cardTitle": "How much do you have?",
+  "amt.cardBody": "{n} things have no amount yet. Tap to add them, so Cookmate knows when they run low.",
+  "amt.cardGo": "Add amounts",
+  "amt.title": "How much do you have?",
+  "amt.body": "Tap the closest amount. A rough guess is fine.",
+  "amt.done": "Done",
+  "amt.allSet": "Every item has an amount.",
+  "amt.skip": "Skip for now"
 }

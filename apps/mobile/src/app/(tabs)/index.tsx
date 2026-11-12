@@ -5,19 +5,18 @@
 // instantly (KIT-045), and "make something new" (KIT-056).
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
-import { AppHeader } from "@/components/AppHeader";
 import { WantDish } from "@/components/home/WantDish";
+import { HomeHero } from "@/components/home/HomeHero";
 import { ReadyCard } from "@/components/home/ReadyCard";
-import { Greeting, InventCard, PickCard, pickPhoto, ResumeCard, SearchPill, UseSoonCards } from "@/components/home/HomeParts";
+import { InventCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
 
 import { itemName } from "@/components/kitchen/names";
-import { Icon } from "@/design-system/icons";
 import { dishImage, illustrations } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
-import { Button, Card, Chip, IconButton, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
+import { Button, Card, Chip, Screen, SectionHeader, StateView, Text, type Scroller } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
@@ -181,30 +180,31 @@ export default function HomeScreen() {
   };
   const me = (members.data ?? []).find((m) => m.id === memberId);
   const hero = picks.data?.hero ?? null;
+  const scrollRef = useRef<Scroller>(null);
+  const heroH = useRef(0);
+  const ideasY = useRef(0);
   const slotLabel = t(`home.slot.${mealSlot}` as StringKey);
 
   return (
     <Screen
-      header={
-        <AppHeader
-          title={t("tab.home")}
-          right={
-            <IconButton label={t("home.search")} tone="plain" onPress={() => router.push("/search")}>
-              <Icon name="search" />
-            </IconButton>
-          }
-        />
+      scrollRef={scrollRef}
+      top={
+        <View onLayout={(e) => (heroH.current = e.nativeEvent.layout.height)}>
+          <HomeHero
+            name={me?.displayName}
+            slotLabel={slotLabel}
+            slotOpen={pickingSlot}
+            onSlot={() => setPickingSlot((v) => !v)}
+            count={kitchen.data?.length ?? 0}
+            dish={hero ? pickPhoto(hero) : null}
+            draft={draft}
+            onDraft={setDraft}
+            onSearch={() => setCraving(draft.trim())}
+            onPicks={() => scrollRef.current?.scrollTo({ y: Math.max(0, heroH.current + ideasY.current - 8), animated: true })}
+          />
+        </View>
       }
     >
-      <Greeting
-        name={me?.displayName}
-        slotLabel={slotLabel}
-        slotOpen={pickingSlot}
-        onSlot={() => setPickingSlot((v) => !v)}
-        count={kitchen.data?.length ?? 0}
-        photo={hero ? pickPhoto(hero) : null}
-      />
-
       {pickingSlot ? (
         <Enter style={styles.row}>
           {SLOTS.map((s) => (
@@ -221,8 +221,6 @@ export default function HomeScreen() {
           ))}
         </Enter>
       ) : null}
-
-      <SearchPill value={draft} onChange={setDraft} onSubmit={() => setCraving(draft.trim())} onMic={() => router.push("/voice")} />
 
       {craving && householdId ? (
         <WantDish
@@ -326,7 +324,7 @@ export default function HomeScreen() {
 
       {!focus ? <ReadyCard items={kitchen.data ?? []} /> : null}
 
-      <View style={{ gap: space.xs }}>
+      <View style={{ gap: space.xs }} onLayout={(e) => (ideasY.current = e.nativeEvent.layout.y)}>
         <SectionHeader title={t("home.ideas")} dot={undefined} note={hero ? t("home.ideasCount", { n: 1 + (picks.data?.alternates.length ?? 0) }) : undefined} />
         <Text variant="caption" muted>
           {t("home.ideasBody")}

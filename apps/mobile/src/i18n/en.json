@@ -1042,5 +1042,8 @@
   "drinks.notInKitchen": "Not in your kitchen",
   "drinks.addMissing": "Add {n} to the list",
   "drinks.added": "Added to your list",
-  "drinks.steps": "How to make it"
+  "drinks.steps": "How to make it",
+  "home.hero.title": "What's for {slot} tonight?",
+  "home.hero.cta": "See tonight's picks",
+  "home.hero.kitchen": "{n} things in your kitchen"
 }

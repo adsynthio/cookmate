@@ -1008,5 +1008,8 @@
   "drinks.notInKitchen": "Rasoi mein nahi hai",
   "drinks.addMissing": "{n} cheezein list mein jodein",
   "drinks.added": "List mein jud gaya",
-  "drinks.steps": "Kaise banayein"
+  "drinks.steps": "Kaise banayein",
+  "home.hero.title": "Aaj {slot} mein kya banega?",
+  "home.hero.cta": "Aaj ke sujhav dekhein",
+  "home.hero.kitchen": "Aapki rasoi mein {n} cheezein"
 }

@@ -1,5 +1,5 @@
 // Cookmate primitives in the Stitch look: cream page, white cards with soft warm shadows, olive and terracotta, pills.
-import { type ReactNode, useState } from "react";
+import { type ReactNode, type RefObject, useState } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -62,14 +62,23 @@ export function Text({
 /** Room left under scrolling content for the floating tab bar. */
 export const TAB_BAR_SPACE = 120;
 
+/** What a page scroller can do from code. */
+export type Scroller = { scrollTo: (o: { y: number; animated?: boolean }) => void };
+
 export function Screen({
   children,
   scroll = true,
   header,
   footer,
   tabBar = true,
+  top,
+  scrollRef,
 }: {
+  /** To scroll the page from code (Home's "See tonight's picks"). */
+  scrollRef?: RefObject<Scroller | null>;
   children: ReactNode;
+  /** Full-width block at the very top that scrolls with the page and runs under the status bar (Home's hero). */
+  top?: ReactNode;
   scroll?: boolean;
   /** Sticky header (AppHeader) above the scrolling content. */
   header?: ReactNode;
@@ -81,14 +90,21 @@ export function Screen({
   const { colors } = useTheme();
   const bottom = tabBar ? TAB_BAR_SPACE : footer ? space.xl : space.xxxl;
   const body = scroll ? (
-    <ScrollView contentContainerStyle={[styles.screenContent, { paddingBottom: bottom }]} showsVerticalScrollIndicator={false}>
-      {children}
-    </ScrollView>
+    top ? (
+      <ScrollView ref={scrollRef as never} contentContainerStyle={{ paddingBottom: bottom }} showsVerticalScrollIndicator={false}>
+        {top}
+        <View style={styles.screenContent}>{children}</View>
+      </ScrollView>
+    ) : (
+      <ScrollView ref={scrollRef as never} contentContainerStyle={[styles.screenContent, { paddingBottom: bottom }]} showsVerticalScrollIndicator={false}>
+        {children}
+      </ScrollView>
+    )
   ) : (
     <View style={[styles.screenContent, { flex: 1, paddingBottom: bottom }]}>{children}</View>
   );
   return (
-    <SafeAreaView edges={footer ? ["top", "bottom"] : ["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
+    <SafeAreaView edges={top ? (footer ? ["bottom"] : []) : footer ? ["top", "bottom"] : ["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       {header}
       {body}
       {footer}

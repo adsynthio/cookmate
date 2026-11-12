@@ -70,12 +70,13 @@ const seed: Seed[] = [
   ["i7", "whole wheat flour", "whole wheat flour", null, null, "staples", "low", null, 0.9],
   ["i8", "gram flour", "gram flour", null, null, "staples", "full", null, 0.9],
   ["i9", null, "hari chutney", 1, "katori", "ready_made", null, 2, 0.9],
+  ["i10", null, "Dal Tadka leftovers", 2, "katori", "fridge", null, 1, 1],
 ];
 let pantry: PantryItem[] = seed.map(([id, ingredientKey, name, quantity, unit, location, stapleLevel, days, confidence]) => ({
   id, ingredientKey, name, quantity, unit, location, stapleLevel, confidence,
   expiryDate: days === null ? null : isoInDays(days),
   expiryEstimated: true,
-  state: id === "i9" ? "homemade" : "raw",
+  state: id === "i9" ? "homemade" : id === "i10" ? "leftover" : "raw",
   flavorRoles: id === "i9" ? ["heat", "acid"] : [],
 }));
 /** Cooked food keeps for days, whatever it was made from (same rule as private.estimate_expiry). */

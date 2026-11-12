@@ -128,6 +128,14 @@ export const liveServices: Services = {
       if (!member) return null;
       return { householdId, memberId: member.id, languageCode: profile.preferred_language };
     },
+    async setLanguage(languageCode) {
+      const sb = requireSupabase();
+      const { data: auth } = await sb.auth.getSession();
+      const userId = auth.session?.user.id;
+      if (!userId) return;
+      const { error } = await sb.from("profiles").update({ preferred_language: languageCode }).eq("id", userId);
+      if (error) throw error;
+    },
   },
 
   preference: {

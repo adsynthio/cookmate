@@ -442,7 +442,12 @@ Part 4, from the first phone test (branch `sprint-7/hindi-amounts`):
 - [x] Picks cook from the kitchen first: dishes with nothing to buy, then one or two things short, then the rest
 - [x] Type a dish on Home ("rajma"): it shows how much of it you have, what you'd need to buy (add all to the list in one tap) and the recipe; if there's no such recipe it says so and offers Make something new
 - [ ] **Culinary lead / Hindi reviewer:** read the Hindi and Hinglish in `content/recipes/*.yaml`
-- [ ] Next: You (memory), the Cook tab's empty page, then Community last
+
+Part 5, You and the Cook tab (branch `sprint-7/you`):
+- [x] You in the Stitch "You & Memory" layout: profile with who you cook for, four numbers (saved dishes, things remembered, people, never picked), your table's taste (spice per person, loved things, never in your dishes), What I've learned as quote cards with Edit / Keep / Forget, then settings and privacy
+- [x] App language can be changed any time on You (English, हिन्दी, Hinglish); it switches at once and is saved on the account (`profiles.preferred_language`) for the next launch, picks and the voice agent
+- [x] Cook tab: the dish on the stove with its photo, step progress and Continue cooking; with nothing on, your saved dishes one tap away
+- [ ] Next: multi-timer screen, then Community last
 
 ---
 

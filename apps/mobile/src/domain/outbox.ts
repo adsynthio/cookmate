@@ -10,8 +10,15 @@ export type Call =
   | "cooking.submitFeedback"
   | "cooking.abandonSession"
   | "preference.saveMemory"
-  | "kitchen.addItems";
+  | "kitchen.addItems"
+  | "kitchen.updateItem"
+  | "kitchen.finishItem"
+  | "kitchen.reopenItem"
+  | "kitchen.addToList"
+  | "kitchen.markBought"
+  | "kitchen.removeFromList";
 
+/** sessionId is the ordering key: a cooking session, or "kitchen:<household>" for pantry and list edits. */
 export type Op = { id: string; call: Call; sessionId: string | null; args: unknown[]; at: number };
 
 /** An op whose call failed for any reason other than the network is dropped after this many tries. */

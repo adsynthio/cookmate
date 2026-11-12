@@ -22,6 +22,7 @@ import { useTimers } from "@/state/timers";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { clearBundles } from "@/offline/bundles";
+import { clearCopies } from "@/offline/kitchenCopy";
 import { useOutbox } from "@/offline/outbox";
 import { resetAnalytics } from "@/services/analytics";
 import { services, type Member, type Memory, type NewMemory, type NotificationSettings } from "@/services";
@@ -518,6 +519,7 @@ function Privacy({ householdId }: { householdId: string }) {
       // Nothing of the deleted account stays on the phone: no queued writes, no cooking bundles.
       useOutbox.getState().clear();
       clearBundles();
+      clearCopies();
       resetAnalytics();
       qc.clear();
       clear();

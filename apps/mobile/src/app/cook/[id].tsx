@@ -275,6 +275,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
             void queryClient.invalidateQueries({ queryKey: ["memories"] });
             void queryClient.invalidateQueries({ queryKey: ["picks"] });
+            void queryClient.invalidateQueries({ queryKey: ["weekRecap"] });
             void queryClient.invalidateQueries({ queryKey: ["cook-active"] });
             void queryClient.invalidateQueries({ queryKey: ["plate"] });
             router.replace("/");

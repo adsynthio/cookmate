@@ -909,6 +909,16 @@ export const liveServices: Services = {
       });
       if (error) throw error;
     },
+    async weekRecap(householdId) {
+      const { data, error } = await requireSupabase().rpc("week_recap", { p_household: householdId });
+      if (error) throw error;
+      const r = (data ?? {}) as {
+        meals?: number; saved?: number; weeks_cooking?: number;
+        dishes?: { id: string; title: string; titles?: Record<string, string> | null; times: number; new: boolean }[];
+        loved?: { name: string; dish: string }[];
+      };
+      return { meals: r.meals ?? 0, saved: r.saved ?? 0, weeksCooking: r.weeks_cooking ?? 0, dishes: r.dishes ?? [], loved: r.loved ?? [] };
+    },
     async weeklyPlate(householdId, weeks = 4) {
       const { data, error } = await requireSupabase().rpc("weekly_plate", { p_household: householdId, p_weeks: weeks });
       if (error) throw error;

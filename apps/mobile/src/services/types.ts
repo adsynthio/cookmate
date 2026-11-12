@@ -14,6 +14,8 @@ export type MealSlot = Row<"recommendations">["meal_slot"];
 export type LocationKind = Row<"storage_locations">["kind"];
 export type StapleLevel = NonNullable<Row<"inventory_items">["staple_level"]>;
 export type MemorySource = Row<"memories">["source"];
+export type { WeekRecap } from "@/domain/recap";
+import type { WeekRecap } from "@/domain/recap";
 export type { LearnedCandidate } from "@/domain/learning";
 import type { LearnedCandidate } from "@/domain/learning";
 export type ItemState = Row<"inventory_items">["state"];
@@ -400,6 +402,8 @@ export interface CookingService {
   submitFeedback(input: { sessionId: string; rating: Rating; tags?: string[]; comment?: string; makeAgain?: boolean }): Promise<void>;
   /** KIT-171: meals cooked to the end, counted by food group, for this week and the weeks before it (newest first). */
   weeklyPlate(householdId: string, weeks?: number): Promise<PlateWeek[]>;
+  /** D3: the last seven days at home (meals, dishes, new ones, things saved from waste, who loved what). */
+  weekRecap(householdId: string): Promise<WeekRecap>;
   /** KIT-076: links to the cached step recordings this cook would hear, to download while there is network. */
   getStepAudio(sessionId: string): Promise<{ stepNo: number; url: string }[]>;
 }

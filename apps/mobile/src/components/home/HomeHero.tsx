@@ -13,7 +13,8 @@ import { ingredientImage } from "@/design-system/media";
 import { Animated, Enter, PressableScale, useReducedMotion } from "@/design-system/motion";
 import { Text, textStyle } from "@/design-system/primitives";
 import { radius, space } from "@/design-system/tokens";
-import { t } from "@/i18n";
+import { t, type StringKey } from "@/i18n";
+import type { MealSlot } from "@/domain/ranking";
 import { useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming, Easing } from "react-native-reanimated";
 
 const TOP = "#56652B";
@@ -68,6 +69,7 @@ function Rings() {
 export function HomeHero({
   name,
   slotLabel,
+  slot,
   slotOpen,
   onSlot,
   count,
@@ -79,6 +81,8 @@ export function HomeHero({
 }: {
   name?: string;
   slotLabel: string;
+  /** The meal being planned; each has its own headline (the slot's name doesn't fit one sentence in every language). */
+  slot: MealSlot;
   slotOpen: boolean;
   onSlot: () => void;
   count: number;
@@ -179,7 +183,7 @@ export function HomeHero({
             {name ? `${hello}, ${name}` : hello}
           </Text>
           <Text variant="display" weight={600} color={ON} accessibilityRole="header" style={[styles.center, styles.headline]}>
-            {t("home.hero.title", { slot: slotLabel.toLowerCase() })}
+            {t(`home.hero.title.${slot}` as StringKey)}
           </Text>
           <PressableScale accessibilityRole="button" accessibilityLabel={t("home.hero.cta")} onPress={onPicks} style={styles.cta}>
             <Text variant="label" weight={600} color={ON}>

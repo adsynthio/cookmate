@@ -33,11 +33,21 @@ test("answers come from the kitchen", () => {
   const make = ask("What can I make?");
   assert.deepEqual(make.recipes.map((r) => r.slug), ["matar-paneer"]);
   assert.match(make.answer, /Matar Paneer/);
-  assert.equal(ask("What can I make in 20 minutes?").recipes.length, 0);
+  // Nothing that quick: the quickest dish the kitchen can make instead.
+  assert.match(ask("What can I make in 20 minutes?").answer, /^Nothing is quite that quick/);
   assert.match(ask("What's going off soon?").answer, /Paneer/);
   assert.deepEqual(ask("What's going off soon?").recipes.map((r) => r.slug), ["matar-paneer"]);
   assert.match(ask("leftovers?").answer, /leftover rice/);
   assert.match(ask("Do I have paneer?").answer, /^Yes/);
   assert.deepEqual(ask("Do I have curd?").addToList, ["curd"]);
   assert.match(ask("paneer hai kya", "hi").answer, /हाँ/);
+});
+
+test("nothing that quick: the quickest dish instead, and the question isn't offered back", () => {
+  const items: AskItem[] = [{ name: "Potato", key: "potato", daysLeft: null, state: "raw", out: false }];
+  const recipes: AskRecipe[] = [{ slug: "jeera-aloo", title: "Jeera Aloo", minutes: 25, ingredients: [{ key: "potato" }, { key: "cumin seeds" }] }];
+  const r = localAnswer({ question: "What can I make in 20 minutes?", items, recipes, staples: new Set(["cumin seeds"]), locale: "en", nameOf: (k) => k });
+  assert.equal(r.answer, "Nothing is quite that quick. The quickest you can make is Jeera Aloo, in about 25 minutes.");
+  assert.deepEqual(r.recipes, [{ slug: "jeera-aloo", title: "Jeera Aloo" }]);
+  assert.ok(!r.followUps.includes("What can I make in 20 minutes?"));
 });

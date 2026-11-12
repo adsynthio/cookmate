@@ -11,7 +11,7 @@ import { toDraft } from "./drafts";
 import { recipeBySlug, recipeDocs } from "@/data/recipes";
 import { localHour, slotForHour } from "@/domain/ranking";
 import { applyRules, ingredientFitsDiet, summarise, validateAdaptation } from "@/domain/adapt";
-import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
+import { recipeTitle, searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
 import { deductionPreview } from "@/domain/cooking";
 import { plateWeeks, type CookedMeal } from "@/domain/plate";
@@ -224,10 +224,10 @@ const mocks: Services = {
       const reply = localAnswer({
         question,
         locale,
-        items: pantry.map((p) => ({ name: p.name, key: p.ingredientKey, daysLeft: p.expiryDate ? daysLeftOf(p.expiryDate) : null, state: p.state, out: p.stapleLevel === "out" })),
-        recipes: recipeDocs.map((d) => ({ slug: d.slug, title: d.title, minutes: (d.prep_time_min ?? 0) + (d.cook_time_min ?? 0), ingredients: d.ingredients.map((i) => ({ key: i.ingredient, optional: i.optional })) })),
+        items: pantry.map((p) => ({ name: displayName(catalogEntry(p.ingredientKey), p.name, locale), key: p.ingredientKey, daysLeft: p.expiryDate ? daysLeftOf(p.expiryDate) : null, state: p.state, out: p.stapleLevel === "out" })),
+        recipes: recipeDocs.map((d) => ({ slug: d.slug, title: recipeTitle(d, locale), minutes: (d.prep_time_min ?? 0) + (d.cook_time_min ?? 0), ingredients: d.ingredients.map((i) => ({ key: i.ingredient, optional: i.optional })) })),
         staples: new Set(catalog.filter((c) => c.staple).map((c) => c.name)),
-        nameOf: (k) => catalogEntry(k)?.name ?? k,
+        nameOf: (k) => displayName(catalogEntry(k), k, locale),
       });
       return { ...reply, source: "local" as const };
     },

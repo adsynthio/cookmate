@@ -35,19 +35,39 @@ steps:
     whistles: 2
     minutes: 10
     cue: Let the pressure drop by itself. A knife should slide in easily but the potato should still hold its shape.
+    heat: medium
+    cues:
+      sound: "Count two whistles, then let the pressure drop by itself."
+      touch: "A knife slides in easily but the potato still holds its shape."
   - text: Peel the potatoes once cool enough to touch and cut into bite-sized cubes.
     minutes: 5
+    cues:
+      look: "Even, bite-sized cubes so they brown together."
+      touch: "Cool enough to hold before peeling."
   - text: Heat the oil in a kadai. Add cumin, then hing, green chilli and ginger and stir for 30 seconds.
     technique: tadka
     minutes: 1
     cue: Cumin sizzles and darkens one shade. If it turns black, start again.
+    heat: medium
+    cues:
+      look: "Cumin darkens one shade."
+      sound: "The cumin sizzles and crackles straight away."
+      smell: "Toasty, nutty cumin."
+      avoid: "If the cumin turns black, start again: it will taste bitter."
   - text: Add turmeric, chilli powder and coriander powder, then immediately the potatoes and salt. Toss on medium heat.
     technique: shallow_fry
     minutes: 6
     timer: true
     cue: The edges of the potatoes turn golden and slightly crisp.
+    heat: medium
+    cues:
+      look: "The edges turn golden and slightly crisp."
+      sound: "A steady sizzle as you toss."
+      avoid: "Toss gently so the potatoes don't break into mash."
   - text: Sprinkle amchur and coriander leaves, toss once and serve.
     minutes: 1
+    cues:
+      taste: "Taste one piece for salt and sourness."
 variation_rules:
   - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: boil, minutes: 20, at_step: 1}, note: Boil in a covered pot for about 20 minutes until tender.}
   - {type: spice, condition: {member_age_group: child}, action: {omit: [green chilli, red chilli powder]}, note: Leave out the chillies; the cumin and amchur carry the flavour.}

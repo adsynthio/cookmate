@@ -39,26 +39,50 @@ steps:
     minutes: 30
     timer: true
     safety: Wash your hands, the board and the knife with soap after handling raw chicken, and keep raw chicken away from food that will not be cooked. Marinate in the fridge, not on the counter.
+    cues:
+      look: "Every piece is coated in the marinade."
   - text: Heat the oil in a heavy kadai. Add the whole spices for 30 seconds, then the sliced onions. Cook, stirring more often as they colour.
     technique: saute_onion
     minutes: 14
     cue: The onions are deep golden brown all over, not black at the edges.
+    heat: medium
+    cues:
+      look: "The onions are deep golden brown all over."
+      sound: "The sizzle softens as the onions lose their water."
+      smell: "Sweet and caramel-like."
+      avoid: "Don't let the edges go black: the curry turns bitter."
   - text: Add the rest of the ginger garlic paste for a minute, then the chopped tomatoes, the remaining turmeric and chilli powder, coriander powder and salt. Cook, stirring.
     technique: bhuna
     minutes: 8
     cue: The tomatoes melt into the masala and oil shines at the edges.
+    heat: medium
+    cues:
+      look: "The tomatoes melt into the masala and oil shines at the edges."
+      smell: "The raw ginger-garlic smell is gone."
+      touch: "The masala comes away from the pan in one soft mass."
   - text: Add the chicken with all its marinade. Cook on high heat, stirring, so it sears and the masala coats every piece.
     technique: bhuna
     minutes: 6
     cue: The chicken turns opaque on the outside.
+    heat: high
+    cues:
+      look: "Every piece turns opaque on the outside and is coated in masala."
+      sound: "A loud sizzle when the chicken goes in."
+      avoid: "Keep stirring so the masala doesn't catch on the bottom."
   - text: Add 300 ml hot water, cover and simmer on low heat, stirring now and then.
     technique: simmer
     minutes: 25
     timer: true
     cue: The meat pulls away from the bone easily.
     safety: Chicken must be cooked through. Cut the thickest piece open to the bone; the meat should be white with no pink and the juices clear. If unsure, cook 5 more minutes and check again.
+    heat: low
+    cues:
+      look: "The gravy bubbles gently, with oil on top."
+      touch: "The meat pulls away from the bone easily; cut the largest piece: no pink inside."
   - text: Add the garam masala and coriander leaves, cover and rest for 5 minutes before serving.
     minutes: 5
+    cues:
+      smell: "Fresh garam masala and coriander."
 variation_rules:
   - {type: spice, condition: {member_age_group: child}, action: {reduce: {kashmiri chilli powder: 0.5}}, note: Kashmiri chilli is mild in heat; halve it for young children.}
   - {type: equipment, condition: {have_equipment: pressure_cooker}, action: {method: pressure_cook, whistles: 3, at_step: 5, water_ml: 150}, note: Pressure-cook for 3 whistles with less water instead of simmering; still check that the chicken is cooked through.}

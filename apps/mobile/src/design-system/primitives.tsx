@@ -1,7 +1,8 @@
-// Cookmate primitives, styled from the brand kit: canvas + flat white cards, one lime, circles and pills.
-import type { ReactNode } from "react";
+// Cookmate primitives in the Stitch look: cream page, white cards with soft warm shadows, olive and terracotta, pills.
+import { type ReactNode, useState } from "react";
 import {
   ActivityIndicator,
+  Platform,
   Image,
   Pressable,
   ScrollView,
@@ -19,7 +20,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { getLocale } from "@/i18n";
 
+import { Icon, type IconName } from "./icons";
 import { illustrations } from "./media";
+import { PressableScale } from "./motion";
 import { useTheme } from "./theme";
 import { DEVANAGARI_EXTRA_LEADING, fonts, radius, shadow, space, touch, type as typeScale, type Weight } from "./tokens";
 
@@ -56,19 +59,40 @@ export function Text({
   );
 }
 
-export function Screen({ children, scroll = true }: { children: ReactNode; scroll?: boolean }) {
+/** Room left under scrolling content for the floating tab bar. */
+export const TAB_BAR_SPACE = 120;
+
+export function Screen({
+  children,
+  scroll = true,
+  header,
+  tabBar = true,
+}: {
+  children: ReactNode;
+  scroll?: boolean;
+  /** Sticky header (AppHeader) above the scrolling content. */
+  header?: ReactNode;
+  /** Leave room for the floating tab bar (tabs only). */
+  tabBar?: boolean;
+}) {
   const { colors } = useTheme();
+  const bottom = tabBar ? TAB_BAR_SPACE : space.xxxl;
   const body = scroll ? (
-    <ScrollView contentContainerStyle={styles.screenContent}>{children}</ScrollView>
+    <ScrollView contentContainerStyle={[styles.screenContent, { paddingBottom: bottom }]} showsVerticalScrollIndicator={false}>
+      {children}
+    </ScrollView>
   ) : (
-    <View style={[styles.screenContent, { flex: 1 }]}>{children}</View>
+    <View style={[styles.screenContent, { flex: 1, paddingBottom: bottom }]}>{children}</View>
   );
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
+      {header}
       {body}
     </SafeAreaView>
   );
 }
+
+export type ButtonKind = "primary" | "accent" | "secondary" | "quiet" | "light";
 
 export function Button({
   label,
@@ -78,22 +102,37 @@ export function Button({
   disabled,
   accessibilityHint,
   textColor,
+  icon,
+  iconAfter,
+  stretch,
 }: {
   label: string;
   onPress: () => void;
-  kind?: "primary" | "secondary" | "quiet";
-  size?: "regular" | "cook";
+  /** primary = olive; accent = terracotta (cooking, timers, the main call to action); light = white on a coloured card. */
+  kind?: ButtonKind;
+  size?: "small" | "regular" | "cook";
   disabled?: boolean;
   accessibilityHint?: string;
   /** Override for quiet buttons on dark surfaces (e.g. the undo snackbar). */
   textColor?: string;
+  icon?: IconName;
+  iconAfter?: IconName;
+  /** Take the full width of the row. */
+  stretch?: boolean;
 }) {
   const { colors } = useTheme();
-  // Secondary buttons get a pale lime fill so they read as buttons on white cards as well as on the canvas.
-  const bg = kind === "primary" ? colors.lime : kind === "secondary" ? colors.limePale : "transparent";
-  const fg = textColor ?? (kind === "primary" ? colors.onLime : colors.ink);
+  const bg = {
+    primary: colors.primary,
+    accent: colors.accent,
+    secondary: colors.surfaceMuted,
+    quiet: "transparent",
+    light: colors.surface,
+  }[kind];
+  const pressedBg = { primary: colors.primaryPressed, accent: colors.accentPressed, secondary: colors.surfaceHigh, quiet: colors.surfaceMuted, light: colors.surfaceMuted }[kind];
+  const fg = textColor ?? { primary: colors.onPrimary, accent: colors.onAccent, secondary: colors.ink, quiet: colors.ink, light: colors.accentText }[kind];
+  const minHeight = size === "cook" ? touch.cook : touch.min;
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
@@ -102,66 +141,118 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
+        (kind === "accent" || kind === "primary") && !disabled && size !== "small" ? shadow.card : null,
         {
-          backgroundColor: kind === "primary" && pressed ? colors.limePressed : bg,
-          minHeight: size === "cook" ? touch.cook : touch.min,
-          opacity: disabled ? 0.5 : pressed && kind !== "primary" ? 0.7 : 1,
+          backgroundColor: pressed ? pressedBg : bg,
+          minHeight,
+          paddingHorizontal: size === "small" ? space.lg : space.xl,
+          opacity: disabled ? 0.45 : 1,
+          alignSelf: stretch ? "stretch" : undefined,
         },
       ]}
     >
-      <Text variant="bodyStrong" color={fg}>
+      {icon ? <Icon name={icon} size={size === "small" ? 18 : 20} color={fg} /> : null}
+      <Text variant={size === "small" ? "label" : "bodyStrong"} weight={600} color={fg}>
         {label}
       </Text>
-    </Pressable>
+      {iconAfter ? <Icon name={iconAfter} size={size === "small" ? 18 : 20} color={fg} /> : null}
+    </PressableScale>
   );
 }
 
-/** Pill chip: muted when off, soft lime when on (the selected-day treatment). */
-export function Chip({ label, selected, onPress }: { label: string; selected?: boolean; onPress?: () => void }) {
+/**
+ * Pill chip. Off: white with a hairline. On: soft peach (ingredients, likes) or, with `solid`, olive (filters).
+ */
+export function Chip({
+  label,
+  selected,
+  onPress,
+  solid,
+  icon,
+  showCheck,
+  dashed,
+}: {
+  label: string;
+  selected?: boolean;
+  onPress?: () => void;
+  solid?: boolean;
+  icon?: IconName;
+  /** A tick after the label when selected (taste and setup screens). */
+  showCheck?: boolean;
+  /** Dashed terracotta outline: missing, needs restock. */
+  dashed?: boolean;
+}) {
   const { colors } = useTheme();
+  const on = selected ? (solid ? colors.primary : colors.peach) : colors.surface;
+  const fg = selected && solid ? colors.onPrimary : dashed ? colors.accentText : colors.ink;
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityState={{ selected }}
+      accessibilityLabel={label}
       onPress={onPress}
+      disabled={!onPress}
       hitSlop={{ top: 4, bottom: 4 }}
-      style={({ pressed }) => [
+      style={[
         styles.chip,
-        { backgroundColor: selected ? colors.limeSoft : colors.surfaceMuted, opacity: pressed ? 0.75 : 1 },
+        !selected && !dashed ? shadow.card : null,
+        {
+          backgroundColor: dashed ? "transparent" : on,
+          borderColor: dashed ? colors.accent : selected ? "transparent" : colors.line,
+          borderStyle: dashed ? "dashed" : "solid",
+        },
       ]}
     >
-      <Text variant="label" weight={selected ? 500 : 400}>
+      {icon ? <Icon name={icon} size={16} color={fg} /> : null}
+      <Text variant="label" color={fg}>
         {label}
       </Text>
-    </Pressable>
+      {selected && showCheck ? <Icon name="checkCircle" size={16} color={fg} /> : null}
+    </PressableScale>
   );
 }
 
-/** Flat white card. `hero` = the one lime-filled card a screen may have. */
+export type CardTone = "surface" | "muted" | "primary" | "accent";
+
+/**
+ * Rounded card. surface = white with a soft shadow; muted = quiet panel; primary = olive feature card;
+ * accent = terracotta alert card. `hero` (older screens) = pale olive.
+ */
 export function Card({
   children,
   tint,
   hero,
+  tone = "surface",
   style,
+  onPress,
+  accessibilityLabel,
 }: {
   children: ReactNode;
   tint?: string;
   hero?: boolean;
+  tone?: CardTone;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
+  accessibilityLabel?: string;
 }) {
   const { colors } = useTheme();
-  return (
-    <View
-      style={[
-        styles.card,
-        hero && { borderRadius: radius.cardLg },
-        { backgroundColor: tint ?? (hero ? colors.limeSoft : colors.surface) },
-        style,
-      ]}
-    >
-      {children}
-    </View>
-  );
+  const bg = tint ?? (hero ? colors.primarySoft : { surface: colors.surface, muted: colors.surfaceMuted, primary: colors.primaryContainer, accent: colors.accent }[tone]);
+  const base = [
+    styles.card,
+    tone === "surface" && !tint && !hero ? shadow.card : null,
+    tone === "accent" ? shadow.glow : null,
+    (tone === "primary" || tone === "accent") && { borderRadius: radius.cardLg, padding: space.xl },
+    { backgroundColor: bg },
+    style,
+  ];
+  if (onPress) {
+    return (
+      <PressableScale accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} scaleTo={0.985} style={base}>
+        {children}
+      </PressableScale>
+    );
+  }
+  return <View style={base}>{children}</View>;
 }
 
 /** Round icon button (header actions, add). */
@@ -170,37 +261,148 @@ export function IconButton({
   onPress,
   children,
   muted,
+  tone,
+  size: s = 44,
 }: {
   label: string;
   onPress: () => void;
   children: ReactNode;
   muted?: boolean;
+  tone?: "primary" | "accent" | "plain";
+  size?: number;
 }) {
   const { colors } = useTheme();
+  const bg = tone === "primary" ? colors.primary : tone === "accent" ? colors.accent : tone === "plain" ? "transparent" : muted ? colors.surfaceHigh : colors.surface;
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.iconButton,
-        { backgroundColor: muted ? colors.surfaceMuted : colors.surface, opacity: pressed ? 0.7 : 1 },
-      ]}
+      hitSlop={Math.max(0, (touch.min - s) / 2)}
+      scaleTo={0.92}
+      style={[styles.iconButton, { width: s, height: s, borderRadius: s / 2, backgroundColor: bg }, !muted && !tone ? shadow.card : null]}
     >
       {children}
-    </Pressable>
+    </PressableScale>
   );
 }
 
-/** Text field: muted fill, no border until focused, pill-round corners like the rest of the kit. */
-export function Field({ variant = "body", style, ...rest }: TextInputProps & { variant?: Variant }) {
+/** Text field: white pill with a hairline; olive ring when focused. */
+export function Field({ variant = "body", style, onFocus, onBlur, ...rest }: TextInputProps & { variant?: Variant }) {
   const { colors } = useTheme();
+  const [focused, setFocused] = useState(false);
   return (
     <TextInput
-      placeholderTextColor={colors.inkSecondary}
+      placeholderTextColor={colors.inkTertiary}
       {...rest}
-      style={[styles.field, textStyle(variant), { color: colors.ink, backgroundColor: colors.surfaceMuted }, style]}
+      onFocus={(e) => {
+        setFocused(true);
+        onFocus?.(e);
+      }}
+      onBlur={(e) => {
+        setFocused(false);
+        onBlur?.(e);
+      }}
+      style={[
+        styles.field,
+        textStyle(variant),
+        { color: colors.ink, backgroundColor: colors.surface, borderColor: focused ? colors.primary : colors.line },
+        // The browser's own focus outline is replaced by the olive border above.
+        Platform.OS === "web" ? ({ outlineStyle: "none" } as object) : null,
+        style,
+      ]}
     />
+  );
+}
+
+/** Small pill label: "Use in 2 days", "Can make now", "Staple". */
+export function Badge({
+  label,
+  tone = "muted",
+  icon,
+}: {
+  label: string;
+  tone?: "muted" | "primary" | "accent" | "alert" | "peach" | "onColor";
+  icon?: IconName;
+}) {
+  const { colors } = useTheme();
+  const [bg, fg] = {
+    muted: [colors.surfaceHigh, colors.inkSecondary],
+    primary: [colors.primarySoft, colors.primaryPressed],
+    accent: [colors.accentSoft, colors.accentText],
+    alert: [colors.alertSoft, colors.onAlertSoft],
+    peach: [colors.peach, colors.peachText],
+    onColor: ["rgba(255,255,255,0.2)", "#FFFFFF"],
+  }[tone];
+  return (
+    <View style={[styles.badge, { backgroundColor: bg }]}>
+      {icon ? <Icon name={icon} size={12} color={fg} /> : null}
+      <Text variant="overline" color={fg} numberOfLines={1}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+/** Section heading with a coloured dot and an optional note or action on the right. */
+export function SectionHeader({
+  title,
+  dot,
+  note,
+  noteTone = "muted",
+  onNote,
+}: {
+  title: string;
+  dot?: string;
+  note?: string;
+  noteTone?: "muted" | "accent" | "primary";
+  onNote?: () => void;
+}) {
+  const { colors } = useTheme();
+  const noteColor = noteTone === "accent" ? colors.accentText : noteTone === "primary" ? colors.primaryText : colors.inkTertiary;
+  return (
+    <View style={styles.section} accessibilityRole="header">
+      <View style={styles.sectionTitle}>
+        {dot ? <View style={[styles.dot, { backgroundColor: dot }]} /> : null}
+        <Text variant="subheading">{title}</Text>
+      </View>
+      {note ? (
+        onNote ? (
+          <Pressable accessibilityRole="button" onPress={onNote} hitSlop={12}>
+            <Text variant="caption" weight={600} color={noteColor}>
+              {note}
+            </Text>
+          </Pressable>
+        ) : (
+          <Text variant="caption" weight={600} color={noteColor}>
+            {note}
+          </Text>
+        )
+      ) : null}
+    </View>
+  );
+}
+
+/** Rounded photo with a soft tinted fallback (a picture may not be generated yet). */
+export function Photo({
+  source,
+  size: s = 56,
+  round,
+  radius: r = radius.tag,
+  style,
+}: {
+  source: ImageSourcePropType | null | undefined;
+  size?: number;
+  round?: boolean;
+  radius?: number;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const { colors } = useTheme();
+  const shape = { width: s, height: s, borderRadius: round ? s / 2 : r, overflow: "hidden" as const, backgroundColor: colors.surfaceMuted };
+  return (
+    <View style={[shape, style]} accessible={false}>
+      {source ? <Image source={source} style={{ width: s, height: s }} resizeMode="cover" /> : null}
+    </View>
   );
 }
 
@@ -228,12 +430,12 @@ export function StateView({
   return (
     <View style={styles.state} accessibilityLiveRegion="polite">
       {state === "loading" ? (
-        <ActivityIndicator color={colors.limeText} />
+        <ActivityIndicator color={colors.primaryText} />
       ) : art ? (
         <Image source={art} style={styles.illustration} resizeMode="contain" accessible={false} />
       ) : (
         <View
-          style={[styles.illustration, styles.placeholder, { backgroundColor: state === "error" ? colors.alertSoft : colors.limePale }]}
+          style={[styles.illustration, styles.placeholder, { backgroundColor: state === "error" ? colors.alertSoft : colors.primaryPale }]}
         />
       )}
       <Text variant="heading" style={{ textAlign: "center" }}>
@@ -252,12 +454,25 @@ export function StateView({
 export { shadow };
 
 const styles = StyleSheet.create({
-  screenContent: { paddingHorizontal: space.gutter, paddingTop: space.lg, gap: space.lg, paddingBottom: space.xxxl * 2 },
-  button: { borderRadius: radius.pill, paddingHorizontal: space.xl, alignItems: "center", justifyContent: "center" },
-  chip: { borderRadius: radius.pill, paddingHorizontal: space.lg, minHeight: 40, justifyContent: "center" },
-  card: { borderRadius: radius.card, padding: space.lg, gap: space.sm },
-  iconButton: { width: 48, height: 48, borderRadius: radius.pill, alignItems: "center", justifyContent: "center" },
-  field: { borderRadius: radius.tag, paddingHorizontal: space.lg, paddingVertical: space.md, minHeight: touch.min },
+  screenContent: { paddingHorizontal: space.gutter, paddingTop: space.sm, gap: space.xl },
+  button: { borderRadius: radius.pill, flexDirection: "row", gap: space.sm, alignItems: "center", justifyContent: "center" },
+  chip: {
+    borderRadius: radius.pill,
+    paddingHorizontal: space.lg,
+    minHeight: 40,
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  card: { borderRadius: radius.card, padding: space.gutter, gap: space.md },
+  iconButton: { alignItems: "center", justifyContent: "center" },
+  field: { borderRadius: radius.pill, paddingHorizontal: space.gutter, paddingVertical: space.md, minHeight: 52, borderWidth: 1 },
+  badge: { flexDirection: "row", alignItems: "center", gap: 4, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3, alignSelf: "flex-start" },
+  section: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.md },
+  sectionTitle: { flexDirection: "row", alignItems: "center", gap: space.sm, flexShrink: 1 },
+  dot: { width: 8, height: 8, borderRadius: 4 },
   state: { alignItems: "center", gap: space.md, paddingVertical: space.xxxl },
   illustration: { width: 160, height: 160 },
   placeholder: { borderRadius: 80 },

@@ -19,7 +19,7 @@ export function UndoBar({ onUndone }: { onUndone?: () => void }) {
       </Text>
       <Button
         kind="quiet"
-        textColor={colors.lime}
+        textColor={colors.primary}
         label={t("item.undo")}
         onPress={async () => {
           clear(pending.id);

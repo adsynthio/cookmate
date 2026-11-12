@@ -57,7 +57,9 @@ export type IconName =
   | "spoon"
   | "warning"
   | "arrowLeft"
-  | "arrowRight";
+  | "arrowRight"
+  | "drop"
+  | "chilli";
 
 const STROKE = 1.75;
 
@@ -241,6 +243,10 @@ function shapes(name: IconName) {
       return <Path d="M12 3.5c2.2 0 3.5 2 3.5 4.3S14 12 12 12s-3.5-1.9-3.5-4.2S9.8 3.5 12 3.5zM12 12v8.5" />;
     case "warning":
       return <Path d="M12 4 21 19.5H3zM12 10v4.5M12 17v.3" />;
+    case "drop":
+      return <Path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5z" />;
+    case "chilli":
+      return <Path d="M15 6c2.5 0 4.5 2 4 5-.8 5-6.5 9-12.5 9.5 3.5-2.5 5-5.5 5.5-9 .3-2.8 1-5.5 3-5.5zM15 6c0-1.5.7-2.5 2-3" />;
     case "arrowLeft":
       return <Path d="M19.5 12h-15M10 6.5 4.5 12l5.5 5.5" />;
     case "arrowRight":

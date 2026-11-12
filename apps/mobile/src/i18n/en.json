@@ -340,7 +340,7 @@
   "rescue.which": "Which one is missing?",
   "rescue.finding": "Finding a fix…",
   "rescue.doThis": "Do this now",
-  "rescue.read": "Read it aloud",
+  "rescue.read": "Read aloud",
   "rescue.back": "Back to cooking",
   "rescue.other": "Something else is wrong",
   "rescue.offline": "Showing our standard fix; we couldn't reach the kitchen brain.",
@@ -751,5 +751,15 @@
   "finish.badge": "Cooked · {n} steps",
   "finish.headline": "All done.",
   "finish.ready": "{dish} is ready. Take a breath, your kitchen smells wonderful.",
-  "finish.saveHome": "Save and go home"
+  "finish.saveHome": "Save and go home",
+  "rescue.badge": "Rescue · step {n}",
+  "rescue.first": "Do this first",
+  "rescue.calm": "Take a breath. Most dishes can be saved.",
+  "rescue.thenTitle": "Then",
+  "rescue.now": "Next",
+  "rescue.check": "Check your pan",
+  "rescue.goodSign": "Good sign",
+  "rescue.badSign": "Bad sign",
+  "rescue.fixed": "Fixed it, back to step {n}",
+  "rescue.otherShort": "Something else"
 }

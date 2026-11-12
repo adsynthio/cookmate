@@ -731,7 +731,7 @@
   "home.hello.morning": "Good morning",
   "home.hello.afternoon": "Namaste",
   "home.hello.evening": "Good evening",
-  "home.cookingFor": "{slot} mein kya banega?",
+  "home.cookingFor": "Kya banega? · {slot}",
   "home.kitchenCount": "Aapki rasoi mein {n} cheezein hain. Chaliye kuch achha banaate hain.",
   "home.kitchenEmpty": "Bataiye rasoi mein kya hai, main dish suggest karunga.",
   "home.moodPlaceholder": "Aaj kya khaane ka mann hai?",
@@ -765,5 +765,15 @@
   "recipe.tab.steps": "Steps ({n})",
   "recipe.tab.why": "Kyon achha hai",
   "recipe.oneMore": "Ek aur",
-  "recipe.whyNone": "Iske baare mein abhi aur kuch nahi."
+  "recipe.whyNone": "Iske baare mein abhi aur kuch nahi.",
+  "measure.small": "chhota",
+  "measure.big": "bada",
+  "measure.clove": "kali",
+  "measure.inch": "inch",
+  "home.want.overline": "Aap banana chahte hain",
+  "home.want.title": "{dish} banaayein",
+  "home.want.need": "{n} cheezein khareedni hongi:",
+  "home.want.none": "\"{dish}\" ki recipe abhi nahi hai",
+  "home.want.noneBody": "Neeche ki dish jahaan tak ho sake aapki baat se mel khaati hain. Ya Cookmate aapki rasoi se kuch naya bana de.",
+  "recipe.stepHours": "lagbhag {h} ghante"
 }

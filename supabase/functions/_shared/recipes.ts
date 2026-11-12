@@ -29,7 +29,11 @@ export type RecipeStepDoc = {
   heat?: Heat;
   safety?: string;
   branch?: { age_group: AgeGroup; action: string };
+  /** The step in Hindi and Hinglish: text, cues, safety and the family note. */
+  say?: Partial<Record<"hi" | "hi-Latn", StepSay>>;
 };
+
+export type StepSay = Partial<Record<"text" | "look" | "sound" | "smell" | "touch" | "taste" | "avoid" | "safety" | "branch", string>>;
 
 export const SENSES = ["look", "sound", "smell", "touch", "taste"] as const;
 export type Sense = (typeof SENSES)[number];
@@ -52,6 +56,7 @@ export type RecipeDoc = {
   title: string;
   titles?: { hi?: string; "hi-Latn"?: string; en?: string };
   description: string;
+  descriptions?: { hi?: string; "hi-Latn"?: string };
   cuisine_region?: string;
   course: Course;
   diet: Diet;
@@ -72,6 +77,12 @@ export type RecipeDoc = {
 
 export function totalTime(doc: Pick<RecipeDoc, "prep_time_min" | "cook_time_min">): number {
   return (doc.prep_time_min ?? 0) + (doc.cook_time_min ?? 0);
+}
+
+export function recipeDescription(doc: Pick<RecipeDoc, "description" | "descriptions">, locale: Locale): string {
+  if (locale === "hi") return doc.descriptions?.hi ?? doc.description;
+  if (locale === "hinglish") return doc.descriptions?.["hi-Latn"] ?? doc.description;
+  return doc.description;
 }
 
 export function recipeTitle(doc: Pick<RecipeDoc, "title" | "titles">, locale: Locale): string {
@@ -119,32 +130,68 @@ export function scaleQty(qty: number, baseServings: number, servings: number): n
 
 export type Measures = Record<string, number>;
 
+export type PieceSize = "small" | "big";
+/** An amount as a cook says it: { qty: 2, unit: "katori" }, { qty: 1, unit: "piece", size: "big", and: { qty: 1, size: "small" } }. */
+export type LocalAmount = { qty: number; unit: string; size?: PieceSize; and?: { qty: number; size?: PieceSize } };
+
+/** Small and big against a medium piece, and the ways people actually say a count of onions or tomatoes. */
+const SMALL = 0.65;
+const BIG = 1.4;
+const PIECE_WAYS: { n: number; out: Omit<LocalAmount, "unit"> }[] = [
+  { n: 0.25, out: { qty: 0.25 } },
+  { n: 0.5, out: { qty: 0.5 } },
+  { n: SMALL, out: { qty: 1, size: "small" } },
+  { n: 1, out: { qty: 1 } },
+  { n: 2 * SMALL, out: { qty: 2, size: "small" } },
+  { n: BIG, out: { qty: 1, size: "big" } },
+  { n: 1.5, out: { qty: 1.5 } },
+  { n: 1 + SMALL, out: { qty: 1, and: { qty: 1, size: "small" } } },
+  { n: 2, out: { qty: 2 } },
+  { n: BIG + SMALL, out: { qty: 1, size: "big", and: { qty: 1, size: "small" } } },
+  { n: 2.5, out: { qty: 2.5 } },
+  { n: 2 * BIG, out: { qty: 2, size: "big" } },
+  { n: 3, out: { qty: 3 } },
+];
+
 /**
- * Grams or ml in the household's own measures where the catalog knows them: katori and pieces for big amounts,
- * chammach / chhota chammach / chutki for spices. Returns e.g. { qty: 2, unit: "katori" } or { qty: 250, unit: "g" }.
+ * Grams or ml in the household's own measures where the catalog knows them. Vegetables and fruit that are counted
+ * (`sized`: onion, tomato, potato, lemon) read as "1 small", "½", "1 big + 1 small"; garlic in cloves; ginger in
+ * inches; other things in katori, pieces, chammach, chhota chammach or chutki; a speck of anything is a chutki.
  */
-export function inLocalUnits(grams: number, unit: string, measures: Measures | undefined): { qty: number; unit: string } {
+export function inLocalUnits(grams: number, unit: string, measures: Measures | undefined, sized = false): LocalAmount {
   if (unit !== "g" && unit !== "ml") return { qty: grams, unit };
-  const tries: [string, number, number][] = [
-    // measure, smallest sensible amount, largest
-    ["katori", 0.5, 8],
-    ["piece", 0.5, 20],
-    ["cup", 0.5, 8],
-    ["chammach", 0.5, 8],
-    ["chhota_chammach", 0.25, 6],
+  if (measures?.clove) return { qty: Math.max(1, Math.round(grams / measures.clove)), unit: "clove" };
+  if (measures?.inch) return { qty: Math.max(0.5, Math.round((grams / measures.inch) * 2) / 2), unit: "inch" };
+  const piece = measures?.piece;
+  if (sized && piece && piece >= 40 && piece <= 300) {
+    const n = grams / piece;
+    if (n > 3.25) return { qty: Math.round(n * 2) / 2, unit: "piece" };
+    let best = PIECE_WAYS[0]!;
+    for (const way of PIECE_WAYS) if (Math.abs(Math.log(n / way.n)) < Math.abs(Math.log(n / best.n))) best = way;
+    return { ...best.out, unit: "piece" };
+  }
+  const tries: [string, number, number, number][] = [
+    // measure, smallest sensible amount, largest, how far off it may be (spoons are always roughly measured)
+    ["katori", 0.5, 8, 0.2],
+    ["piece", 0.5, 20, 0.2],
+    ["cup", 0.5, 8, 0.2],
+    ["chammach", 0.5, 8, 0.35],
+    ["chhota_chammach", 0.25, 6, 0.35],
   ];
-  for (const [m, lo, hi] of tries) {
+  for (const [m, lo, hi, off] of tries) {
     const per = measures?.[m];
     if (!per) continue;
     const n = grams / per;
     const quarters = Math.round(n * 4) / 4;
-    if (quarters >= lo && quarters <= hi && Math.abs(quarters - n) / n < 0.2) return { qty: quarters, unit: m };
+    if (quarters >= lo && quarters <= hi && Math.abs(quarters - n) / n < off) return { qty: quarters, unit: m };
   }
   const pinch = measures?.chutki;
   if (pinch) {
     const n = Math.round(grams / pinch);
     if (n >= 1 && n <= 4) return { qty: n, unit: "chutki" };
   }
+  // Nobody weighs out 0.08 g of soda.
+  if (unit === "g" && grams < 1) return { qty: 1, unit: "chutki" };
   return { qty: grams, unit };
 }
 
@@ -253,6 +300,7 @@ export type RecipeRow = {
   title: string;
   titles: RecipeDoc["titles"] | null;
   description: string | null;
+  descriptions?: { hi?: string; "hi-Latn"?: string } | null;
   cuisine_region: string | null;
   course: Course;
   diet: Diet;
@@ -281,6 +329,7 @@ export type RecipeRow = {
   recipe_steps?: {
     step_no: number;
     instruction: string;
+    instructions?: Record<string, unknown> | null;
     duration_sec: number | null;
     timer_required: boolean;
     whistles: number | null;
@@ -295,10 +344,10 @@ export type RecipeRow = {
 
 /** PostgREST select for a full recipe (used by the app and the Edge Functions). */
 export const RECIPE_SELECT =
-  "id, parent_recipe_id, slug, title, titles, description, cuisine_region, course, diet, base_servings, prep_time_min, " +
+  "id, parent_recipe_id, slug, title, titles, description, descriptions, cuisine_region, course, diet, base_servings, prep_time_min, " +
   "cook_time_min, difficulty, spice_level, equipment, tags, flavor_profile, food_groups, review_status, " +
   "recipe_ingredients(display_name, quantity, unit, local_measure, is_optional, group_name, role, substitutes, sort_order, ingredients(canonical_name)), " +
-  "recipe_steps(step_no, instruction, duration_sec, timer_required, whistles, sensory_cue, sensory_cues, member_branch, safety_note, techniques(slug)), " +
+  "recipe_steps(step_no, instruction, instructions, duration_sec, timer_required, whistles, sensory_cue, sensory_cues, member_branch, safety_note, techniques(slug)), " +
   "recipe_variation_rules(rule_type, condition, action, note)";
 
 /** The `sensory_cues` jsonb column: `{en, look, sound, smell, touch, taste, avoid, heat}`; anything else is ignored. */
@@ -312,6 +361,50 @@ export function stepCuesFromJson(raw: unknown): { cues?: StepCues; heat?: Heat }
   }
   const heat = r.heat === "low" || r.heat === "medium" || r.heat === "high" ? r.heat : undefined;
   return { ...(Object.keys(cues).length ? { cues } : {}), ...(heat ? { heat } : {}) };
+}
+
+const SAY_KEYS = ["text", ...SENSES, "avoid", "safety", "branch"] as const;
+
+/** `recipe_steps.instructions`: `{en: "...", hi: {text, look, ...}, "hi-Latn": {...}}`; anything else is ignored. */
+export function stepSayFromJson(raw: unknown): RecipeStepDoc["say"] | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const out: NonNullable<RecipeStepDoc["say"]> = {};
+  for (const lang of ["hi", "hi-Latn"] as const) {
+    const tr = (raw as Record<string, unknown>)[lang];
+    if (!tr || typeof tr !== "object") continue;
+    const clean: StepSay = {};
+    for (const k of SAY_KEYS) {
+      const v = (tr as Record<string, unknown>)[k];
+      if (typeof v === "string" && v.trim()) clean[k] = v.trim();
+    }
+    if (clean.text) out[lang] = clean;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+/** A step in the cook's language: the translation where there is one, the English for anything it doesn't cover. */
+export function localStep(step: RecipeStepDoc, locale: Locale): RecipeStepDoc {
+  const tr = locale === "hi" ? step.say?.hi : locale === "hinglish" ? step.say?.["hi-Latn"] : undefined;
+  if (!tr?.text) return step;
+  const cues: StepCues = {};
+  for (const k of [...SENSES, "avoid"] as const) {
+    const v = step.cues?.[k] ? (tr[k] ?? step.cues[k]) : undefined;
+    if (v) cues[k] = v;
+  }
+  const line = [...SENSES, "avoid"].map((k) => cues[k as keyof StepCues]).filter(Boolean).join(" ");
+  return {
+    ...step,
+    text: tr.text,
+    ...(step.cues ? { cues } : {}),
+    ...(step.cue ? { cue: line || step.cue } : {}),
+    ...(step.safety ? { safety: tr.safety ?? step.safety } : {}),
+    ...(step.branch ? { branch: { ...step.branch, action: tr.branch ?? step.branch.action } } : {}),
+  };
+}
+
+/** The whole recipe's steps in the cook's language (titles go through recipeTitle). */
+export function localDoc<T extends Pick<RecipeDoc, "steps">>(doc: T, locale: Locale): T {
+  return locale === "en" ? doc : { ...doc, steps: doc.steps.map((s) => localStep(s, locale)) };
 }
 
 /** The senses a step has cues for, in a fixed order, warning excluded. */
@@ -353,6 +446,8 @@ export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
       if (cues.heat) out.heat = cues.heat;
       if (s.safety_note) out.safety = s.safety_note;
       if (s.member_branch?.age_group && s.member_branch.action) out.branch = s.member_branch;
+      const say = stepSayFromJson(s.instructions);
+      if (say) out.say = say;
       return out;
     });
   return {
@@ -362,6 +457,7 @@ export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
     title: row.title,
     titles: row.titles ?? undefined,
     description: row.description ?? "",
+    ...(row.descriptions && (row.descriptions.hi || row.descriptions["hi-Latn"]) ? { descriptions: row.descriptions } : {}),
     cuisine_region: row.cuisine_region ?? undefined,
     course: row.course,
     diet: row.diet,

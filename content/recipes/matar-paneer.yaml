@@ -3,6 +3,9 @@ title: Matar Paneer
 titles: {hi: मटर पनीर, hi-Latn: Matar Paneer}
 description: >-
   Soft paneer and green peas in an onion-tomato gravy with Kashmiri chilli, finished with kasuri methi.
+descriptions:
+  hi: "नरम पनीर और हरे मटर, कश्मीरी मिर्च वाली प्याज़-टमाटर की ग्रेवी में, ऊपर से कसूरी मेथी।"
+  hi-Latn: "Naram paneer aur hare matar, Kashmiri mirch wali pyaaz-tamatar ki gravy mein, upar se kasoori methi."
 cuisine_region: punjabi
 course: main
 diet: veg
@@ -40,6 +43,13 @@ steps:
     minutes: 10
     cues:
       touch: "The paneer stays soft in the warm water."
+    say:
+      hi:
+        text: "पनीर के टुकड़े काटकर गुनगुने पानी में भिगो दें ताकि नरम रहें। प्याज़, अदरक, लहसुन और हरी मिर्च का पेस्ट बनाएँ, और टमाटर की अलग प्यूरी।"
+        touch: "गुनगुने पानी में पनीर नरम बना रहे।"
+      hi-Latn:
+        text: "Paneer ke tukde kaatkar gungune paani mein bhigo dein taaki naram rahein. Pyaaz, adrak, lahsun aur hari mirch ka paste banaayein, aur tamatar ki alag puree."
+        touch: "Gungune paani mein paneer naram bana rahe."
   - text: Heat the oil in a kadai. Add cumin and the bay leaf, then the onion paste. Cook, stirring.
     technique: saute_onion
     minutes: 10
@@ -49,6 +59,17 @@ steps:
       look: "The paste turns golden."
       smell: "The raw onion smell goes away."
       avoid: "Stir often; onion paste catches on the bottom quickly."
+    say:
+      hi:
+        text: "कड़ाही में तेल गरम करें। जीरा और तेज पत्ता डालें, फिर प्याज़ का पेस्ट। चलाते हुए पकाएँ।"
+        look: "पेस्ट सुनहरा हो जाए।"
+        smell: "कच्चे प्याज़ की महक चली जाए।"
+        avoid: "बार-बार चलाएँ; प्याज़ का पेस्ट जल्दी तले में लगता है।"
+      hi-Latn:
+        text: "Kadaahi mein tel garam karein. Jeera aur tej patta daalein, phir pyaaz ka paste. Chalaate hue pakaayein."
+        look: "Paste sunehra ho jaaye."
+        smell: "Kachche pyaaz ki mehak chali jaaye."
+        avoid: "Baar-baar chalaayein; pyaaz ka paste jaldi tale mein lagta hai."
   - text: Add turmeric, Kashmiri chilli and coriander powder with a splash of water, stir for a minute, then add the tomato puree. Keep cooking and stirring.
     technique: bhuna
     minutes: 10
@@ -57,6 +78,15 @@ steps:
     cues:
       look: "The masala thickens, darkens and the oil separates at the edges."
       sound: "The masala splutters less as the water cooks off."
+    say:
+      hi:
+        text: "हल्दी, कश्मीरी मिर्च और धनिया पाउडर थोड़े पानी के साथ डालें, एक मिनट चलाएँ, फिर टमाटर की प्यूरी डालें। चलाते हुए पकाते रहें।"
+        look: "मसाला गाढ़ा और गहरा हो जाए और किनारों पर तेल अलग हो जाए।"
+        sound: "पानी सूखने पर मसाले के छींटे कम हो जाएँ।"
+      hi-Latn:
+        text: "Haldi, Kashmiri mirch aur dhaniya powder thode paani ke saath daalein, ek minute chalaayein, phir tamatar ki puree daalein. Chalaate hue pakaate rahein."
+        look: "Masala gaadha aur gehra ho jaaye aur kinaaron par tel alag ho jaaye."
+        sound: "Paani sookhne par masaale ke chheente kam ho jaayein."
   - text: Add the peas, salt and 300 ml water. Cover and simmer until the peas are soft.
     technique: simmer
     minutes: 8
@@ -65,6 +95,13 @@ steps:
     heat: low
     cues:
       touch: "A pea squashes easily between two fingers."
+    say:
+      hi:
+        text: "मटर, नमक और 300 ml पानी डालें। ढककर मटर नरम होने तक पकाएँ।"
+        touch: "मटर दो उँगलियों में आसानी से दब जाए।"
+      hi-Latn:
+        text: "Matar, namak aur 300 ml paani daalein. Dhak kar matar naram hone tak pakaayein."
+        touch: "Matar do ungliyon mein aasaani se dab jaaye."
   - text: Drain the paneer and add it to the gravy. Simmer for 3 minutes only.
     technique: simmer
     minutes: 3
@@ -74,10 +111,26 @@ steps:
     cues:
       touch: "The paneer is soft when pressed with a spoon."
       avoid: "Don't boil the paneer for long or it turns rubbery."
+    say:
+      hi:
+        text: "पनीर का पानी निकालकर ग्रेवी में डालें। सिर्फ़ 3 मिनट पकाएँ।"
+        touch: "चम्मच से दबाने पर पनीर नरम लगे।"
+        avoid: "पनीर को ज़्यादा देर न उबालें, वरना रबड़ जैसा हो जाएगा।"
+      hi-Latn:
+        text: "Paneer ka paani nikaal kar gravy mein daalein. Sirf 3 minute pakaayein."
+        touch: "Chammach se dabaane par paneer naram lage."
+        avoid: "Paneer ko zyaada der na ubaalein, warna rubber jaisa ho jaayega."
   - text: Add garam masala, crushed kasuri methi and cream. Stir, top with coriander leaves and serve.
     minutes: 1
     cues:
       smell: "Kasuri methi smells sweet and grassy."
+    say:
+      hi:
+        text: "गरम मसाला, मसली हुई कसूरी मेथी और क्रीम डालें। मिलाएँ, ऊपर हरा धनिया डालें और परोसें।"
+        smell: "कसूरी मेथी की हल्की मीठी, हरी ख़ुशबू।"
+      hi-Latn:
+        text: "Garam masala, masli hui kasoori methi aur cream daalein. Milaayein, upar hara dhaniya daalein aur parosein."
+        smell: "Kasoori methi ki halki meethi, hari khushboo."
 variation_rules:
   - {type: diet, condition: {diet: vegan}, action: {replace: {paneer: tofu}, omit: [fresh cream]}, note: Firm tofu and no cream.}
   - {type: diet, condition: {diet: jain}, action: {omit: [onion, ginger, garlic], add: [{ingredient: asafoetida, qty: 0.2, unit: g}]}, note: A tomato-only gravy with hing; add a little cashew paste for body.}

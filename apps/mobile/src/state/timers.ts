@@ -9,6 +9,7 @@ import { create } from "zustand";
 
 import type { Timer } from "@/domain/cooking";
 import { t } from "@/i18n";
+import { track } from "@/services/analytics";
 
 export type RunningTimer = Timer & {
   sessionId: string;
@@ -102,6 +103,7 @@ export const useTimers = create<TimerState>((set, get) => {
     silent: false,
     start: async ({ sessionId, stepNo, label, durationSec }) => {
       const endsAt = Date.now() + durationSec * 1000;
+      track("timer_set", { session_id: sessionId, duration_sec: durationSec, channel: "touch" });
       let notificationId: string | null = null;
       const allowed = await prepare();
       if (allowed) {

@@ -3,13 +3,14 @@
 // which creates an anonymous account (no email or password). The language is chosen here (ONB-02), so every step
 // after this one is already in it.
 import { useMutation } from "@tanstack/react-query";
+import { Image as MotionImage } from "expo-image";
 import { useRouter } from "expo-router";
 import { Image, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Icon, type IconName } from "@/design-system/icons";
 import { scenes } from "@/design-system/media";
-import { Enter, PressableScale } from "@/design-system/motion";
+import { Enter, PressableScale, useReducedMotion } from "@/design-system/motion";
 import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
@@ -26,6 +27,7 @@ export default function WelcomeScreen() {
   const locale = useLocale();
   const router = useRouter();
   const { colors } = useTheme();
+  const reduceMotion = useReducedMotion();
   const width = useWindowDimensions().width;
   const start = useMutation({
     mutationFn: () => services.auth.ensureSignedIn(),
@@ -49,7 +51,12 @@ export default function WelcomeScreen() {
 
         <Enter>
           <View style={[styles.hero, { height: heroH, backgroundColor: colors.primaryPale }]}>
-            {scenes.welcome ? <Image source={scenes.welcome} style={styles.heroImage} resizeMode="cover" accessible={false} /> : null}
+            {reduceMotion && scenes.welcome ? (
+              <Image source={scenes.welcome} style={styles.heroImage} resizeMode="cover" accessible={false} />
+            ) : (
+              // A home thali with steam rising; the still shows while it loads and when motion is turned off.
+              <MotionImage source={WELCOME_MOTION} placeholder={scenes.welcome as number | null} contentFit="cover" style={styles.heroImage} accessible={false} />
+            )}
             <View style={[styles.heroBadge, { backgroundColor: colors.surface }]}>
               <Icon name="sparkle" size={16} color={colors.accentText} />
               <Text variant="label">{t("onb.w.badge")}</Text>
@@ -141,6 +148,8 @@ function LanguageSwitch({ value, onChange }: { value: Locale; onChange: (l: Loca
     </View>
   );
 }
+
+const WELCOME_MOTION = require("../../../assets/media/scenes/welcome-motion.webp") as number;
 
 const styles = StyleSheet.create({
   heroImage: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },

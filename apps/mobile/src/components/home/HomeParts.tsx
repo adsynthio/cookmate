@@ -167,32 +167,34 @@ export function PickCard({ pick, hero, index, onOpen, onCook }: { pick: Pick; he
           </Text>
         ) : null}
         <View style={[styles.pickFoot, { backgroundColor: colors.surfaceMuted }]}>
-          {pick.totalTimeMin ? (
-            <View style={styles.row}>
-              <Icon name="timer" size={16} color={colors.inkSecondary} />
-              <Text variant="label" color={colors.inkSecondary}>
-                {t("home.minutes", { min: pick.totalTimeMin })}
-              </Text>
-            </View>
-          ) : null}
-          {pick.total ? (
-            <View style={styles.row}>
-              <Icon name="pantry" size={16} color={colors.inkSecondary} />
-              <Text variant="label" color={colors.inkSecondary}>
-                {t("home.haveShort", { have: pick.have, total: pick.total })}
-              </Text>
-            </View>
-          ) : null}
-          <View style={{ flex: 1 }} />
+          {/* Time and items give way (and cut short) before the action does: it always stays inside the card. */}
+          <View style={styles.footMeta}>
+            {pick.totalTimeMin ? (
+              <View style={styles.footItem}>
+                <Icon name="timer" size={16} color={colors.inkSecondary} />
+                <Text variant="label" color={colors.inkSecondary} numberOfLines={1} style={styles.shrink}>
+                  {t("home.minutes", { min: pick.totalTimeMin })}
+                </Text>
+              </View>
+            ) : null}
+            {pick.total ? (
+              <View style={styles.footItem} accessible accessibilityLabel={t("home.haveOf", { have: pick.have, total: pick.total })}>
+                <Icon name="pantry" size={16} color={colors.inkSecondary} />
+                <Text variant="label" color={colors.inkSecondary} numberOfLines={1} style={styles.shrink}>
+                  {`${pick.have}/${pick.total}`}
+                </Text>
+              </View>
+            ) : null}
+          </View>
           {onCook ? (
-            <PressableScale accessibilityRole="button" accessibilityLabel={`${t("home.cookNow")}: ${name}`} onPress={onCook} hitSlop={8} style={styles.row}>
+            <PressableScale accessibilityRole="button" accessibilityLabel={`${t("home.cookNow")}: ${name}`} onPress={onCook} hitSlop={8} style={styles.footAction}>
               <Text variant="label" weight={600} color={colors.accentText}>
                 {t("home.cookNow")}
               </Text>
               <Icon name="forward" size={16} color={colors.accentText} />
             </PressableScale>
           ) : (
-            <View style={styles.row}>
+            <View style={styles.footAction}>
               <Text variant="label" weight={600} color={colors.primaryText}>
                 {t("home.viewRecipe")}
               </Text>
@@ -281,7 +283,11 @@ const styles = StyleSheet.create({
   play: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" },
   pick: { borderRadius: radius.cardLg, padding: space.lg, gap: space.md },
   pickTop: { flexDirection: "row", alignItems: "center", gap: space.lg },
-  pickFoot: { flexDirection: "row", alignItems: "center", gap: space.md, borderRadius: radius.pill, paddingHorizontal: space.md, minHeight: 40 },
+  pickFoot: { flexDirection: "row", alignItems: "center", gap: space.sm, borderRadius: radius.pill, paddingHorizontal: space.md, minHeight: 40 },
+  footMeta: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: space.md, overflow: "hidden" },
+  footItem: { flexDirection: "row", alignItems: "center", gap: 4, flexShrink: 1, minWidth: 0 },
+  footAction: { flexDirection: "row", alignItems: "center", gap: 2, flexShrink: 0 },
+  shrink: { flexShrink: 1 },
   useSoonRow: { gap: space.md, paddingVertical: space.xs, paddingRight: space.gutter },
   useSoon: { width: 156, borderRadius: radius.card, padding: space.md, gap: space.sm },
   useSoonTop: { flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: space.xs },

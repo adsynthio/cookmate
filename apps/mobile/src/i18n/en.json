@@ -831,5 +831,18 @@
   "you.settings": "Settings",
   "you.privacyTitle": "Memory and privacy",
   "cook.resume.badge": "On the stove",
-  "cook.savedTitle": "Your saved dishes"
+  "cook.savedTitle": "Your saved dishes",
+  "timers.title": "All timers",
+  "timers.open": "See all timers",
+  "timers.running": "{n} running",
+  "timers.none": "No timer running",
+  "timers.next": "Next: {label} in {time}",
+  "timers.noneBody": "Start one for a step below, or a quick timer.",
+  "timers.soon": "Almost done",
+  "timers.fromRecipe": "Other steps with a time",
+  "timers.stepTime": "Step {n} · {time}",
+  "timers.startStep": "Start the step {n} timer, {time}",
+  "timers.quick": "Quick timer",
+  "timers.plain": "{n} min",
+  "timers.back": "Back to cooking"
 }

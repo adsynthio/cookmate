@@ -78,7 +78,7 @@ type TimerState = {
   /** True after a timer was started without notification permission: it only rings while the app is open. */
   silent: boolean;
   start: (input: { sessionId: string; stepNo: number; label: string; durationSec: number; cue?: string }) => Promise<RunningTimer>;
-  /** More time on a timer, running or already rung ("1 more minute"). */
+  /** More time on a timer, running or already rung ("1 more minute"); negative takes time off. */
   extend: (id: string, sec: number) => Promise<void>;
   cancel: (id: string) => Promise<void>;
   markRang: (id: string) => void;
@@ -132,9 +132,10 @@ export const useTimers = create<TimerState>((set, get) => {
       const x = get().timers.find((y) => y.id === id);
       if (!x) return;
       await unschedule(x);
-      const endsAt = Math.max(x.endsAt, Date.now()) + sec * 1000;
+      // Taking time off never ends a timer in the past: at least a second is left.
+      const endsAt = sec >= 0 ? Math.max(x.endsAt, Date.now()) + sec * 1000 : Math.max(x.endsAt + sec * 1000, Date.now() + 1000);
       const notificationId = await schedule({ ...x, endsAt });
-      const next: RunningTimer = { ...x, endsAt, durationSec: x.durationSec + sec, notificationId, rang: false };
+      const next: RunningTimer = { ...x, endsAt, durationSec: Math.max(1, x.durationSec + sec), notificationId, rang: false };
       commit(get().timers.map((y) => (y.id === id ? next : y)));
     },
     cancel: async (id) => {

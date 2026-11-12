@@ -1,5 +1,6 @@
 // The pieces of Home in the Stitch layout: greeting with the dish of the moment, the craving search pill, "Pick up
 // where you left off", the idea cards, Use Soon cards and the "make something new" card.
+import { useRouter } from "expo-router";
 import { Image, type ImageSourcePropType, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 import { itemName } from "@/components/kitchen/names";
@@ -210,12 +211,15 @@ export function PickCard({ pick, hero, index, onOpen, onCook }: { pick: Pick; he
 /** Use Soon as photo cards with a day badge; "Find recipes" focuses the picks on that item. */
 export function UseSoonCards({ items, focused, onPick }: { items: PantryItem[]; focused: string | null; onPick: (i: PantryItem) => void }) {
   const { colors } = useTheme();
+  const router = useRouter();
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.useSoonRow}>
       {items.map((item, i) => {
         const days = item.expiryDate ? daysLeft(item.expiryDate) : null;
         const label = days === null ? t("home.soon") : days <= 0 ? t("home.today") : days === 1 ? t("home.dayLeft") : t("home.daysLeft", { days });
         const on = focused === item.id;
+        // Leftovers aren't in any recipe: their button opens ways to use them up instead (KIT-180).
+        const cooked = item.state === "leftover" || item.state === "cooked";
         const entry = item.ingredientKey ? catalogEntry(item.ingredientKey) : undefined;
         return (
           <Enter key={item.id} index={i}>
@@ -230,12 +234,12 @@ export function UseSoonCards({ items, focused, onPick }: { items: PantryItem[]; 
               <PressableScale
                 accessibilityRole="button"
                 accessibilityState={{ selected: on }}
-                accessibilityLabel={`${t("home.findRecipes")}: ${itemName(item)}`}
-                onPress={() => onPick(item)}
+                accessibilityLabel={`${cooked ? t("left.ideas") : t("home.findRecipes")}: ${itemName(item)}`}
+                onPress={() => (cooked ? router.push(`/pantry/${item.id}`) : onPick(item))}
                 style={[styles.find, { backgroundColor: on ? colors.primary : colors.surfaceMuted }]}
               >
                 <Text variant="caption" weight={600} color={on ? colors.onPrimary : colors.inkSecondary}>
-                  {on ? t("home.clear") : t("home.findRecipes")}
+                  {cooked ? t("left.ideas") : on ? t("home.clear") : t("home.findRecipes")}
                 </Text>
               </PressableScale>
             </View>

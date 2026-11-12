@@ -172,10 +172,10 @@ export function HomeHero({
         <Floater source={ingredientImage("tomato")} size={54} style={{ left: 4, top: 10 }} delay={0} tilt={8} />
         <Floater source={ingredientImage("onion")} size={50} style={{ right: 10, top: 0 }} delay={400} tilt={-10} />
         <Floater source={ingredientImage("garlic")} size={42} style={{ left: 22, bottom: 36 }} delay={800} tilt={12} />
-        <Floater source={ingredientImage("capsicum")} size={46} style={{ right: 34, bottom: 70 }} delay={1200} tilt={-8} />
+        <Floater source={ingredientImage("capsicum")} size={46} style={{ right: 2, bottom: 96 }} delay={1200} tilt={-8} />
         <Floater source={ingredientImage("carrot")} size={40} style={{ left: "44%", top: -6 }} delay={600} tilt={10} />
         {dish ? (
-          <Floater source={dish} size={92} style={{ right: -14, bottom: -4 }} delay={200} tilt={4} />
+          <Floater source={dish} size={88} style={{ right: -18, bottom: -26 }} delay={200} tilt={4} />
         ) : null}
 
         <Enter style={styles.copy}>
@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
   mic: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.22)" },
   banner: { height: 250, justifyContent: "center", alignItems: "center" },
   floater: { position: "absolute", overflow: "hidden", borderWidth: 3, borderColor: "rgba(255,255,255,0.85)", backgroundColor: "#FFFFFF" },
-  copy: { alignItems: "center", gap: space.sm, paddingHorizontal: space.xxl },
+  // Wide enough side margins that the longest headline (Hinglish) clears the floating food.
+  copy: { alignItems: "center", gap: space.sm, paddingHorizontal: 52 },
   center: { textAlign: "center" },
   headline: { textShadowColor: "rgba(0,0,0,0.25)", textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 6 },
   cta: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: space.xs, backgroundColor: "#1F1E19", borderRadius: radius.pill, paddingHorizontal: space.lg, paddingVertical: 10, borderWidth: 1.5, borderColor: "rgba(255,255,255,0.85)" },

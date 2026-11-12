@@ -24,6 +24,8 @@ import { pantryMatch, type IngredientMatch } from "@/domain/ranking";
 import {
   cueSenses,
   familyBranches,
+  localDoc,
+  recipeDescription,
   recipeTitle,
   toRankRecipe,
   totalTime,
@@ -104,7 +106,7 @@ type Tab = "ingredients" | "steps" | "why";
 
 function RecipeBody({
   header,
-  doc,
+  doc: rawDoc,
   items,
   members,
   householdId,
@@ -118,6 +120,7 @@ function RecipeBody({
   const { colors } = useTheme();
   const router = useRouter();
   const locale = getLocale();
+  const doc = useMemo(() => localDoc(rawDoc, locale), [rawDoc, locale]);
   const whoEating = useSession((s) => s.whoEating);
   const eaters = whoEating ? members.filter((m) => whoEating.includes(m.id)) : members;
   const [servings, setServings] = useState(Math.max(1, eaters.length || doc.base_servings));
@@ -230,7 +233,7 @@ function RecipeBody({
         <Text variant="display" accessibilityRole="header">
           {title}
         </Text>
-        {doc.parent_id ? null : <Text muted>{doc.description}</Text>}
+        {doc.parent_id ? null : <Text muted>{recipeDescription(doc, locale)}</Text>}
       </Enter>
 
       <Enter index={2}>
@@ -358,7 +361,7 @@ function RecipeBody({
                   </View>
                   <Text variant="caption" muted style={{ flex: 1 }}>
                     {[
-                      mins ? t("recipe.stepTime", { min: mins }) : null,
+                      mins ? (mins >= 90 ? t("recipe.stepHours", { h: Math.round(mins / 60) }) : t("recipe.stepTime", { min: mins })) : null,
                       s.whistles ? t("recipe.whistles", { n: s.whistles }) : null,
                       s.heat ? t(`cook.heat.${s.heat}` as StringKey) : null,
                     ]

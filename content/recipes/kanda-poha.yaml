@@ -3,6 +3,9 @@ title: Kanda Poha
 titles: {hi: कांदा पोहा, hi-Latn: Kanda Poha}
 description: >-
   Flattened rice tossed with onion, mustard seeds, curry leaves and crunchy peanuts, finished with lemon and coriander.
+descriptions:
+  hi: "पोहा प्याज़, राई, करी पत्ता और कुरकुरी मूँगफली के साथ, ऊपर से नींबू और धनिया।"
+  hi-Latn: "Poha pyaaz, rai, curry patta aur kurkuri moongphali ke saath, upar se nimbu aur dhaniya."
 cuisine_region: maharashtrian
 course: breakfast
 diet: vegan
@@ -37,6 +40,15 @@ steps:
     cues:
       touch: "A flake pressed between two fingers mashes easily but isn't mushy or wet."
       avoid: "Don't soak it: wet poha turns into a lump."
+    say:
+      hi:
+        text: "पोहा छलनी में डालकर बहते पानी में कुछ सेकंड, 2-3 बार धोएँ। भिगोएँ नहीं। हल्दी, नमक और चीनी छिड़कें, हल्के से मिलाएँ और 5 मिनट छोड़ दें।"
+        touch: "दो उँगलियों में दबाने पर पोहा आसानी से मसल जाए, पर गीला या गला न हो।"
+        avoid: "भिगोएँ नहीं: गीला पोहा गोला बन जाता है।"
+      hi-Latn:
+        text: "Poha chhalni mein daalkar behte paani mein kuch second, 2-3 baar dhoyein. Bhigoyein nahi. Haldi, namak aur cheeni chhidkein, halke se milaayein aur 5 minute chhod dein."
+        touch: "Do ungliyon mein dabaane par poha aasaani se masal jaaye, par geela ya gala na ho."
+        avoid: "Bhigoyein nahi: geela poha gola ban jaata hai."
   - text: Heat the oil in a kadai and fry the peanuts until crunchy. Lift them out.
     technique: shallow_fry
     minutes: 3
@@ -45,6 +57,15 @@ steps:
     cues:
       look: "The peanuts turn one shade darker."
       smell: "Roasted, like a street-side mungfali cart."
+    say:
+      hi:
+        text: "कड़ाही में तेल गरम करें और मूँगफली कुरकुरी होने तक तलें। निकाल लें।"
+        look: "मूँगफली एक रंग गहरी हो जाए।"
+        smell: "भुनी मूँगफली की ख़ुशबू, ठेले वाली जैसी।"
+      hi-Latn:
+        text: "Kadaahi mein tel garam karein aur moongphali kurkuri hone tak talein. Nikaal lein."
+        look: "Moongphali ek rang gehri ho jaaye."
+        smell: "Bhuni moongphali ki khushboo, thele waali jaisi."
   - text: In the same oil add mustard seeds. When they pop, add curry leaves and green chilli, then the onion. Cook until soft.
     technique: saute_onion
     minutes: 3
@@ -54,6 +75,17 @@ steps:
       look: "The onion turns translucent, not brown."
       sound: "Mustard seeds pop; wait for the popping before adding the rest."
       smell: "Curry leaves smell fresh and sharp when they hit the oil."
+    say:
+      hi:
+        text: "उसी तेल में राई डालें। चटकने लगे तो करी पत्ता और हरी मिर्च डालें, फिर प्याज़। नरम होने तक पकाएँ।"
+        look: "प्याज़ पारदर्शी हो, भूरा नहीं।"
+        sound: "राई चटकती है; चटकने के बाद ही बाकी चीज़ें डालें।"
+        smell: "करी पत्ता तेल में पड़ते ही तेज़ और ताज़ा महके।"
+      hi-Latn:
+        text: "Usi tel mein rai daalein. Chatakne lage to curry patta aur hari mirch daalein, phir pyaaz. Naram hone tak pakaayein."
+        look: "Pyaaz paardarshi ho, bhoora nahi."
+        sound: "Rai chatakti hai; chatakne ke baad hi baaki cheezein daalein."
+        smell: "Curry patta tel mein padte hi tez aur taaza mehke."
   - text: Add the poha and toss gently on low heat. Cover and steam for 2 minutes.
     minutes: 2
     timer: true
@@ -62,10 +94,26 @@ steps:
     cues:
       look: "Every flake is yellow and steam rises when you lift the lid."
       touch: "Hot all the way through."
+    say:
+      hi:
+        text: "पोहा डालें और धीमी आँच पर हल्के से मिलाएँ। ढककर 2 मिनट भाप में पकाएँ।"
+        look: "हर दाना पीला हो और ढक्कन उठाने पर भाप निकले।"
+        touch: "पूरा अंदर तक गरम हो।"
+      hi-Latn:
+        text: "Poha daalein aur dheemi aanch par halke se milaayein. Dhak kar 2 minute bhaap mein pakaayein."
+        look: "Har daana peela ho aur dhakkan uthaane par bhaap nikle."
+        touch: "Poora andar tak garam ho."
   - text: Turn off the heat. Add the peanuts, lemon juice and coriander leaves and toss once.
     minutes: 1
     cues:
       taste: "Taste for lemon and salt."
+    say:
+      hi:
+        text: "आँच बंद करें। मूँगफली, नींबू का रस और हरा धनिया डालकर एक बार मिलाएँ।"
+        taste: "नींबू और नमक चखकर देखें।"
+      hi-Latn:
+        text: "Aanch band karein. Moongphali, nimbu ka ras aur hara dhaniya daalkar ek baar milaayein."
+        taste: "Nimbu aur namak chakh kar dekhein."
 variation_rules:
   - {type: omit, condition: {allergen: peanut}, action: {omit: [peanuts]}, note: Leave out the peanuts; add a handful of roasted chana dal or none.}
   - {type: add, condition: {have: [potato]}, action: {add: [{ingredient: potato, qty: 150, unit: g}], at_step: 3}, note: Add one small diced potato with the onion and cook covered until soft for batata poha.}

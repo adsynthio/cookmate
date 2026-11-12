@@ -3,6 +3,9 @@ title: Kadhi Pakora
 titles: {hi: कढ़ी पकौड़ा, hi-Latn: Kadhi Pakora}
 description: >-
   Tangy curd and besan kadhi simmered slowly, with soft onion pakoras and a ghee tadka of cumin, methi dana and red chilli.
+descriptions:
+  hi: "धीमी आँच पर पकी खट्टी दही-बेसन की कढ़ी, नरम प्याज़ के पकौड़े और जीरा, मेथी दाना, लाल मिर्च का घी वाला तड़का।"
+  hi-Latn: "Dheemi aanch par paki khatti dahi-besan ki kadhi, naram pyaaz ke pakode aur jeera, methi daana, laal mirch ka ghee wala tadka."
 cuisine_region: punjabi
 course: main
 diet: veg
@@ -42,6 +45,13 @@ steps:
     cue: No lumps at all, and as thin as buttermilk.
     cues:
       look: "No lumps at all, and as thin as buttermilk."
+    say:
+      hi:
+        text: "बड़े बर्तन में दही, 6 चम्मच बेसन, हल्दी, लाल मिर्च पाउडर और नमक पूरी तरह चिकना होने तक फेंटें। 900 ml पानी डालकर फिर फेंटें।"
+        look: "बिल्कुल गाँठ न हो, और छाछ जितना पतला हो।"
+      hi-Latn:
+        text: "Bade bartan mein dahi, 6 chammach besan, haldi, laal mirch powder aur namak poori tarah chikna hone tak phentein. 900 ml paani daalkar phir phentein."
+        look: "Bilkul gaanth na ho, aur chhaachh jitna patla ho."
   - text: Pour into the kadai with the grated ginger. Bring to a boil on medium heat, stirring all the time.
     technique: simmer
     minutes: 8
@@ -50,6 +60,15 @@ steps:
     cues:
       look: "Small bubbles start rising all over."
       avoid: "Keep stirring until the first boil, or the curd can split."
+    say:
+      hi:
+        text: "कसे अदरक के साथ कड़ाही में डालें। मध्यम आँच पर लगातार चलाते हुए उबाल आने दें।"
+        look: "हर तरफ़ से छोटे बुलबुले उठने लगें।"
+        avoid: "पहला उबाल आने तक चलाते रहें, वरना दही फट सकता है।"
+      hi-Latn:
+        text: "Kase adrak ke saath kadaahi mein daalein. Madhyam aanch par lagaataar chalaate hue ubaal aane dein."
+        look: "Har taraf se chhote bulbule uthne lagein."
+        avoid: "Pehla ubaal aane tak chalaate rahein, warna dahi phat sakta hai."
   - text: Lower the heat and let the kadhi simmer, stirring every few minutes.
     technique: simmer
     minutes: 25
@@ -59,6 +78,15 @@ steps:
     cues:
       look: "It coats the back of a spoon."
       smell: "The raw besan smell is gone."
+    say:
+      hi:
+        text: "आँच धीमी करें और कढ़ी को पकने दें, हर कुछ मिनट में चलाते रहें।"
+        look: "कढ़ी चम्मच के पीछे लिपटने लगे।"
+        smell: "कच्चे बेसन की महक चली जाए।"
+      hi-Latn:
+        text: "Aanch dheemi karein aur kadhi ko pakne dein, har kuch minute mein chalaate rahein."
+        look: "Kadhi chammach ke peechhe lipatne lage."
+        smell: "Kachche besan ki mehak chali jaaye."
   - text: Meanwhile make the pakora batter. Mix 2 katori besan with the sliced onion, green chilli, ajwain, a little salt and the soda, adding about 100 ml water slowly. Beat for 2 minutes.
     technique: batter
     minutes: 4
@@ -66,6 +94,15 @@ steps:
     cues:
       look: "A drop of batter floats in a bowl of water."
       touch: "Thick enough to drop from a spoon in a blob."
+    say:
+      hi:
+        text: "इस बीच पकौड़ों का घोल बनाएँ। 2 कटोरी बेसन में कटा प्याज़, हरी मिर्च, अजवाइन, थोड़ा नमक और सोडा मिलाएँ, लगभग 100 ml पानी धीरे-धीरे डालें। 2 मिनट फेंटें।"
+        look: "घोल की एक बूँद पानी की कटोरी में तैर जाए।"
+        touch: "इतना गाढ़ा कि चम्मच से गोले की तरह गिरे।"
+      hi-Latn:
+        text: "Is beech pakodon ka ghol banaayein. 2 katori besan mein kata pyaaz, hari mirch, ajwain, thoda namak aur soda milaayein, lagbhag 100 ml paani dheere-dheere daalein. 2 minute phentein."
+        look: "Ghol ki ek boond paani ki katori mein tair jaaye."
+        touch: "Itna gaadha ki chammach se gole ki tarah gire."
   - text: Heat the oil in a second pan on medium. Drop small spoonfuls of batter and fry in batches until golden all over.
     technique: deep_fry
     minutes: 12
@@ -76,6 +113,19 @@ steps:
       look: "The pakoras rise to the top and turn golden all over."
       sound: "Fast, steady bubbling around each pakora; it quietens as they cook through."
       avoid: "If the oil smokes, turn it down: the outside browns before the inside cooks."
+    say:
+      hi:
+        text: "दूसरी कड़ाही में मध्यम आँच पर तेल गरम करें। घोल के छोटे-छोटे चम्मच डालें और थोड़े-थोड़े करके हर तरफ़ से सुनहरा होने तक तलें।"
+        look: "पकौड़े ऊपर तैर आएँ और हर तरफ़ से सुनहरे हो जाएँ।"
+        sound: "हर पकौड़े के आस-पास तेज़, लगातार बुलबुले; पकने पर आवाज़ धीमी हो जाए।"
+        avoid: "तेल से धुआँ निकले तो आँच कम करें: वरना बाहर भूरा हो जाएगा और अंदर कच्चा रहेगा।"
+        safety: "बच्चों को गरम तेल से दूर रखें। घोल तेल के पास से धीरे से डालें ताकि छींटे न पड़ें, और गरम तेल में कभी पानी न टपकने दें।"
+      hi-Latn:
+        text: "Doosri kadaahi mein madhyam aanch par tel garam karein. Ghol ke chhote-chhote chammach daalein aur thode-thode karke har taraf se sunehra hone tak talein."
+        look: "Pakode upar tair aayein aur har taraf se sunehre ho jaayein."
+        sound: "Har pakode ke aas-paas tez, lagaataar bulbule; pakne par awaaz dheemi ho jaaye."
+        avoid: "Tel se dhuaan nikle to aanch kam karein: warna bahar bhoora ho jaayega aur andar kachcha rahega."
+        safety: "Bachchon ko garam tel se door rakhein. Ghol tel ke paas se dheere se daalein taaki chheente na padein, aur garam tel mein kabhi paani na tapakne dein."
   - text: Add the pakoras to the kadhi and simmer for 5 more minutes so they soak it up.
     technique: simmer
     minutes: 5
@@ -83,6 +133,13 @@ steps:
     heat: low
     cues:
       touch: "The pakoras turn soft and soak up the kadhi."
+    say:
+      hi:
+        text: "पकौड़े कढ़ी में डालें और 5 मिनट और पकाएँ ताकि वे कढ़ी सोख लें।"
+        touch: "पकौड़े नरम हो जाएँ और कढ़ी सोख लें।"
+      hi-Latn:
+        text: "Pakode kadhi mein daalein aur 5 minute aur pakaayein taaki ve kadhi sokh lein."
+        touch: "Pakode naram ho jaayein aur kadhi sokh lein."
   - text: For the tadka, heat the ghee. Add cumin, methi dana, dry red chillies and hing. Turn off the heat, add Kashmiri chilli powder and pour over the kadhi at once.
     technique: tadka
     minutes: 1
@@ -93,6 +150,19 @@ steps:
       look: "Cumin darkens one shade in a few seconds; the chilli powder turns red."
       sound: "A loud sizzle as the tadka hits the kadhi."
       avoid: "Add the chilli powder off the heat so it turns red, not black."
+    say:
+      hi:
+        text: "तड़के के लिए घी गरम करें। जीरा, मेथी दाना, सूखी लाल मिर्च और हींग डालें। आँच बंद करें, कश्मीरी मिर्च पाउडर डालें और तुरंत कढ़ी पर डाल दें।"
+        look: "कुछ सेकंड में जीरा एक रंग गहरा हो; मिर्च पाउडर लाल हो जाए।"
+        sound: "तड़का कढ़ी पर पड़ते ही ज़ोर की छन्न।"
+        avoid: "मिर्च पाउडर आँच बंद करके डालें ताकि लाल रहे, काला नहीं।"
+        branch: "मिर्च वाला तड़का डालने से पहले बच्चे का हिस्सा निकाल लें"
+      hi-Latn:
+        text: "Tadke ke liye ghee garam karein. Jeera, methi daana, sookhi laal mirch aur hing daalein. Aanch band karein, Kashmiri mirch powder daalein aur turant kadhi par daal dein."
+        look: "Kuch second mein jeera ek rang gehra ho; mirch powder laal ho jaaye."
+        sound: "Tadka kadhi par padte hi zor ki chhann."
+        avoid: "Mirch powder aanch band karke daalein taaki laal rahe, kaala nahi."
+        branch: "Mirch wala tadka daalne se pehle bachche ka hissa nikaal lein"
 variation_rules:
   - {type: substitute, condition: {missing: curd}, action: {use: buttermilk, qty_ratio: 4, at_step: 1, reduce_water_ml: 900}, note: Use about 1.2 litres chaas and skip the extra water.}
   - {type: omit, condition: {max_time_min: 30}, action: {skip_steps: [4, 5]}, note: Plain kadhi without pakoras is ready in about 30 minutes.}

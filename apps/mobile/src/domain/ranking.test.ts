@@ -15,6 +15,7 @@ import {
   pantryCheck,
   pantryMatch,
   rankRecipes,
+  shoppingTier,
   reasonFor,
   slotForHour,
   tasteFactor,
@@ -238,4 +239,14 @@ test("pantry check: the item that spoils first is asked about first", () => {
   });
   const check = pantryCheck([palakPaneer, matarPaneer, dal], c);
   assert.equal(check?.key, "paneer");
+});
+
+test("dishes you can make now come before dishes that need shopping, whatever else scores higher", () => {
+  const ready = recipe({ id: "aloo", ingredients: [ing("potato", { role: "base" }), ing("salt", { role: "spice" })] });
+  // Loved, quick and matching the craving, but two things short.
+  const short = recipe({ id: "palak", tags: ["comforting"], ingredients: [ing("spinach", { role: "base" }), ing("paneer", { role: "protein" }), ing("potato")] });
+  const ranked = rankRecipes([short, ready], ctx({ pantry: [item("potato")], like: ["spinach", "paneer"] }));
+  assert.deepEqual(ranked.map((r) => r.recipe.id), ["aloo", "palak"]);
+  assert.equal(shoppingTier(ranked[0]!.match), 0);
+  assert.equal(shoppingTier(ranked[1]!.match), 1);
 });

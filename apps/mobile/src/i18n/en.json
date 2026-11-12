@@ -799,5 +799,15 @@
   "recipe.tab.steps": "Steps ({n})",
   "recipe.tab.why": "Why it works",
   "recipe.oneMore": "One more",
-  "recipe.whyNone": "Nothing more to say about this one yet."
+  "recipe.whyNone": "Nothing more to say about this one yet.",
+  "measure.small": "small",
+  "measure.big": "big",
+  "measure.clove": "cloves",
+  "measure.inch": "inch",
+  "home.want.overline": "You want to make",
+  "home.want.title": "Make {dish}",
+  "home.want.need": "You'll need to buy {n}:",
+  "home.want.none": "No recipe for \"{dish}\" yet",
+  "home.want.noneBody": "The dishes below still match what you typed where they can. Or let Cookmate make something new from your kitchen.",
+  "recipe.stepHours": "about {h} hr"
 }

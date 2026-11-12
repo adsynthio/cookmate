@@ -13,22 +13,27 @@ import { useTheme } from "@/design-system/theme";
 import { motion, radius, shadow, space } from "@/design-system/tokens";
 import { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
-const ICONS: Record<string, IconName> = { index: "home", kitchen: "kitchen", list: "list", cook: "cook", you: "you" };
+const ICONS: Record<string, IconName> = { index: "home", kitchen: "kitchen", list: "list", cook: "cook", community: "users", you: "you" };
+/** Tabs that are screens of their own but not in the bar (the shopping list opens from Kitchen and Home). */
+const HIDDEN = new Set(["list"]);
 
 export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const { colors, scheme } = useTheme();
   const insets = useSafeAreaInsets();
   const reduce = useReducedMotion();
   const [width, setWidth] = useState(0);
-  const count = state.routes.length;
+  const visible = state.routes.filter((r) => !HIDDEN.has(r.name));
+  const count = visible.length;
+  const active = visible.findIndex((r) => r.key === state.routes[state.index]?.key);
   const tabW = width / Math.max(count, 1);
   const x = useSharedValue(0);
 
   useEffect(() => {
     if (!tabW) return;
-    const to = state.index * tabW;
+    if (active < 0) return;
+    const to = active * tabW;
     x.value = reduce ? withTiming(to, { duration: 0 }) : withSpring(to, motion.spring);
-  }, [state.index, tabW, reduce, x]);
+  }, [active, tabW, reduce, x]);
 
   const pill = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
@@ -47,14 +52,14 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
         ]}
       >
         <View style={styles.row} onLayout={onLayout}>
-          {tabW ? (
+          {tabW && active >= 0 ? (
             <Animated.View
               pointerEvents="none"
               style={[styles.pill, { width: tabW - 6, backgroundColor: colors.primary }, pill]}
             />
           ) : null}
-          {state.routes.map((route, index) => {
-            const focused = state.index === index;
+          {visible.map((route) => {
+            const focused = state.routes[state.index]?.key === route.key;
             const title = descriptors[route.key]?.options.title;
             const label = typeof title === "string" ? title : route.name;
             const onPress = () => {
@@ -93,5 +98,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row" },
   pill: { position: "absolute", left: 3, top: 0, bottom: 0, borderRadius: radius.pill },
   tab: { flex: 1, alignItems: "center", justifyContent: "center", gap: 2, minHeight: 56, paddingVertical: 6 },
-  label: { letterSpacing: 0.2, textTransform: "none" },
+  label: { letterSpacing: 0, textTransform: "none", maxWidth: "100%" },
 });

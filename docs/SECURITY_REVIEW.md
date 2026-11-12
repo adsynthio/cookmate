@@ -10,7 +10,7 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 |---|---|
 | Every public table has row-level security; anon can read nothing; only `ai_requests` has no policies | `supabase/tests/database/00_rls_guardrails.test.sql` (CI) |
 | Every foreign key has a covering index | same file |
-| The only `SECURITY DEFINER` function a signed-in user can call is `create_household` | same file |
+| The only `SECURITY DEFINER` functions a signed-in user can call are the reviewed ones (findings 2, 12, 13, 16) | same file |
 | Household isolation per feature (pantry, recipes, cooking, voice context, memories, shopping, privacy) | `supabase/tests/database/01`–`15` (CI) |
 | No service-role key or Anthropic key in the app bundle | `ci.yml`, "No secrets in the app" step |
 | Edge Function inputs, model output validation, safety guards | `supabase/functions/*/logic.test.ts` (CI) |
@@ -34,6 +34,8 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 13 | Sprint 6 part 4 adds three more SECURITY DEFINER functions signed-in users can call: `pantry_check_today`, `get_notification_settings`, `set_notification_settings` | Low | **Accepted (needs your sign-off)**: each first checks the caller is an active member of the household (`private.current_member`) and only touches that member's or household's rows in `private.pantry_checks` / `private.notification_settings`, which no client can read directly. The guard-rail test lists them by name so a new one can't slip in |
 | 14 | `notify` is deployed without JWT verification so pg_cron can call it | Low | **Accepted**: it refuses any call without the shared secret, which is random, kept in Vault and compared inside the database (`notify_secret_ok`, service role only); the function does nothing a caller can steer (no input is read) |
 | 15 | Notification settings and the day's pantry question live in private tables, so "Download my data" didn't include them | Info | **Fixed (Sprint 6 part 5)**: `export_household` now adds them through `private.export_private`, which returns rows only to a member of that household (tested) |
+| 16 | Community (Sprint 8) adds eight SECURITY DEFINER functions signed-in users can call: `community_create_circle`, `community_create_invite`, `community_join`, `community_leave`, `community_share`, `community_remove_post`, `community_report`, `community_feed` | Low | **Accepted (needs your sign-off)**: households in different circles can't see each other through RLS alone, so joining by invite code and posting go through these functions. Each first checks the caller is an active member of the household it acts for (`private.community_require`), then that the household is in the circle. Clients can only read the community tables; anon reads nothing. Limits: 10 circles per household, 30 households per circle, 20 posts a day, invites expire after 7 days, 3 reports remove a post. Covered by `21_community.test.sql`; the guard-rail test lists the functions by name |
+| 17 | Shared dishes are visible to every household in the circle | Info | **By design**: nothing is shared unless the cook taps Share and picks a circle; a post carries the circle display name the household chose, the dish, its changes and an optional note, never members' names, the pantry or memories. Leaving a circle keeps past posts until the author removes them; deleting the account deletes them |
 
 ## Privacy rights (DPDP)
 

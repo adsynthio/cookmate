@@ -2,6 +2,7 @@
 import { type ReactNode, useState } from "react";
 import {
   ActivityIndicator,
+  Platform,
   Image,
   Pressable,
   ScrollView,
@@ -306,6 +307,8 @@ export function Field({ variant = "body", style, onFocus, onBlur, ...rest }: Tex
         styles.field,
         textStyle(variant),
         { color: colors.ink, backgroundColor: colors.surface, borderColor: focused ? colors.primary : colors.line },
+        // The browser's own focus outline is replaced by the olive border above.
+        Platform.OS === "web" ? ({ outlineStyle: "none" } as object) : null,
         style,
       ]}
     />

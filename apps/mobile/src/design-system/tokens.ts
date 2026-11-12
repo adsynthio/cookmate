@@ -84,21 +84,22 @@ export type Weight = 400 | 500 | 600;
 type TypeStyle = { fontSize: number; lineHeight: number; weight: Weight; letterSpacing?: number };
 
 /** Sizes from the Stitch design system, set in Inter. */
+// One step smaller than the first release (phone test: "looks like big fonts"); cook steps stay large.
 export const type = {
-  display: { fontSize: 36, lineHeight: 42, weight: 500, letterSpacing: -0.72 },
-  title: { fontSize: 26, lineHeight: 32, weight: 500, letterSpacing: -0.26 },
-  metric: { fontSize: 28, lineHeight: 34, weight: 500, letterSpacing: -0.28 },
-  heading: { fontSize: 22, lineHeight: 28, weight: 500, letterSpacing: -0.22 },
-  subheading: { fontSize: 18, lineHeight: 24, weight: 600 },
-  bodyStrong: { fontSize: 17, lineHeight: 24, weight: 500, letterSpacing: -0.17 },
-  body: { fontSize: 15, lineHeight: 22, weight: 400, letterSpacing: -0.08 },
-  unit: { fontSize: 15, lineHeight: 20, weight: 400 },
-  label: { fontSize: 14, lineHeight: 20, weight: 500, letterSpacing: 0.14 },
-  caption: { fontSize: 13, lineHeight: 18, weight: 400 },
-  overline: { fontSize: 11, lineHeight: 14, weight: 600, letterSpacing: 0.66 },
-  wordmark: { fontSize: 20, lineHeight: 26, weight: 600, letterSpacing: -0.2 },
+  display: { fontSize: 30, lineHeight: 36, weight: 500, letterSpacing: -0.6 },
+  title: { fontSize: 23, lineHeight: 29, weight: 500, letterSpacing: -0.23 },
+  metric: { fontSize: 25, lineHeight: 30, weight: 500, letterSpacing: -0.25 },
+  heading: { fontSize: 19, lineHeight: 25, weight: 500, letterSpacing: -0.19 },
+  subheading: { fontSize: 16, lineHeight: 22, weight: 600 },
+  bodyStrong: { fontSize: 15, lineHeight: 21, weight: 500, letterSpacing: -0.15 },
+  body: { fontSize: 14, lineHeight: 20, weight: 400, letterSpacing: -0.07 },
+  unit: { fontSize: 14, lineHeight: 19, weight: 400 },
+  label: { fontSize: 13, lineHeight: 18, weight: 500, letterSpacing: 0.13 },
+  caption: { fontSize: 12, lineHeight: 16, weight: 400 },
+  overline: { fontSize: 10.5, lineHeight: 14, weight: 600, letterSpacing: 0.63 },
+  wordmark: { fontSize: 18, lineHeight: 24, weight: 600, letterSpacing: -0.18 },
   // COOK-01: readable at arm's length.
-  cookStep: { fontSize: 28, lineHeight: 36, weight: 500, letterSpacing: -0.28 },
+  cookStep: { fontSize: 26, lineHeight: 34, weight: 500, letterSpacing: -0.26 },
 } as const satisfies Record<string, TypeStyle>;
 
 /** Devanagari matras need more room: +4 on any style tighter than 1.3x its size (brand kit). */

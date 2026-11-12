@@ -267,6 +267,21 @@ export const stepPhotos: Record<"besan-chilla/3" | "besan-chilla/4" | "chicken-c
   "rajma/5": null,
 };
 
+export const drinkPhotos: Record<"nimbu-pani" | "aam-panna" | "jaljeera" | "sweet-lassi" | "masala-chaas" | "cold-coffee" | "masala-chai" | "virgin-mojito" | "mojito" | "cucumber-gin-tonic" | "jaggery-whisky-sour" | "rum-cola-lime", ImageSourcePropType | null> = {
+  "nimbu-pani": null,
+  "aam-panna": null,
+  "jaljeera": null,
+  "sweet-lassi": null,
+  "masala-chaas": null,
+  "cold-coffee": null,
+  "masala-chai": null,
+  "virgin-mojito": null,
+  "mojito": null,
+  "cucumber-gin-tonic": null,
+  "jaggery-whisky-sour": null,
+  "rum-cola-lime": null,
+};
+
 /** Photo for a pantry item: its own if generated, else its category's, else null. */
 export function ingredientImage(name: string | null | undefined, category?: string | null): ImageSourcePropType | null {
   const own = name ? (ingredientPhotos as Record<string, ImageSourcePropType | null>)[name] : null;
@@ -281,4 +296,9 @@ export function dishImage(slug: string): ImageSourcePropType | null {
 /** How a cooking step should look, if generated; else the dish photo. */
 export function stepImage(slug: string, step: number): ImageSourcePropType | null {
   return (stepPhotos as Record<string, ImageSourcePropType | null>)[`${slug}/${step}`] ?? dishImage(slug);
+}
+
+/** Photo for a drink by id, if one has been generated. */
+export function drinkImage(id: string): ImageSourcePropType | null {
+  return (drinkPhotos as Record<string, ImageSourcePropType | null>)[id] ?? null;
 }

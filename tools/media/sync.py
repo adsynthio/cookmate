@@ -11,6 +11,7 @@ every expected file that is present and `null` for the rest; screens fall back t
 from __future__ import annotations
 
 import json
+import re
 import struct
 import sys
 from pathlib import Path
@@ -73,6 +74,9 @@ def _step_photos() -> dict:
 
 
 STEPS = _step_photos()
+# One photo per drink in the Drinks tab (src/data/drinks.ts), keyed by its id.
+DRINK_IDS = re.findall(r'^    id: "([a-z0-9-]+)",$', (APP / "src" / "data" / "drinks.ts").read_text(), re.M)
+DRINKS = {d: (f"drinks/{d}.png", 1080, 1080) for d in DRINK_IDS}
 # Larger photos for onboarding and the kitchen screens (Stitch layouts).
 SCENES = {
     "welcome": ("scenes/welcome.png", 1080, 690),
@@ -126,6 +130,8 @@ def render() -> tuple[str, list[str]]:
         + block("categoryPhotos", CATEGORIES, quote=True)
         + "\n"
         + block("stepPhotos", STEPS, quote=True)
+        + "\n"
+        + block("drinkPhotos", DRINKS, quote=True)
         + "\n/** Photo for a pantry item: its own if generated, else its category's, else null. */\n"
         "export function ingredientImage(name: string | null | undefined, category?: string | null): ImageSourcePropType | null {\n"
         "  const own = name ? (ingredientPhotos as Record<string, ImageSourcePropType | null>)[name] : null;\n"
@@ -139,6 +145,10 @@ def render() -> tuple[str, list[str]]:
         "export function stepImage(slug: string, step: number): ImageSourcePropType | null {\n"
         "  return (stepPhotos as Record<string, ImageSourcePropType | null>)[`${slug}/${step}`] ?? dishImage(slug);\n"
         "}\n"
+        + "\n/** Photo for a drink by id, if one has been generated. */\n"
+        "export function drinkImage(id: string): ImageSourcePropType | null {\n"
+        "  return (drinkPhotos as Record<string, ImageSourcePropType | null>)[id] ?? null;\n"
+        "}\n"
     )
     return src, problems
 
@@ -146,7 +156,7 @@ def render() -> tuple[str, list[str]]:
 def main() -> int:
     check = "--check" in sys.argv
     src, problems = render()
-    all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES, **SCENES, **INGREDIENTS, **CATEGORIES, **STEPS}
+    all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES, **SCENES, **INGREDIENTS, **CATEGORIES, **STEPS, **DRINKS}
     missing = [rel for rel, _, _ in all_items.values() if not (MEDIA / rel).exists()]
     for p in problems:
         print(f"wrong size: {p}", file=sys.stderr)

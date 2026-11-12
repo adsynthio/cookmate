@@ -9,7 +9,8 @@ import { AppHeader } from "@/components/AppHeader";
 import { DRINKS, type Drink } from "@/data/drinks";
 import { Icon } from "@/design-system/icons";
 import { Enter, PressableScale } from "@/design-system/motion";
-import { Badge, Button, Card, Chip, Screen, Text } from "@/design-system/primitives";
+import { Badge, Button, Card, Chip, Photo, Screen, Text } from "@/design-system/primitives";
+import { drinkImage } from "@/design-system/media";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { drinkMatch, kitchenHas, drinksFor, say, type DrinkFilter } from "@/domain/drinks";
@@ -100,9 +101,13 @@ function DrinkCard({ drink, index, locale, have, onOpen }: { drink: Drink; index
   return (
     <Enter index={index}>
       <PressableScale accessibilityRole="button" accessibilityLabel={title} onPress={onOpen} style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
-        <View style={[styles.swatch, { backgroundColor: drink.colors[1] }]}>
-          <Icon name={drink.kind === "hot" ? "flame" : "drop"} size={22} color="#FFFFFF" />
-        </View>
+        {drinkImage(drink.id) ? (
+          <Photo source={drinkImage(drink.id)} size={64} radius={18} />
+        ) : (
+          <View style={[styles.swatch, { backgroundColor: drink.colors[1] }]}>
+            <Icon name={drink.kind === "hot" ? "flame" : "drop"} size={22} color="#FFFFFF" />
+          </View>
+        )}
         <View style={{ flex: 1, gap: 4 }}>
           <View style={styles.row}>
             <Text variant="bodyStrong" style={{ flex: 1 }}>

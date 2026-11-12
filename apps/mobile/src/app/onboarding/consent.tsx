@@ -74,7 +74,7 @@ export default function ConsentScreen() {
                 quantity: null,
                 unit: null,
                 locationKind: k.place,
-                state: null,
+                state: k.state ?? null,
                 flavorRoles: [],
                 confidence: 0.9,
               })),

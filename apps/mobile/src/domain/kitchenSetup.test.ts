@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { addSetupItem, dietAllows, dishesWithin, fitsDiet, removeSetupItem, suggestionsFor, type SetupEntry, type SetupItem } from "./kitchenSetup.ts";
+import { addSetupItem, dietAllows, dishesWithin, fitsDiet, isLeftoverText, removeSetupItem, suggestionsFor, type SetupEntry, type SetupItem } from "./kitchenSetup.ts";
 
 const CATALOG: Record<string, SetupEntry> = {
   milk: { name: "milk", category: "dairy", allergens: ["milk"] },
@@ -59,4 +59,9 @@ test("diet labels: a veg home can cook vegan and jain dishes, a jain home only j
   assert.equal(dietAllows("veg", "eggetarian"), false);
   assert.equal(dietAllows("jain", "veg"), false);
   assert.equal(dietAllows("nonveg", "nonveg"), true);
+});
+
+test("typed leftovers are leftovers, not raw ingredients", () => {
+  for (const t of ["leftover rice", "leftover kadhi", "bacha hua chawal", "बची हुई दाल", "kal ki sabzi", "Leftovers dal"]) assert.equal(isLeftoverText(t), true, t);
+  for (const t of ["rice", "toor dal", "paneer", "black chickpeas"]) assert.equal(isLeftoverText(t), false, t);
 });

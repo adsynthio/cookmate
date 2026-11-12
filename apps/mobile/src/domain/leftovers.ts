@@ -3,7 +3,9 @@
 // Hinglish, and each kind has two or three quick, everyday ways to turn it into a new meal. Rice gets the food-safety
 // line first: cooled fast, kept cold, eaten within a day and heated through only once.
 
-export type LeftoverKind = "dal" | "rajma" | "rice" | "khichdi" | "roti" | "sabzi" | "curry" | "kadhi" | "poha" | "other";
+import { dishKind, type DishKind } from "./ranking.ts";
+
+export type LeftoverKind = DishKind;
 
 export type LeftoverIdea =
   | "dalParatha"
@@ -27,23 +29,8 @@ export type LeftoverIdea =
   | "pohaCutlet"
   | "anyWrap";
 
-/** Most specific first: "rajma chawal" is rajma, "dal khichdi" is khichdi, "paneer sabzi" is a curry. */
-const WORDS: [LeftoverKind, RegExp][] = [
-  ["khichdi", /khichd|खिचड़ी|खिचडी/i],
-  ["rajma", /rajma|chole|chhole|chana masala|राजमा|छोले/i],
-  ["kadhi", /kadhi|kadi\b|कढ़ी|कढी/i],
-  ["poha", /poha|chilla|cheela|पोहा|चीला|चिल्ला/i],
-  ["curry", /chicken|mutton|fish|egg|anda|paneer|kofta|curry|चिकन|मटन|मछली|अंडा|अंडे|पनीर|कोफ्ता/i],
-  ["dal", /\bdal|daal|sambar|दाल|सांभर/i],
-  ["roti", /roti|chapati|chapat|phulka|paratha|रोटी|चपाती|पराठा|फुलका/i],
-  ["rice", /rice|chawal|pulao|biryani|चावल|पुलाव|बिरयानी|भात/i],
-  ["sabzi", /sabzi|sabji|aloo|bhaji|bhindi|gobhi|matar|baingan|सब्ज़ी|सब्जी|आलू|भिंडी|गोभी|मटर|बैंगन/i],
-];
-
 export function leftoverKind(name: string | null | undefined): LeftoverKind {
-  const n = (name ?? "").trim();
-  for (const [kind, re] of WORDS) if (re.test(n)) return kind;
-  return "other";
+  return dishKind(name);
 }
 
 export const LEFTOVER_IDEAS: Record<LeftoverKind, LeftoverIdea[]> = {
@@ -69,4 +56,27 @@ export function ideasFor(item: { name: string; state: string }): { kind: Leftove
   if (item.state !== "leftover" && item.state !== "cooked") return null;
   const kind = leftoverKind(item.name);
   return { kind, ideas: LEFTOVER_IDEAS[kind] };
+}
+
+export type ReadyKey = "kadhiChawal" | "dalChawal" | "rajmaChawal" | "withRice" | "withRoti" | "heatEat";
+export type ReadyMeal<T> = { key: ReadyKey; main: T; side: T | null };
+
+/**
+ * Dinner that is already cooked: the leftover dish going off soonest, with leftover rice or roti when there is
+ * some ("kadhi and rice" is kadhi chawal). Plain rice or roti on their own are not a meal, so they give nothing.
+ */
+export function readyMeal<T extends { name: string; state: string; daysLeft?: number | null }>(items: readonly T[]): ReadyMeal<T> | null {
+  const cooked = items.filter((i) => i.state === "leftover" || i.state === "cooked");
+  const soonest = (a: T, b: T) => (a.daysLeft ?? 99) - (b.daysLeft ?? 99);
+  const main = cooked.filter((i) => !["rice", "roti", "other"].includes(leftoverKind(i.name))).sort(soonest)[0];
+  if (!main) return null;
+  const rice = cooked.filter((i) => leftoverKind(i.name) === "rice").sort(soonest)[0] ?? null;
+  const roti = cooked.filter((i) => leftoverKind(i.name) === "roti").sort(soonest)[0] ?? null;
+  const kind = leftoverKind(main.name);
+  if (rice) {
+    const key: ReadyKey = kind === "kadhi" ? "kadhiChawal" : kind === "dal" ? "dalChawal" : kind === "rajma" ? "rajmaChawal" : "withRice";
+    return { key, main, side: rice };
+  }
+  if (roti) return { key: "withRoti", main, side: roti };
+  return { key: "heatEat", main, side: null };
 }

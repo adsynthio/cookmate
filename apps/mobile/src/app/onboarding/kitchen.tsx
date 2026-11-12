@@ -16,7 +16,7 @@ import { Badge, Card, Chip, Field, IconButton, Photo, Text } from "@/design-syst
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
-import { dishesWithin, SETUP_PLACES, suggestionsFor, type SetupItem, type SetupPlace } from "@/domain/kitchenSetup";
+import { dishesWithin, isLeftoverText, SETUP_PLACES, suggestionsFor, type SetupItem, type SetupPlace } from "@/domain/kitchenSetup";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { findIngredients } from "@/services/picks";
 import { useOnboarding } from "@/state/onboarding";
@@ -51,6 +51,12 @@ export default function KitchenSetupScreen() {
   const addOwn = () => {
     const text = own.trim();
     if (!text) return;
+    if (isLeftoverText(text)) {
+      // Cooked food ("leftover rice") is a leftover in the fridge, not the raw ingredient.
+      addKitchenItem({ name: text, place: "fridge", known: false, state: "leftover" });
+      setOwn("");
+      return;
+    }
     const [key] = findIngredients(text);
     // A single known word ("palak") becomes the catalog item; anything longer ("leftover dal") stays as typed.
     const known = !!key && text.split(/\s+/).length <= 2;

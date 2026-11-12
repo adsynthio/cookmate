@@ -96,6 +96,9 @@ export type RankContext = {
   weights: Weights;
   /** "Use these first" from the Use Soon strip: only recipes using at least one of these. */
   focus?: string[];
+  /** Names of cooked food already in the kitchen ("Kadhi Pakora leftovers", "leftover dal"): the same dish is not
+   * suggested again, since there is some ready to eat. */
+  alreadyCooked?: string[];
 };
 
 export const CONFIDENT = 0.5;
@@ -122,7 +125,40 @@ const SLOT_COURSES: Record<MealSlot, Partial<Record<Course, number>>> = {
   snack: { snack: 1, breakfast: 0.7, tiffin: 0.7 },
 };
 
-export type FilterReason = "course" | "diet" | "avoid" | "time" | "equipment" | "focus";
+export type FilterReason = "course" | "diet" | "avoid" | "time" | "equipment" | "focus" | "leftover";
+
+// --- dishes already cooked ----------------------------------------------------------------------------------------
+
+export type DishKind = "dal" | "rajma" | "rice" | "khichdi" | "roti" | "sabzi" | "curry" | "kadhi" | "poha" | "other";
+
+/** Most specific first: "rajma chawal" is rajma, "dal khichdi" is khichdi, "paneer sabzi" is a curry. */
+const DISH_WORDS: [DishKind, RegExp][] = [
+  ["khichdi", /khichd|खिचड़ी|खिचडी/i],
+  ["rajma", /rajma|chole|chhole|chana masala|राजमा|छोले/i],
+  ["kadhi", /kadhi|kadi\b|कढ़ी|कढी/i],
+  ["poha", /poha|chilla|cheela|पोहा|चीला|चिल्ला/i],
+  ["curry", /chicken|mutton|fish|egg|anda|paneer|kofta|curry|चिकन|मटन|मछली|अंडा|अंडे|पनीर|कोफ्ता/i],
+  ["dal", /\bdal|daal|sambar|दाल|सांभर/i],
+  ["roti", /roti|chapati|chapat|phulka|paratha|रोटी|चपाती|पराठा|फुलका/i],
+  ["rice", /rice|chawal|pulao|biryani|चावल|पुलाव|बिरयानी|भात/i],
+  ["sabzi", /sabzi|sabji|aloo|bhaji|bhindi|gobhi|matar|baingan|सब्ज़ी|सब्जी|आलू|भिंडी|गोभी|मटर|बैंगन/i],
+];
+
+/** The kind of dish a name is, in English, Hindi or Hinglish ("बची हुई दाल" is dal). */
+export function dishKind(name: string | null | undefined): DishKind {
+  const n = (name ?? "").trim();
+  for (const [kind, re] of DISH_WORDS) if (re.test(n)) return kind;
+  return "other";
+}
+
+/** A recipe is already cooked when the kitchen holds cooked food of the same kind (plain rice and roti go with
+ * anything, so they never rule a dish out). */
+export function alreadyCooked(r: Pick<RankRecipe, "slug" | "title">, cooked: readonly string[] | undefined): boolean {
+  if (!cooked?.length) return false;
+  const kind = dishKind(`${r.title} ${r.slug.replace(/-/g, " ")}`);
+  if (kind === "other" || kind === "rice" || kind === "roti") return false;
+  return cooked.some((c) => dishKind(c) === kind);
+}
 
 export function excludedBecause(r: RankRecipe, ctx: RankContext): FilterReason | null {
   const course = ctx.craving.course;
@@ -133,6 +169,7 @@ export function excludedBecause(r: RankRecipe, ctx: RankContext): FilterReason |
   if (ctx.craving.maxTimeMin !== null && r.timeMin > ctx.craving.maxTimeMin) return "time";
   if (equipmentFactor(r, ctx.equipment) === 0) return "equipment";
   if (ctx.focus?.length && !r.ingredients.some((i) => ctx.focus!.includes(i.key))) return "focus";
+  if (alreadyCooked(r, ctx.alreadyCooked)) return "leftover";
   return null;
 }
 

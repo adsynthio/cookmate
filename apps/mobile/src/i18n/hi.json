@@ -986,5 +986,15 @@
   "restock.add": "लिस्ट में जोड़ें",
   "restock.notYet": "अभी है",
   "restock.added": "{item} लिस्ट में है।",
-  "restock.never": "Cookmate खुद कुछ ऑर्डर नहीं करता, यह सिर्फ़ याद दिलाना है।"
+  "restock.never": "Cookmate खुद कुछ ऑर्डर नहीं करता, यह सिर्फ़ याद दिलाना है।",
+  "ready.overline": "खाने को तैयार",
+  "ready.kadhiChawal": "आज कढ़ी चावल",
+  "ready.dalChawal": "आज दाल चावल",
+  "ready.rajmaChawal": "आज राजमा चावल",
+  "ready.withRice": "{dish} चावल के साथ",
+  "ready.withRoti": "{dish} रोटी के साथ",
+  "ready.heatEat": "{dish}, बस गरम कीजिए",
+  "ready.body": "आपकी रसोई में पहले से बना है: {items}। पाँच मिनट में खाना तैयार, कुछ नया बनाने की ज़रूरत नहीं।",
+  "ready.heatRice": "एक ही बार, भाप निकलने तक गरम करें। चावल एक दिन के अंदर खा लें।",
+  "ready.ideas": "इस्तेमाल के और तरीके"
 }

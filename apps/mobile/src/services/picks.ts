@@ -39,6 +39,13 @@ export function pantryEntries(items: PantryItem[], today: Date = new Date()): Pa
     }));
 }
 
+/** Cooked food still good to eat ("leftover kadhi"): the same dish is not picked again. */
+export function cookedNames(items: PantryItem[], today: Date = new Date()): string[] {
+  return items
+    .filter((i) => (i.state === "leftover" || i.state === "cooked") && (!i.expiryDate || daysLeft(i.expiryDate, today) >= 0))
+    .map((i) => i.name);
+}
+
 export const STAPLES = catalog.filter((c) => c.staple).map((c) => c.name);
 
 /** Catalog ingredients named in free text ("kuch paneer wala", "palak"). */
@@ -107,6 +114,7 @@ export function buildPicks(args: {
     slot,
     eaters: eatersFrom(args.members, input.whoEating),
     pantry: pantryEntries(args.items, args.today),
+    alreadyCooked: cookedNames(args.items, args.today),
     staples: STAPLES,
     equipment: null,
     avoid: args.avoid ?? [],

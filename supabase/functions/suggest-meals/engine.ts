@@ -31,6 +31,7 @@ import {
   localDate,
   type MemberRow,
   type MemoryRow,
+  cookedFromRows,
   pantryFromRows,
   prefsFromMemories,
   recentFrom,
@@ -103,7 +104,7 @@ export async function loadKitchen(
   const [members, inventory, recipes, memories, calendar, recs, sessions, equipment, disliked, dismissed, staples] = await Promise.all([
     sb.from("household_members").select("id, display_name, age_group, diet, taste_profiles(spice)")
       .eq("household_id", householdId).eq("status", "active"),
-    sb.from("inventory_items").select("id, confidence, expiry_date, staple_level, ingredients(canonical_name, names)")
+    sb.from("inventory_items").select("id, confidence, expiry_date, staple_level, state, custom_name, ingredients(canonical_name, names)")
       .eq("household_id", householdId).eq("status", "active"),
     recipesQuery,
     sb.from("memories").select("polarity, scope, expires_at, member_id, subject_recipe_id, attributes, ingredients(canonical_name)")
@@ -157,6 +158,7 @@ export async function loadKitchen(
     slot,
     eaters,
     pantry: pantryFromRows(invRows, today),
+    alreadyCooked: cookedFromRows(invRows, today),
     staples: ((staples.data ?? []) as { canonical_name: string }[]).map((s) => s.canonical_name),
     equipment: kit.length ? kit : null,
     avoid: [...new Set([...memPrefs.avoid, ...calPrefs.avoid])],

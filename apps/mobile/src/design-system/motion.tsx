@@ -95,6 +95,27 @@ export function Enter({
   return <Animated.View style={[style, animated]}>{children}</Animated.View>;
 }
 
+/**
+ * Slides a block in from the side it came from: `from` 1 = from the right (forward), -1 = from the left (back).
+ * Key it on what changed (the step number) so each new step slides in. A fade when motion is reduced.
+ */
+export function SlideIn({ children, from, style }: { children: ReactNode; from: 1 | -1 | 0; style?: StyleProp<ViewStyle> }) {
+  const reduce = useReducedMotion();
+  const progress = useSharedValue(reduce || from === 0 ? 1 : 0);
+  useEffect(() => {
+    if (reduce || from === 0) {
+      progress.value = 1;
+      return;
+    }
+    progress.value = withTiming(1, { duration: motion.slow, easing: Easing.out(Easing.cubic) });
+  }, [reduce, from, progress]);
+  const animated = useAnimatedStyle(() => ({
+    opacity: 0.2 + progress.value * 0.8,
+    transform: [{ translateX: (1 - progress.value) * 48 * from }],
+  }));
+  return <Animated.View style={[style, animated]}>{children}</Animated.View>;
+}
+
 /** Wrap a list item so that removing or adding neighbours slides the rest into place. */
 export function Layout({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   const reduce = useReducedMotion();

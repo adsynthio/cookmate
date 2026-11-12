@@ -4,6 +4,7 @@ import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
 import type { VoiceProfile } from "@/domain/voiceStyle";
 import type { Problem } from "@/domain/rescue";
 import type { ListLine } from "@/domain/shopping";
+import type { PlateWeek } from "@/domain/plate";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
@@ -376,6 +377,8 @@ export interface CookingService {
   completeSession(sessionId: string): Promise<DeductionLine[]>;
   applyDeduction(sessionId: string, adjustments: DeductionAdjustment[]): Promise<string[]>;
   submitFeedback(input: { sessionId: string; rating: Rating; tags?: string[]; comment?: string; makeAgain?: boolean }): Promise<void>;
+  /** KIT-171: meals cooked to the end, counted by food group, for this week and the weeks before it (newest first). */
+  weeklyPlate(householdId: string, weeks?: number): Promise<PlateWeek[]>;
   /** KIT-076: links to the cached step recordings this cook would hear, to download while there is network. */
   getStepAudio(sessionId: string): Promise<{ stepNo: number; url: string }[]>;
 }

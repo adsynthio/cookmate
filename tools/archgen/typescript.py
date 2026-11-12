@@ -98,6 +98,7 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
     "pantry_check_today": ("{ p_household: string; p_item?: string | null }", "string | null"),
     "get_notification_settings": ("{ p_household: string }", "Json"),
     "set_notification_settings": ("{ p_household: string; p_settings: Json; p_policy_version?: string }", "Json"),
+    "weekly_plate": ("{ p_household: string; p_weeks?: number }", "{ week_start: string; meals: number; food_groups: Json }[]"),
     "community_circles": ("{ p_household: string }", "{ id: string; name: string; role: string; members: Json }[]"),
     "community_create_circle": ("{ p_household: string; p_name: string; p_display_name: string }", "string"),
     "community_create_invite": ("{ p_circle: string; p_household: string }", "string"),

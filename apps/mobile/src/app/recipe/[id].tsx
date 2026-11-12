@@ -11,6 +11,7 @@ import { AppHeader } from "@/components/AppHeader";
 
 import { catalogEntry } from "@/data/catalog";
 import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
+import { BalanceTip } from "@/components/recipe/BalanceTip";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -296,6 +297,8 @@ function RecipeBody({
           ) : null}
         </Card>
       </Enter>
+
+      <BalanceTip slug={doc.slug} groups={doc.food_groups} course={doc.course} diet={doc.diet} />
 
       {remembered.length ? (
         <Card tint={colors.peach}>

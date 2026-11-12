@@ -49,7 +49,7 @@ export default function WelcomeScreen() {
 
         <Enter>
           <View style={[styles.hero, { height: heroH, backgroundColor: colors.primaryPale }]}>
-            {scenes.welcome ? <Image source={scenes.welcome} style={StyleSheet.absoluteFill} resizeMode="cover" accessible={false} /> : null}
+            {scenes.welcome ? <Image source={scenes.welcome} style={styles.heroImage} resizeMode="cover" accessible={false} /> : null}
             <View style={[styles.heroBadge, { backgroundColor: colors.surface }]}>
               <Icon name="sparkle" size={16} color={colors.accentText} />
               <Text variant="label">{t("onb.w.badge")}</Text>
@@ -143,6 +143,7 @@ function LanguageSwitch({ value, onChange }: { value: Locale; onChange: (l: Loca
 }
 
 const styles = StyleSheet.create({
+  heroImage: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
   screen: { flex: 1 },
   content: { paddingHorizontal: space.gutter, paddingTop: space.sm, paddingBottom: space.xl, gap: space.xl },
   top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.sm, flexWrap: "wrap" },

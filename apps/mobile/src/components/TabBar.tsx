@@ -13,7 +13,9 @@ import { useTheme } from "@/design-system/theme";
 import { motion, radius, shadow, space } from "@/design-system/tokens";
 import { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
-const ICONS: Record<string, IconName> = { index: "home", kitchen: "kitchen", list: "list", cook: "cook", community: "users", you: "you" };
+import { useDrinks } from "@/state/drinks";
+
+const ICONS: Record<string, IconName> = { index: "home", kitchen: "kitchen", list: "list", cook: "cook", drinks: "drop", community: "users", you: "you" };
 /** Tabs that are screens of their own but not in the bar (the shopping list opens from Kitchen and Home). */
 const HIDDEN = new Set(["list"]);
 
@@ -22,7 +24,9 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
   const insets = useSafeAreaInsets();
   const reduce = useReducedMotion();
   const [width, setWidth] = useState(0);
-  const visible = state.routes.filter((r) => !HIDDEN.has(r.name));
+  // Drinks is off until the cook turns it on (setup or You).
+  const drinksOn = useDrinks((st) => st.enabled);
+  const visible = state.routes.filter((r) => !HIDDEN.has(r.name) && (r.name !== "drinks" || drinksOn));
   const count = visible.length;
   const active = visible.findIndex((r) => r.key === state.routes[state.index]?.key);
   const tabW = width / Math.max(count, 1);
@@ -80,7 +84,7 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
                 style={styles.tab}
               >
                 <Icon name={ICONS[route.name] ?? "home"} size={22} color={fg} />
-                <Text variant="overline" color={fg} numberOfLines={1} style={styles.label}>
+                <Text variant="overline" color={fg} numberOfLines={1} style={[styles.label, count > 5 && styles.labelTight]}>
                   {label}
                 </Text>
               </Pressable>
@@ -99,4 +103,6 @@ const styles = StyleSheet.create({
   pill: { position: "absolute", left: 3, top: 0, bottom: 0, borderRadius: radius.pill },
   tab: { flex: 1, alignItems: "center", justifyContent: "center", gap: 2, minHeight: 56, paddingVertical: 6 },
   label: { letterSpacing: 0, textTransform: "none", maxWidth: "100%" },
+  // Six tabs (Drinks on): a touch smaller so every name fits.
+  labelTight: { fontSize: 9, letterSpacing: -0.1 },
 });

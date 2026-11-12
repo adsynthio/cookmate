@@ -11,6 +11,7 @@ import { StepScreen } from "@/components/onboarding/StepScreen";
 import { catalogEntry } from "@/data/catalog";
 import { Icon, type IconName } from "@/design-system/icons";
 import { Animated, Enter, Layout, PressableScale, useReducedMotion } from "@/design-system/motion";
+import { DrinksToggle } from "@/components/drinks/DrinksToggle";
 import { Badge, Button, Card, Chip, Field, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { motion, radius, shadow, space } from "@/design-system/tokens";
@@ -214,6 +215,7 @@ export default function TasteScreen() {
           ) : null}
         </Card>
       </Enter>
+      <DrinksToggle />
     </StepScreen>
   );
 }

@@ -3,15 +3,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 
+import { AppHeader } from "@/components/AppHeader";
 import { itemName } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
-import { Icon } from "@/design-system/icons";
-import { Button, Card, Chip, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
+import { Icon, type IconName } from "@/design-system/icons";
+import { ingredientImage } from "@/design-system/media";
+import { Enter } from "@/design-system/motion";
+import { Button, Card, Chip, Field, Photo, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { space } from "@/design-system/tokens";
-import { formatQuantity, parseQuantity, roughDuration, shelfLife } from "@/domain/kitchen";
+import { radius, space } from "@/design-system/tokens";
+import { expiryInfo, formatQuantity, parseQuantity, roughDuration, shelfLife } from "@/domain/kitchen";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type ItemChanges, type LocationKind, type PantryItem } from "@/services";
@@ -19,6 +22,7 @@ import { useSession } from "@/state/session";
 import { useUndo } from "@/state/undo";
 
 const PLACES: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready_made"];
+const PLACE_ICON: Record<LocationKind, IconName> = { fridge: "fridge", pantry: "pantry", freezer: "freezer", staples: "box", ready_made: "cart", counter: "counter" };
 
 export default function ItemScreen() {
   useLocale();
@@ -33,12 +37,7 @@ export default function ItemScreen() {
   const item = kitchen.data?.find((i) => i.id === id);
 
   return (
-    <Screen>
-      <View style={styles.top}>
-        <IconButton label={t("onb.back")} onPress={() => router.back()}>
-          <Icon name="back" />
-        </IconButton>
-      </View>
+    <Screen tabBar={false} header={<AppHeader title={t("item.header")} back />}>
       {kitchen.isPending ? (
         <StateView state="loading" title={t("state.loading.home")} />
       ) : kitchen.isError ? (
@@ -59,6 +58,7 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
   const offerUndo = useUndo((s) => s.offer);
   const entry = catalogEntry(item.ingredientKey);
   const name = itemName(item);
+  const heroSize = Math.min(useWindowDimensions().width - space.gutter * 2, 360);
 
   const [qty, setQty] = useState(item.quantity === null ? "" : String(item.quantity));
   const [unit, setUnit] = useState(item.unit ?? "");
@@ -98,23 +98,45 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
     ? new Intl.DateTimeFormat(LANGUAGE_CODES[getLocale()], { day: "numeric", month: "long" }).format(new Date(item.expiryDate))
     : null;
 
+  const expiry = expiryInfo(item.expiryDate, item.expiryEstimated);
   return (
     <>
-      <View style={{ gap: space.xs }}>
-        <Text variant="display" accessibilityRole="header">
+      <Enter>
+        <View style={[styles.hero, { backgroundColor: colors.surfaceMuted }]}>
+          <Photo
+            source={ingredientImage(item.ingredientKey, entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade"))}
+            size={heroSize}
+            radius={radius.cardLg}
+          />
+        </View>
+      </Enter>
+      <Enter index={1} style={{ gap: space.xs }}>
+        <Text variant="title" accessibilityRole="header">
           {name}
         </Text>
         <Text muted>
           {[formatQuantity(item.quantity, item.unit), t(`kitchen.location.${item.location}` as StringKey)].filter(Boolean).join(" · ")}
         </Text>
         {useBy ? (
-          <Text color={colors.primaryText}>
-            {t("item.useBy", { date: useBy })} {item.expiryEstimated ? t("item.estimated") : ""}
-          </Text>
+          <View style={styles.useBy}>
+            <Icon name="alarm" size={16} color={expiry && expiry.kind !== "later" ? colors.accentText : colors.primaryText} />
+            <Text weight={500} color={expiry && expiry.kind !== "later" ? colors.accentText : colors.primaryText}>
+              {t("item.useBy", { date: useBy })} {item.expiryEstimated ? t("item.estimated") : ""}
+            </Text>
+          </View>
         ) : null}
-      </View>
+      </Enter>
+
+      <Button
+        kind="accent"
+        stretch
+        icon="skillet"
+        label={t("item.cookWith")}
+        onPress={() => router.navigate({ pathname: "/", params: { use: item.id } })}
+      />
 
       <Card>
+        <Text variant="subheading">{t("item.edit")}</Text>
         <Text variant="label" muted>
           {t("kitchen.quantity")}
         </Text>
@@ -127,18 +149,19 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
         </Text>
         <View style={styles.chips} accessibilityRole="radiogroup">
           {PLACES.map((p) => (
-            <Chip key={p} label={t(`kitchen.location.${p}` as StringKey)} selected={place === p} onPress={() => setPlace(p)} />
+            <Chip key={p} solid icon={PLACE_ICON[p]} label={t(`kitchen.location.${p}` as StringKey)} selected={place === p} onPress={() => setPlace(p)} />
           ))}
         </View>
         {save.isError ? <Text color={colors.alert}>{t("state.error.body")}</Text> : null}
-        <Button label={t("item.save")} disabled={!dirty || save.isPending} onPress={() => save.mutate()} />
+        <Button kind="primary" stretch label={t("item.save")} disabled={!dirty || save.isPending} onPress={() => save.mutate()} />
       </Card>
 
       {keeps.length ? (
-        <Card>
-          <Text variant="label" muted>
-            {t("item.keeps")}
-          </Text>
+        <Card tone="muted">
+          <View style={styles.useBy}>
+            <Icon name="clock" size={18} color={colors.primaryText} />
+            <Text variant="subheading">{t("item.keeps")}</Text>
+          </View>
           {keeps.map((k, i) => {
             const d = roughDuration(k.days);
             return (
@@ -155,12 +178,15 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
       ) : null}
 
       {finish.isError ? <Text color={colors.alert}>{t("state.error.body")}</Text> : null}
+      <Text variant="overline" muted style={styles.upper}>
+        {t("item.done")}
+      </Text>
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
-          <Button kind="secondary" label={t("item.finished")} disabled={finish.isPending} onPress={() => finish.mutate(false)} />
+          <Button kind="secondary" icon="checkCircle" label={t("item.finished")} disabled={finish.isPending} onPress={() => finish.mutate(false)} />
         </View>
         <View style={{ flex: 1 }}>
-          <Button kind="secondary" label={t("item.discard")} disabled={finish.isPending} onPress={() => finish.mutate(true)} />
+          <Button kind="secondary" icon="trash" label={t("item.discard")} disabled={finish.isPending} onPress={() => finish.mutate(true)} />
         </View>
       </View>
     </>
@@ -168,7 +194,9 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: "row" },
+  hero: { borderRadius: radius.cardLg, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  useBy: { flexDirection: "row", alignItems: "center", gap: 6 },
+  upper: { textTransform: "uppercase" },
   row: { flexDirection: "row", gap: space.sm },
   half: { flex: 1, minWidth: 0 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },

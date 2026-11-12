@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { DEFAULT_WEIGHTS, NO_CRAVING, rankRecipes, type RankContext } from "./ranking.ts";
-import { cueSenses, familyBranches, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, stepCuesFromJson, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
+import { cueSenses, familyBranches, localDoc, localStep, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, stepCuesFromJson, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
 
 const docs = JSON.parse(readFileSync(new URL("../data/recipes.json", import.meta.url), "utf8")) as RecipeDoc[];
 const catalog = JSON.parse(readFileSync(new URL("../data/catalog.json", import.meta.url), "utf8")) as {
@@ -59,7 +59,7 @@ test("grams become katori or pieces when the catalog knows the measure", () => {
   assert.deepEqual(inLocalUnits(1.5, "g", { chhota_chammach: 3, chammach: 9, chutki: 0.3 }), { qty: 0.5, unit: "chhota_chammach" });
   assert.deepEqual(inLocalUnits(9, "g", { chhota_chammach: 3, chammach: 9 }), { qty: 1, unit: "chammach" });
   assert.deepEqual(inLocalUnits(0.15, "g", { chhota_chammach: 4, chutki: 0.3 }), { qty: 1, unit: "chutki" }); // half a pinch is a pinch
-  assert.deepEqual(inLocalUnits(0.15, "g", { chhota_chammach: 4 }), { qty: 0.15, unit: "g" });
+  assert.deepEqual(inLocalUnits(0.15, "g", { chhota_chammach: 4 }), { qty: 1, unit: "chutki" }); // a speck is a pinch
   assert.deepEqual(inLocalUnits(0.6, "g", { chhota_chammach: 4, chutki: 0.3 }), { qty: 2, unit: "chutki" });
 });
 
@@ -118,14 +118,14 @@ test("database rows map back to the same document the app bundles", () => {
     cuisine_region: d.cuisine_region ?? null, course: d.course, diet: d.diet, base_servings: d.base_servings,
     prep_time_min: d.prep_time_min ?? null, cook_time_min: d.cook_time_min ?? null, difficulty: d.difficulty,
     spice_level: d.spice_level, equipment: d.equipment ?? null, tags: d.tags ?? null, flavor_profile: d.flavor_profile ?? null,
-    food_groups: d.food_groups ?? null, review_status: d.review_status,
+    food_groups: d.food_groups ?? null, review_status: d.review_status, descriptions: d.descriptions ?? null,
     recipe_ingredients: d.ingredients.map((i, n) => ({
       display_name: i.ingredient, quantity: i.qty, unit: i.unit, local_measure: i.local ?? null, is_optional: !!i.optional,
       group_name: i.group ?? null, role: i.role, sort_order: n, ingredients: { canonical_name: i.ingredient },
       substitutes: (i.substitutes ?? []).map((s) => ({ ingredient: s.ingredient, ratio: s.ratio, note: s.note ?? null })),
     })).reverse(),
     recipe_steps: d.steps.map((s, n) => ({
-      step_no: n + 1, instruction: s.text, duration_sec: s.seconds ?? (s.minutes ? s.minutes * 60 : null),
+      step_no: n + 1, instruction: s.text, instructions: { en: s.text, ...(s.say ?? {}) }, duration_sec: s.seconds ?? (s.minutes ? s.minutes * 60 : null),
       timer_required: !!s.timer, whistles: s.whistles ?? null, sensory_cue: s.cue ?? null,
       sensory_cues: { ...(s.cue ? { en: s.cue } : {}), ...(s.cues ?? {}), ...(s.heat ? { heat: s.heat } : {}) },
       member_branch: s.branch ?? null, safety_note: s.safety ?? null, techniques: s.technique ? { slug: s.technique } : null,
@@ -158,4 +158,39 @@ test("step cues: senses in a fixed order, the warning kept apart, unknown keys a
   assert.deepEqual(stepCuesFromJson(null), {});
   assert.deepEqual(cueSenses({ cues: { smell: "a", look: "b", avoid: "c" } }).map((c) => c.sense), ["look", "smell"]);
   assert.ok(doc("jeera-aloo").steps.some((s) => s.heat && s.cues?.look), "bundled recipes carry cues and heat");
+});
+
+test("onions, tomatoes and potatoes are counted the way cooks say it, never in grams", () => {
+  const onion = { piece: 110, katori: 130 };
+  const say = (g: number) => inLocalUnits(g, "g", onion, true);
+  assert.deepEqual(say(28), { qty: 0.25, unit: "piece" });
+  assert.deepEqual(say(55), { qty: 0.5, unit: "piece" });
+  assert.deepEqual(say(70), { qty: 1, size: "small", unit: "piece" });
+  assert.deepEqual(say(110), { qty: 1, unit: "piece" });
+  assert.deepEqual(say(145), { qty: 2, size: "small", unit: "piece" });
+  assert.deepEqual(say(155), { qty: 1, size: "big", unit: "piece" });
+  assert.deepEqual(say(225), { qty: 1, size: "big", and: { qty: 1, size: "small" }, unit: "piece" });
+  assert.deepEqual(say(220), { qty: 2, unit: "piece" });
+  assert.deepEqual(say(600), { qty: 5.5, unit: "piece" });
+  // Garlic in cloves, ginger in inches, however little.
+  assert.deepEqual(inLocalUnits(10, "g", { clove: 4, piece: 35, chammach: 9 }, true), { qty: 3, unit: "clove" });
+  assert.deepEqual(inLocalUnits(2, "g", { inch: 8, chammach: 8 }, true), { qty: 0.5, unit: "inch" });
+  assert.deepEqual(inLocalUnits(16, "g", { inch: 8, chammach: 8 }, true), { qty: 2, unit: "inch" });
+  // Salt is roughly spooned.
+  assert.deepEqual(inLocalUnits(2.25, "g", { chhota_chammach: 6, chammach: 18 }), { qty: 0.5, unit: "chhota_chammach" });
+});
+
+test("in Hindi and Hinglish every step reads in that language, cues, safety and family notes included", () => {
+  const d = doc("dal-tadka");
+  const hi = localStep(d.steps[3]!, "hi");
+  assert.match(hi.text, /घी/);
+  assert.match(hi.cues!.avoid!, /लहसुन/);
+  assert.match(hi.branch!.action, /बच्चे/);
+  assert.equal(hi.heat, d.steps[3]!.heat, "heat and timings stay");
+  assert.match(localStep(d.steps[3]!, "hinglish").text, /Tadke ke liye/);
+  assert.equal(localStep(d.steps[3]!, "en"), d.steps[3]);
+  const rajma = localDoc(doc("rajma"), "hi");
+  assert.match(rajma.steps[1]!.safety!, /ज़हरीला/);
+  // Every bundled step has both translations.
+  for (const r of docs) for (const s of r.steps) assert.ok(s.say?.hi?.text && s.say?.["hi-Latn"]?.text, `${r.slug}: ${s.text}`);
 });

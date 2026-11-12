@@ -389,6 +389,62 @@ export interface VoiceService {
   getToken(input: { householdId: string; cookingSessionId?: string; languageCode: string }): Promise<VoiceToken | VoiceUnavailable>;
 }
 
+// --- Community (private cooking circles) ---------------------------------------------------------------------------
+
+export type Circle = {
+  id: string;
+  name: string;
+  /** This household's role in the circle. */
+  role: "owner" | "member";
+  /** How each household appears in the circle ("Sunita's kitchen"). */
+  members: { displayName: string; mine: boolean }[];
+};
+
+export type CommunityPost = {
+  id: string;
+  circleId: string;
+  circleName: string;
+  authorName: string;
+  recipeId: string | null;
+  recipeSlug: string | null;
+  dishTitle: string;
+  note: string | null;
+  changes: string[];
+  createdAt: string;
+  mine: boolean;
+  canRemove: boolean;
+};
+
+export type ReportReason = "spam" | "unsafe" | "offensive" | "other";
+/** Why joining or sharing failed, in words the screen can show. */
+export type CommunityProblem = "invite_not_found" | "circle_full" | "too_many_circles" | "too_many_posts";
+export class CommunityError extends Error {
+  constructor(readonly problem: CommunityProblem) {
+    super(problem);
+  }
+}
+
+export interface CommunityService {
+  listCircles(householdId: string): Promise<Circle[]>;
+  createCircle(input: { householdId: string; name: string; displayName: string }): Promise<string>;
+  /** An 8-character code that lets another household join for 7 days. */
+  createInvite(circleId: string, householdId: string): Promise<string>;
+  join(input: { code: string; householdId: string; displayName: string }): Promise<string>;
+  leave(circleId: string, householdId: string): Promise<void>;
+  feed(householdId: string, circleId?: string): Promise<CommunityPost[]>;
+  share(input: {
+    circleId: string;
+    householdId: string;
+    recipeId: string | null;
+    recipeSlug: string | null;
+    dishTitle: string;
+    note?: string;
+    changes: string[];
+  }): Promise<string>;
+  removePost(postId: string, householdId: string): Promise<void>;
+  report(postId: string, householdId: string, reason: ReportReason): Promise<void>;
+}
+
 export type Services = {
   auth: AuthService;
   preference: PreferenceService;
@@ -396,4 +452,5 @@ export type Services = {
   recipe: RecipeService;
   cooking: CookingService;
   voice: VoiceService;
+  community: CommunityService;
 };

@@ -257,6 +257,17 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           offline={getBundle(session.id)?.finishedOffline === true}
           photo={dishImage(doc.slug)}
           steps={total}
+          onShare={(picked) =>
+            router.push({
+              pathname: "/community/share",
+              params: {
+                recipeId: doc.parent_id ?? doc.id ?? doc.slug,
+                slug: doc.slug,
+                title: dish,
+                changes: [...picked, ...[...changes.entries()].map(([ing, c]) => t(c.amount === "more" ? "community.moreOf" : "community.lessOf", { item: displayName(catalogEntry(ing), ing, locale) }))].join("|"),
+              },
+            })
+          }
           onClose={() => {
             removeStepAudio(session.id);
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });

@@ -34,14 +34,28 @@ Create one insight per row in PostHog and put them on a dashboard called "V1 bet
 | Cost | ≤ ₹5 per session | From the database (`voice_report`), see below |
 | Rescue success | ≥ 80% | Funnel: `rescue_requested` → `cook_completed`, same `session_id` |
 
-Not emitted yet:
-- `pick_shown`, `pick_accepted`, `pick_dismissed`, `use_soon_shown`, `inventory_corrected` and
-  `inventory_consumed` need hooks in their screens.
-- `mode`, `taps_after_start` and `rescues` on `cook_completed` need the cook screen to count them.
+Emitted from the service layer (`apps/mobile/src/services/tracked.ts`), so screens carry no tracking code:
+`app_open`, `onboarding_completed`, `consent_changed`, `pick_shown`, `pick_accepted`, `pick_dismissed`,
+`craving_submitted`, `inventory_added`, `inventory_corrected`, `inventory_consumed`, `use_soon_shown`,
+`recipe_viewed`, `recipe_adapted`, `cook_started`, `cook_step`, `timer_set`, `rescue_requested`, `cook_completed`,
+`cook_abandoned`, `feedback_submitted`, `memory_saved`, `memory_forgotten`, `voice_session_started`,
+`list_item_added`, `list_items_bought` and `notification_opened`.
 
-The events already emitted are `app_open`, `onboarding_completed`, `consent_changed`, `cook_started`, `cook_step`,
-`cook_completed`, `cook_abandoned`, `rescue_requested`, `feedback_submitted`, `memory_saved`, `inventory_added` and
-`voice_session_started`.
+- `cook_completed` carries `duration_min`, `mode`, `taps_after_start` and `rescues` when the same launch of the app
+  saw the session from start to finish (a session resumed after a restart sends only its id). Step moves made by a
+  spoken command are sent with `channel: voice` and are not counted as taps.
+- `pick_shown.source` is `home`, `craving` or `push` (opened from the daily notification).
+
+Not emitted yet: `onboarding_step`, `checkpoint_used` (no photo checkpoint yet), and `voice_turn` /
+`voice_session_ended` (the voice agent records these in the database instead; see below).
+
+### Beta targets without analytics consent
+
+Product analytics only cover households that agreed to them. The launch targets are therefore also worked out from
+the database, for every household, by `private.beta_gate_report(from, to)` (service role only): pick acceptance,
+cooking frequency, activation, hands-free rate, voice latency, pantry trust, waste rescue, day-30 retention, voice
+cost and rescue success, each with the number of things it was measured on. The Monday report prints it; the gate
+review uses it (`docs/beta/GATE_REVIEW.md`).
 
 ## AI and speech cost (database)
 

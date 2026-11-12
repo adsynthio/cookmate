@@ -1,5 +1,5 @@
 // "I want to make rajma": the dish the cook typed on Home, with what they have and what they'd need to buy,
-// one tap to put the missing things on the list, and the recipe. If there's no such recipe, say so plainly.
+// one tap to put the missing things on the list, and the recipe. If there's no such recipe, Cookmate can write it.
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -24,12 +24,15 @@ export function WantDish({
   items,
   onOpen,
   onInvent,
+  onMake,
 }: {
   query: string;
   householdId: string;
   items: PantryItem[];
   onOpen: (recipeId: string) => void;
   onInvent: () => void;
+  /** Have Cookmate write this dish for the kitchen (it isn't one of Cookmate's recipes yet). */
+  onMake: (dish: string) => void;
 }) {
   const { colors } = useTheme();
   const locale = getLocale();
@@ -55,8 +58,9 @@ export function WantDish({
           <Text variant="label" muted>
             {t("home.want.noneBody")}
           </Text>
-          <View style={{ alignSelf: "flex-start" }}>
-            <Button kind="secondary" size="small" icon="sparkle" label={t("home.invent")} onPress={onInvent} />
+          <View style={styles.actions}>
+            <Button kind="accent" size="small" icon="sparkle" label={t("home.want.make", { dish: query })} onPress={() => onMake(query)} />
+            <Button kind="quiet" size="small" label={t("home.invent")} onPress={onInvent} />
           </View>
         </View>
       </Enter>

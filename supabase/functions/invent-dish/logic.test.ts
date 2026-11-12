@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { planInvention, validateInvention } from "../_shared/invent.ts";
-import { CATALOG, docFromModel, inventItems, tableDiet } from "./logic.ts";
+import { CATALOG, cleanDishName, docFromModel, inventItems, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
 
 Deno.test("the table eats what its strictest member eats", () => {
   assertEquals(tableDiet(["nonveg", "veg"]), "veg");
@@ -43,4 +43,33 @@ Deno.test("a model dish becomes a new-creation recipe the validator can judge", 
   assertEquals(doc.tags, ["new_creation"]);
   assertEquals(doc.ingredients[2]!.unit, "g", "unknown units fall back to grams");
   assertEquals(validateInvention(doc, plan, { catalog: CATALOG, diet: "veg", have: new Set(items.map((i) => i.key)) }), []);
+});
+
+Deno.test("named dishes: clean names, a few things to buy, leftovers they use must be reheated", () => {
+  assertEquals(cleanDishName("  Aloo   Methi "), "Aloo Methi");
+  assertEquals(cleanDishName("मेथी आलू"), "मेथी आलू");
+  assertEquals(cleanDishName("x"), null);
+  assertEquals(cleanDishName("<script>"), null);
+  assertEquals(cleanDishName(42), null);
+
+  const doc = docFromModel({
+    title: "Aloo Methi", title_hi: "आलू मेथी", title_hinglish: "Aloo methi", description: "Potatoes with fenugreek leaves.",
+    servings: 2, prep_min: 10, cook_min: 15, spice_level: 2,
+    ingredients: [
+      { ingredient: "potato", qty: 300, unit: "g", local: null },
+      { ingredient: "fenugreek leaves", qty: 1, unit: "bunch", local: null },
+      { ingredient: "rice", qty: 200, unit: "g", local: null },
+      { ingredient: "salt", qty: 5, unit: "g", local: null },
+    ],
+    steps: [{ text: "Fry the potatoes.", minutes: 8, cue: null, safety: null }, { text: "Add methi and cook.", minutes: 5, cue: null, safety: null }],
+  }, "veg");
+  assertEquals(toBuyFor(doc, new Set(["potato", "rice"])), ["fenugreek leaves"]);
+  const items = inventItems([
+    { id: "1", custom_name: null, state: "leftover", flavor_roles: [], confidence: 0.9, expiry_date: null, ingredients: { canonical_name: "rice" } },
+    { id: "2", custom_name: null, state: "leftover", flavor_roles: [], confidence: 0.9, expiry_date: null, ingredients: { canonical_name: "toor dal" } },
+  ], "2027-02-03");
+  const plan = namedPlan(doc, items);
+  assertEquals(plan.cooked, ["rice"]);
+  const problems = validateInvention(doc, plan, { catalog: CATALOG, diet: "veg", have: new Set(["potato", "rice", "fenugreek leaves"]) });
+  assertEquals(problems.some((p) => p.includes("steaming hot")), true);
 });

@@ -4,6 +4,8 @@
 // leftovers reheated until steaming hot, raw meat and egg cooked through, no unsafe shortcuts). One retry with the
 // problems listed; a dish that still fails is never shown. A passing dish is saved as the household's own recipe,
 // source 'generated', labelled "new creation" (tag new_creation), so it can be cooked like any other.
+// With `dish` ("Aloo Methi", from Home's search or the chef step's new-dish idea) Claude writes that dish the home way
+// from this kitchen instead, with at most three things to buy (returned as to_buy); the same checks apply.
 // Without a model key it answers 503 invent_unavailable and the app hides the option (11_ai_tasks_and_models.csv).
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
@@ -16,11 +18,13 @@ import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
 import { localDate } from "../suggest-meals/logic.ts";
-import { CATALOG, docFromModel, inventItems, type ItemRow, type ModelDish, tableDiet } from "./logic.ts";
+import { CATALOG, cleanDishName, docFromModel, inventItems, type ItemRow, MAX_TO_BUY, type ModelDish, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
 
 const TASK = "invent_combination";
 const MODEL = "claude-sonnet-5-5";
 const PROMPT_VERSION = "invent_combination@1";
+const NAMED_TASK = "write_named_dish";
+const NAMED_VERSION = "write_named_dish@1";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -80,10 +84,40 @@ async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, staples
   return { dish: r.stop_reason === "refusal" ? null : (r.parsed_output as ModelDish | null), usage: r.usage, ms: Date.now() - started, refused: r.stop_reason === "refusal" };
 }
 
+const NAMED_SYSTEM = (staples: string[]) => `You write one home recipe for an Indian family: the dish they asked for,
+the way it is usually made at home, cooked from what is in their kitchen ("have"). Use the usual ingredients of the
+dish; prefer what they have; besides "have" you may use these staples: ${staples.join(", ")}, and at most ${MAX_TO_BUY}
+other things they would buy. Ingredient names must be plain lowercase English names from Indian kitchens (e.g.
+"potato", "fenugreek leaves", "toor dal"). If the dish can't suit the given diet, write the closest version that does.
+Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
+safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;
+no shortcuts. Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 8 short steps in plain English;
+minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari) and Hinglish
+(Latin script). No health or nutrition claims.`;
+
+async function askNamed(client: Anthropic, dish: string, have: string[], diet: Diet, staples: string[], problems: string[]) {
+  const started = Date.now();
+  const r = await client.messages.parse(
+    {
+      model: MODEL,
+      max_tokens: 3000,
+      thinking: { type: "disabled" },
+      output_config: { effort: "low", format: zodOutputFormat(Dish) },
+      system: [{ type: "text", cache_control: { type: "ephemeral" }, text: NAMED_SYSTEM(staples) }],
+      messages: [{
+        role: "user",
+        content: JSON.stringify({ dish, diet, have, ...(problems.length ? { fix_these_problems_from_your_last_answer: problems } : {}) }),
+      }],
+    },
+    { timeout: 25_000 },
+  );
+  return { dish: r.stop_reason === "refusal" ? null : (r.parsed_output as ModelDish | null), usage: r.usage, ms: Date.now() - started, refused: r.stop_reason === "refusal" };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
-  let body: { household_id?: string };
+  let body: { household_id?: string; dish?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -91,6 +125,8 @@ Deno.serve(async (req) => {
   }
   const householdId = body.household_id ?? "";
   if (!householdId) return json({ error: "household_id is required" }, 400);
+  const named = body.dish === undefined || body.dish === null || body.dish === "" ? null : cleanDishName(body.dish);
+  if (body.dish && !named) return json({ error: "dish name is not valid" }, 400);
 
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
     global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
@@ -113,28 +149,41 @@ Deno.serve(async (req) => {
   const today = localDate(new Date(), (hh?.timezone as string | undefined) ?? "Asia/Kolkata");
   const items = inventItems((rows ?? []) as unknown as ItemRow[], today);
   const diet = tableDiet(((members ?? []) as { diet: Diet | null }[]).map((m) => m.diet));
-  const plan = planInvention(items, CATALOG, diet);
-  if (!plan) return json({ recipe_id: null, reason: "too_little" });
+  const plan = named ? null : planInvention(items, CATALOG, diet);
+  if (!named && !plan) return json({ recipe_id: null, reason: "too_little" });
 
   const staples = [...CATALOG.values()].filter((c) => c.staple && (diet === "nonveg" || !["meat", "seafood", "egg"].includes(c.category))).map((c) => c.name);
-  const ctx = { catalog: CATALOG, diet, have: new Set(items.filter((i) => i.confidence >= 0.5).map((i) => i.key)) };
+  const have = new Set(items.filter((i) => i.confidence >= 0.5).map((i) => i.key));
   const client = new Anthropic();
+  const task = named ? NAMED_TASK : TASK;
+  const version = named ? NAMED_VERSION : PROMPT_VERSION;
   let doc: RecipeDoc | null = null;
+  let toBuy: string[] = [];
   let problems: string[] = [];
   for (let attempt = 0; attempt < 2 && !doc; attempt++) {
     try {
-      const r = await askModel(client, plan, diet, staples, problems);
+      const r = named
+        ? await askNamed(client, named, [...have].sort(), diet, staples, problems)
+        : await askModel(client, plan!, diet, staples, problems);
       const candidate = r.dish ? docFromModel(r.dish, diet) : null;
-      problems = candidate ? validateInvention(candidate, plan, ctx) : ["no dish"];
+      if (!candidate) problems = ["no dish"];
+      else if (named) {
+        // A named dish may need a few things from the shop; the validator treats those as bought.
+        toBuy = toBuyFor(candidate, have);
+        problems = toBuy.length > MAX_TO_BUY ? [`needs ${toBuy.length} things to buy; at most ${MAX_TO_BUY}`] : [];
+        problems.push(...validateInvention(candidate, namedPlan(candidate, items), { catalog: CATALOG, diet, have: new Set([...have, ...toBuy]) }));
+      } else {
+        problems = validateInvention(candidate, plan!, { catalog: CATALOG, diet, have });
+      }
       await logAiRequest({
-        householdId, task: TASK, model: MODEL, promptVersion: PROMPT_VERSION, latencyMs: r.ms, usage: r.usage,
+        householdId, task, model: MODEL, promptVersion: version, latencyMs: r.ms, usage: r.usage,
         status: r.refused ? "refused" : problems.length ? "invalid_output" : "ok", error: problems.join("; ") || null,
       });
       if (candidate && !problems.length) doc = candidate;
       if (r.refused) break;
     } catch (err) {
       const status = err instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "error";
-      await logAiRequest({ householdId, task: TASK, model: MODEL, promptVersion: PROMPT_VERSION, latencyMs: 0, status, error: err instanceof Error ? err.message : String(err) });
+      await logAiRequest({ householdId, task, model: MODEL, promptVersion: version, latencyMs: 0, status, error: err instanceof Error ? err.message : String(err) });
       break;
     }
   }
@@ -159,7 +208,9 @@ Deno.serve(async (req) => {
     title: doc.title,
     titles: doc.titles,
     description: doc.description,
-    uses: plan.use.map((u) => u.key),
+    uses: plan ? plan.use.map((u) => u.key) : doc.ingredients.map((i) => i.ingredient).filter((k) => have.has(k)),
+    to_buy: toBuy,
+    named: !!named,
     new_creation: true,
   });
 });

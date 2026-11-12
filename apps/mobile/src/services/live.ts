@@ -567,6 +567,8 @@ export const liveServices: Services = {
         mealSlot: data.meal_slot,
         hero: picks[0] ?? null,
         alternates: picks.slice(1),
+        chosenBy: data.chosen_by ?? "rules",
+        newDish: data.new_dish ?? null,
         check: data.check ? { itemId: data.check.item_id, name: data.check.name, ifYes: data.check.if_yes, ifNo: data.check.if_no } : null,
         calendar: data.calendar
           ? {
@@ -708,7 +710,7 @@ export const liveServices: Services = {
       });
       if (e2) throw e2;
     },
-    async inventDish(householdId) {
+    async inventDish(householdId, dish) {
       const { data, error } = await requireSupabase().functions.invoke<{
         recipe_id: string | null;
         reason?: "too_little" | "nothing_safe";
@@ -716,7 +718,9 @@ export const liveServices: Services = {
         titles?: Record<string, string>;
         description?: string;
         uses?: string[];
-      }>("invent-dish", { body: { household_id: householdId } });
+        to_buy?: string[];
+        named?: boolean;
+      }>("invent-dish", { body: { household_id: householdId, ...(dish ? { dish } : {}) } });
       if (error) {
         // 503: no model configured; the option is hidden (11_ai_tasks_and_models.csv).
         const status = (error as { context?: { status?: number } }).context?.status;
@@ -724,7 +728,10 @@ export const liveServices: Services = {
         throw error;
       }
       if (!data?.recipe_id) return { recipeId: null, reason: data?.reason ?? "nothing_safe" };
-      return { recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? null, description: data.description ?? "", uses: data.uses ?? [] };
+      return {
+        recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? null, description: data.description ?? "",
+        uses: data.uses ?? [], toBuy: data.to_buy ?? [], named: !!data.named,
+      };
     },
     async searchRecipes(query) {
       const sb = requireSupabase();
@@ -1003,6 +1010,8 @@ function communityError(error: { code?: string; message?: string }): Error {
 
 type SuggestMealsResponse = {
   batch_id: string;
+  chosen_by?: "model" | "rules";
+  new_dish?: { name: string; why: string } | null;
   meal_slot: MealSlot;
   picks: {
     recommendation_id: string;

@@ -393,6 +393,9 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
             {dish}
           </Text>
         </View>
+        <IconButton label={t("timers.open")} onPress={() => router.push(`/timers/${session.id}`)} muted={!timers.length}>
+          <Icon name="timer" />
+        </IconButton>
         <IconButton
           label={handsFree.state === "listening" ? t("cook.hf.stop") : t("cook.hf.start")}
           onPress={() => void handsFree.toggle()}

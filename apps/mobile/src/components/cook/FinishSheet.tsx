@@ -35,8 +35,11 @@ export function FinishSheet({
   offline = false,
   photo,
   steps,
+  onShare,
   onClose,
 }: {
+  /** Share the dish with a circle, carrying the changes picked here ("Too spicy" is left out: it's for next time). */
+  onShare?: (changes: string[]) => void;
   /** The dish photo for the top of the screen, and how many steps were cooked. */
   photo?: ImageSourcePropType | null;
   steps?: number;
@@ -325,6 +328,29 @@ export function FinishSheet({
         </Card>
       </Enter>
 
+      {onShare ? (
+        <Enter index={5}>
+          <PressableScale
+            accessibilityRole="button"
+            accessibilityLabel={t("community.shareFromFinish")}
+            onPress={() => onShare(tags.filter((x) => x === "more_garlic").map((x) => t(`finish.tag.${x}` as StringKey)))}
+            style={[styles.share, { backgroundColor: colors.peach }]}
+          >
+            <View style={[styles.well, { backgroundColor: colors.surface }]}>
+              <Icon name="users" size={20} color={colors.accentText} />
+            </View>
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text variant="bodyStrong" color={colors.peachText}>
+                {t("community.shareFromFinish")}
+              </Text>
+              <Text variant="caption" color={colors.peachText}>
+                {t("community.shareFromFinishBody")}
+              </Text>
+            </View>
+            <Icon name="forward" size={20} color={colors.peachText} />
+          </PressableScale>
+        </Enter>
+      ) : null}
       {save.isError ? (
         <Text color={colors.alert} accessibilityLiveRegion="polite">
           {t("finish.failed")}
@@ -354,6 +380,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: space.md },
   well: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   ratings: { flexDirection: "row", gap: space.sm },
+  share: { flexDirection: "row", alignItems: "center", gap: space.md, borderRadius: radius.cardLg, padding: space.lg },
   rating: { flex: 1, alignItems: "center", gap: space.xs, paddingVertical: space.md, borderRadius: radius.item, borderWidth: 1.5 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   line: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 64, padding: space.md, borderRadius: radius.item },

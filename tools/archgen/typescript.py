@@ -98,6 +98,24 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
     "pantry_check_today": ("{ p_household: string; p_item?: string | null }", "string | null"),
     "get_notification_settings": ("{ p_household: string }", "Json"),
     "set_notification_settings": ("{ p_household: string; p_settings: Json; p_policy_version?: string }", "Json"),
+    "community_circles": ("{ p_household: string }", "{ id: string; name: string; role: string; members: Json }[]"),
+    "community_create_circle": ("{ p_household: string; p_name: string; p_display_name: string }", "string"),
+    "community_create_invite": ("{ p_circle: string; p_household: string }", "string"),
+    "community_join": ("{ p_code: string; p_household: string; p_display_name: string }", "string"),
+    "community_leave": ("{ p_circle: string; p_household: string }", "undefined"),
+    "community_share": (
+        "{ p_circle: string; p_household: string; p_recipe_id: string | null; p_recipe_slug: string | null; "
+        "p_dish_title: string; p_note: string | null; p_changes: string[] }",
+        "string",
+    ),
+    "community_remove_post": ("{ p_post: string; p_household: string }", "undefined"),
+    "community_report": ("{ p_post: string; p_household: string; p_reason: string }", "undefined"),
+    "community_feed": (
+        "{ p_household: string; p_circle?: string | null; p_limit?: number }",
+        "{ id: string; circle_id: string; circle_name: string; author_name: string; recipe_id: string | null; "
+        "recipe_slug: string | null; dish_title: string; note: string | null; changes: string[] | null; "
+        "created_at: string; mine: boolean; can_remove: boolean }[]",
+    ),
 }
 
 

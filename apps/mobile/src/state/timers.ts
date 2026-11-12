@@ -16,6 +16,8 @@ export type RunningTimer = Timer & {
   notificationId: string | null;
   /** Set once the in-app alarm has sounded, so it rings once. */
   rang?: boolean;
+  /** What to check when it rings ("The onion is soft and golden."): said aloud and shown in the notification. */
+  cue?: string;
 };
 
 const KEY = "cookmate.timers";
@@ -75,7 +77,9 @@ type TimerState = {
   timers: RunningTimer[];
   /** True after a timer was started without notification permission: it only rings while the app is open. */
   silent: boolean;
-  start: (input: { sessionId: string; stepNo: number; label: string; durationSec: number }) => Promise<RunningTimer>;
+  start: (input: { sessionId: string; stepNo: number; label: string; durationSec: number; cue?: string }) => Promise<RunningTimer>;
+  /** More time on a timer, running or already rung ("1 more minute"). */
+  extend: (id: string, sec: number) => Promise<void>;
   cancel: (id: string) => Promise<void>;
   markRang: (id: string) => void;
   clearSession: (sessionId: string) => Promise<void>;
@@ -98,31 +102,40 @@ export const useTimers = create<TimerState>((set, get) => {
       // Already fired or never scheduled.
     }
   };
+  const schedule = async (x: { sessionId: string; label: string; cue?: string; endsAt: number }): Promise<string | null> => {
+    if (!(await prepare())) return null;
+    try {
+      return await Notifications.scheduleNotificationAsync({
+        content: { title: t("cook.timer.doneTitle", { label: x.label }), body: x.cue ?? t("cook.timer.doneBody"), sound: "default", data: { sessionId: x.sessionId } },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+          seconds: Math.max(1, Math.round((x.endsAt - Date.now()) / 1000)),
+          channelId: CHANNEL,
+        },
+      });
+    } catch {
+      return null;
+    }
+  };
   return {
     timers: load(),
     silent: false,
-    start: async ({ sessionId, stepNo, label, durationSec }) => {
+    start: async ({ sessionId, stepNo, label, durationSec, cue }) => {
       const endsAt = Date.now() + durationSec * 1000;
       track("timer_set", { session_id: sessionId, duration_sec: durationSec, channel: "touch" });
-      let notificationId: string | null = null;
-      const allowed = await prepare();
-      if (allowed) {
-        try {
-          notificationId = await Notifications.scheduleNotificationAsync({
-            content: { title: t("cook.timer.doneTitle", { label }), body: t("cook.timer.doneBody"), sound: "default", data: { sessionId } },
-            trigger: {
-              type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-              seconds: Math.max(1, Math.round((endsAt - Date.now()) / 1000)),
-              channelId: CHANNEL,
-            },
-          });
-        } catch {
-          notificationId = null;
-        }
-      }
-      const timer: RunningTimer = { id: `${Date.now()}-${seq++}`, label, stepNo, durationSec, endsAt, sessionId, notificationId };
+      const notificationId = await schedule({ sessionId, label, cue, endsAt });
+      const timer: RunningTimer = { id: `${Date.now()}-${seq++}`, label, stepNo, durationSec, endsAt, sessionId, notificationId, ...(cue ? { cue } : {}) };
       commit([...get().timers, timer], { silent: native && notificationId === null });
       return timer;
+    },
+    extend: async (id, sec) => {
+      const x = get().timers.find((y) => y.id === id);
+      if (!x) return;
+      await unschedule(x);
+      const endsAt = Math.max(x.endsAt, Date.now()) + sec * 1000;
+      const notificationId = await schedule({ ...x, endsAt });
+      const next: RunningTimer = { ...x, endsAt, durationSec: x.durationSec + sec, notificationId, rang: false };
+      commit(get().timers.map((y) => (y.id === id ? next : y)));
     },
     cancel: async (id) => {
       const x = get().timers.find((y) => y.id === id);

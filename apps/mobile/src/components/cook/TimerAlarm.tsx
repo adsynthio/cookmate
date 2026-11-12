@@ -22,7 +22,8 @@ export function TimerAlarm() {
       markRang(x.id);
       if (now - x.endsAt < STALE_MS) {
         buzz();
-        say(t("cook.timer.doneTitle", { label: x.label }));
+        // The step's cue tells the cook what to check now, so they don't have to look at the phone.
+        say([t("cook.timer.doneTitle", { label: x.label }), x.cue].filter(Boolean).join(". "));
       }
     }
   }, [now, timers, markRang]);

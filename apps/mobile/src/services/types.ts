@@ -223,6 +223,8 @@ export interface AuthService {
   ensureSignedIn(): Promise<{ userId: string; isAnonymous: boolean }>;
   /** The household this device last used, or null when onboarding is still needed. Never signs in. */
   getCurrentHousehold(): Promise<HouseholdRef | null>;
+  /** The app language, kept on the account so the next launch (and the voice agent) uses it: "hi-IN", "en-IN". */
+  setLanguage(languageCode: string): Promise<void>;
   /** KIT-021: the verified phone on this account (E.164), or null while it is anonymous. */
   getPhone(): Promise<string | null>;
   /** KIT-021: text a code to this phone to link it to the current (anonymous) account. Same user, same data. */

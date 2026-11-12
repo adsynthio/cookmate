@@ -4,11 +4,17 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback } from "react";
 import { View } from "react-native";
 
+import { AppHeader } from "@/components/AppHeader";
+import { StepProgress } from "@/components/cook/StepParts";
 import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
-import { illustrations } from "@/design-system/media";
-import { Button, Card, Screen, StateView, Text } from "@/design-system/primitives";
-import { space } from "@/design-system/tokens";
+import { dishImage, illustrations } from "@/design-system/media";
+import { Enter, PressableScale } from "@/design-system/motion";
+import { Badge, Button, Photo, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
+import { Icon } from "@/design-system/icons";
+import { useTheme } from "@/design-system/theme";
+import { radius, shadow, space } from "@/design-system/tokens";
+import { Image, StyleSheet } from "react-native";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
@@ -20,6 +26,9 @@ export default function CookTab() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const householdId = useSession((s) => s.householdId)!;
+  const { colors } = useTheme();
+  // With nothing on the stove: the household's saved dishes, one tap from cooking.
+  const saved = useQuery({ queryKey: ["favourites", householdId], queryFn: () => services.recipe.listFavourites(householdId) });
 
   const active = useQuery({
     queryKey: ["cook-active", householdId],
@@ -54,10 +63,7 @@ export default function CookTab() {
   });
 
   return (
-    <Screen>
-      <Text variant="display" accessibilityRole="header">
-        {t("cook.title")}
-      </Text>
+    <Screen header={<AppHeader title={t("cook.title")} />}>
       {active.isPending || (session && recipe.isPending) ? (
         <StateView state="loading" title={t("cook.title")} />
       ) : active.isError || recipe.isError ? (
@@ -70,26 +76,73 @@ export default function CookTab() {
         />
       ) : session && recipe.data ? (
         <>
-          <Card hero style={{ gap: space.md }}>
-            <Text variant="title">{t("cook.resume.title", { dish: recipeTitle(recipe.data, getLocale()) })}</Text>
-            <Text>{t("cook.resume.step", { n: Math.min(session.currentStep, recipe.data.steps.length), total: recipe.data.steps.length })}</Text>
-            <Button size="cook" label={t("cook.resume.go")} onPress={() => router.push(`/cook/${session.id}`)} />
-          </Card>
+          <Enter>
+            <View style={[styles.resume, shadow.card, { backgroundColor: colors.surface }]}>
+              <View style={[styles.photo, { backgroundColor: colors.primaryPale }]}>
+                {dishImage(recipe.data.slug) ? <Image source={dishImage(recipe.data.slug)!} style={styles.photoFill} resizeMode="cover" accessible={false} /> : null}
+                <View style={styles.photoTag}>
+                  <Badge tone="onColor" icon="cook" label={t("cook.resume.badge")} />
+                </View>
+              </View>
+              <View style={{ padding: space.lg, gap: space.md }}>
+                <Text variant="title">{t("cook.resume.title", { dish: recipeTitle(recipe.data, getLocale()) })}</Text>
+                <Text muted>{t("cook.resume.step", { n: Math.min(session.currentStep, recipe.data.steps.length), total: recipe.data.steps.length })}</Text>
+                <StepProgress n={Math.min(session.currentStep, recipe.data.steps.length)} total={recipe.data.steps.length} />
+                <Button kind="accent" size="cook" stretch iconAfter="arrowRight" label={t("cook.resume.go")} onPress={() => router.push(`/cook/${session.id}`)} />
+              </View>
+            </View>
+          </Enter>
           <TimerChips timers={timers} now={now} onStop={(id) => void stopTimer(id)} />
           {stop.isError ? <Text>{t("state.error.body")}</Text> : null}
-          <View>
-            <Button kind="quiet" label={t("cook.resume.stop")} disabled={stop.isPending} onPress={() => stop.mutate(session.id)} />
+          <View style={{ alignSelf: "flex-start" }}>
+            <Button kind="quiet" size="small" icon="close" label={t("cook.resume.stop")} disabled={stop.isPending} onPress={() => stop.mutate(session.id)} />
           </View>
         </>
       ) : (
-        <StateView
-          state="empty"
-          illustration={illustrations.emptyPicks}
-          title={t("cook.empty")}
-          actionLabel={t("cook.pick")}
-          onAction={() => router.navigate("/")}
-        />
+        <>
+          <StateView
+            state="empty"
+            illustration={illustrations.emptyPicks}
+            title={t("cook.empty")}
+            actionLabel={t("cook.pick")}
+            onAction={() => router.navigate("/")}
+          />
+          {saved.data?.length ? (
+            <>
+              <SectionHeader title={t("cook.savedTitle")} dot={undefined} />
+              {saved.data.map((d, i) => (
+                <Enter key={d.id} index={i}>
+                  <PressableScale
+                    accessibilityRole="button"
+                    accessibilityLabel={recipeTitle(d, getLocale())}
+                    onPress={() => router.push(`/recipe/${d.id}`)}
+                    style={[styles.row, shadow.card, { backgroundColor: colors.surface }]}
+                  >
+                    <Photo source={dishImage(d.slug)} size={56} round />
+                    <View style={{ flex: 1, gap: 2 }}>
+                      <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
+                      {d.totalTimeMin ? (
+                        <Text variant="caption" muted>
+                          {t("home.minutes", { min: d.totalTimeMin })}
+                        </Text>
+                      ) : null}
+                    </View>
+                    <Icon name="forward" size={20} color={colors.inkSecondary} />
+                  </PressableScale>
+                </Enter>
+              ))}
+            </>
+          ) : null}
+        </>
       )}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  resume: { borderRadius: radius.cardLg, overflow: "hidden" },
+  photo: { height: 180, overflow: "hidden" },
+  photoFill: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
+  photoTag: { position: "absolute", left: space.md, bottom: space.md },
+  row: { flexDirection: "row", alignItems: "center", gap: space.md, borderRadius: radius.card, padding: space.md },
+});

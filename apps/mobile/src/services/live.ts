@@ -1,11 +1,14 @@
 // Live services backed by Supabase. Features whose backend has not shipped yet throw NotImplemented,
 // and the app keeps using mocks for them (see services/index.ts).
-import { catalogIndex } from "@/data/catalog";
+import { catalogEntry, catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import type { ListLine } from "@/domain/shopping";
 import { weeksFromRows } from "@/domain/plate";
 import { localeFromLanguageCode } from "@/domain/onboarding";
+import { changeCandidates } from "@/domain/learning";
+import { displayName } from "@/domain/kitchen";
+import { findIngredients } from "./picks";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
 
 import { requireSupabase } from "./supabase";
@@ -43,6 +46,17 @@ type UseSoonRow = {
 };
 
 /** One item in the parse-inventory response (08_api_contracts.csv). */
+type LearnedRow = {
+  key: string;
+  statement: string;
+  category: "taste" | "ingredient" | "other";
+  polarity: -1 | 0 | 1;
+  about: string;
+  ingredient_key?: string;
+  amount?: "more" | "less";
+  member_id?: string;
+};
+
 type ParseInventoryItem = {
   name: string;
   ingredient_id: string | null;
@@ -244,6 +258,24 @@ export const liveServices: Services = {
       const { error } = await requireSupabase().rpc("keep_memory", { p_memory: memoryId });
       if (error) throw error;
     },
+    async learnFromCooking({ sessionId, householdId, dish, changes, languageCode }) {
+      if (!changes.length) return [];
+      const { data, error } = await requireSupabase().functions.invoke<{ candidates: LearnedRow[] }>("learn-from-cooking", {
+        body: { session_id: sessionId, language_code: languageCode },
+      });
+      if (!error && data) {
+        return data.candidates.map((c) => ({
+          key: c.key, statement: c.statement, category: c.category, polarity: c.polarity, about: c.about,
+          ...(c.ingredient_key ? { ingredientKey: c.ingredient_key } : {}),
+          ...(c.amount ? { amount: c.amount } : {}),
+          ...(c.member_id ? { memberId: c.member_id } : {}),
+        }));
+      }
+      // No model, or it couldn't read them: the phone's own rules still catch amounts and dislikes.
+      const members = await liveServices.preference.listMembers(householdId).catch(() => []);
+      const locale = localeFromLanguageCode(languageCode) ?? "en";
+      return changeCandidates(changes, dish, locale, findIngredients, members.map((m) => ({ id: m.id, name: m.displayName })), (k) => displayName(catalogEntry(k), k, locale));
+    },
     async saveMemory(input) {
       const sb = requireSupabase();
       let ingredientId: string | undefined;
@@ -257,7 +289,7 @@ export const liveServices: Services = {
         p_statement: input.statement,
         p_member: input.memberId,
         p_category: input.category,
-        p_source: "explicit",
+        p_source: input.source ?? "explicit",
         // A note about how much is never a like or dislike.
         p_polarity: input.amount ? 0 : (input.polarity ?? 0),
         p_attributes: { ...(input.about ? { about: input.about } : {}), ...(input.amount ? { amount: input.amount } : {}) },

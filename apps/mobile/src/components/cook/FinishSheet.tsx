@@ -1,7 +1,7 @@
 // Finish sheet (KIT-077, KIT-037): one sheet to celebrate, rate the dish, review what comes off the pantry and save
 // leftovers. Every part is optional; "Done" saves only what was touched, and "Skip all" changes nothing.
-import { useMutation } from "@tanstack/react-query";
-import { useMemo, useRef, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Image, type ImageSourcePropType, Pressable, StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
@@ -15,6 +15,7 @@ import { adjustmentFor, readableLine, rememberedQty, type LineReview } from "@/d
 import { displayName, formatQuantity } from "@/domain/kitchen";
 import { feedbackCandidates, type AmountChange } from "@/domain/learning";
 import { getLocale, t, type StringKey } from "@/i18n";
+import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { services, type DeductionAdjustment, type DeductionLine, type Rating, type StapleLevel } from "@/services";
 
 const RATINGS: Rating[] = ["loved", "good", "meh", "bad"];
@@ -32,6 +33,7 @@ export function FinishSheet({
   recipeId,
   memberId,
   changes,
+  cookChanges = [],
   offline = false,
   photo,
   steps,
@@ -47,6 +49,8 @@ export function FinishSheet({
   offline?: boolean;
   /** Remembered amounts for this dish (KIT-104), keyed by ingredient. */
   changes?: Map<string, AmountChange>;
+  /** What the cook said they changed while cooking (KIT-075): read into suggestions for next time (AI 4). */
+  cookChanges?: string[];
   sessionId: string;
   householdId: string;
   dish: string;
@@ -81,6 +85,16 @@ export function FinishSheet({
   // KIT-103: feedback only suggests memories; the cook taps the ones to keep.
   const [remember, setRemember] = useState<string[]>([]);
   const candidates = feedbackCandidates(tags, again, dish, locale);
+  // AI 4: what Cookmate noticed while they cooked. Offered ticked; the cook drops anything that was a one-off.
+  const learned = useQuery({
+    queryKey: ["learned", sessionId],
+    queryFn: () => services.preference.learnFromCooking({ sessionId, householdId, dish, changes: cookChanges, languageCode: LANGUAGE_CODES[locale] }),
+    enabled: cookChanges.length > 0,
+    staleTime: Infinity,
+  });
+  const [dropped, setDropped] = useState<string[]>([]);
+  const keep = (learned.data ?? []).filter((c) => !dropped.includes(c.key));
+  useEffect(() => setDropped([]), [learned.data]);
 
   const patch = (id: string, change: Partial<LineReview>) => setState((s) => ({ ...s, [id]: { ...s[id]!, ...change } }));
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
@@ -95,6 +109,23 @@ export function FinishSheet({
         if (!remember.includes(c.about) || saved.current.memories.has(c.about)) continue;
         await services.preference.saveMemory({ householdId, memberId, statement: c.statement, category: c.category, polarity: c.polarity, about: c.about, recipeId });
         saved.current.memories.add(c.about);
+      }
+      for (const c of keep) {
+        if (saved.current.memories.has(c.key)) continue;
+        await services.preference.saveMemory({
+          householdId,
+          memberId: c.memberId ?? memberId,
+          statement: c.statement,
+          category: c.category === "taste" ? "taste" : c.category === "ingredient" ? "ingredient" : "other",
+          polarity: c.polarity,
+          about: c.about,
+          ingredientKey: c.ingredientKey,
+          amount: c.amount,
+          // Amounts and notes are about this dish; a person's like or dislike is about them, everywhere.
+          recipeId: c.about === "preference" ? undefined : recipeId,
+          source: "observed",
+        });
+        saved.current.memories.add(c.key);
       }
       if (lines.length && !saved.current.deduction) {
         const adjustments = view
@@ -216,6 +247,33 @@ export function FinishSheet({
                   selected={remember.includes(c.about)}
                   showCheck
                   onPress={() => setRemember((l) => (l.includes(c.about) ? l.filter((x) => x !== c.about) : [...l, c.about]))}
+                />
+              ))}
+            </View>
+          </Card>
+        </Enter>
+      ) : null}
+
+      {learned.data?.length ? (
+        <Enter>
+          <Card style={styles.section}>
+            <View style={styles.row}>
+              <View style={[styles.well, { backgroundColor: colors.primarySoft }]}>
+                <Icon name="sparkle" size={20} color={colors.primary} />
+              </View>
+              <Text variant="heading" style={{ flex: 1 }}>
+                {t("finish.noticed")}
+              </Text>
+            </View>
+            <Text muted>{t("finish.noticedBody")}</Text>
+            <View style={styles.chips}>
+              {learned.data.map((c) => (
+                <Chip
+                  key={c.key}
+                  label={c.statement}
+                  selected={!dropped.includes(c.key)}
+                  showCheck
+                  onPress={() => setDropped((d) => (d.includes(c.key) ? d.filter((x) => x !== c.key) : [...d, c.key]))}
                 />
               ))}
             </View>

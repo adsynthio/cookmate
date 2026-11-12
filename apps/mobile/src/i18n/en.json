@@ -1070,5 +1070,7 @@
   "invent.named.fail.body": "It needed too much shopping, or didn't pass our food-safety checks. Try another dish, or try again in a bit.",
   "kitchen.ranOut": "Ran out",
   "kitchen.ranOutBody": "Cookmate will mark it finished and put it on your list.",
-  "kitchen.confirmOut": "Mark finished and add to list"
+  "kitchen.confirmOut": "Mark finished and add to list",
+  "finish.noticed": "Cookmate noticed",
+  "finish.noticedBody": "From what you changed while cooking. Untick anything that was just for today."
 }

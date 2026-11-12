@@ -161,3 +161,69 @@ export function amountChanges(memories: AmountMemory[], dishIds: string[]): Map<
   }
   return new Map([...general, ...forDish]);
 }
+
+// ---- Learning from what was changed while cooking (AI 4) -------------------------------------------------------------
+// "Kam mirchi daali", "Aarav ke liye pyaaz nahi", "added peas": what the cook told Cookmate mid-recipe becomes a
+// suggestion for next time on the finish sheet. Amounts and dislikes are about this dish (one change doesn't rewrite
+// every recipe); a note naming someone is about that person. The live app asks a model to read the changes and falls
+// back to these rules; nothing is saved until the cook keeps it.
+
+export type LearnedCandidate = {
+  key: string;
+  statement: string;
+  category: "taste" | "ingredient" | "other";
+  polarity: -1 | 0 | 1;
+  about: string;
+  ingredientKey?: string;
+  amount?: "more" | "less";
+  memberId?: string;
+};
+
+const SPICE_WORDS = ["mirch", "mirchi", "chilli", "chili", "spice", "spicy", "teekha", "teekhi", "तीखा", "तीखी", "मिर्च", "मिर्ची"];
+const SALT_WORDS = ["namak", "salt", "नमक"];
+
+const CHANGE_TEXT: Record<"amount" | "avoid" | "note", L> = {
+  amount: { en: "{dish}: {change}", hi: "{dish}: {change}", hinglish: "{dish}: {change}" },
+  avoid: { en: "{name} avoids {item}", hi: "{name} को {item} पसंद नहीं", hinglish: "{name} ko {item} pasand nahi" },
+  note: { en: "Last time in {dish}: {change}", hi: "पिछली बार {dish} में: {change}", hinglish: "Pichhli baar {dish} mein: {change}" },
+};
+
+export function changeCandidates(
+  changes: string[],
+  dish: string,
+  locale: Locale,
+  find: (text: string) => string[],
+  members: { id: string; name: string }[] = [],
+  nameOf: (key: string) => string = (k) => k,
+): LearnedCandidate[] {
+  const out = new Map<string, LearnedCandidate>();
+  for (const raw of changes) {
+    const change = raw.trim().replace(/\s+/g, " ").slice(0, 120);
+    if (!change) continue;
+    const fill = (k: keyof typeof CHANGE_TEXT, v: Record<string, string>) =>
+      Object.entries(v).reduce((s, [a, b]) => s.replace(`{${a}}`, b), CHANGE_TEXT[k][locale]);
+    const n = parseNote(change, find, members);
+    const low = change.toLowerCase();
+    // "kam mirch", "less spicy", "namak zyada": the same subjects as the finish sheet's tags (spice covers every chilli).
+    const subject = has(low, SPICE_WORDS) ? "spice" : has(low, SALT_WORDS) ? "salt" : null;
+    const dir = has(low, LESS) ? "less" : has(low, MORE) ? "more" : null;
+    let c: LearnedCandidate;
+    if (n.kind !== "amount" && subject && dir) {
+      const tag = subject === "spice" ? (dir === "less" ? "too_spicy" : "not_spicy_enough") : "too_salty";
+      const rule = subject === "salt" && dir === "more" ? null : RULES[tag]!;
+      c = rule
+        ? { key: `subject:${subject}`, statement: rule.text[locale].replace("{dish}", dish), category: "taste", polarity: rule.polarity, about: rule.about, memberId: n.memberId }
+        : { key: `note:${low}`, statement: fill("note", { dish, change }), category: "other", polarity: 0, about: `change:${low.slice(0, 40)}`, memberId: n.memberId };
+    } else if (n.kind === "amount") {
+      c = { key: `amount:${n.ingredientKey}`, statement: fill("amount", { dish, change }), category: "ingredient", polarity: 0, about: "amount", ingredientKey: n.ingredientKey, amount: n.amount, memberId: n.memberId };
+    } else if (n.kind === "preference" && n.polarity < 0 && n.memberId) {
+      const name = members.find((m) => m.id === n.memberId)!.name;
+      c = { key: `avoid:${n.memberId}:${n.ingredientKey}`, statement: fill("avoid", { name, item: nameOf(n.ingredientKey) }), category: "ingredient", polarity: -1, about: "preference", ingredientKey: n.ingredientKey, memberId: n.memberId };
+    } else {
+      c = { key: `note:${change.toLowerCase()}`, statement: fill("note", { dish, change }), category: "other", polarity: 0, about: `change:${change.toLowerCase().slice(0, 40)}`, memberId: n.memberId };
+    }
+    out.delete(c.key); // the later change about the same thing wins
+    out.set(c.key, c);
+  }
+  return [...out.values()].slice(0, 4);
+}

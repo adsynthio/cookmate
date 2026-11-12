@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
     sb.from("inventory_items").select("quantity, unit, state, staple_level, expiry_date, custom_name, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
     sb.from("memories").select("statement").eq("household_id", householdId).eq("status", "active").limit(30),
-    sb.from("cooking_sessions").select("completed_at, recipes(title)").eq("household_id", householdId)
+    sb.from("cooking_sessions").select("completed_at, recipes!cooking_sessions_recipe_id_fkey(title)").eq("household_id", householdId)
       .eq("status", "completed").gte("completed_at", twoWeeksAgo).order("completed_at", { ascending: false }).limit(10),
     sb.from("recipes").select("slug, title, course, diet, prep_time_min, cook_time_min").is("parent_recipe_id", null).eq("is_published", true),
   ]);

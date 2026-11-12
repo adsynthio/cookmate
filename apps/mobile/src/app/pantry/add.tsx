@@ -3,24 +3,31 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Speech from "expo-speech";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 
 import { draftName, rematch } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
-import { Icon } from "@/design-system/icons";
-import { Button, Card, Chip, Field, IconButton, Screen, Text } from "@/design-system/primitives";
+import { AppHeader } from "@/components/AppHeader";
+import { Icon, type IconName } from "@/design-system/icons";
+import { ingredientImage } from "@/design-system/media";
+import { Enter, Layout } from "@/design-system/motion";
+import { Badge, Button, Card, Chip, Field, IconButton, Photo, Screen, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { needsCheck, parseQuantity, readBackText } from "@/domain/kitchen";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
-import { services, type DraftItem, type FlavorRole, type LocationKind } from "@/services";
+import { services, type AddedVia, type DraftItem, type FlavorRole, type LocationKind } from "@/services";
+import { useScan } from "@/state/scan";
 import { toDraft } from "@/services/drafts";
 import { useSession } from "@/state/session";
 
 const PLACES: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready_made"];
 const FLAVORS: FlavorRole[] = ["rich", "heat", "acid", "crunch", "starch", "sweet"];
+const PLACE_ICON: Record<LocationKind, IconName> = { fridge: "fridge", pantry: "pantry", freezer: "freezer", staples: "box", ready_made: "cart", counter: "counter" };
+// Typed the way people say them; tapping one adds it to the box.
+const EXAMPLES = ["2 kilo aloo", "1 dozen eggs", "half kg paneer", "palak", "thoda atta", "leftover dal"];
 
 export default function AddItemsScreen() {
   useLocale();
@@ -30,13 +37,24 @@ export default function AddItemsScreen() {
   const householdId = useSession((s) => s.householdId)!;
   const [text, setText] = useState("");
   const [drafts, setDrafts] = useState<DraftItem[] | null>(null);
+  const [via, setVia] = useState<AddedVia>("text");
+  // Coming from a scan: open straight on the check screen with what was found.
+  useEffect(() => {
+    const scanned = useScan.getState().take();
+    if (scanned) {
+      setDrafts(scanned.items);
+      setVia(scanned.via);
+    }
+  }, []);
+  // Leaving the screen stops the read-back.
+  useEffect(() => () => void Speech.stop(), []);
 
   const parse = useMutation({
     mutationFn: () => services.kitchen.parseItems({ householdId, text, languageCode: LANGUAGE_CODES[getLocale()] }),
     onSuccess: (r) => setDrafts(r.items),
   });
   const add = useMutation({
-    mutationFn: (items: DraftItem[]) => services.kitchen.addItems({ householdId, items, addedVia: "text" }),
+    mutationFn: (items: DraftItem[]) => services.kitchen.addItems({ householdId, items, addedVia: via }),
     onSuccess: async () => {
       Speech.stop();
       await Promise.all([
@@ -67,36 +85,50 @@ export default function AddItemsScreen() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <Screen>
-        <View style={styles.top}>
-          <IconButton
-            label={t("onb.back")}
-            onPress={() => {
-              Speech.stop();
-              router.back();
-            }}
-          >
-            <Icon name="close" />
-          </IconButton>
-        </View>
-
+      <Screen tabBar={false} header={<AppHeader title={t("kitchen.addHeader")} back mic={false} profile={false} />}>
         {drafts === null ? (
           <>
-            <Text variant="title" accessibilityRole="header">
-              {t("kitchen.addTitle")}
-            </Text>
-            <Field
-              value={text}
-              onChangeText={setText}
-              placeholder={t("kitchen.addPlaceholder")}
-              accessibilityLabel={t("kitchen.addTitle")}
-              multiline
-              autoFocus
-              textAlignVertical="top"
-              style={styles.bigField}
-            />
+            <Enter style={{ gap: space.sm }}>
+              <Text variant="bodyStrong" color={colors.accentText}>
+                {t("kitchen.addOverline")}
+              </Text>
+              <Text variant="title" accessibilityRole="header">
+                {t("kitchen.addTitle")}
+              </Text>
+            </Enter>
+            <Enter index={1}>
+              <Field
+                value={text}
+                onChangeText={setText}
+                placeholder={t("kitchen.addPlaceholder")}
+                accessibilityLabel={t("kitchen.addTitle")}
+                multiline
+                autoFocus
+                textAlignVertical="top"
+                style={styles.bigField}
+              />
+            </Enter>
+            <Enter index={2} style={{ gap: space.sm }}>
+              <Text variant="overline" muted style={styles.upper}>
+                {t("kitchen.addExamples")}
+              </Text>
+              <View style={styles.chips}>
+                {EXAMPLES.map((e) => (
+                  <Chip key={e} icon="plus" label={e} onPress={() => setText((v) => (v.trim() ? `${v.trim()}, ${e}` : e))} />
+                ))}
+              </View>
+            </Enter>
+            <View style={[styles.tip, { backgroundColor: colors.surfaceMuted }]}>
+              <Icon name="bulb" size={20} color={colors.accentText} />
+              <Text variant="caption" muted style={{ flex: 1 }}>
+                {t("kitchen.addTip")}
+              </Text>
+            </View>
             {parse.isError ? <Text color={colors.alert}>{t("state.error.body")}</Text> : null}
             <Button
+              kind="accent"
+              stretch
+              iconAfter="forward"
               label={parse.isPending ? t("kitchen.parsing") : t("kitchen.readBack")}
               size="cook"
               disabled={text.trim() === "" || parse.isPending}
@@ -105,16 +137,22 @@ export default function AddItemsScreen() {
           </>
         ) : (
           <>
-            <Text variant="title" accessibilityRole="header">
-              {t("kitchen.confirmTitle")}
-            </Text>
-            <Text muted>{drafts.length ? t("kitchen.confirmBody") : t("kitchen.parseEmpty")}</Text>
-            {drafts.map((d) => (
-              <DraftCard key={d.key} draft={d} onChange={(p) => update(d.key, p)} onRemove={() => remove(d.key)} />
+            <Enter style={{ gap: space.sm }}>
+              <Text variant="title" accessibilityRole="header">
+                {t("kitchen.confirmTitle")}
+              </Text>
+              <Text muted>{drafts.length ? t("kitchen.confirmBody") : t("kitchen.parseEmpty")}</Text>
+            </Enter>
+            {drafts.map((d, i) => (
+              <Layout key={d.key}>
+                <Enter index={i}>
+                  <DraftCard draft={d} onChange={(p) => update(d.key, p)} onRemove={() => remove(d.key)} />
+                </Enter>
+              </Layout>
             ))}
             <View style={styles.row}>
-              <Button kind="secondary" label={`+ ${t("kitchen.newItem")}`} onPress={addBlank} />
-              {ready.length ? <Button kind="secondary" label={t("kitchen.sayBack")} onPress={readAloud} /> : null}
+              <Button kind="secondary" size="small" icon="plus" label={t("kitchen.newItem")} onPress={addBlank} />
+              {ready.length ? <Button kind="secondary" size="small" icon="speaker" label={t("kitchen.sayBack")} onPress={readAloud} /> : null}
             </View>
             {add.isError ? (
               <Text color={colors.alert} accessibilityLiveRegion="assertive">
@@ -122,6 +160,9 @@ export default function AddItemsScreen() {
               </Text>
             ) : null}
             <Button
+              kind="accent"
+              stretch
+              icon="checkCircle"
               label={ready.length === 1 ? t("kitchen.confirmAddOne") : t("kitchen.confirmAdd", { count: ready.length })}
               size="cook"
               disabled={ready.length === 0 || add.isPending}
@@ -145,24 +186,26 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
   const custom = draft.ingredientKey === null || draft.state === "homemade";
 
   return (
-    <Card style={unsure ? { borderWidth: 2, borderColor: colors.amber } : undefined}>
-      {unsure ? (
-        <View style={[styles.badge, { backgroundColor: colors.amberSoft }]}>
-          <Text variant="caption" weight={500}>
-            {t("kitchen.check")}
-          </Text>
+    <Card style={unsure ? { borderWidth: 1.5, borderColor: colors.accent } : undefined}>
+      <View style={styles.cardHead}>
+        <Photo source={ingredientImage(draft.ingredientKey, entry?.category ?? "homemade")} size={52} radius={radius.tag} />
+        <View style={{ flex: 1, gap: 4 }}>
+          {unsure ? <Badge label={t("kitchen.unsure")} tone="accent" icon="bulb" /> : null}
+          <Field
+            variant="bodyStrong"
+            value={name}
+            onChangeText={(v) => {
+              setName(v);
+              onChange({ said: v, ingredientKey: rematch(v), confidence: 1 });
+            }}
+            placeholder={t("kitchen.newItem")}
+            accessibilityLabel={t("kitchen.newItem")}
+          />
         </View>
-      ) : null}
-      <Field
-        variant="bodyStrong"
-        value={name}
-        onChangeText={(v) => {
-          setName(v);
-          onChange({ said: v, ingredientKey: rematch(v), confidence: 1 });
-        }}
-        placeholder={t("kitchen.newItem")}
-        accessibilityLabel={t("kitchen.newItem")}
-      />
+        <IconButton label={t("kitchen.remove")} muted size={36} onPress={onRemove}>
+          <Icon name="trash" size={18} color={colors.inkSecondary} />
+        </IconButton>
+      </View>
       <View style={styles.pair}>
         <Field
           value={qty}
@@ -189,6 +232,8 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
         {PLACES.map((p) => (
           <Chip
             key={p}
+            solid
+            icon={PLACE_ICON[p]}
             label={t(`kitchen.location.${p}` as StringKey)}
             selected={place === p}
             onPress={() => onChange({ locationKind: p })}
@@ -217,16 +262,15 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
           </View>
         </>
       ) : null}
-      <View style={{ alignItems: "flex-start" }}>
-        <Button kind="quiet" label={t("kitchen.remove")} onPress={onRemove} />
-      </View>
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: "row" },
   bigField: { minHeight: 160, borderRadius: radius.card, paddingTop: space.lg },
+  tip: { flexDirection: "row", gap: space.md, alignItems: "center", borderRadius: radius.card, padding: space.lg },
+  upper: { textTransform: "uppercase" },
+  cardHead: { flexDirection: "row", alignItems: "center", gap: space.md },
   row: { flexDirection: "row", gap: space.sm, flexWrap: "wrap" },
   pair: { flexDirection: "row", gap: space.sm },
   half: { flex: 1, minWidth: 0 },

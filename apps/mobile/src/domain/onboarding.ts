@@ -52,24 +52,56 @@ export function spiceFor(ageGroup: AgeGroup, householdSpice: Spice): Spice {
   return ageGroup === "child" ? (Math.min(householdSpice, 2) as Spice) : householdSpice;
 }
 
+/** Regional cuisines offered on the taste step (taste_profiles.preferred_cuisines). */
+export const CUISINES = [
+  "north_indian",
+  "south_indian",
+  "punjabi",
+  "gujarati",
+  "maharashtrian",
+  "bengali",
+  "rajasthani",
+  "kerala",
+  "hyderabadi",
+  "indo_chinese",
+  "street_food",
+] as const;
+export type Cuisine = (typeof CUISINES)[number];
+
+/** "Quick weeknights" means dishes that take 30 minutes or less on weekdays; "take my time" sets no limit. */
+export type Pace = "quick" | "relaxed";
+export const QUICK_MINUTES = 30;
+
 export type NewMemberInput = {
   displayName: string;
   ageGroup: AgeGroup;
   diet: Diet;
   spice: Spice;
   isSelf: boolean;
+  preferredCuisines?: Cuisine[];
+  maxTimeMin?: number | null;
 };
 
-/** Turns the onboarding draft into the create_household payload. */
-export function buildMembers(members: DraftMember[], spice: Spice, diet: Diet): NewMemberInput[] {
+/** Turns the onboarding draft into the create_household payload. Cuisines and pace are the household's. */
+export function buildMembers(
+  members: DraftMember[],
+  spice: Spice,
+  diet: Diet,
+  taste: { cuisines?: Cuisine[]; pace?: Pace | null } = {},
+): NewMemberInput[] {
   return members.map((m) => ({
     displayName: m.displayName.trim(),
     ageGroup: m.ageGroup,
     diet,
     spice: spiceFor(m.ageGroup, spice),
     isSelf: m.isSelf,
+    preferredCuisines: taste.cuisines ?? [],
+    maxTimeMin: taste.pace === "quick" ? QUICK_MINUTES : null,
   }));
 }
+
+export type AvoidKind = "dislike" | "allergy";
+export type DraftAvoid = { ingredientKey: string; kind: AvoidKind };
 
 /** Default household name, e.g. "Sunita's kitchen"; editable later on the You tab. */
 export function householdName(members: DraftMember[], template: string): string {
@@ -82,4 +114,13 @@ export type ConsentChoice = { purpose: ConsentPurpose; granted: boolean };
 /** Every purpose asked gets an explicit row, granted or not, so the record shows what was offered (DPDP). */
 export function consentRows(choices: Partial<Record<ConsentPurpose, boolean>>): ConsentChoice[] {
   return ONBOARDING_PURPOSES.map((purpose) => ({ purpose, granted: choices[purpose] === true }));
+}
+
+/** The memory saved for a dislike or allergy from onboarding (household-wide, polarity -1, so it is avoided). */
+export function avoidStatement(item: string, kind: AvoidKind, locale: Locale): string {
+  const text: Record<AvoidKind, Record<Locale, string>> = {
+    dislike: { en: "We don't like {item}: leave it out", hi: "हमें {item} पसंद नहीं: इसे न डालें", hinglish: "Humein {item} pasand nahi: ise na daalein" },
+    allergy: { en: "Allergic to {item}: never use it", hi: "{item} से एलर्जी है: कभी न डालें", hinglish: "{item} se allergy hai: kabhi na daalein" },
+  };
+  return text[kind][locale].replace("{item}", item);
 }

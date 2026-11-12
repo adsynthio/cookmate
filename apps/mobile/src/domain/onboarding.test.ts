@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  avoidStatement,
   buildMembers,
   checkMembers,
   consentRows,
@@ -33,9 +34,23 @@ test("children start mild; everyone else gets the household spice", () => {
   assert.equal(spiceFor("elder", 4), 4);
   const built = buildMembers([me, kid], 4, "veg");
   assert.deepEqual(built, [
-    { displayName: "Sunita", ageGroup: "adult", diet: "veg", spice: 4, isSelf: true },
-    { displayName: "Aarav", ageGroup: "child", diet: "veg", spice: 2, isSelf: false },
+    { displayName: "Sunita", ageGroup: "adult", diet: "veg", spice: 4, isSelf: true, preferredCuisines: [], maxTimeMin: null },
+    { displayName: "Aarav", ageGroup: "child", diet: "veg", spice: 2, isSelf: false, preferredCuisines: [], maxTimeMin: null },
   ]);
+});
+
+test("the household's cuisines and weekday time go to every member; quick means 30 minutes", () => {
+  const built = buildMembers([me, kid], 3, "veg", { cuisines: ["punjabi", "gujarati"], pace: "quick" });
+  assert.deepEqual(built.map((m) => [m.preferredCuisines, m.maxTimeMin]), [
+    [["punjabi", "gujarati"], 30],
+    [["punjabi", "gujarati"], 30],
+  ]);
+  assert.equal(buildMembers([me], 3, "veg", { pace: "relaxed" })[0]!.maxTimeMin, null);
+});
+
+test("dislikes and allergies read plainly in each language", () => {
+  assert.equal(avoidStatement("peanuts", "allergy", "en"), "Allergic to peanuts: never use it");
+  assert.equal(avoidStatement("karela", "dislike", "hinglish"), "Humein karela pasand nahi: ise na daalein");
 });
 
 test("household name uses the cook's name", () => {

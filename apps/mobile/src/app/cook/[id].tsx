@@ -394,7 +394,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
         accessibilityRole="progressbar"
         accessibilityValue={{ min: 1, max: total, now: stepNo }}
       >
-        <View style={[styles.fill, { backgroundColor: colors.lime, width: `${(stepNo / total) * 100}%` }]} />
+        <View style={[styles.fill, { backgroundColor: colors.primary, width: `${(stepNo / total) * 100}%` }]} />
       </View>
 
       {waiting ? (
@@ -434,7 +434,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
         ) : null}
 
         {branch ? (
-          <View style={[styles.note, { backgroundColor: colors.limePale }]}>
+          <View style={[styles.note, { backgroundColor: colors.primaryPale }]}>
             <Text variant="label" muted>
               {t("cook.for", { name: branch.members.join(", ") })}
             </Text>
@@ -443,7 +443,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
         ) : null}
 
         {notesForStep(session.changes, stepNo).map((n, i) => (
-          <View key={i} style={[styles.note, { backgroundColor: colors.amberSoft }]}>
+          <View key={i} style={[styles.note, { backgroundColor: colors.peach }]}>
             <Text variant="label" muted>
               {t("cook.youChanged", { change: n.change })}
             </Text>

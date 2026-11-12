@@ -58,7 +58,12 @@ export type ItemChanges = {
   confirm?: boolean;
 };
 
-export type AddedVia = "manual" | "voice" | "text";
+export type AddedVia = "manual" | "voice" | "text" | "camera" | "barcode" | "receipt" | "onboarding";
+
+/** KIT-160/161/162: what to read: a photo of a fridge or shelf, a photo of a shop bill, or one barcode. */
+export type ScanInput =
+  | { householdId: string; kind: "fridge" | "bill"; image: string; mediaType?: "image/jpeg" | "image/png" }
+  | { householdId: string; kind: "barcode"; code: string };
 
 export type Pick = {
   recommendationId: string;
@@ -201,6 +206,9 @@ export type NewMember = {
   diet?: "veg" | "eggetarian" | "nonveg" | "jain" | "vegan";
   spice?: 1 | 2 | 3 | 4 | 5;
   isSelf?: boolean;
+  /** Taste profile: regional cuisines the household likes and the weekday time limit (minutes; null = none). */
+  preferredCuisines?: string[];
+  maxTimeMin?: number | null;
 };
 
 export type HouseholdRef = { householdId: string; memberId: string; languageCode: string | null };
@@ -259,6 +267,11 @@ export interface KitchenService {
   getUseSoon(householdId: string, days?: number): Promise<PantryItem[]>;
   /** KIT-031: free text -> items to read back. Never writes. */
   parseItems(input: { householdId: string; text: string; languageCode: string }): Promise<{ items: DraftItem[]; source: string }>;
+  /**
+   * KIT-160/161/162: a photo or a barcode -> items to read back. Never writes, and the photo is not kept.
+   * source: "model" / "barcode" when something was found, "barcode_unknown", "unreadable" or "not_configured" when not.
+   */
+  scanItems(input: ScanInput): Promise<{ items: DraftItem[]; source: string }>;
   /** KIT-031: add confirmed items; the same thing in the same place is topped up. */
   addItems(input: { householdId: string; items: DraftItem[]; addedVia: AddedVia }): Promise<string[]>;
   /** KIT-032: every change is logged as an inventory event. */

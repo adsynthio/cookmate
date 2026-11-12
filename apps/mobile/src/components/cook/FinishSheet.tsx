@@ -2,14 +2,15 @@
 // leftovers. Every part is optional; "Done" saves only what was touched, and "Skip all" changes nothing.
 import { useMutation } from "@tanstack/react-query";
 import { useMemo, useRef, useState } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, type ImageSourcePropType, Pressable, StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
-import { Icon } from "@/design-system/icons";
-import { illustrations } from "@/design-system/media";
-import { Button, Card, Chip, Field, Text } from "@/design-system/primitives";
+import { Icon, type IconName } from "@/design-system/icons";
+import { Enter, PressableScale } from "@/design-system/motion";
+import { illustrations, ingredientImage } from "@/design-system/media";
+import { Badge, Button, Card, Chip, Field, Photo, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, space } from "@/design-system/tokens";
+import { radius, shadow, space } from "@/design-system/tokens";
 import { adjustmentFor, readableLine, rememberedQty, type LineReview } from "@/domain/cooking";
 import { displayName, formatQuantity } from "@/domain/kitchen";
 import { feedbackCandidates, type AmountChange } from "@/domain/learning";
@@ -17,6 +18,7 @@ import { getLocale, t, type StringKey } from "@/i18n";
 import { services, type DeductionAdjustment, type DeductionLine, type Rating, type StapleLevel } from "@/services";
 
 const RATINGS: Rating[] = ["loved", "good", "meh", "bad"];
+const RATING_ICON: Record<Rating, IconName> = { loved: "heart", good: "check", meh: "minus", bad: "close" };
 const TAGS = ["too_spicy", "not_spicy_enough", "too_salty", "too_oily", "more_garlic", "took_too_long"] as const;
 const LEVELS: StapleLevel[] = ["full", "low", "out"];
 const LEFTOVER_KATORI = [0, 1, 2, 4];
@@ -31,8 +33,13 @@ export function FinishSheet({
   memberId,
   changes,
   offline = false,
+  photo,
+  steps,
   onClose,
 }: {
+  /** The dish photo for the top of the screen, and how many steps were cooked. */
+  photo?: ImageSourcePropType | null;
+  steps?: number;
   /** Finished with no network (KIT-076): the kitchen is updated with the recipe's amounts once back online. */
   offline?: boolean;
   /** Remembered amounts for this dish (KIT-104), keyed by ingredient. */
@@ -122,162 +129,234 @@ export function FinishSheet({
 
   return (
     <>
-      <Card hero style={styles.hero}>
-        {illustrations.allDone ? <Image source={illustrations.allDone} style={styles.art} resizeMode="contain" accessible={false} /> : null}
-        <Text variant="title" accessibilityRole="header" style={{ textAlign: "center" }}>
-          {t("finish.title", { dish })}
+      <Enter style={styles.top}>
+        {steps ? <Badge tone="primary" icon="checkCircle" label={t("finish.badge", { n: steps })} /> : null}
+        <Text variant="display" accessibilityRole="header" style={styles.center}>
+          {t("finish.headline")}
         </Text>
-        <Text style={{ textAlign: "center" }}>{t("finish.body")}</Text>
-      </Card>
+        <Text muted style={styles.center}>
+          {t("finish.ready", { dish })}
+        </Text>
+      </Enter>
 
-      <Text variant="heading">{t("finish.rate")}</Text>
-      <View style={styles.chips} accessibilityRole="radiogroup">
-        {RATINGS.map((r) => (
-          <Chip key={r} label={t(`finish.rating.${r}` as StringKey)} selected={rating === r} onPress={() => setRating(rating === r ? null : r)} />
-        ))}
-      </View>
-      {rating ? (
-        <>
-          <Text muted>{t("finish.tags")}</Text>
-          <View style={styles.chips}>
-            {TAGS.map((tag) => (
-              <Chip
-                key={tag}
-                label={t(`finish.tag.${tag}` as StringKey)}
-                selected={tags.includes(tag)}
-                onPress={() => setTags((l) => (l.includes(tag) ? l.filter((x) => x !== tag) : [...l, tag]))}
-              />
-            ))}
-            <Chip label={t("finish.again")} selected={again} onPress={() => setAgain((a) => !a)} />
+      <Enter index={1}>
+        <View style={[styles.photo, shadow.card, { backgroundColor: colors.primarySoft }]}>
+          {photo ?? illustrations.allDone ? (
+            <Image source={(photo ?? illustrations.allDone)!} style={photo ? styles.photoImage : styles.art} resizeMode={photo ? "cover" : "contain"} accessibilityLabel={dish} />
+          ) : null}
+        </View>
+      </Enter>
+
+      <Enter index={2}>
+        <Card style={styles.section}>
+          <Text variant="heading">{t("finish.rate")}</Text>
+          <Text muted>{t("finish.body")}</Text>
+          <View style={styles.ratings} accessibilityRole="radiogroup">
+            {RATINGS.map((r) => {
+              const on = rating === r;
+              return (
+                <PressableScale
+                  key={r}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: on }}
+                  accessibilityLabel={t(`finish.rating.${r}` as StringKey)}
+                  onPress={() => setRating(on ? null : r)}
+                  style={[styles.rating, { backgroundColor: on ? colors.peach : colors.surfaceMuted, borderColor: on ? colors.accent : "transparent" }]}
+                >
+                  <Icon name={RATING_ICON[r]} size={22} color={on ? colors.accentText : colors.inkSecondary} />
+                  <Text variant="label" color={on ? colors.accentText : colors.inkSecondary} numberOfLines={1}>
+                    {t(`finish.rating.${r}` as StringKey)}
+                  </Text>
+                </PressableScale>
+              );
+            })}
           </View>
-        </>
-      ) : null}
+          {rating ? (
+            <Enter style={{ gap: space.md }}>
+              <Text variant="label" muted>
+                {t("finish.tags")}
+              </Text>
+              <View style={styles.chips}>
+                {TAGS.map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={t(`finish.tag.${tag}` as StringKey)}
+                    selected={tags.includes(tag)}
+                    showCheck
+                    onPress={() => setTags((l) => (l.includes(tag) ? l.filter((x) => x !== tag) : [...l, tag]))}
+                  />
+                ))}
+                <Chip label={t("finish.again")} icon="heart" selected={again} showCheck onPress={() => setAgain((a) => !a)} />
+              </View>
+            </Enter>
+          ) : null}
+        </Card>
+      </Enter>
 
       {candidates.length ? (
-        <>
-          <Text variant="heading">{t("finish.remember")}</Text>
-          <Text muted>{t("finish.rememberBody")}</Text>
-          <View style={styles.chips}>
-            {candidates.map((c) => (
-              <Chip
-                key={c.about}
-                label={c.statement}
-                selected={remember.includes(c.about)}
-                onPress={() => setRemember((l) => (l.includes(c.about) ? l.filter((x) => x !== c.about) : [...l, c.about]))}
-              />
-            ))}
-          </View>
-        </>
+        <Enter>
+          <Card tone="primary" style={styles.section}>
+            <View style={styles.row}>
+              <View style={[styles.well, { backgroundColor: "rgba(255,255,255,0.18)" }]}>
+                <Icon name="sparkle" size={20} color={colors.onPrimary} />
+              </View>
+              <Text variant="heading" color={colors.onPrimary} style={{ flex: 1 }}>
+                {t("finish.remember")}
+              </Text>
+            </View>
+            <Text color={colors.onPrimary}>{t("finish.rememberBody")}</Text>
+            <View style={styles.chips}>
+              {candidates.map((c) => (
+                <Chip
+                  key={c.about}
+                  label={c.statement}
+                  selected={remember.includes(c.about)}
+                  showCheck
+                  onPress={() => setRemember((l) => (l.includes(c.about) ? l.filter((x) => x !== c.about) : [...l, c.about]))}
+                />
+              ))}
+            </View>
+          </Card>
+        </Enter>
       ) : null}
 
-      <Text variant="heading">{t("finish.deduct")}</Text>
-      {offline ? (
-        <Text muted>{t("finish.offline")}</Text>
-      ) : lines.length === 0 ? (
-        <Text muted>{t("finish.deductNone")}</Text>
-      ) : (
-        <>
-          <Text muted>{t("finish.deductBody")}</Text>
-          <Card>
-            {view.map(({ line: l }, i) => {
-              const s = state[l.itemId]!;
-              const original = lines[i]!;
-              const name = nameOf(l.ingredient);
-              return (
-                <View key={l.itemId} style={styles.line}>
-                  <Pressable
-                    accessibilityRole="checkbox"
-                    accessibilityState={{ checked: s.on }}
-                    accessibilityLabel={t("finish.used", { name })}
-                    onPress={() => patch(l.itemId, { on: !s.on })}
-                    hitSlop={8}
-                    style={[styles.check, { backgroundColor: s.on ? colors.primary : colors.surfaceMuted }]}
-                  >
-                    {s.on ? <Icon name="check" size={18} color={colors.onPrimary} /> : null}
-                  </Pressable>
-                  <View style={{ flex: 1, gap: 2, opacity: s.on ? 1 : 0.5 }}>
-                    <Text variant="bodyStrong">{name}</Text>
-                    {!l.staple && changes?.get(l.ingredient) ? (
-                      <Text variant="caption" color={colors.primaryText}>
-                        {t(changes.get(l.ingredient)!.amount === "more" ? "recipe.more" : "recipe.less")}
-                      </Text>
-                    ) : null}
-                    {l.staple ? (
-                      <Text variant="caption" muted>
-                        {t("finish.stapleNow")}
-                      </Text>
-                    ) : original.currentQuantity !== null ? (
-                      <Text variant="caption" muted>
-                        {t("finish.had", { qty: formatQuantity(original.currentQuantity, original.unit) })}
-                      </Text>
-                    ) : null}
-                    {l.staple && s.on ? (
-                      <View style={styles.chips}>
-                        {LEVELS.map((lv) => (
-                          <Chip
-                            key={lv}
-                            label={t(`kitchen.staple.${lv}` as StringKey)}
-                            selected={s.level === lv}
-                            onPress={() => patch(l.itemId, { level: s.level === lv ? null : lv })}
-                          />
-                        ))}
+      <Enter index={3}>
+        <Card style={styles.section}>
+          <View style={styles.row}>
+            <View style={[styles.well, { backgroundColor: colors.surfaceMuted }]}>
+              <Icon name="pantry" size={20} color={colors.primaryText} />
+            </View>
+            <Text variant="heading" style={{ flex: 1 }}>
+              {t("finish.deduct")}
+            </Text>
+          </View>
+          {offline ? (
+            <Text muted>{t("finish.offline")}</Text>
+          ) : lines.length === 0 ? (
+            <Text muted>{t("finish.deductNone")}</Text>
+          ) : (
+            <>
+              <Text muted>{t("finish.deductBody")}</Text>
+              {view.map(({ line: l }, i) => {
+                const s = state[l.itemId]!;
+                const original = lines[i]!;
+                const name = nameOf(l.ingredient);
+                return (
+                  <View key={l.itemId} style={[styles.line, { backgroundColor: colors.surfaceMuted }]}>
+                    <Pressable
+                      accessibilityRole="checkbox"
+                      accessibilityState={{ checked: s.on }}
+                      accessibilityLabel={t("finish.used", { name })}
+                      onPress={() => patch(l.itemId, { on: !s.on })}
+                      hitSlop={8}
+                      style={[styles.check, { backgroundColor: s.on ? colors.primary : colors.surface }]}
+                    >
+                      {s.on ? <Icon name="check" size={18} color={colors.onPrimary} /> : null}
+                    </Pressable>
+                    <Photo source={ingredientImage(l.ingredient, catalogEntry(l.ingredient)?.category)} size={40} round />
+                    <View style={{ flex: 1, gap: 2, opacity: s.on ? 1 : 0.5 }}>
+                      <Text variant="bodyStrong">{name}</Text>
+                      {!l.staple && changes?.get(l.ingredient) ? (
+                        <Text variant="caption" color={colors.primaryText}>
+                          {t(changes.get(l.ingredient)!.amount === "more" ? "recipe.more" : "recipe.less")}
+                        </Text>
+                      ) : null}
+                      {l.staple ? (
+                        <Text variant="caption" muted>
+                          {t("finish.stapleNow")}
+                        </Text>
+                      ) : original.currentQuantity !== null ? (
+                        <Text variant="caption" muted>
+                          {t("finish.had", { qty: formatQuantity(original.currentQuantity, original.unit) })}
+                        </Text>
+                      ) : null}
+                      {l.staple && s.on ? (
+                        <View style={styles.chips}>
+                          {LEVELS.map((lv) => (
+                            <Chip
+                              key={lv}
+                              label={t(`kitchen.staple.${lv}` as StringKey)}
+                              selected={s.level === lv}
+                              onPress={() => patch(l.itemId, { level: s.level === lv ? null : lv })}
+                            />
+                          ))}
+                        </View>
+                      ) : null}
+                    </View>
+                    {!l.staple && s.on ? (
+                      <View style={styles.amount}>
+                        <Field
+                          value={s.qty}
+                          onChangeText={(qty) => patch(l.itemId, { qty })}
+                          keyboardType="decimal-pad"
+                          accessibilityLabel={t("finish.amount", { name })}
+                          style={styles.qty}
+                        />
+                        <Text variant="label" muted>
+                          {l.unit === "piece" ? "" : (l.unit ?? "")}
+                        </Text>
                       </View>
                     ) : null}
                   </View>
-                  {!l.staple && s.on ? (
-                    <View style={styles.amount}>
-                      <Field
-                        value={s.qty}
-                        onChangeText={(qty) => patch(l.itemId, { qty })}
-                        keyboardType="decimal-pad"
-                        accessibilityLabel={t("finish.amount", { name })}
-                        style={styles.qty}
-                      />
-                      <Text variant="label" muted>
-                        {l.unit === "piece" ? "" : (l.unit ?? "")}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              );
-            })}
-          </Card>
-        </>
-      )}
+                );
+              })}
+            </>
+          )}
+        </Card>
+      </Enter>
 
-      <Text variant="heading">{t("finish.leftovers")}</Text>
-      <Text muted>{t("finish.leftoversBody")}</Text>
-      <View style={styles.chips} accessibilityRole="radiogroup">
-        {LEFTOVER_KATORI.map((n) => (
-          <Chip key={n} label={n === 0 ? t("finish.left.none") : t("finish.left.n", { n })} selected={leftover === n} onPress={() => setLeftover(n)} />
-        ))}
-      </View>
-
-      {leftover > 0 && leftoverNote ? (
-        <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
-          <Text variant="bodyStrong" color={colors.alert}>
-            {t("finish.riceNote")}
-          </Text>
-          <Text color={colors.alert}>{leftoverNote}</Text>
-        </View>
-      ) : null}
+      <Enter index={4}>
+        <Card style={styles.section}>
+          <Text variant="heading">{t("finish.leftovers")}</Text>
+          <Text muted>{t("finish.leftoversBody")}</Text>
+          <View style={styles.chips} accessibilityRole="radiogroup">
+            {LEFTOVER_KATORI.map((n) => (
+              <Chip key={n} label={n === 0 ? t("finish.left.none") : t("finish.left.n", { n })} selected={leftover === n} onPress={() => setLeftover(n)} />
+            ))}
+          </View>
+          {leftover > 0 && leftoverNote ? (
+            <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
+              <Text variant="bodyStrong" color={colors.alert}>
+                {t("finish.riceNote")}
+              </Text>
+              <Text color={colors.alert}>{leftoverNote}</Text>
+            </View>
+          ) : null}
+        </Card>
+      </Enter>
 
       {save.isError ? (
         <Text color={colors.alert} accessibilityLiveRegion="polite">
           {t("finish.failed")}
         </Text>
       ) : null}
-      <Button label={save.isPending ? t("finish.saving") : t("finish.done")} size="cook" disabled={save.isPending} onPress={() => save.mutate()} />
+      <Button
+        kind="accent"
+        size="cook"
+        stretch
+        icon="check"
+        label={save.isPending ? t("finish.saving") : t("finish.saveHome")}
+        disabled={save.isPending}
+        onPress={() => save.mutate()}
+      />
       <Button kind="quiet" label={t("finish.skip")} disabled={save.isPending} onPress={() => onClose(false)} />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  hero: { alignItems: "center", gap: space.sm },
-  art: { width: 132, height: 132 },
+  top: { alignItems: "center", gap: space.sm, paddingTop: space.md },
+  center: { textAlign: "center" },
+  photo: { height: 220, borderRadius: radius.cardLg, overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  photoImage: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
+  art: { width: 160, height: 160 },
+  section: { gap: space.md },
+  row: { flexDirection: "row", alignItems: "center", gap: space.md },
+  well: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  ratings: { flexDirection: "row", gap: space.sm },
+  rating: { flex: 1, alignItems: "center", gap: space.xs, paddingVertical: space.md, borderRadius: radius.item, borderWidth: 1.5 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  line: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 56, paddingVertical: space.xs },
+  line: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 64, padding: space.md, borderRadius: radius.item },
   check: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   amount: { flexDirection: "row", alignItems: "center", gap: space.sm },
   note: { borderRadius: radius.card, padding: space.lg, gap: space.xs },

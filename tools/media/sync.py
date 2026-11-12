@@ -10,6 +10,7 @@ every expected file that is present and `null` for the rest; screens fall back t
 """
 from __future__ import annotations
 
+import json
 import struct
 import sys
 from pathlib import Path
@@ -61,6 +62,17 @@ INGREDIENTS = {name: (f"ingredients/{slug(name)}.png", 480, 480) for name, _ in 
 # Fallbacks for things the catalog doesn't know (homemade food, leftovers) and for a missing photo.
 CATEGORY_KEYS = sorted({cat for _, cat in CATALOG} | {"leftover", "homemade"})
 CATEGORIES = {c: (f"ingredients/category-{slug(c)}.png", 480, 480) for c in CATEGORY_KEYS}
+# "How it should look" photos for cooking steps that have a look cue and a heat (generated from the recipes).
+def _step_photos() -> dict:
+    out = {}
+    for r in json.loads((APP / "src" / "data" / "recipes.json").read_text()):
+        for n, st in enumerate(r["steps"], 1):
+            if (st.get("cues") or {}).get("look") and st.get("heat"):
+                out[f"{r['slug']}/{n}"] = (f"steps/{r['slug']}-{n}.png", 1080, 720)
+    return out
+
+
+STEPS = _step_photos()
 # Larger photos for onboarding and the kitchen screens (Stitch layouts).
 SCENES = {
     "welcome": ("scenes/welcome.png", 1080, 690),
@@ -112,6 +124,8 @@ def render() -> tuple[str, list[str]]:
         + block("ingredientPhotos", INGREDIENTS, quote=True)
         + "\n"
         + block("categoryPhotos", CATEGORIES, quote=True)
+        + "\n"
+        + block("stepPhotos", STEPS, quote=True)
         + "\n/** Photo for a pantry item: its own if generated, else its category's, else null. */\n"
         "export function ingredientImage(name: string | null | undefined, category?: string | null): ImageSourcePropType | null {\n"
         "  const own = name ? (ingredientPhotos as Record<string, ImageSourcePropType | null>)[name] : null;\n"
@@ -121,6 +135,10 @@ def render() -> tuple[str, list[str]]:
         "export function dishImage(slug: string): ImageSourcePropType | null {\n"
         "  return (dishes as Record<string, ImageSourcePropType | null>)[slug] ?? null;\n"
         "}\n"
+        + "\n/** How a cooking step should look, if generated; else the dish photo. */\n"
+        "export function stepImage(slug: string, step: number): ImageSourcePropType | null {\n"
+        "  return (stepPhotos as Record<string, ImageSourcePropType | null>)[`${slug}/${step}`] ?? dishImage(slug);\n"
+        "}\n"
     )
     return src, problems
 
@@ -128,7 +146,7 @@ def render() -> tuple[str, list[str]]:
 def main() -> int:
     check = "--check" in sys.argv
     src, problems = render()
-    all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES, **SCENES, **INGREDIENTS, **CATEGORIES}
+    all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES, **SCENES, **INGREDIENTS, **CATEGORIES, **STEPS}
     missing = [rel for rel, _, _ in all_items.values() if not (MEDIA / rel).exists()]
     for p in problems:
         print(f"wrong size: {p}", file=sys.stderr)

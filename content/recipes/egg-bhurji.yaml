@@ -31,17 +31,34 @@ ingredients:
 steps:
   - text: Beat the eggs with a pinch of the salt.
     minutes: 1
+    cues:
+      look: "The yolks and whites are fully mixed, a little frothy."
   - text: Heat the oil in a kadai and cook the onion until soft. Add the green chilli and ginger, then the tomato, and cook until the tomato is soft.
     technique: saute_onion
     minutes: 5
     cue: The tomato breaks down when pressed with the spoon.
+    heat: medium
+    cues:
+      look: "The onion is soft and see-through, the tomato breaks down when pressed."
+      smell: "Sweet onion, no raw smell."
   - text: Add turmeric, chilli powder, pav bhaji masala and the rest of the salt and stir for 30 seconds.
     minutes: 1
+    heat: medium
+    cues:
+      smell: "The spices smell toasted, not raw."
+      avoid: "Just 30 seconds: spices burn quickly in a dry pan."
   - text: Lower the heat and pour in the eggs. Leave them for 20 seconds, then scramble, scraping the bottom, until fully set.
     minutes: 4
     cue: Soft, moist curds with no runny egg left.
     safety: Cook until the egg is fully set with no wet or runny parts, especially for children, elders or anyone pregnant.
+    heat: low
+    cues:
+      look: "Soft, moist curds with no runny egg left."
+      touch: "Nothing wet runs out when you press the egg."
+      avoid: "Don't stop at shiny wet egg: cook until fully set."
   - text: Add the coriander leaves and serve hot.
     minutes: 1
+    cues:
+      look: "Steaming hot when served."
 variation_rules:
   - {type: spice, condition: {member_age_group: child}, action: {omit: [green chilli, red chilli powder]}, note: Leave out the chillies for a mild bhurji.}

@@ -55,8 +55,8 @@ export default function WelcomeScreen() {
       <View style={styles.copy}>
         <Text variant="display" accessibilityRole="header" accessibilityLabel={title}>
           {lead}
-          <View style={[styles.disc, { backgroundColor: colors.lime }]}>
-            <Icon name="cook" size={22} color={colors.onLime} />
+          <View style={[styles.disc, { backgroundColor: colors.primary }]}>
+            <Icon name="cook" size={22} color={colors.onPrimary} />
           </View>{" "}
           {last}
         </Text>

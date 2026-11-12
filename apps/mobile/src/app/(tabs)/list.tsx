@@ -129,7 +129,7 @@ export default function ListScreen() {
                         disabled={busy}
                         onPress={() => buy.mutate([l.id])}
                         hitSlop={10}
-                        style={({ pressed }) => [styles.check, { borderColor: colors.inkTertiary, backgroundColor: pressed ? colors.limeSoft : "transparent" }]}
+                        style={({ pressed }) => [styles.check, { borderColor: colors.inkTertiary, backgroundColor: pressed ? colors.primarySoft : "transparent" }]}
                       />
                       <View style={{ flex: 1, gap: 2 }}>
                         <Text variant="bodyStrong">{name}</Text>

@@ -34,7 +34,7 @@ export default function MembersScreen() {
       onAction={next}
       footer={
         tried && problem !== "none" ? (
-          <Text color={colors.limeText} accessibilityLiveRegion="assertive">
+          <Text color={colors.primaryText} accessibilityLiveRegion="assertive">
             {t(`onb.members.error.${problem}` as StringKey)}
           </Text>
         ) : null

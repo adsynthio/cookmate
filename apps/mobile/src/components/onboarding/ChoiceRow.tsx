@@ -31,8 +31,8 @@ export function ChoiceRow({
         styles.row,
         {
           minHeight: large ? 72 : touch.cook,
-          backgroundColor: selected ? colors.limeSoft : colors.surface,
-          borderColor: selected ? colors.lime : "transparent",
+          backgroundColor: selected ? colors.primarySoft : colors.surface,
+          borderColor: selected ? colors.primary : "transparent",
           opacity: pressed ? 0.85 : 1,
         },
       ]}
@@ -42,9 +42,9 @@ export function ChoiceRow({
         {detail ? <Text muted>{detail}</Text> : null}
       </View>
       <View
-        style={[styles.dot, { borderColor: selected ? colors.lime : colors.line, backgroundColor: selected ? colors.lime : "transparent" }]}
+        style={[styles.dot, { borderColor: selected ? colors.primary : colors.line, backgroundColor: selected ? colors.primary : "transparent" }]}
       >
-        {selected ? <Icon name="check" size={18} color={colors.onLime} /> : null}
+        {selected ? <Icon name="check" size={18} color={colors.onPrimary} /> : null}
       </View>
     </Pressable>
   );

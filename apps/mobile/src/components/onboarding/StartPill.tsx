@@ -23,11 +23,11 @@ export function StartPill({ label, onPress, busy }: { label: string; onPress: ()
         { backgroundColor: colors.surface, opacity: busy ? 0.6 : pressed ? 0.85 : 1 },
       ]}
     >
-      <View style={[styles.knob, { width: knob, height: knob, borderRadius: knob / 2, backgroundColor: colors.lime }]}>
+      <View style={[styles.knob, { width: knob, height: knob, borderRadius: knob / 2, backgroundColor: colors.primary }]}>
         <View style={styles.chevrons}>
-          <Icon name="forward" size={18} color={colors.onLime} />
+          <Icon name="forward" size={18} color={colors.onPrimary} />
           <View style={{ marginLeft: -10 }}>
-            <Icon name="forward" size={18} color={colors.onLime} />
+            <Icon name="forward" size={18} color={colors.onPrimary} />
           </View>
         </View>
       </View>

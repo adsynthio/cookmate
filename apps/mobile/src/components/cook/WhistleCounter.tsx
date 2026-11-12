@@ -45,9 +45,9 @@ export function WhistleCounter({
         accessibilityState={{ disabled: done }}
         disabled={done}
         onPress={onWhistle}
-        style={({ pressed }) => [styles.tap, shadow.glow, { backgroundColor: pressed ? colors.limePressed : colors.lime, opacity: done ? 0.5 : 1 }]}
+        style={({ pressed }) => [styles.tap, shadow.glow, { backgroundColor: pressed ? colors.primaryPressed : colors.primary, opacity: done ? 0.5 : 1 }]}
       >
-        <Icon name={done ? "check" : "plus"} size={36} color={colors.onLime} />
+        <Icon name={done ? "check" : "plus"} size={36} color={colors.onPrimary} />
       </Pressable>
     </Card>
   );

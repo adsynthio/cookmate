@@ -529,5 +529,7 @@
   "you.notify.badTime": "यह समय शांत समय के अंदर है।",
   "notify.channel": "रोज़ का खाने का सुझाव",
   "home.fast.none.title": "अभी व्रत वाले पकवान नहीं हैं",
-  "home.fast.none.body": "Cookmate में अभी इस व्रत के पकवान नहीं हैं; और जोड़े जा रहे हैं।"
+  "home.fast.none.body": "Cookmate में अभी इस व्रत के पकवान नहीं हैं; और जोड़े जा रहे हैं।",
+  "common.back": "वापस",
+  "tab.list": "लिस्ट"
 }

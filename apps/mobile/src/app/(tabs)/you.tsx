@@ -156,7 +156,7 @@ function TellMe({
     },
   });
   return (
-    <Card tint={colors.limeSoft}>
+    <Card tint={colors.primarySoft}>
       <Text variant="heading">{t("you.tell.title")}</Text>
       <Field
         value={text}
@@ -241,7 +241,7 @@ function Preferences({
                   accessibilityRole="button"
                   accessibilityLabel={`${x.statement}. ${t("you.prefRemove")}`}
                   onPress={() => forget.mutate(x.id)}
-                  style={[styles.pref, { backgroundColor: x.polarity < 0 ? colors.alertSoft : colors.limeSoft }]}
+                  style={[styles.pref, { backgroundColor: x.polarity < 0 ? colors.alertSoft : colors.primarySoft }]}
                 >
                   <Text variant="label">
                     {t(x.polarity < 0 ? "you.avoids" : "you.loves", { item: ingredientName(x.ingredientKey!) })}
@@ -265,7 +265,7 @@ function Preferences({
                   accessibilityRole="button"
                   accessibilityLabel={`${x.statement}. ${t("you.prefRemove")}`}
                   onPress={() => forget.mutate(x.id)}
-                  style={[styles.pref, { backgroundColor: x.polarity < 0 ? colors.alertSoft : colors.limeSoft }]}
+                  style={[styles.pref, { backgroundColor: x.polarity < 0 ? colors.alertSoft : colors.primarySoft }]}
                 >
                   <Text variant="label">{t(x.polarity < 0 ? "you.avoids" : "you.loves", { item: ingredientName(x.ingredientKey!) })}</Text>
                   <Icon name="close" size={16} muted />
@@ -468,7 +468,7 @@ function PhoneLink() {
       <Card>
         {phone.data ? (
           <View style={styles.dish}>
-            <Icon name="check" color={colors.limeText} />
+            <Icon name="check" color={colors.primaryText} />
             <Text variant="bodyStrong">{t("you.phone.linked", { phone: maskPhone(phone.data) })}</Text>
           </View>
         ) : sentTo ? (
@@ -656,7 +656,7 @@ function MemoryCard({ memory, onChanged }: { memory: Memory; onChanged: () => vo
               {[t(`you.source.${memory.source}` as StringKey), memory.memberName].filter(Boolean).join(" · ")}
             </Text>
             {memory.scope === "temporary" ? (
-              <View style={[styles.tag, { backgroundColor: colors.amberSoft }]}>
+              <View style={[styles.tag, { backgroundColor: colors.peach }]}>
                 <Text variant="caption">{t("you.temporary")}</Text>
               </View>
             ) : null}

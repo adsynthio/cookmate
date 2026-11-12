@@ -422,8 +422,16 @@ Part 1, foundation and pantry:
 - [x] Scanning (KIT-160/161/162): fridge or shelf photo and shop bill read by the new `scan-pantry` function (photo never stored), barcodes looked up in Open Food Facts; everything is checked on the add screen before it is saved
 - [x] Pictures: the brief for all 219 images is in `apps/mobile/assets/media/PROMPTS.md` (Cline + Vertex AI or Antigravity); 12 vegetable photos are in
 - [ ] **You:** generate the remaining pictures (`CLINE.md`); the scan screen and Kitchen show soft placeholders until then
-- [ ] Apply `20270216000000_onboarding_taste.sql` to ChefMate (Claude does this on merge); `scan-pantry` deploys with the functions workflow and needs `ANTHROPIC_API_KEY` (already set for the other functions)
-- [ ] Next: Home, Cook (sensory cues, timers, step transitions), recipe detail, You, then Community last
+- [x] Apply `20270216000000_onboarding_taste.sql` to ChefMate; `scan-pantry` deploys with the functions workflow and needs `ANTHROPIC_API_KEY` (already set for the other functions)
+
+Part 2, cooking (branch `sprint-7/cook`):
+- [x] Sensory cues by sense: every recipe step says what to look, listen, smell, feel or taste for, what to avoid, and the heat (`cues:` and `heat:` in `content/recipes/*.yaml`, checked by the content build, saved in `recipe_steps.sensory_cues`, read by the app from both the bundled recipes and the database)
+- [x] Cook With Me in the Stitch layout: step pill and heat, segmented progress, the dish photo, What to do with how to tell it's right and the warning, a step timer with a ring and +1 min, Need a hand? (pan too hot, what's next, ask, I changed something); steps slide in from the side they came from
+- [x] Time's up: a finished timer shows what to check now with Got it, +1 min and Go to the next step; the alarm says the cue aloud and the notification shows it
+- [x] All done (finish) and Something's wrong (rescue) restyled; rescue shows the step's good sign and bad sign
+- [ ] **Culinary lead:** review the draft cues in `content/recipes/*.yaml` (they are written in plain English and marked by the recipe's `review_status`)
+- [ ] **You:** step photos ("how it should look") are in the picture brief; until then each step shows the dish photo
+- [ ] Next: Home, recipe detail, You, then Community last
 
 ---
 

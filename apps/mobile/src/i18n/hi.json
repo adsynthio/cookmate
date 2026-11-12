@@ -747,5 +747,15 @@
   "finish.badge": "पका लिया · {n} स्टेप",
   "finish.headline": "हो गया।",
   "finish.ready": "{dish} तैयार है। अब आराम से बैठिए, रसोई की ख़ुशबू कमाल की है।",
-  "finish.saveHome": "सेव करें और होम पर जाएँ"
+  "finish.saveHome": "सेव करें और होम पर जाएँ",
+  "rescue.badge": "मदद · स्टेप {n}",
+  "rescue.first": "पहले यह करें",
+  "rescue.calm": "घबराइए मत। ज़्यादातर खाना बच जाता है।",
+  "rescue.thenTitle": "फिर",
+  "rescue.now": "इसके बाद",
+  "rescue.check": "बर्तन में देखें",
+  "rescue.goodSign": "सही है",
+  "rescue.badSign": "गड़बड़ है",
+  "rescue.fixed": "ठीक हो गया, स्टेप {n} पर चलें",
+  "rescue.otherShort": "कुछ और"
 }

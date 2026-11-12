@@ -25,7 +25,7 @@ Shown as round thumbnails (about 56 pt) on the Kitchen screen, in chips and in l
 
 Ingredient prompt (after the shared style), with the item and how to show it filled in:
 
-> Close-up, slightly overhead (about 45 degrees) photograph of **{ITEM}** ({HINDI}), {HOW TO SHOW IT}, on a warm cream counter. The item is centred and fills about 70% of the square frame; nothing important within the outer 12% (it will be cropped to a circle). Plain, softly blurred background. One item only, clearly recognisable at small size.
+> Close-up, slightly overhead (about 45 degrees) photograph of **{ITEM}** ({HINDI}), {HOW TO SHOW IT}, on a warm cream counter. **Tight close-up: the item fills about 80% of the square frame**, centred, with only a little counter around it; keep the window, shelves, bowls and cloths out of frame or very soft. Nothing important within the outer 10% (it is cropped to a rounded square and a circle). One item only, clearly recognisable at thumbnail size (about 2 cm on a phone).
 
 **Size for every file in section 1: 480 x 480.** Do one group at a time in one session so the light and angle match. Use the Hindi name to get the Indian variety right (for example "capsicum" is the green shimla mirch, "brinjal" is the purple Indian baingan, "curd" is homemade dahi in a bowl).
 
@@ -432,7 +432,7 @@ The current ten are temporary and must be replaced before any release. Same file
 
 ## Checklist
 
-- [ ] 1. Ingredient photos: vegetables, herbs, fruit, dairy, egg, meat, seafood
+- [ ] 1. Ingredient photos: vegetables, herbs, fruit, dairy, egg, meat, seafood (12 vegetables in: potato, onion, tomato, garlic, ginger, green peas, carrot, capsicum, french beans, bitter gourd, ridge gourd, mushroom; Claude cropped them tighter. Redo `ridge-gourd.png`: real turai has a star-shaped cut end with sharp ridges)
 - [ ] 1. Ingredient photos: dals, grains, flours
 - [ ] 1. Ingredient photos: spices, oils, nuts, sweeteners, condiments, packaged, tea, baking
 - [ ] 1.19 Category fallbacks

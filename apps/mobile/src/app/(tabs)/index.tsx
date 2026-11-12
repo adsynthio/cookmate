@@ -4,20 +4,21 @@
 // the pick (KIT-035), today's festivals and "keeping the fast?" (KIT-144), the daily pick notification's batch opens
 // instantly (KIT-045), and "make something new" (KIT-056).
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+
+import { AppHeader } from "@/components/AppHeader";
+import { Greeting, InventCard, PickCard, pickPhoto, ResumeCard, SearchPill, UseSoonCards } from "@/components/home/HomeParts";
 
 import { itemName } from "@/components/kitchen/names";
-import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { dishImage, illustrations } from "@/design-system/media";
-import { Button, Card, Chip, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
+import { Enter } from "@/design-system/motion";
+import { Button, Card, Chip, IconButton, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, size, space } from "@/design-system/tokens";
-import { displayName } from "@/domain/kitchen";
+import { space } from "@/design-system/tokens";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
-import { daysLeft } from "@/domain/pantry";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick } from "@/services";
@@ -84,6 +85,29 @@ export default function HomeScreen() {
     queryKey: ["useSoon", householdId],
     queryFn: () => services.kitchen.getUseSoon(householdId!),
     enabled: !!householdId,
+  });
+  const kitchen = useQuery({
+    queryKey: ["kitchen", householdId],
+    queryFn: () => services.kitchen.getKitchen(householdId!),
+    enabled: !!householdId,
+  });
+  // "Pick up where you left off": a dish this household is in the middle of cooking (KIT-079).
+  const active = useQuery({
+    queryKey: ["cook-active", householdId],
+    queryFn: () => services.cooking.getActiveSession(householdId!),
+    enabled: !!householdId,
+    staleTime: 0,
+  });
+  const refetchActive = active.refetch;
+  useFocusEffect(
+    useCallback(() => {
+      void refetchActive();
+    }, [refetchActive]),
+  );
+  const activeRecipe = useQuery({
+    queryKey: ["recipe", active.data?.recipeId],
+    queryFn: () => services.recipe.getRecipe(active.data!.recipeId),
+    enabled: !!active.data,
   });
   const accept = useMutation({ mutationFn: (p: Pick) => services.recipe.respondToPick(p.recommendationId, "accepted") });
   // KIT-044: turn a pick down with a reason; "don't like" offers to remember it, and only saves on a yes.
@@ -153,48 +177,74 @@ export default function HomeScreen() {
     accept.mutate(p);
     open(p);
   };
-  const title = mealSlot === "dinner" ? t("home.greeting") : t(`home.title.${mealSlot}` as StringKey);
+  const me = (members.data ?? []).find((m) => m.id === memberId);
+  const hero = picks.data?.hero ?? null;
+  const slotLabel = t(`home.slot.${mealSlot}` as StringKey);
 
   return (
-    <Screen>
-      <View style={styles.header}>
-        <View style={{ flex: 1, gap: space.xs }}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`${t("home.slotPicker")}: ${t(`home.slot.${mealSlot}` as StringKey)}`}
-            onPress={() => setPickingSlot((v) => !v)}
-            style={styles.slotButton}
-          >
-            <Text variant="caption" muted>
-              {t(`home.slot.${mealSlot}` as StringKey)}
-            </Text>
-            <View style={{ transform: [{ rotate: pickingSlot ? "-90deg" : "90deg" }] }}>
-              <Icon name="forward" size={14} muted />
-            </View>
-          </Pressable>
-          <Text variant="title" accessibilityRole="header">
-            {title}
-          </Text>
-        </View>
-        <IconButton label={t("home.search")} onPress={() => router.push("/search")}>
-          <Icon name="search" />
-        </IconButton>
-      </View>
+    <Screen
+      header={
+        <AppHeader
+          title={t("tab.home")}
+          right={
+            <IconButton label={t("home.search")} tone="plain" onPress={() => router.push("/search")}>
+              <Icon name="search" />
+            </IconButton>
+          }
+        />
+      }
+    >
+      <Greeting
+        name={me?.displayName}
+        slotLabel={slotLabel}
+        slotOpen={pickingSlot}
+        onSlot={() => setPickingSlot((v) => !v)}
+        count={kitchen.data?.length ?? 0}
+        photo={hero ? pickPhoto(hero) : null}
+      />
 
       {pickingSlot ? (
-        <View style={styles.row} accessibilityRole="radiogroup">
+        <Enter style={styles.row}>
           {SLOTS.map((s) => (
             <Chip
               key={s}
               label={t(`home.slot.${s}` as StringKey)}
               selected={mealSlot === s}
+              solid
               onPress={() => {
                 setMealSlot(s);
                 setPickingSlot(false);
               }}
             />
           ))}
-        </View>
+        </Enter>
+      ) : null}
+
+      <SearchPill value={draft} onChange={setDraft} onSubmit={() => setCraving(draft.trim())} onMic={() => router.push("/voice")} />
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+        {(useSoon.data ?? []).slice(0, 2).map((item) => (
+          <Chip
+            key={item.id}
+            icon="leaf"
+            label={t("home.useMy", { item: itemName(item) })}
+            selected={focus?.id === item.id}
+            onPress={() => setFocus(focus?.id === item.id ? null : item)}
+          />
+        ))}
+        {CHIPS.map((c) => (
+          <Chip key={c.key} label={t(c.label)} selected={chips.includes(c.key)} onPress={() => toggleChip(c.key)} />
+        ))}
+      </ScrollView>
+
+      {active.data && activeRecipe.data ? (
+        <ResumeCard
+          dish={recipeTitle(activeRecipe.data, getLocale())}
+          step={Math.min(active.data.currentStep, activeRecipe.data.steps.length)}
+          total={activeRecipe.data.steps.length}
+          photo={dishImage(activeRecipe.data.slug)}
+          onResume={() => router.push(`/cook/${active.data!.id}`)}
+        />
       ) : null}
 
       {members.data && members.data.length > 1 ? (
@@ -206,8 +256,10 @@ export default function HomeScreen() {
             {members.data.map((m) => (
               <Chip
                 key={m.id}
+                icon="you"
                 label={m.displayName}
                 selected={whoEating === null || whoEating.includes(m.id)}
+                showCheck
                 onPress={() => toggleMember(m.id)}
               />
             ))}
@@ -218,11 +270,11 @@ export default function HomeScreen() {
       {focus ? (
         <View style={styles.focus}>
           <Text variant="label" style={{ flex: 1 }}>
-            {picks.data?.hero && focus.ingredientKey && !picks.data.hero.uses.includes(focus.ingredientKey)
+            {hero && focus.ingredientKey && !hero.uses.includes(focus.ingredientKey)
               ? t("home.focusNone", { item: itemName(focus) })
               : t("home.usingUp", { items: itemName(focus) })}
           </Text>
-          <Button kind="quiet" label={t("home.clear")} onPress={() => setFocus(null)} />
+          <Button kind="quiet" size="small" label={t("home.clear")} onPress={() => setFocus(null)} />
         </View>
       ) : null}
 
@@ -259,6 +311,13 @@ export default function HomeScreen() {
         </Text>
       ) : null}
 
+      <View style={{ gap: space.xs }}>
+        <SectionHeader title={t("home.ideas")} dot={undefined} note={hero ? t("home.ideasCount", { n: 1 + (picks.data?.alternates.length ?? 0) }) : undefined} />
+        <Text variant="caption" muted>
+          {t("home.ideasBody")}
+        </Text>
+      </View>
+
       {picks.isPending ? (
         <StateView state="loading" title={t("state.loading.home")} />
       ) : picks.isError ? (
@@ -269,7 +328,7 @@ export default function HomeScreen() {
           actionLabel={t("state.retry")}
           onAction={() => picks.refetch()}
         />
-      ) : !picks.data.hero ? (
+      ) : !hero ? (
         <StateView
           state="empty"
           illustration={illustrations.emptyPicks}
@@ -280,9 +339,9 @@ export default function HomeScreen() {
         />
       ) : (
         <>
-          <HeroPick pick={picks.data.hero} onOpen={() => open(picks.data.hero!)} onCook={() => cook(picks.data.hero!)} />
+          <PickCard pick={hero} hero index={0} onOpen={() => open(hero)} onCook={() => cook(hero)} />
           {asking ? (
-            <View style={{ gap: space.sm }}>
+            <Enter style={{ gap: space.sm }}>
               <Text variant="label" muted>
                 {t("home.whyNot")}
               </Text>
@@ -291,54 +350,31 @@ export default function HomeScreen() {
                   <Chip
                     key={r}
                     label={t(`home.reason.${r}` as StringKey)}
-                    onPress={() => !dismiss.isPending && dismiss.mutate({ pick: picks.data.hero!, reason: r })}
+                    onPress={() => !dismiss.isPending && dismiss.mutate({ pick: hero, reason: r })}
                   />
                 ))}
               </View>
               {dismiss.isError ? <Text>{t("state.error.body")}</Text> : null}
-            </View>
+            </Enter>
           ) : (
             <View style={{ alignSelf: "flex-start" }}>
-              <Button kind="quiet" label={t("home.notThis")} onPress={() => setAsking(true)} />
+              <Button kind="quiet" size="small" icon="close" label={t("home.notThis")} onPress={() => setAsking(true)} />
             </View>
           )}
-          {picks.data.alternates.length ? (
-            <Text variant="label" muted>
-              {t("home.alternates")}
-            </Text>
-          ) : null}
-          {picks.data.alternates.map((p) => (
-            <AlternatePick key={p.recommendationId} pick={p} onOpen={() => open(p)} />
+          {picks.data.alternates.map((p, i) => (
+            <PickCard key={p.recommendationId} pick={p} index={i + 1} onOpen={() => open(p)} />
           ))}
         </>
       )}
 
-      <Text variant="heading">{t("home.cravingPrompt")}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
-        {CHIPS.map((c) => (
-          <Chip key={c.key} label={t(c.label)} selected={chips.includes(c.key)} onPress={() => toggleChip(c.key)} />
-        ))}
-      </ScrollView>
-      <View style={styles.row}>
-        <Field
-          value={draft}
-          onChangeText={setDraft}
-          placeholder={t("home.cravingPlaceholder")}
-          accessibilityLabel={t("home.cravingPrompt")}
-          returnKeyType="search"
-          onSubmitEditing={() => setCraving(draft.trim())}
-          style={{ flex: 1, minWidth: 0 }}
-        />
-        <Button kind="secondary" label={t("home.cravingGo")} disabled={draft.trim() === craving} onPress={() => setCraving(draft.trim())} />
-      </View>
-
       {useSoon.data && useSoon.data.length > 0 ? (
-        <UseSoonStrip items={useSoon.data} focused={focus?.id ?? null} onPick={(i) => setFocus(focus?.id === i.id ? null : i)} />
+        <View style={{ gap: space.sm }}>
+          <SectionHeader title={t("home.useSoon")} dot={undefined} note={t("home.useSoonCount", { n: useSoon.data.length })} noteTone="accent" />
+          <UseSoonCards items={useSoon.data} focused={focus?.id ?? null} onPick={(i) => setFocus(focus?.id === i.id ? null : i)} />
+        </View>
       ) : null}
 
-      <View style={{ alignSelf: "flex-start" }}>
-        <Button kind="secondary" label={t("home.invent")} onPress={() => router.push("/invent")} />
-      </View>
+      <InventCard onPress={() => router.push("/invent")} />
     </Screen>
   );
 }
@@ -405,125 +441,9 @@ function CheckCard({ question, busy, onAnswer }: { question: PantryQuestion; bus
   );
 }
 
-function PickMeta({ pick }: { pick: Pick }) {
-  const parts = [
-    pick.totalTimeMin ? t("home.minutes", { min: pick.totalTimeMin }) : null,
-    // The reason may already say "You have 9 of 10"; don't repeat it.
-    pick.total && !pick.reason.includes(`${pick.have}`) ? t("home.haveOf", { have: pick.have, total: pick.total }) : null,
-  ].filter(Boolean);
-  return (
-    <Text variant="label" muted>
-      {parts.join(" · ")}
-    </Text>
-  );
-}
-
-/** The screen's one lime card (brand kit HighlightCard): title and reason on the left, the dish in a circle. */
-function HeroPick({ pick, onOpen, onCook }: { pick: Pick; onOpen: () => void; onCook: () => void }) {
-  const { colors } = useTheme();
-  const photo = pick.imageUrl ? { uri: pick.imageUrl } : dishImage(pick.slug);
-  const name = recipeTitle(pick, getLocale());
-  const names = pick.missing.map((k) => displayName(catalogEntry(k), k, getLocale()));
-  const missing = names.length > 3 ? [...names.slice(0, 3), t("home.andMore", { n: names.length - 3 })] : names;
-  return (
-    <Card hero style={{ gap: space.md }}>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${name}. ${pick.reason}`} onPress={onOpen} style={styles.heroRow}>
-        <View style={{ flex: 1, gap: space.sm }}>
-          <Text variant="title">{name}</Text>
-          <Text>{pick.reason}</Text>
-          <PickMeta pick={pick} />
-        </View>
-        {photo ? (
-          <Image source={photo} style={styles.heroImage} accessible={false} />
-        ) : (
-          <View style={[styles.heroImage, { backgroundColor: colors.primaryPale }]} accessible={false} />
-        )}
-      </Pressable>
-      {missing.length > 0 ? (
-        <Text variant="label" muted>
-          {t("home.missing", { items: missing.join(", ") })}
-        </Text>
-      ) : null}
-      <Button label={t("home.cookThis")} onPress={onCook} accessibilityHint={name} />
-    </Card>
-  );
-}
-
-function AlternatePick({ pick, onOpen }: { pick: Pick; onOpen: () => void }) {
-  const { colors } = useTheme();
-  const photo = dishImage(pick.slug);
-  const name = recipeTitle(pick, getLocale());
-  return (
-    <Pressable accessibilityRole="button" accessibilityLabel={`${name}. ${pick.reason}`} onPress={onOpen}>
-      {({ pressed }) => (
-        <Card style={[styles.altCard, { opacity: pressed ? 0.8 : 1 }]}>
-          {photo ? (
-            <Image source={photo} style={styles.thumb} accessible={false} />
-          ) : (
-            <View style={[styles.thumb, { backgroundColor: colors.primaryPale }]} accessible={false} />
-          )}
-          <View style={{ flex: 1, gap: 2 }}>
-            <Text variant="bodyStrong">{name}</Text>
-            <Text variant="label" muted numberOfLines={2}>
-              {pick.reason}
-            </Text>
-            <PickMeta pick={pick} />
-          </View>
-        </Card>
-      )}
-    </Pressable>
-  );
-}
-
-function UseSoonStrip({ items, focused, onPick }: { items: PantryItem[]; focused: string | null; onPick: (i: PantryItem) => void }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ gap: space.sm }}>
-      <View style={styles.useSoonHead}>
-        <Text variant="heading">{t("home.useSoon")}</Text>
-        <Text variant="caption" muted>
-          {t("home.useSoonHint")}
-        </Text>
-      </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
-        {items.map((item) => {
-          const days = item.expiryDate ? daysLeft(item.expiryDate) : null;
-          const label =
-            days === 0 ? t("home.today") : days === 1 ? t("home.dayLeft") : t("home.daysLeft", { days: days ?? "?" });
-          const on = focused === item.id;
-          return (
-            <Pressable
-              key={item.id}
-              accessibilityRole="button"
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`${itemName(item)}, ${label}`}
-              onPress={() => onPick(item)}
-            >
-              <Card tint={on ? colors.primarySoft : undefined} style={styles.useSoonCard}>
-                <Text variant="bodyStrong">{itemName(item)}</Text>
-                <Text variant="caption" color={days !== null && days <= 1 ? colors.accentText : colors.inkSecondary}>
-                  {label}
-                  {item.expiryEstimated ? ` · ${t("kitchen.estimated")}` : ""}
-                </Text>
-              </Card>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   reasons: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  header: { flexDirection: "row", alignItems: "flex-end", gap: space.md },
-  slotButton: { flexDirection: "row", alignItems: "center", gap: space.xs, alignSelf: "flex-start", minHeight: 32 },
   row: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, alignItems: "center" },
+  chips: { gap: space.sm, paddingVertical: space.xs, paddingRight: space.gutter },
   focus: { flexDirection: "row", alignItems: "center", gap: space.sm },
-  heroRow: { flexDirection: "row", alignItems: "center", gap: space.md },
-  heroImage: { width: size.ring, height: size.ring, borderRadius: size.ring / 2 },
-  altCard: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.md },
-  thumb: { width: 56, height: 56, borderRadius: 28 },
-  useSoonHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: space.sm },
-  useSoonCard: { minWidth: 120, paddingVertical: space.md, borderRadius: radius.card },
 });

@@ -7,18 +7,22 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
+import { AppHeader } from "@/components/AppHeader";
+
 import { catalogEntry } from "@/data/catalog";
 import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
-import { dishImage } from "@/design-system/media";
-import { Button, Card, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
+import { dishImage, ingredientImage } from "@/design-system/media";
+import { Enter, PressableScale, SlideIn } from "@/design-system/motion";
+import { Badge, Button, Card, IconButton, Photo, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, space } from "@/design-system/tokens";
+import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
-import { LANGUAGE_CODES } from "@/domain/onboarding";
+import { CUISINES, LANGUAGE_CODES } from "@/domain/onboarding";
 import { pantryMatch, type IngredientMatch } from "@/domain/ranking";
 import {
+  cueSenses,
   familyBranches,
   recipeTitle,
   toRankRecipe,
@@ -49,17 +53,22 @@ export default function RecipeScreen() {
     enabled: !!householdId,
   });
 
+  const header = (
+    <AppHeader
+      title={t("recipe.title")}
+      back
+      mic={false}
+      right={recipe.data && householdId ? <SaveHeart householdId={householdId} recipeId={recipe.data.parent_id ?? recipe.data.id ?? recipe.data.slug} /> : null}
+    />
+  );
+  if (recipe.isSuccess) {
+    return <RecipeBody header={header} doc={recipe.data} items={kitchen.data ?? []} members={members.data ?? []} householdId={householdId!} />;
+  }
   return (
-    <Screen>
-      <View style={styles.top}>
-        <IconButton label={t("onb.back")} onPress={() => router.back()}>
-          <Icon name="back" />
-        </IconButton>
-        {recipe.data && householdId ? <SaveHeart householdId={householdId} recipeId={recipe.data.parent_id ?? recipe.data.id ?? recipe.data.slug} /> : null}
-      </View>
+    <Screen header={header} tabBar={false}>
       {recipe.isPending ? (
         <StateView state="loading" title={t("state.loading.home")} />
-      ) : recipe.isError ? (
+      ) : (
         <StateView
           state="error"
           title={t("recipe.notFound")}
@@ -67,8 +76,6 @@ export default function RecipeScreen() {
           actionLabel={t("state.retry")}
           onAction={() => recipe.refetch()}
         />
-      ) : (
-        <RecipeBody doc={recipe.data} items={kitchen.data ?? []} members={members.data ?? []} householdId={householdId!} />
       )}
     </Screen>
   );
@@ -87,18 +94,22 @@ function SaveHeart({ householdId, recipeId }: { householdId: string; recipeId: s
   });
   if (!memberId || !favourites.data) return null;
   return (
-    <IconButton label={saved ? t("recipe.unsave") : t("recipe.save")} onPress={() => !toggle.isPending && toggle.mutate(!saved)}>
+    <IconButton label={saved ? t("recipe.unsave") : t("recipe.save")} tone="plain" onPress={() => !toggle.isPending && toggle.mutate(!saved)}>
       <Icon name="heart" color={saved ? colors.alert : undefined} fill={saved ? colors.alert : undefined} />
     </IconButton>
   );
 }
 
+type Tab = "ingredients" | "steps" | "why";
+
 function RecipeBody({
+  header,
   doc,
   items,
   members,
   householdId,
 }: {
+  header: React.ReactNode;
   doc: RecipeDoc;
   items: Parameters<typeof pantryEntries>[0];
   members: Member[];
@@ -111,6 +122,13 @@ function RecipeBody({
   const eaters = whoEating ? members.filter((m) => whoEating.includes(m.id)) : members;
   const [servings, setServings] = useState(Math.max(1, eaters.length || doc.base_servings));
   const [listed, setListed] = useState<string[]>([]);
+  const [tab, setTab] = useState<Tab>("ingredients");
+  const [tabDir, setTabDir] = useState<1 | -1 | 0>(0);
+  const TABS: Tab[] = ["ingredients", "steps", "why"];
+  const pickTab = (next: Tab) => {
+    setTabDir(TABS.indexOf(next) > TABS.indexOf(tab) ? 1 : -1);
+    setTab(next);
+  };
 
   const match = useMemo(() => pantryMatch(toRankRecipe(doc), pantryEntries(items), STAPLES), [doc, items]);
   const byKey = new Map(match.items.map((m) => [m.key, m]));
@@ -149,63 +167,114 @@ function RecipeBody({
   const notes = eaters.filter((e) => e.notes);
   const time = totalTime(doc);
 
+  const share = match.total ? Math.round((match.have / match.total) * 100) : 0;
+  const subs = match.items.filter((m) => m.status === "substitute" && m.substitute);
+  // Recipes say "generic_north" for everyday North Indian food.
+  const region = doc.cuisine_region === "generic_north" ? "north_indian" : doc.cuisine_region;
+  const cuisine = region && (CUISINES as readonly string[]).includes(region) ? region : null;
+  const level = doc.difficulty <= 2 ? "easy" : doc.difficulty === 3 ? "medium" : "hard";
+
   return (
-    <>
-      <View style={styles.titleRow}>
-        <View style={{ flex: 1, gap: space.xs }}>
-          <Text variant="title" accessibilityRole="header">
-            {title}
-          </Text>
-          <Text muted>
-            {[time ? t("home.minutes", { min: time }) : null, t("recipe.spice", { n: doc.spice_level })].filter(Boolean).join(" · ")}
-          </Text>
+    <Screen
+      header={header}
+      tabBar={false}
+      footer={
+        <View style={[styles.footer, shadow.float, { backgroundColor: colors.surface }]}>
+          <IconButton label={t("recipe.adapt")} onPress={() => router.push(`/adapt/${doc.id ?? doc.slug}`)}>
+            <Icon name="edit" />
+          </IconButton>
+          <View style={{ flex: 1 }}>
+            <Button
+              kind="accent"
+              size="cook"
+              stretch
+              icon="cook"
+              label={start.isPending ? t("cook.starting") : t("recipe.cookWithMe")}
+              disabled={start.isPending}
+              onPress={() => start.mutate()}
+            />
+          </View>
         </View>
-        {photo ? (
-          <Image source={photo} style={styles.photo} accessible={false} />
-        ) : (
-          <View style={[styles.photo, { backgroundColor: colors.primaryPale }]} accessible={false} />
-        )}
-      </View>
-      {doc.parent_id ? (
-        <View style={[styles.note, { backgroundColor: colors.primaryPale, gap: space.xs }]}>
-          <Text variant="label" weight={500}>
-            {t("adapt.yourVersion")}
-          </Text>
-          <Text variant="label">{doc.description}</Text>
-        </View>
-      ) : (
-        <>
-          {doc.tags?.includes("new_creation") ? (
-            // KIT-056: invented from the kitchen's odds and ends, not a tested recipe.
-            <View style={[styles.badge, { backgroundColor: colors.primaryPale }]}>
-              <Text variant="caption">{t("invent.badge")}</Text>
-            </View>
-          ) : doc.review_status !== "approved" ? (
-            <View style={[styles.badge, { backgroundColor: colors.peach }]}>
-              <Text variant="caption">{t("recipe.draft")}</Text>
+      }
+    >
+      <Enter>
+        <View style={[styles.hero, { backgroundColor: colors.primaryPale }]}>
+          {photo ? <Image source={photo} style={styles.heroImage} resizeMode="cover" accessibilityLabel={title} /> : null}
+          {doc.tags?.includes("new_creation") || doc.review_status !== "approved" ? (
+            <View style={styles.heroTop}>
+              <View style={styles.tag}>
+                <Icon name={doc.tags?.includes("new_creation") ? "sparkle" : "bulb"} size={14} color="#FFFFFF" />
+                <Text variant="caption" weight={600} color="#FFFFFF">
+                  {doc.tags?.includes("new_creation") ? t("invent.badge") : t("recipe.draftShort")}
+                </Text>
+              </View>
             </View>
           ) : null}
-          <Text muted>{doc.description}</Text>
-        </>
-      )}
-
-      {/* The screen's one lime card: can I cook this now? */}
-      <Card hero>
-        <Text variant="heading">
-          {match.have === match.total ? t("recipe.haveAll") : t("recipe.haveOf", { have: match.have, total: match.total })}
-        </Text>
-        <View style={[styles.track, { backgroundColor: colors.primaryPale }]} accessible={false}>
-          <View style={[styles.fill, { backgroundColor: colors.primary, width: `${match.total ? (match.have / match.total) * 100 : 0}%` }]} />
+          <View style={styles.heroBottom}>
+            <View style={styles.tag}>
+              <Icon name="sparkle" size={14} color="#FFFFFF" />
+              <Text variant="caption" weight={600} color="#FFFFFF">
+                {t("recipe.match", { n: share })}
+              </Text>
+            </View>
+          </View>
         </View>
-        {missing.length > 0 ? (
-          <Button
-            kind="secondary"
-            label={missing.length === 1 ? t("recipe.addOne") : t("recipe.addMissing", { n: missing.length })}
-            disabled={addToList.isPending}
-            onPress={() => addToList.mutate(missing.map((m) => m.key))}
-          />
+      </Enter>
+
+      <Enter index={1} style={{ gap: space.sm }}>
+        {cuisine ? (
+          <View style={{ alignSelf: "flex-start" }}>
+            <Badge tone="primary" label={t(`cuisine.${cuisine}` as StringKey)} />
+          </View>
         ) : null}
-      </Card>
+        <Text variant="display" accessibilityRole="header">
+          {title}
+        </Text>
+        {doc.parent_id ? null : <Text muted>{doc.description}</Text>}
+      </Enter>
+
+      <Enter index={2}>
+        <View style={[styles.stats, { backgroundColor: colors.surfaceMuted }]}>
+          <Stat icon="timer" value={time ? t("home.minutes", { min: time }) : "–"} label={t("recipe.totalTime")} />
+          <Stat icon="skillet" value={t(`recipe.level.${level}` as StringKey)} label={t("recipe.difficulty")} highlight />
+          <Stat icon="chilli" value={`${doc.spice_level}/5`} label={t("recipe.spiceLabel")} />
+        </View>
+      </Enter>
+
+      {/* The olive card: can I cook this now, and what Cookmate changed for this kitchen. */}
+      <Enter index={3}>
+        <Card tone="primary" style={{ gap: space.md }}>
+          <View style={styles.cardHead}>
+            <View style={[styles.well, { backgroundColor: "rgba(255,255,255,0.18)" }]}>
+              <Icon name="sparkle" size={18} color={colors.onPrimary} />
+            </View>
+            <Text variant="overline" color={colors.onPrimary} style={{ flex: 1 }}>
+              {(doc.parent_id ? t("adapt.yourVersion") : t("recipe.forYourKitchen")).toUpperCase()}
+            </Text>
+          </View>
+          <Text variant="subheading" color={colors.onPrimary}>
+            {match.have === match.total ? t("recipe.haveAll") : t("recipe.haveOf", { have: match.have, total: match.total })}
+          </Text>
+          {doc.parent_id ? <Text color={colors.onPrimary}>{doc.description}</Text> : null}
+          {subs.map((m) => (
+            <Text key={m.key} color={colors.onPrimary}>
+              {t("recipe.subLine", { item: nameOf(m.substitute!), instead: nameOf(m.key) })}
+            </Text>
+          ))}
+          <View style={[styles.track, { backgroundColor: "rgba(255,255,255,0.25)" }]} accessible={false}>
+            <View style={[styles.fill, { backgroundColor: colors.peach, width: `${share}%` }]} />
+          </View>
+          {missing.length > 0 ? (
+            <Button
+              kind="light"
+              icon="cart"
+              label={missing.length === 1 ? t("recipe.addOne") : t("recipe.addMissing", { n: missing.length })}
+              disabled={addToList.isPending}
+              onPress={() => addToList.mutate(missing.map((m) => m.key))}
+            />
+          ) : null}
+        </Card>
+      </Enter>
 
       {remembered.length ? (
         <Card tint={colors.peach}>
@@ -219,131 +288,182 @@ function RecipeBody({
           ))}
         </Card>
       ) : null}
-
-      <Button
-        size="cook"
-        label={start.isPending ? t("cook.starting") : t("cook.start")}
-        disabled={start.isPending}
-        onPress={() => start.mutate()}
-      />
       {start.isError ? (
         <Text color={colors.alert} accessibilityLiveRegion="polite">
           {t("state.error.body")}
         </Text>
       ) : null}
-      <Button kind="secondary" label={t("recipe.adapt")} onPress={() => router.push(`/adapt/${doc.id ?? doc.slug}`)} />
 
-      <View style={styles.servings}>
-        <IconButton label={t("recipe.fewer")} muted onPress={() => setServings((s) => Math.max(1, s - 1))}>
-          <Text variant="heading">−</Text>
-        </IconButton>
-        <Text variant="bodyStrong" style={{ flex: 1, textAlign: "center" }} accessibilityLiveRegion="polite">
-          {servings === 1 ? t("recipe.cookingForOne") : t("recipe.cookingFor", { n: servings })}
-        </Text>
-        <IconButton label={t("recipe.more")} muted onPress={() => setServings((s) => Math.min(20, s + 1))}>
-          <Text variant="heading">+</Text>
-        </IconButton>
+      <View style={[styles.tabs, { backgroundColor: colors.surfaceMuted }]} accessibilityRole="tablist">
+        {TABS.map((k) => {
+          const on = tab === k;
+          const label = k === "ingredients" ? t("recipe.tab.ingredients", { n: doc.ingredients.length }) : k === "steps" ? t("recipe.tab.steps", { n: doc.steps.length }) : t("recipe.tab.why");
+          return (
+            <PressableScale
+              key={k}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={label}
+              onPress={() => pickTab(k)}
+              style={[styles.tab, on ? [shadow.card, { backgroundColor: colors.surface }] : null]}
+            >
+              <Text variant="label" weight={on ? 600 : 500} color={on ? colors.ink : colors.inkSecondary} numberOfLines={1}>
+                {label}
+              </Text>
+            </PressableScale>
+          );
+        })}
       </View>
 
-      <Text variant="heading">{t("recipe.ingredients")}</Text>
-      <Card>
-        {doc.ingredients.map((ing, i) => (
-          <IngredientRow
-            key={`${ing.ingredient}-${i}`}
-            ing={ing}
-            match={byKey.get(ing.ingredient)}
-            servings={servings}
-            base={doc.base_servings}
-            nameOf={nameOf}
-            listed={listed.includes(ing.ingredient)}
-            onAdd={() => addToList.mutate([ing.ingredient])}
-            change={changes.get(ing.ingredient)}
-          />
-        ))}
-      </Card>
-
-      {why ? (
-        <>
-          <Text variant="heading">{t("recipe.why")}</Text>
-          <Card>
-            {why.bars.map((b) => (
-              <View key={b.key} style={styles.barRow} accessible accessibilityLabel={`${t(`recipe.flavor.${b.key}` as StringKey)} ${Math.round(b.value * 10)}/10`}>
-                <Text variant="label" style={styles.barLabel}>
-                  {t(`recipe.flavor.${b.key}` as StringKey)}
-                </Text>
-                <View style={[styles.track, { flex: 1, backgroundColor: colors.surfaceMuted }]}>
-                  <View style={[styles.fill, { backgroundColor: colors.primaryText, width: `${b.value * 100}%` }]} />
-                </View>
-              </View>
-            ))}
-            <Text>{why.sentence}</Text>
-          </Card>
-        </>
-      ) : null}
-
-      {branches.length || notes.length ? (
-        <>
-          <Text variant="heading">{t("recipe.family")}</Text>
-          <Card>
-            {branches.map((b) => (
-              <View key={`${b.step}-${b.ageGroup}`} style={{ gap: 2 }}>
-                <Text variant="bodyStrong">
-                  {b.members.join(", ")} · {t("recipe.familyStep", { n: b.step })}
-                </Text>
-                <Text>{b.action}</Text>
-              </View>
-            ))}
-            {notes.map((m) => (
-              <Text key={m.id} muted>
-                {t("recipe.note", { name: m.displayName, note: m.notes! })}
+      <SlideIn key={tab} from={tabDir} style={{ gap: space.md }}>
+        {tab === "ingredients" ? (
+          <>
+            <View style={styles.servings}>
+              <IconButton label={t("recipe.fewer")} onPress={() => setServings((s) => Math.max(1, s - 1))}>
+                <Icon name="minus" />
+              </IconButton>
+              <Text variant="bodyStrong" style={{ flex: 1, textAlign: "center" }} accessibilityLiveRegion="polite">
+                {servings === 1 ? t("recipe.cookingForOne") : t("recipe.cookingFor", { n: servings })}
               </Text>
-            ))}
-          </Card>
-        </>
-      ) : null}
-
-      <Text variant="heading">{t("recipe.steps")}</Text>
-      {doc.steps.map((s, i) => {
-        const branch = branches.find((b) => b.step === i + 1);
-        const mins = s.minutes ?? (s.seconds ? Math.max(1, Math.round(s.seconds / 60)) : null);
-        return (
-          <Card key={i}>
-            <View style={styles.stepHead}>
-              <View style={[styles.stepNo, { backgroundColor: colors.surfaceMuted }]}>
-                <Text variant="label" weight={500}>
-                  {i + 1}
-                </Text>
-              </View>
-              <Text variant="caption" muted style={{ flex: 1 }}>
-                {[mins ? t("recipe.stepTime", { min: mins }) : null, s.whistles ? t("recipe.whistles", { n: s.whistles }) : null]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </Text>
+              <IconButton label={t("recipe.oneMore")} onPress={() => setServings((s) => Math.min(20, s + 1))}>
+                <Icon name="plus" />
+              </IconButton>
             </View>
-            <Text variant="bodyStrong">{s.text}</Text>
-            {s.cue ? (
-              <Text muted>
-                {t("recipe.cue")}: {s.cue}
-              </Text>
+            {doc.ingredients.map((ing, i) => (
+              <IngredientRow
+                key={`${ing.ingredient}-${i}`}
+                ing={ing}
+                match={byKey.get(ing.ingredient)}
+                servings={servings}
+                base={doc.base_servings}
+                nameOf={nameOf}
+                listed={listed.includes(ing.ingredient)}
+                onAdd={() => addToList.mutate([ing.ingredient])}
+                change={changes.get(ing.ingredient)}
+              />
+            ))}
+          </>
+        ) : tab === "steps" ? (
+          doc.steps.map((s, i) => {
+            const branch = branches.find((b) => b.step === i + 1);
+            const mins = s.minutes ?? (s.seconds ? Math.max(1, Math.round(s.seconds / 60)) : null);
+            const senses = cueSenses(s);
+            return (
+              <Card key={i} style={{ gap: space.sm }}>
+                <View style={styles.stepHead}>
+                  <View style={[styles.stepNo, { backgroundColor: colors.primary }]}>
+                    <Text variant="label" weight={600} color={colors.onPrimary}>
+                      {i + 1}
+                    </Text>
+                  </View>
+                  <Text variant="caption" muted style={{ flex: 1 }}>
+                    {[
+                      mins ? t("recipe.stepTime", { min: mins }) : null,
+                      s.whistles ? t("recipe.whistles", { n: s.whistles }) : null,
+                      s.heat ? t(`cook.heat.${s.heat}` as StringKey) : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </Text>
+                </View>
+                <Text variant="bodyStrong">{s.text}</Text>
+                {senses.length ? (
+                  senses.slice(0, 2).map(({ sense, text }) => (
+                    <View key={sense} style={styles.cueLine}>
+                      <Icon name={SENSE_ICON[sense]} size={16} color={colors.primaryText} />
+                      <Text variant="label" color={colors.inkSecondary} style={{ flex: 1 }}>
+                        {text}
+                      </Text>
+                    </View>
+                  ))
+                ) : s.cue ? (
+                  <Text variant="label" muted>
+                    {t("recipe.cue")}: {s.cue}
+                  </Text>
+                ) : null}
+                {s.cues?.avoid ? (
+                  <View style={styles.cueLine}>
+                    <Icon name="warning" size={16} color={colors.accentText} />
+                    <Text variant="label" color={colors.accentText} style={{ flex: 1 }}>
+                      {s.cues.avoid}
+                    </Text>
+                  </View>
+                ) : null}
+                {branch ? (
+                  <View style={[styles.note, { backgroundColor: colors.primaryPale }]}>
+                    <Text variant="label">
+                      {branch.members.join(", ")}: {branch.action}
+                    </Text>
+                  </View>
+                ) : null}
+                {s.safety ? (
+                  <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
+                    <Text variant="label" color={colors.alert} weight={500}>
+                      {t("recipe.safety")}: {s.safety}
+                    </Text>
+                  </View>
+                ) : null}
+              </Card>
+            );
+          })
+        ) : (
+          <>
+            {why ? (
+              <Card style={{ gap: space.md }}>
+                <Text variant="subheading">{t("recipe.why")}</Text>
+                {why.bars.map((b) => (
+                  <View key={b.key} style={styles.barRow} accessible accessibilityLabel={`${t(`recipe.flavor.${b.key}` as StringKey)} ${Math.round(b.value * 10)}/10`}>
+                    <Text variant="label" style={styles.barLabel}>
+                      {t(`recipe.flavor.${b.key}` as StringKey)}
+                    </Text>
+                    <View style={[styles.track, { flex: 1, backgroundColor: colors.surfaceMuted }]}>
+                      <View style={[styles.fill, { backgroundColor: colors.primary, width: `${b.value * 100}%` }]} />
+                    </View>
+                  </View>
+                ))}
+                <Text>{why.sentence}</Text>
+              </Card>
             ) : null}
-            {branch ? (
-              <View style={[styles.note, { backgroundColor: colors.primaryPale }]}>
-                <Text variant="label">
-                  {branch.members.join(", ")}: {branch.action}
-                </Text>
-              </View>
+            {branches.length || notes.length ? (
+              <Card style={{ gap: space.md }}>
+                <Text variant="subheading">{t("recipe.family")}</Text>
+                {branches.map((b) => (
+                  <View key={`${b.step}-${b.ageGroup}`} style={{ gap: 2 }}>
+                    <Text variant="bodyStrong">
+                      {b.members.join(", ")} · {t("recipe.familyStep", { n: b.step })}
+                    </Text>
+                    <Text>{b.action}</Text>
+                  </View>
+                ))}
+                {notes.map((m) => (
+                  <Text key={m.id} muted>
+                    {t("recipe.note", { name: m.displayName, note: m.notes! })}
+                  </Text>
+                ))}
+              </Card>
             ) : null}
-            {s.safety ? (
-              <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
-                <Text variant="label" color={colors.alert} weight={500}>
-                  {t("recipe.safety")}: {s.safety}
-                </Text>
-              </View>
-            ) : null}
-          </Card>
-        );
-      })}
-    </>
+            {!why && !branches.length && !notes.length ? <Text muted>{t("recipe.whyNone")}</Text> : null}
+          </>
+        )}
+      </SlideIn>
+    </Screen>
+  );
+}
+
+const SENSE_ICON = { look: "eye", sound: "ear", smell: "nose", touch: "hand", taste: "spoon" } as const;
+
+function Stat({ icon, value, label, highlight }: { icon: "timer" | "skillet" | "chilli"; value: string; label: string; highlight?: boolean }) {
+  const { colors } = useTheme();
+  return (
+    <View style={[styles.stat, highlight ? { backgroundColor: colors.surfaceHigh } : null]} accessible accessibilityLabel={`${label}: ${value}`}>
+      <View style={styles.statTop}>
+        <Icon name={icon} size={18} color={colors.ink} />
+        <Text variant="bodyStrong">{value}</Text>
+      </View>
+      <Text variant="caption" muted>
+        {label}
+      </Text>
+    </View>
   );
 }
 
@@ -381,11 +501,18 @@ function IngredientRow({
             : match?.substitute
               ? `${t("recipe.missing")} · ${t("recipe.orUse", { item: nameOf(match.substitute) })}`
               : t("recipe.missing");
-  const icon = status === "have" || status === "assumed" ? "check" : status === "substitute" ? "forward" : null;
+  const icon = status === "have" || status === "assumed" ? "check" : status === "substitute" ? "undo" : status === "missing" ? "plus" : null;
+  const ok = status === "have" || status === "assumed";
+  // Only the ingredient's own photo: a category stand-in on every row would read as clutter.
+  const photo = ingredientImage(ing.ingredient);
   return (
-    <View style={styles.ingRow} accessible accessibilityLabel={[nameOf(ing.ingredient), amount, changeNote, detail].filter(Boolean).join(", ")}>
-      <View style={[styles.ingIcon, { backgroundColor: status === "missing" ? colors.peach : colors.surfaceMuted }]}>
-        {icon ? <Icon name={icon} size={16} color={status === "have" ? colors.primaryText : colors.inkSecondary} /> : null}
+    <View
+      style={[styles.ingRow, shadow.card, { backgroundColor: colors.surface }]}
+      accessible
+      accessibilityLabel={[nameOf(ing.ingredient), amount, changeNote, detail].filter(Boolean).join(", ")}
+    >
+      <View style={[styles.ingIcon, { backgroundColor: ok ? colors.primary : status === "substitute" ? colors.accent : status === "missing" ? colors.peach : colors.surfaceMuted }]}>
+        {icon ? <Icon name={icon} size={16} color={ok ? colors.onPrimary : status === "substitute" ? colors.onAccent : colors.accentText} /> : null}
       </View>
       <View style={{ flex: 1, gap: 2 }}>
         <Text variant="bodyStrong">{nameOf(ing.ingredient)}</Text>
@@ -393,6 +520,7 @@ function IngredientRow({
           {detail}
         </Text>
       </View>
+      {photo ? <Photo source={photo} size={40} round /> : null}
       <View style={styles.amount}>
         <Text variant="label" muted style={{ textAlign: "right" }}>
           {amount}
@@ -419,19 +547,29 @@ function IngredientRow({
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: "row", justifyContent: "space-between" },
-  titleRow: { flexDirection: "row", alignItems: "center", gap: space.md },
-  photo: { width: 112, height: 112, borderRadius: 56 },
-  badge: { alignSelf: "flex-start", borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: space.xs },
+  hero: { height: 300, borderRadius: radius.cardLg, overflow: "hidden" },
+  heroImage: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
+  heroTop: { position: "absolute", top: space.md, left: space.md },
+  heroBottom: { position: "absolute", bottom: space.md, left: space.md },
+  tag: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6, backgroundColor: "rgba(28,28,24,0.62)" },
+  stats: { flexDirection: "row", borderRadius: radius.card, padding: space.xs },
+  stat: { flex: 1, alignItems: "center", gap: 2, paddingVertical: space.sm, borderRadius: radius.item },
+  statTop: { flexDirection: "row", alignItems: "center", gap: 6 },
+  cardHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
+  well: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
   track: { height: 8, borderRadius: radius.pill, overflow: "hidden" },
   fill: { height: 8, borderRadius: radius.pill },
+  tabs: { flexDirection: "row", borderRadius: radius.pill, padding: 4, gap: 4 },
+  tab: { flex: 1, alignItems: "center", justifyContent: "center", minHeight: 44, borderRadius: radius.pill, paddingHorizontal: space.sm },
   servings: { flexDirection: "row", alignItems: "center", gap: space.md },
-  ingRow: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 56 },
-  amount: { alignItems: "flex-end", gap: space.xs, maxWidth: 132 },
-  ingIcon: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
+  ingRow: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 64, borderRadius: radius.item, paddingHorizontal: space.md, paddingVertical: space.sm },
+  amount: { alignItems: "flex-end", gap: space.xs, maxWidth: 120 },
+  ingIcon: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   barRow: { flexDirection: "row", alignItems: "center", gap: space.md },
   barLabel: { width: 80 },
   stepHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   stepNo: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
+  cueLine: { flexDirection: "row", alignItems: "flex-start", gap: space.sm },
   note: { borderRadius: radius.tag, padding: space.md },
+  footer: { flexDirection: "row", alignItems: "center", gap: space.md, marginHorizontal: space.gutter, marginBottom: space.md, borderRadius: radius.pill, padding: space.sm },
 });

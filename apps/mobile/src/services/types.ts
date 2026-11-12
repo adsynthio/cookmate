@@ -47,6 +47,8 @@ export type DraftItem = {
   state: ItemState | null;
   flavorRoles: FlavorRole[];
   confidence: number;
+  /** "dahi khatam ho gaya": it ran out. Confirming marks it finished and puts it on the list instead of adding it. */
+  out?: boolean;
 };
 
 export type ItemChanges = {

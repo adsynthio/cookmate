@@ -100,7 +100,7 @@
   "kitchen.remove": "Hatao",
   "kitchen.parseEmpty": "Koi item nahi mila. Aise likho: \"2 kilo aloo\".",
   "kitchen.addError": "Add nahi ho paya. Aapki list yahin hai; dobara try karo.",
-  "kitchen.stillHave": "Abhi bhi hai?",
+  "kitchen.stillHave": "Abhi thoda bacha hai",
   "kitchen.yes": "Haan",
   "kitchen.expiry.today": "Aaj use karo",
   "kitchen.expiry.expired": "Date nikal gayi",
@@ -1033,5 +1033,8 @@
   "invent.named.toBuy": "Khareedna hai: {items}",
   "invent.named.note": "Cookmate ne aapki rasoi ke liye likhi hai, yeh jaanchi-parkhi recipe nahi hai. Yeh hamari food safety jaanch mein pass hai; chakhte hue banaiye.",
   "invent.named.fail.title": "Abhi {dish} nahi likh paaye",
-  "invent.named.fail.body": "Ismein bahut zyada khareedari lagti, ya yeh food safety jaanch mein pass nahi hui. Koi aur dish aazmayein, ya thodi der mein phir koshish karein."
+  "invent.named.fail.body": "Ismein bahut zyada khareedari lagti, ya yeh food safety jaanch mein pass nahi hui. Koi aur dish aazmayein, ya thodi der mein phir koshish karein.",
+  "kitchen.ranOut": "Khatam",
+  "kitchen.ranOutBody": "Cookmate ise khatam maankar aapki list mein jod dega.",
+  "kitchen.confirmOut": "Khatam karein aur list mein jodein"
 }

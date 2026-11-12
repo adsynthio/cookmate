@@ -7,7 +7,7 @@ import { z } from "npm:zod@4.6.5";
 
 export const TASK = "parse_inventory_text";
 export const MODEL = "claude-haiku-5-5";
-export const PROMPT_VERSION = "parse_inventory_text@1";
+export const PROMPT_VERSION = "parse_inventory_text@2";
 
 export const ModelItems = z.object({
   items: z.array(
@@ -19,6 +19,7 @@ export const ModelItems = z.object({
       location_kind: z.enum(["fridge", "freezer", "pantry", "staples", "ready_made", "counter"]).nullable(),
       state: z.enum(["raw", "opened", "cooked", "homemade", "leftover"]).nullable(),
       confidence: z.number(),
+      out: z.boolean(),
     }),
   ),
 });
@@ -28,12 +29,15 @@ The text may be Hindi (Devanagari), Hinglish or English, often mixed, and may co
 
 Rules:
 - One item per thing mentioned. Never add anything that was not mentioned.
-- said: the item in the user's own words, without quantity words.
+- said: the item in the user's own words, without quantity words or words about when ("kal ki bachi dal" -> "dal").
 - ingredient_key: the canonical name from the catalog below when the item is clearly one of those; otherwise null.
-- quantity and unit: only when stated. Convert number words (ek, do, dedh, dhai, sawa, paune, aadha; एक, दो, डेढ़).
+- quantity and unit: only when stated. Convert number words (ek, do, dedh, dhai, sawa, paune, aadha; एक, दो, डेढ़);
+  "sau" multiplies ("dhai sau gram" = 250 g). Vague amounts (thoda, kuch, some) are null.
   Units: kg, g, l, ml, piece, packet, bunch, katori, cup, bottle, box. "dozen" = 12 piece. "paav kilo" = 0.25 kg.
 - location_kind: only if the user said where it is, or for homemade things (ready_made).
-- state: "homemade" for things made at home (ghar ki chutney), "leftover" for leftovers (bachi hui dal), else null.
+- state: "homemade" for things made at home (ghar ki chutney), "leftover" for cooked food left from an earlier meal
+  (bachi hui dal, kal ki sabzi, leftover rice), else null. A leftover dish keeps its own name in "said".
+- out: true when they say it ran out or is finished (khatam ho gaya, nahi hai, out of, ख़त्म), else false.
 - confidence: 0.9+ when certain, lower when unsure what the item is or how much.
 
 Catalog (canonical | hinglish | hindi | aliases):

@@ -52,6 +52,7 @@ type ParseInventoryItem = {
   location_kind: ParsedItem["locationKind"];
   state: ParsedItem["state"];
   confidence: number;
+  out?: boolean;
 };
 
 export class NotImplemented extends Error {
@@ -394,6 +395,7 @@ export const liveServices: Services = {
             locationKind: i.location_kind,
             state: i.state,
             confidence: i.confidence,
+            ...(i.out ? { out: true } : {}),
           }),
         ),
       };

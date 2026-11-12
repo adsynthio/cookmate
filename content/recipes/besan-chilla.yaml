@@ -3,6 +3,9 @@ title: Besan Chilla
 titles: {hi: बेसन चीला, hi-Latn: Besan Chilla}
 description: >-
   Thin savoury pancakes of gram flour with onion, tomato and coriander, cooked on the tawa. Ready in twenty minutes.
+descriptions:
+  hi: "बेसन के पतले नमकीन चीले, प्याज़, टमाटर और धनिए के साथ, तवे पर बने। बीस मिनट में तैयार।"
+  hi-Latn: "Besan ke patle namkeen cheele, pyaaz, tamatar aur dhaniye ke saath, tawe par bane. Bees minute mein taiyaar."
 cuisine_region: generic_north
 course: breakfast
 diet: vegan
@@ -33,14 +36,32 @@ steps:
     minutes: 10
     timer: true
     cue: Smooth and pourable, like thin dosa batter. No lumps.
-    branch: {age_group: child, action: Make the child's chillas first, before the green chilli goes into the batter}
+    branch: {age_group: child, action: "Make the child's chillas first, before the green chilli goes into the batter"}
     cues:
       look: "Smooth and pourable, like thin dosa batter, with no lumps."
       touch: "It runs off the whisk in a steady ribbon."
+    say:
+      hi:
+        text: "बेसन में हल्दी, मिर्च पाउडर, अजवाइन, नमक और लगभग 250 ml पानी डालकर फेंटें, चिकना घोल बनाएँ। 10 मिनट रखा रहने दें।"
+        look: "घोल चिकना और बहने वाला हो, पतले डोसे के घोल जैसा, कोई गाँठ न हो।"
+        touch: "घोल व्हिस्क से एक लगातार धार में गिरे।"
+        branch: "हरी मिर्च डालने से पहले बच्चे के चीले पहले बना लें"
+      hi-Latn:
+        text: "Besan mein haldi, mirch powder, ajwain, namak aur lagbhag 250 ml paani daalkar phentein, chikna ghol banaayein. 10 minute rakha rehne dein."
+        look: "Ghol chikna aur behne wala ho, patle dosa ghol jaisa, koi gaanth na ho."
+        touch: "Ghol whisk se ek lagaataar dhaar mein gire."
+        branch: "Hari mirch daalne se pehle bachche ke cheele pehle bana lein"
   - text: Stir in the finely chopped onion, tomato, green chilli and coriander.
     minutes: 2
     cues:
       look: "The vegetables are spread evenly through the batter."
+    say:
+      hi:
+        text: "बारीक कटा प्याज़, टमाटर, हरी मिर्च और धनिया मिला दें।"
+        look: "सब्ज़ियाँ पूरे घोल में बराबर फैली हों।"
+      hi-Latn:
+        text: "Bareek kata pyaaz, tamatar, hari mirch aur dhaniya mila dein."
+        look: "Sabziyaan poore ghol mein barabar faili hon."
   - text: Heat the tawa on medium and grease it lightly. Pour a ladle of batter in the centre and spread it into a thin circle. Drizzle a little oil around the edge.
     technique: tawa_cook
     minutes: 2
@@ -50,6 +71,17 @@ steps:
       look: "Small bubbles appear and the edges lift on their own."
       sound: "A gentle sizzle when the batter touches the tawa."
       avoid: "If the tawa smokes, take it off the flame for a few seconds first, or the chilla sticks and burns."
+    say:
+      hi:
+        text: "तवा मध्यम आँच पर गरम करें और हल्का तेल लगाएँ। बीच में एक कलछी घोल डालें और पतला गोल फैलाएँ। किनारों पर थोड़ा तेल डालें।"
+        look: "छोटे-छोटे बुलबुले आएँ और किनारे अपने आप उठने लगें।"
+        sound: "घोल तवे पर पड़ते ही हल्की छन-छन आवाज़ आए।"
+        avoid: "अगर तवे से धुआँ निकले तो कुछ सेकंड आँच से हटा लें, वरना चीला चिपक कर जल जाएगा।"
+      hi-Latn:
+        text: "Tawa madhyam aanch par garam karein aur halka tel lagaayein. Beech mein ek kalchhi ghol daalein aur patla gol phailaayein. Kinaaron par thoda tel daalein."
+        look: "Chhote-chhote bulbule aayein aur kinaare apne aap uthne lagein."
+        sound: "Ghol tawe par padte hi halki chhan-chhan awaaz aaye."
+        avoid: "Agar tawe se dhuaan nikle to kuch second aanch se hata lein, warna cheela chipak kar jal jaayega."
   - text: Flip and cook the other side, pressing gently. Repeat with the rest of the batter.
     technique: tawa_cook
     minutes: 15
@@ -59,6 +91,17 @@ steps:
       look: "Golden-brown spots on both sides and no wet batter in the middle."
       smell: "Roasted besan, not raw flour."
       touch: "The middle springs back when pressed with the spatula."
+    say:
+      hi:
+        text: "पलटें और हल्का दबाते हुए दूसरी तरफ़ सेकें। बाकी घोल से ऐसे ही बनाएँ।"
+        look: "दोनों तरफ़ सुनहरे-भूरे निशान हों और बीच में गीला घोल न हो।"
+        smell: "भुने बेसन की ख़ुशबू आए, कच्चे आटे की नहीं।"
+        touch: "पलटे से दबाने पर बीच का हिस्सा वापस उभर आए।"
+      hi-Latn:
+        text: "Paltein aur halka dabaate hue doosri taraf sekein. Baaki ghol se aise hi banaayein."
+        look: "Dono taraf sunehre-bhoore nishaan hon aur beech mein geela ghol na ho."
+        smell: "Bhune besan ki khushboo aaye, kachche aate ki nahi."
+        touch: "Palte se dabaane par beech ka hissa waapas ubhar aaye."
 variation_rules:
   - {type: diet, condition: {diet: jain}, action: {omit: [onion]}, note: Use finely chopped capsicum instead of onion.}
   - {type: add, condition: {have: [paneer]}, action: {add: [{ingredient: paneer, qty: 100, unit: g}], at_step: 4}, note: Crumble paneer over the chilla before folding for a stuffed chilla.}

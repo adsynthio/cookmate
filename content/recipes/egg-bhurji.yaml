@@ -3,6 +3,9 @@ title: Egg Bhurji
 titles: {hi: अंडा भुर्जी, hi-Latn: Anda Bhurji}
 description: >-
   Spiced Indian scrambled eggs with onion, tomato, green chilli and coriander. Ten minutes, good with pav or roti.
+descriptions:
+  hi: "प्याज़, टमाटर, हरी मिर्च और धनिए वाली मसालेदार अंडा भुर्जी। दस मिनट में, पाव या रोटी के साथ।"
+  hi-Latn: "Pyaaz, tamatar, hari mirch aur dhaniye wali masaledaar anda bhurji. Das minute mein, pav ya roti ke saath."
 cuisine_region: generic_north
 course: breakfast
 diet: eggetarian
@@ -33,6 +36,13 @@ steps:
     minutes: 1
     cues:
       look: "The yolks and whites are fully mixed, a little frothy."
+    say:
+      hi:
+        text: "अंडों में चुटकी भर नमक डालकर फेंटें।"
+        look: "ज़र्दी और सफ़ेदी पूरी मिल जाए, थोड़ा झाग आ जाए।"
+      hi-Latn:
+        text: "Andon mein chutki bhar namak daalkar phentein."
+        look: "Zardi aur safedi poori mil jaaye, thoda jhaag aa jaaye."
   - text: Heat the oil in a kadai and cook the onion until soft. Add the green chilli and ginger, then the tomato, and cook until the tomato is soft.
     technique: saute_onion
     minutes: 5
@@ -41,12 +51,30 @@ steps:
     cues:
       look: "The onion is soft and see-through, the tomato breaks down when pressed."
       smell: "Sweet onion, no raw smell."
+    say:
+      hi:
+        text: "कड़ाही में तेल गरम करें और प्याज़ नरम होने तक पकाएँ। हरी मिर्च और अदरक डालें, फिर टमाटर, और टमाटर नरम होने तक पकाएँ।"
+        look: "प्याज़ नरम और पारदर्शी हो, टमाटर दबाने पर गल जाए।"
+        smell: "प्याज़ की मीठी ख़ुशबू, कच्ची महक नहीं।"
+      hi-Latn:
+        text: "Kadaahi mein tel garam karein aur pyaaz naram hone tak pakaayein. Hari mirch aur adrak daalein, phir tamatar, aur tamatar naram hone tak pakaayein."
+        look: "Pyaaz naram aur paardarshi ho, tamatar dabaane par gal jaaye."
+        smell: "Pyaaz ki meethi khushboo, kachchi mehak nahi."
   - text: Add turmeric, chilli powder, pav bhaji masala and the rest of the salt and stir for 30 seconds.
     minutes: 1
     heat: medium
     cues:
       smell: "The spices smell toasted, not raw."
       avoid: "Just 30 seconds: spices burn quickly in a dry pan."
+    say:
+      hi:
+        text: "हल्दी, मिर्च पाउडर, पाव भाजी मसाला और बचा नमक डालकर 30 सेकंड चलाएँ।"
+        smell: "मसाले भुने हुए महकें, कच्चे नहीं।"
+        avoid: "बस 30 सेकंड: सूखी कड़ाही में मसाले जल्दी जलते हैं।"
+      hi-Latn:
+        text: "Haldi, mirch powder, pav bhaji masala aur bacha namak daalkar 30 second chalaayein."
+        smell: "Masaale bhune hue mehkein, kachche nahi."
+        avoid: "Bas 30 second: sookhi kadaahi mein masaale jaldi jalte hain."
   - text: Lower the heat and pour in the eggs. Leave them for 20 seconds, then scramble, scraping the bottom, until fully set.
     minutes: 4
     cue: Soft, moist curds with no runny egg left.
@@ -56,9 +84,29 @@ steps:
       look: "Soft, moist curds with no runny egg left."
       touch: "Nothing wet runs out when you press the egg."
       avoid: "Don't stop at shiny wet egg: cook until fully set."
+    say:
+      hi:
+        text: "आँच धीमी करें और अंडे डालें। 20 सेकंड छोड़ दें, फिर तले से खुरचते हुए तब तक चलाएँ जब तक अंडा पूरा पक न जाए।"
+        look: "नरम, रसीले दाने, कहीं भी बहता अंडा नहीं।"
+        touch: "अंडा दबाने पर कुछ गीला न निकले।"
+        avoid: "चमकते गीले अंडे पर मत रुकें: पूरा पकने तक पकाएँ।"
+        safety: "अंडा पूरा पकने तक पकाएँ, कोई गीला या बहता हिस्सा न रहे, ख़ासकर बच्चों, बुज़ुर्गों और गर्भवती महिलाओं के लिए।"
+      hi-Latn:
+        text: "Aanch dheemi karein aur ande daalein. 20 second chhod dein, phir tale se khurachte hue tab tak chalaayein jab tak anda poora pak na jaaye."
+        look: "Naram, raseele daane, kahin bhi behta anda nahi."
+        touch: "Anda dabaane par kuch geela na nikle."
+        avoid: "Chamakte geele ande par mat rukein: poora pakne tak pakaayein."
+        safety: "Anda poora pakne tak pakaayein, koi geela ya behta hissa na rahe, khaaskar bachchon, buzurgon aur garbhvati mahilaon ke liye."
   - text: Add the coriander leaves and serve hot.
     minutes: 1
     cues:
       look: "Steaming hot when served."
+    say:
+      hi:
+        text: "हरा धनिया डालें और गरम-गरम परोसें।"
+        look: "परोसते समय भाप निकल रही हो।"
+      hi-Latn:
+        text: "Hara dhaniya daalein aur garam-garam parosein."
+        look: "Parosate samay bhaap nikal rahi ho."
 variation_rules:
   - {type: spice, condition: {member_age_group: child}, action: {omit: [green chilli, red chilli powder]}, note: Leave out the chillies for a mild bhurji.}

@@ -3,6 +3,9 @@ title: Rajma
 titles: {hi: राजमा, hi-Latn: Rajma}
 description: >-
   Kidney beans soaked overnight, pressure-cooked until creamy and simmered in a thick onion-tomato masala. Best with steamed rice.
+descriptions:
+  hi: "रात भर भीगा राजमा, कुकर में मलाईदार पका, गाढ़े प्याज़-टमाटर मसाले में। चावल के साथ सबसे अच्छा।"
+  hi-Latn: "Raat bhar bheega rajma, cooker mein malaidaar paka, gaadhe pyaaz-tamatar masaale mein. Chaawal ke saath sabse achha."
 cuisine_region: punjabi
 course: main
 diet: vegan
@@ -39,6 +42,13 @@ steps:
     cue: The beans double in size and the skins are smooth.
     cues:
       look: "The beans double in size and the skins are smooth."
+    say:
+      hi:
+        text: "राजमा धोकर ढेर सारे पानी में रात भर, कम से कम 8 घंटे भिगोएँ।"
+        look: "दाने दोगुने हो जाएँ और छिलका चिकना हो।"
+      hi-Latn:
+        text: "Rajma dhokar dher saare paani mein raat bhar, kam se kam 8 ghante bhigoyein."
+        look: "Daane doguna ho jaayein aur chhilka chikna ho."
   - text: Drain and throw away the soaking water. Pressure-cook the rajma with 750 ml fresh water and the salt.
     technique: pressure_cook
     whistles: 8
@@ -49,6 +59,17 @@ steps:
     cues:
       sound: "Count the whistles, then let the pressure drop by itself."
       touch: "A bean mashes easily between two fingers and is creamy inside."
+    say:
+      hi:
+        text: "भिगोने का पानी फेंक दें। राजमा को 750 ml ताज़े पानी और नमक के साथ कुकर में पकाएँ।"
+        sound: "सीटियाँ गिनें, फिर प्रेशर अपने आप उतरने दें।"
+        touch: "एक दाना दो उँगलियों में आसानी से मसल जाए और अंदर से मलाईदार हो।"
+        safety: "कच्चा या अधपका राजमा ज़हरीला होता है। हमेशा भिगोएँ, भिगोने का पानी फेंकें, और हर दाना पूरी तरह नरम होने तक पकाएँ। कोई दाना सख़्त लगे तो और सीटियाँ लगाएँ। राजमा को कभी कच्चा स्लो कुकर में न पकाएँ।"
+      hi-Latn:
+        text: "Bhigone ka paani phenk dein. Rajma ko 750 ml taaze paani aur namak ke saath cooker mein pakaayein."
+        sound: "Seetiyaan ginein, phir pressure apne aap utarne dein."
+        touch: "Ek daana do ungliyon mein aasaani se masal jaaye aur andar se malaidaar ho."
+        safety: "Kachcha ya adhpaka rajma zehreela hota hai. Hamesha bhigoyein, bhigone ka paani phenkein, aur har daana poori tarah naram hone tak pakaayein. Koi daana sakht lage to aur seetiyaan lagaayein. Rajma ko kabhi kachcha slow cooker mein na pakaayein."
   - text: Heat the oil in a kadai. Add cumin and the bay leaf, then the finely chopped onion and cook until deep golden.
     technique: saute_onion
     minutes: 10
@@ -58,6 +79,17 @@ steps:
       look: "The onion is evenly golden brown."
       smell: "Sweet, browned onion."
       avoid: "Don't rush on high heat: the edges burn before the middle cooks."
+    say:
+      hi:
+        text: "कड़ाही में तेल गरम करें। जीरा और तेज पत्ता डालें, फिर बारीक कटा प्याज़ गहरा सुनहरा होने तक पकाएँ।"
+        look: "प्याज़ एक जैसा सुनहरा-भूरा हो।"
+        smell: "भुने प्याज़ की मीठी ख़ुशबू।"
+        avoid: "तेज़ आँच पर जल्दी न करें: बीच पकने से पहले किनारे जल जाते हैं।"
+      hi-Latn:
+        text: "Kadaahi mein tel garam karein. Jeera aur tej patta daalein, phir bareek kata pyaaz gehra sunehra hone tak pakaayein."
+        look: "Pyaaz ek jaisa sunehra-bhoora ho."
+        smell: "Bhune pyaaz ki meethi khushboo."
+        avoid: "Tez aanch par jaldi na karein: beech pakne se pehle kinaare jal jaate hain."
   - text: Add grated ginger, garlic and green chilli for a minute, then the tomato puree, turmeric, Kashmiri chilli and coriander powder. Cook, stirring.
     technique: bhuna
     minutes: 10
@@ -66,6 +98,15 @@ steps:
     cues:
       look: "The masala is thick and dark and the oil leaves the sides."
       smell: "The raw tomato smell is gone."
+    say:
+      hi:
+        text: "कसा अदरक, लहसुन और हरी मिर्च एक मिनट भूनें, फिर टमाटर की प्यूरी, हल्दी, कश्मीरी मिर्च और धनिया पाउडर डालें। चलाते हुए पकाएँ।"
+        look: "मसाला गाढ़ा और गहरा हो और किनारे से तेल छोड़ दे।"
+        smell: "कच्चे टमाटर की महक चली जाए।"
+      hi-Latn:
+        text: "Kasa adrak, lahsun aur hari mirch ek minute bhoonein, phir tamatar ki puree, haldi, Kashmiri mirch aur dhaniya powder daalein. Chalaate hue pakaayein."
+        look: "Masala gaadha aur gehra ho aur kinaare se tel chhod de."
+        smell: "Kachche tamatar ki mehak chali jaaye."
   - text: Add the rajma with its cooking water. Mash a few beans against the side of the pan for body and simmer on low heat.
     technique: simmer
     minutes: 15
@@ -75,10 +116,26 @@ steps:
     cues:
       look: "The gravy thickens and coats the beans."
       avoid: "Stir from the bottom every few minutes; rajma gravy sticks."
+    say:
+      hi:
+        text: "राजमा उसके पानी के साथ डालें। गाढ़ेपन के लिए कुछ दाने कड़ाही की दीवार पर मसल दें और धीमी आँच पर पकाएँ।"
+        look: "ग्रेवी गाढ़ी हो और दानों पर लिपट जाए।"
+        avoid: "हर कुछ मिनट में तले से चलाएँ; राजमा की ग्रेवी चिपकती है।"
+      hi-Latn:
+        text: "Rajma uske paani ke saath daalein. Gaadhepan ke liye kuch daane kadaahi ki deewaar par masal dein aur dheemi aanch par pakaayein."
+        look: "Gravy gaadhi ho aur daanon par lipat jaaye."
+        avoid: "Har kuch minute mein tale se chalaayein; rajma ki gravy chipakti hai."
   - text: Add garam masala and coriander leaves and serve with rice.
     minutes: 1
     cues:
       smell: "Fresh garam masala and coriander."
+    say:
+      hi:
+        text: "गरम मसाला और हरा धनिया डालें और चावल के साथ परोसें।"
+        smell: "ताज़े गरम मसाले और धनिए की ख़ुशबू।"
+      hi-Latn:
+        text: "Garam masala aur hara dhaniya daalein aur chaawal ke saath parosein."
+        smell: "Taaze garam masaale aur dhaniye ki khushboo."
 variation_rules:
   - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: boil, minutes: 90, at_step: 2}, note: "Boil hard for the first 10 minutes, then simmer covered until every bean is completely soft."}
   - {type: time, condition: {max_time_min: 45}, action: {requires: soaked_or_cooked_rajma}, note: Only quick if the rajma is already soaked or boiled.}

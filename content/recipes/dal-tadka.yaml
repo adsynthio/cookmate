@@ -3,6 +3,9 @@ title: Dal Tadka
 titles: {hi: दाल तड़का, hi-Latn: Dal Tadka}
 description: >-
   Everyday arhar dal, pressure-cooked soft and finished with a ghee tadka of cumin, garlic, onion and tomato.
+descriptions:
+  hi: "रोज़ की अरहर दाल, कुकर में नरम पकी, ऊपर से जीरा, लहसुन, प्याज़ और टमाटर का घी वाला तड़का।"
+  hi-Latn: "Roz ki arhar daal, cooker mein naram paki, upar se jeera, lahsun, pyaaz aur tamatar ka ghee wala tadka."
 cuisine_region: generic_north
 course: main
 diet: veg
@@ -39,6 +42,13 @@ steps:
     cue: Soaking is optional but makes the dal cook softer and faster.
     cues:
       look: "The rinse water runs almost clear."
+    say:
+      hi:
+        text: "दाल को 2-3 बार धोएँ जब तक पानी लगभग साफ़ न हो जाए, फिर ताज़े पानी में भिगो दें।"
+        look: "धोने का पानी लगभग साफ़ आए।"
+      hi-Latn:
+        text: "Daal ko 2-3 baar dhoyein jab tak paani lagbhag saaf na ho jaaye, phir taaze paani mein bhigo dein."
+        look: "Dhone ka paani lagbhag saaf aaye."
   - text: Drain and pressure-cook the dal with 600 ml water and the turmeric on medium heat.
     technique: pressure_cook
     whistles: 4
@@ -48,6 +58,15 @@ steps:
     cues:
       sound: "Count the whistles; then let the pressure drop by itself."
       touch: "The dal mashes completely when pressed with a spoon."
+    say:
+      hi:
+        text: "पानी निकालें और दाल को 600 ml पानी और हल्दी के साथ मध्यम आँच पर कुकर में पकाएँ।"
+        sound: "सीटियाँ गिनें; फिर प्रेशर अपने आप उतरने दें।"
+        touch: "चम्मच से दबाने पर दाल पूरी तरह मसल जाए।"
+      hi-Latn:
+        text: "Paani nikaalein aur daal ko 600 ml paani aur haldi ke saath madhyam aanch par cooker mein pakaayein."
+        sound: "Seetiyaan ginein; phir pressure apne aap utarne dein."
+        touch: "Chammach se dabaane par daal poori tarah masal jaaye."
   - text: Whisk the dal smooth, add the salt and hot water until it pours like thick soup, and simmer.
     technique: simmer
     minutes: 5
@@ -55,6 +74,15 @@ steps:
     cues:
       look: "It pours like thick soup and bubbles gently."
       avoid: "Stir now and then; dal sticks to the bottom as it thickens."
+    say:
+      hi:
+        text: "दाल को फेंटकर चिकना करें, नमक और गरम पानी डालें जब तक गाढ़े सूप जैसी न हो जाए, और धीमी आँच पर उबालें।"
+        look: "गाढ़े सूप की तरह बहे और धीरे-धीरे उबले।"
+        avoid: "बीच-बीच में चलाएँ; गाढ़ी होते-होते दाल तले में लगती है।"
+      hi-Latn:
+        text: "Daal ko phent kar chikna karein, namak aur garam paani daalein jab tak gaadhe soup jaisi na ho jaaye, aur dheemi aanch par ubaalein."
+        look: "Gaadhe soup ki tarah bahe aur dheere-dheere ubale."
+        avoid: "Beech-beech mein chalaayein; gaadhi hote-hote daal tale mein lagti hai."
   - text: For the tadka heat the ghee in a kadai. Add cumin, hing and garlic; when the garlic is golden add onion, ginger and green chilli and cook until the onion is light golden. Add the tomato and chilli powder and cook until soft.
     technique: tadka
     minutes: 7
@@ -66,12 +94,34 @@ steps:
       sound: "Cumin crackles as soon as it hits the ghee."
       smell: "Nutty garlic and toasted cumin."
       avoid: "Don't let the garlic go brown: it turns bitter."
+    say:
+      hi:
+        text: "तड़के के लिए कड़ाही में घी गरम करें। जीरा, हींग और लहसुन डालें; लहसुन सुनहरा हो तो प्याज़, अदरक और हरी मिर्च डालकर प्याज़ हल्का सुनहरा होने तक पकाएँ। टमाटर और मिर्च पाउडर डालकर नरम होने तक पकाएँ।"
+        look: "लहसुन सुनहरा हो, टमाटर गल जाए और किनारों पर घी चमके।"
+        sound: "घी में पड़ते ही जीरा चटकने लगे।"
+        smell: "भुने लहसुन और जीरे की ख़ुशबू।"
+        avoid: "लहसुन भूरा न होने दें, वरना कड़वा हो जाएगा।"
+        branch: "मिर्च वाला तड़का डालने से पहले बच्चे की दाल निकाल लें; उसमें बस थोड़ा घी और जीरा डालें"
+      hi-Latn:
+        text: "Tadke ke liye kadaahi mein ghee garam karein. Jeera, hing aur lahsun daalein; lahsun sunehra ho to pyaaz, adrak aur hari mirch daalkar pyaaz halka sunehra hone tak pakaayein. Tamatar aur mirch powder daalkar naram hone tak pakaayein."
+        look: "Lahsun sunehra ho, tamatar gal jaaye aur kinaaron par ghee chamke."
+        sound: "Ghee mein padte hi jeera chatakne lage."
+        smell: "Bhune lahsun aur jeere ki khushboo."
+        avoid: "Lahsun bhoora na hone dein, warna kadva ho jaayega."
+        branch: "Mirch wala tadka daalne se pehle bachche ki daal nikaal lein; usmein bas thoda ghee aur jeera daalein"
   - text: Pour the tadka into the dal, simmer 2 minutes, then add coriander leaves and lemon juice.
     technique: simmer
     minutes: 2
     heat: low
     cues:
       taste: "Taste for salt and sourness after the lemon."
+    say:
+      hi:
+        text: "तड़का दाल में डालें, 2 मिनट उबालें, फिर हरा धनिया और नींबू का रस डालें।"
+        taste: "नींबू डालने के बाद नमक और खटास चखकर देखें।"
+      hi-Latn:
+        text: "Tadka daal mein daalein, 2 minute ubaalein, phir hara dhaniya aur nimbu ka ras daalein."
+        taste: "Nimbu daalne ke baad namak aur khataas chakh kar dekhein."
 variation_rules:
   - {type: diet, condition: {diet: jain}, action: {omit: [onion, garlic, ginger], add: [{ingredient: asafoetida, qty: 0.2, unit: g}]}, note: A pinch more hing and a little tomato keep the flavour.}
   - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: simmer, minutes: 45, at_step: 2}, note: "Simmer in a covered pot with extra water, stirring, until soft."}

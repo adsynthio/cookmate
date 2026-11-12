@@ -3,6 +3,9 @@ title: Moong Dal Khichdi
 titles: {hi: मूंग दाल खिचड़ी, hi-Latn: Moong Dal Khichdi}
 description: >-
   Soft rice and yellow moong dal cooked together with ghee, cumin and ginger. Light, one-pot and easy on the stomach.
+descriptions:
+  hi: "नरम चावल और पीली मूँग दाल, घी, जीरा और अदरक के साथ एक साथ पकी। हल्की, एक बर्तन वाली, पेट के लिए आसान।"
+  hi-Latn: "Naram chaawal aur peeli moong daal, ghee, jeera aur adrak ke saath ek saath paki. Halki, ek bartan wali, pet ke liye aasaan."
 cuisine_region: generic_north
 course: main
 diet: veg
@@ -32,6 +35,13 @@ steps:
     timer: true
     cues:
       look: "The rinse water runs almost clear."
+    say:
+      hi:
+        text: "चावल और दाल एक साथ 2-3 बार धोएँ और ताज़े पानी में भिगो दें।"
+        look: "धोने का पानी लगभग साफ़ आए।"
+      hi-Latn:
+        text: "Chaawal aur daal ek saath 2-3 baar dhoyein aur taaze paani mein bhigo dein."
+        look: "Dhone ka paani lagbhag saaf aaye."
   - text: Heat the ghee in the pressure cooker. Add cumin, hing and grated ginger and stir for 30 seconds.
     technique: tadka
     minutes: 1
@@ -41,6 +51,17 @@ steps:
       sound: "The cumin sizzles straight away."
       smell: "Toasty cumin and fresh ginger."
       avoid: "Thirty seconds is enough; don't let the ginger brown."
+    say:
+      hi:
+        text: "कुकर में घी गरम करें। जीरा, हींग और कसा अदरक डालकर 30 सेकंड चलाएँ।"
+        sound: "जीरा तुरंत चटकने लगे।"
+        smell: "भुने जीरे और ताज़े अदरक की ख़ुशबू।"
+        avoid: "30 सेकंड काफ़ी है; अदरक भूरा न होने दें।"
+      hi-Latn:
+        text: "Cooker mein ghee garam karein. Jeera, hing aur kasa adrak daalkar 30 second chalaayein."
+        sound: "Jeera turant chatakne lage."
+        smell: "Bhune jeere aur taaze adrak ki khushboo."
+        avoid: "30 second kaafi hai; adrak bhoora na hone dein."
   - text: Add the drained rice and dal, turmeric, salt and 900 ml water. Close the lid and cook on medium heat.
     technique: pressure_cook
     whistles: 4
@@ -50,12 +71,30 @@ steps:
     heat: medium
     cues:
       sound: "Count the whistles, then let the pressure drop by itself before opening."
+    say:
+      hi:
+        text: "पानी निकाले हुए चावल-दाल, हल्दी, नमक और 900 ml पानी डालें। ढक्कन बंद करके मध्यम आँच पर पकाएँ।"
+        sound: "सीटियाँ गिनें, फिर खोलने से पहले प्रेशर अपने आप उतरने दें।"
+        branch: "नरम खिचड़ी के लिए आधा कप पानी और डालें"
+      hi-Latn:
+        text: "Paani nikaale hue chaawal-daal, haldi, namak aur 900 ml paani daalein. Dhakkan band karke madhyam aanch par pakaayein."
+        sound: "Seetiyaan ginein, phir kholne se pehle pressure apne aap utarne dein."
+        branch: "Naram khichdi ke liye aadha cup paani aur daalein"
   - text: Stir and mash lightly. Add hot water if it is too thick, and serve with a little ghee on top.
     minutes: 2
     cue: It should flow slowly from the spoon, like a thick porridge. It thickens as it stands.
     cues:
       look: "It flows slowly from the spoon, like a thick porridge."
       touch: "The rice and dal mash easily together."
+    say:
+      hi:
+        text: "चलाएँ और हल्का मसलें। बहुत गाढ़ी हो तो गरम पानी डालें, और ऊपर थोड़ा घी डालकर परोसें।"
+        look: "चम्मच से धीरे-धीरे बहे, गाढ़े दलिये जैसी।"
+        touch: "चावल और दाल आसानी से एक साथ मसल जाएँ।"
+      hi-Latn:
+        text: "Chalaayein aur halka maslein. Bahut gaadhi ho to garam paani daalein, aur upar thoda ghee daalkar parosein."
+        look: "Chammach se dheere-dheere bahe, gaadhe daliye jaisi."
+        touch: "Chaawal aur daal aasaani se ek saath masal jaayein."
 variation_rules:
   - {type: diet, condition: {diet: jain}, action: {omit: [ginger]}, note: Leave out the ginger; the hing and cumin are enough.}
   - {type: diet, condition: {diet: vegan}, action: {replace: {ghee: refined oil}}, note: Use oil instead of ghee.}

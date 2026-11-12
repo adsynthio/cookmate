@@ -761,7 +761,7 @@
   "home.hello.morning": "सुप्रभात",
   "home.hello.afternoon": "नमस्ते",
   "home.hello.evening": "शुभ संध्या",
-  "home.cookingFor": "{slot} में क्या बनेगा?",
+  "home.cookingFor": "क्या बनेगा? · {slot}",
   "home.kitchenCount": "आपकी रसोई में {n} चीज़ें हैं। चलिए कुछ अच्छा बनाते हैं।",
   "home.kitchenEmpty": "बताइए रसोई में क्या है, मैं डिश सुझाऊँगा।",
   "home.moodPlaceholder": "आज क्या खाने का मन है?",
@@ -795,5 +795,15 @@
   "recipe.tab.steps": "स्टेप ({n})",
   "recipe.tab.why": "क्यों अच्छा है",
   "recipe.oneMore": "एक और",
-  "recipe.whyNone": "इसके बारे में अभी और कुछ नहीं।"
+  "recipe.whyNone": "इसके बारे में अभी और कुछ नहीं।",
+  "measure.small": "छोटा",
+  "measure.big": "बड़ा",
+  "measure.clove": "कली",
+  "measure.inch": "इंच",
+  "home.want.overline": "आप बनाना चाहते हैं",
+  "home.want.title": "{dish} बनाएँ",
+  "home.want.need": "{n} चीज़ें ख़रीदनी होंगी:",
+  "home.want.none": "\"{dish}\" की रेसिपी अभी नहीं है",
+  "home.want.noneBody": "नीचे की डिश जहाँ तक हो सके आपकी बात से मेल खाती हैं। या Cookmate आपकी रसोई से कुछ नया बना दे।",
+  "recipe.stepHours": "लगभग {h} घंटे"
 }

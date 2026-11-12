@@ -5,7 +5,7 @@
 // instantly (KIT-045), and "make something new" (KIT-056).
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import { itemName } from "@/components/kitchen/names";
@@ -45,7 +45,16 @@ export default function HomeScreen() {
   const [focus, setFocus] = useState<PantryItem | null>(null);
   const [pickingSlot, setPickingSlot] = useState(false);
   // KIT-045: tapping the daily pick notification opens its precomputed batch, until the cook changes anything.
-  const { batch } = useLocalSearchParams<{ batch?: string }>();
+  const { batch, use } = useLocalSearchParams<{ batch?: string; use?: string }>();
+  const queryClient = useQueryClient();
+  // Kitchen's "Find dishes for these" and the pan button on a row open Home focused on that item.
+  useEffect(() => {
+    if (!use || !householdId) return;
+    const all = queryClient.getQueryData<PantryItem[]>(["kitchen", householdId]) ?? [];
+    const item = all.find((i) => i.id === use);
+    if (item) setFocus(item);
+    router.setParams({ use: undefined });
+  }, [use, householdId, queryClient, router]);
   const notified = batch && !chips.length && !craving && !focus && whoEating === null && mealSlot === "dinner" ? batch : null;
   const [checkDone, setCheckDone] = useState(false);
   const [fastDeclined, setFastDeclined] = useState<string | null>(null);
@@ -76,7 +85,6 @@ export default function HomeScreen() {
     queryFn: () => services.kitchen.getUseSoon(householdId!),
     enabled: !!householdId,
   });
-  const queryClient = useQueryClient();
   const accept = useMutation({ mutationFn: (p: Pick) => services.recipe.respondToPick(p.recommendationId, "accepted") });
   // KIT-044: turn a pick down with a reason; "don't like" offers to remember it, and only saves on a yes.
   const [asking, setAsking] = useState(false);

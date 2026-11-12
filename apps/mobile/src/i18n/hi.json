@@ -1038,5 +1038,8 @@
   "drinks.notInKitchen": "रसोई में नहीं है",
   "drinks.addMissing": "{n} चीज़ें लिस्ट में जोड़ें",
   "drinks.added": "लिस्ट में जुड़ गया",
-  "drinks.steps": "कैसे बनाएँ"
+  "drinks.steps": "कैसे बनाएँ",
+  "home.hero.title": "आज {slot} में क्या बनेगा?",
+  "home.hero.cta": "आज के सुझाव देखें",
+  "home.hero.kitchen": "आपकी रसोई में {n} चीज़ें"
 }

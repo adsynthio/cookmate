@@ -158,3 +158,20 @@ export function timerCue(step: Pick<RecipeStepDoc, "cue" | "cues">): string | un
   const c = step.cues;
   return c?.look ?? c?.smell ?? c?.sound ?? c?.touch ?? c?.taste ?? step.cue;
 }
+
+/**
+ * The timers screen: running timers soonest first (finished ones on top, they need you now), and the recipe's
+ * timed steps that have no timer yet, so one can be started from here.
+ */
+export function timerBoard<T extends Pick<Timer, "endsAt" | "stepNo">>(
+  timers: T[],
+  steps: Pick<RecipeStepDoc, "minutes" | "seconds">[],
+): { timers: T[]; startable: { stepNo: number; seconds: number }[] } {
+  const sorted = [...timers].sort((a, b) => a.endsAt - b.endsAt);
+  const taken = new Set(timers.map((x) => x.stepNo));
+  const startable = steps.flatMap((s, i) => {
+    const sec = stepSeconds(s);
+    return sec && !taken.has(i + 1) ? [{ stepNo: i + 1, seconds: sec }] : [];
+  });
+  return { timers: sorted, startable };
+}

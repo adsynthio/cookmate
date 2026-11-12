@@ -827,5 +827,18 @@
   "you.settings": "सेटिंग",
   "you.privacyTitle": "याद और निजता",
   "cook.resume.badge": "चूल्हे पर",
-  "cook.savedTitle": "आपकी सेव की गई डिश"
+  "cook.savedTitle": "आपकी सेव की गई डिश",
+  "timers.title": "सारे टाइमर",
+  "timers.open": "सारे टाइमर देखें",
+  "timers.running": "{n} चल रहे हैं",
+  "timers.none": "कोई टाइमर नहीं चल रहा",
+  "timers.next": "अगला: {label}, {time} में",
+  "timers.noneBody": "नीचे किसी स्टेप का या जल्दी वाला टाइमर शुरू करें।",
+  "timers.soon": "बस होने वाला है",
+  "timers.fromRecipe": "समय वाले बाकी स्टेप",
+  "timers.stepTime": "स्टेप {n} · {time}",
+  "timers.startStep": "स्टेप {n} का टाइमर शुरू करें, {time}",
+  "timers.quick": "जल्दी वाला टाइमर",
+  "timers.plain": "{n} मिनट",
+  "timers.back": "वापस खाना बनाने पर"
 }

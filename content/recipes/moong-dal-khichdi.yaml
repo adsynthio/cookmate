@@ -30,19 +30,32 @@ steps:
     technique: soak
     minutes: 15
     timer: true
+    cues:
+      look: "The rinse water runs almost clear."
   - text: Heat the ghee in the pressure cooker. Add cumin, hing and grated ginger and stir for 30 seconds.
     technique: tadka
     minutes: 1
     cue: The cumin sizzles and smells toasty.
+    heat: medium
+    cues:
+      sound: "The cumin sizzles straight away."
+      smell: "Toasty cumin and fresh ginger."
+      avoid: "Thirty seconds is enough; don't let the ginger brown."
   - text: Add the drained rice and dal, turmeric, salt and 900 ml water. Close the lid and cook on medium heat.
     technique: pressure_cook
     whistles: 4
     minutes: 15
     cue: Let the pressure drop by itself before opening.
     branch: {age_group: elder, action: Add another half cup of water for a softer khichdi}
+    heat: medium
+    cues:
+      sound: "Count the whistles, then let the pressure drop by itself before opening."
   - text: Stir and mash lightly. Add hot water if it is too thick, and serve with a little ghee on top.
     minutes: 2
     cue: It should flow slowly from the spoon, like a thick porridge. It thickens as it stands.
+    cues:
+      look: "It flows slowly from the spoon, like a thick porridge."
+      touch: "The rice and dal mash easily together."
 variation_rules:
   - {type: diet, condition: {diet: jain}, action: {omit: [ginger]}, note: Leave out the ginger; the hing and cumin are enough.}
   - {type: diet, condition: {diet: vegan}, action: {replace: {ghee: refined oil}}, note: Use oil instead of ghee.}

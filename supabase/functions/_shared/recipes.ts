@@ -24,9 +24,17 @@ export type RecipeStepDoc = {
   timer?: boolean;
   whistles?: number;
   cue?: string;
+  /** What the cook should notice, one sentence per sense; `avoid` is the warning. */
+  cues?: StepCues;
+  heat?: Heat;
   safety?: string;
   branch?: { age_group: AgeGroup; action: string };
 };
+
+export const SENSES = ["look", "sound", "smell", "touch", "taste"] as const;
+export type Sense = (typeof SENSES)[number];
+export type StepCues = Partial<Record<Sense | "avoid", string>>;
+export type Heat = "low" | "medium" | "high";
 
 export type VariationRuleDoc = {
   type: string;
@@ -277,6 +285,7 @@ export type RecipeRow = {
     timer_required: boolean;
     whistles: number | null;
     sensory_cue: string | null;
+    sensory_cues?: Record<string, unknown> | null;
     member_branch: { age_group: AgeGroup; action: string } | null;
     safety_note: string | null;
     techniques: { slug: string } | null;
@@ -289,8 +298,26 @@ export const RECIPE_SELECT =
   "id, parent_recipe_id, slug, title, titles, description, cuisine_region, course, diet, base_servings, prep_time_min, " +
   "cook_time_min, difficulty, spice_level, equipment, tags, flavor_profile, food_groups, review_status, " +
   "recipe_ingredients(display_name, quantity, unit, local_measure, is_optional, group_name, role, substitutes, sort_order, ingredients(canonical_name)), " +
-  "recipe_steps(step_no, instruction, duration_sec, timer_required, whistles, sensory_cue, member_branch, safety_note, techniques(slug)), " +
+  "recipe_steps(step_no, instruction, duration_sec, timer_required, whistles, sensory_cue, sensory_cues, member_branch, safety_note, techniques(slug)), " +
   "recipe_variation_rules(rule_type, condition, action, note)";
+
+/** The `sensory_cues` jsonb column: `{en, look, sound, smell, touch, taste, avoid, heat}`; anything else is ignored. */
+export function stepCuesFromJson(raw: unknown): { cues?: StepCues; heat?: Heat } {
+  if (!raw || typeof raw !== "object") return {};
+  const r = raw as Record<string, unknown>;
+  const cues: StepCues = {};
+  for (const k of [...SENSES, "avoid"] as const) {
+    const v = r[k];
+    if (typeof v === "string" && v.trim()) cues[k] = v.trim();
+  }
+  const heat = r.heat === "low" || r.heat === "medium" || r.heat === "high" ? r.heat : undefined;
+  return { ...(Object.keys(cues).length ? { cues } : {}), ...(heat ? { heat } : {}) };
+}
+
+/** The senses a step has cues for, in a fixed order, warning excluded. */
+export function cueSenses(step: Pick<RecipeStepDoc, "cues">): { sense: Sense; text: string }[] {
+  return SENSES.flatMap((sense) => (step.cues?.[sense] ? [{ sense, text: step.cues[sense]! }] : []));
+}
 
 export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
   const ingredients = [...(row.recipe_ingredients ?? [])]
@@ -321,6 +348,9 @@ export function recipeDocFromRow(row: RecipeRow): RecipeDoc {
       if (s.timer_required) out.timer = true;
       if (s.whistles) out.whistles = s.whistles;
       if (s.sensory_cue) out.cue = s.sensory_cue;
+      const cues = stepCuesFromJson(s.sensory_cues);
+      if (cues.cues) out.cues = cues.cues;
+      if (cues.heat) out.heat = cues.heat;
       if (s.safety_note) out.safety = s.safety_note;
       if (s.member_branch?.age_group && s.member_branch.action) out.branch = s.member_branch;
       return out;

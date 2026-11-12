@@ -130,6 +130,9 @@ export function HomeHero({
             {count ? t("home.hero.kitchen", { n: count }) : t("home.kitchenEmpty")}
           </Text>
         </PressableScale>
+        <PressableScale accessibilityRole="button" accessibilityLabel={t("ask.title")} onPress={() => router.push("/ask")} style={[styles.round, { backgroundColor: GLASS }]}>
+          <Icon name="sparkle" size={20} color={ON} />
+        </PressableScale>
         <PressableScale accessibilityRole="button" accessibilityLabel={t("home.search")} onPress={() => router.push("/search")} style={[styles.round, { backgroundColor: GLASS }]}>
           <Icon name="list" size={20} color={ON} />
         </PressableScale>

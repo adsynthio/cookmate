@@ -18,6 +18,7 @@ export function AppHeader({
   right,
   mic = true,
   profile = true,
+  ask = true,
 }: {
   title: string;
   /** Show a back arrow (pushed screens). */
@@ -26,6 +27,8 @@ export function AppHeader({
   right?: ReactNode;
   mic?: boolean;
   profile?: boolean;
+  /** The sparkle that opens "Ask Cookmate anything". */
+  ask?: boolean;
 }) {
   const { colors } = useTheme();
   const router = useRouter();
@@ -47,6 +50,11 @@ export function AppHeader({
       </View>
       <View style={styles.right}>
         {right}
+        {ask ? (
+          <IconButton label={t("ask.title")} muted onPress={() => router.push("/ask")} size={40}>
+            <Icon name="sparkle" size={20} color={colors.primaryText} />
+          </IconButton>
+        ) : null}
         {mic ? (
           <IconButton label={t("mic.label")} tone={live ? "accent" : undefined} muted={!live} onPress={() => router.push("/voice")} size={40}>
             {live ? <Pulse color={colors.onAccent} size={8} /> : <Icon name="mic" size={20} color={colors.accentText} />}

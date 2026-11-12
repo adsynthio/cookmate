@@ -1045,5 +1045,18 @@
   "drinks.steps": "How to make it",
   "home.hero.title": "What's for {slot} tonight?",
   "home.hero.cta": "See tonight's picks",
-  "home.hero.kitchen": "{n} things in your kitchen"
+  "home.hero.kitchen": "{n} things in your kitchen",
+  "ask.title": "Ask Cookmate",
+  "ask.introTitle": "Ask anything about your kitchen",
+  "ask.introBody": "Cookmate knows what's in your kitchen, who's eating and what you like.",
+  "ask.s.make": "What can I make in 20 minutes?",
+  "ask.s.soon": "What's going off soon?",
+  "ask.s.leftovers": "Ideas for my leftovers",
+  "ask.s.guests": "Guests are coming for dinner. What should I make?",
+  "ask.placeholder": "Ask about your kitchen…",
+  "ask.send": "Send",
+  "ask.thinking": "Thinking…",
+  "ask.error": "Couldn't answer just now. Check the connection and try again.",
+  "ask.addToList": "Add to list: {items}",
+  "ask.added": "Added to your list"
 }

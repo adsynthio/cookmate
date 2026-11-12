@@ -451,8 +451,15 @@ export interface CommunityService {
   report(postId: string, householdId: string, reason: ReportReason): Promise<void>;
 }
 
+/** "Ask Cookmate anything": a short answer from this household's kitchen, family and recipes. */
+export type AskReply = { answer: string; recipes: { slug: string; title: string }[]; addToList: string[]; followUps: string[]; source: "model" | "fallback" | "local" };
+export interface AssistantService {
+  ask(input: { householdId: string; question: string; history: { role: "user" | "assistant"; text: string }[]; languageCode: string }): Promise<AskReply>;
+}
+
 export type Services = {
   auth: AuthService;
+  assistant: AssistantService;
   preference: PreferenceService;
   kitchen: KitchenService;
   recipe: RecipeService;

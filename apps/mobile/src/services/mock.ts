@@ -15,6 +15,7 @@ import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
 import { deductionPreview } from "@/domain/cooking";
 import { plateWeeks, type CookedMeal } from "@/domain/plate";
+import { localAnswer } from "@/domain/ask";
 
 import { localeFromLanguageCode } from "@/domain/onboarding";
 
@@ -212,6 +213,22 @@ function samplePosts(): CommunityPost[] {
 }
 
 const mocks: Services = {
+  assistant: {
+    async ask({ question, languageCode }) {
+      // Preview: answered on the phone from the kitchen (the live app asks the ask-cookmate function).
+      await delay(500);
+      const locale = localeFromLanguageCode(languageCode) ?? "en";
+      const reply = localAnswer({
+        question,
+        locale,
+        items: pantry.map((p) => ({ name: p.name, key: p.ingredientKey, daysLeft: p.expiryDate ? daysLeftOf(p.expiryDate) : null, state: p.state, out: p.stapleLevel === "out" })),
+        recipes: recipeDocs.map((d) => ({ slug: d.slug, title: d.title, minutes: (d.prep_time_min ?? 0) + (d.cook_time_min ?? 0), ingredients: d.ingredients.map((i) => ({ key: i.ingredient, optional: i.optional })) })),
+        staples: new Set(catalog.filter((c) => c.staple).map((c) => c.name)),
+        nameOf: (k) => catalogEntry(k)?.name ?? k,
+      });
+      return { ...reply, source: "local" as const };
+    },
+  },
   auth: {
     async ensureSignedIn() {
       return { userId: "mock-user", isAnonymous: mockPhone === null };

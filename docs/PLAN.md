@@ -430,7 +430,7 @@ Part 2, cooking (branch `sprint-7/cook`):
 - [x] Time's up: a finished timer shows what to check now with Got it, +1 min and Go to the next step; the alarm says the cue aloud and the notification shows it
 - [x] All done (finish) and Something's wrong (rescue) restyled; rescue shows the step's good sign and bad sign
 - [ ] **Culinary lead:** review the draft cues in `content/recipes/*.yaml` (they are written in plain English and marked by the recipe's `review_status`)
-- [ ] **You:** step photos ("how it should look") are in the picture brief; until then each step shows the dish photo
+- [ ] **You:** 24 step photos ("how it should look") are listed in section 5.2 of `PROMPTS.md`; until one is generated the step shows the dish photo
 - [ ] Next: Home, recipe detail, You, then Community last
 
 ---

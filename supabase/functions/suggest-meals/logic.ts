@@ -37,8 +37,18 @@ export type InventoryRow = {
   confidence: number;
   expiry_date: string | null;
   staple_level: string | null;
+  state?: string | null;
+  custom_name?: string | null;
   ingredients: { canonical_name: string; names: { hi?: string; "hi-Latn"?: string } | null } | null;
 };
+
+/** Cooked food still good to eat ("leftover kadhi"): the same dish is not picked again (same rule as the app). */
+export function cookedFromRows(rows: InventoryRow[], today: string): string[] {
+  return rows
+    .filter((r) => (r.state === "leftover" || r.state === "cooked") && (!r.expiry_date || daysBetween(today, r.expiry_date) >= 0))
+    .map((r) => r.custom_name ?? r.ingredients?.canonical_name ?? "")
+    .filter(Boolean);
+}
 
 export function pantryFromRows(rows: InventoryRow[], today: string): PantryEntry[] {
   return rows

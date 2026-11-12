@@ -990,5 +990,15 @@
   "restock.add": "Add to list",
   "restock.notYet": "Still have it",
   "restock.added": "{item} is on your list.",
-  "restock.never": "Cookmate never orders anything. This is only a reminder."
+  "restock.never": "Cookmate never orders anything. This is only a reminder.",
+  "ready.overline": "Ready to eat",
+  "ready.kadhiChawal": "Kadhi chawal tonight",
+  "ready.dalChawal": "Dal chawal tonight",
+  "ready.rajmaChawal": "Rajma chawal tonight",
+  "ready.withRice": "{dish} with rice",
+  "ready.withRoti": "{dish} with roti",
+  "ready.heatEat": "{dish}, just heat it",
+  "ready.body": "Already cooked in your kitchen: {items}. Dinner in five minutes, nothing new to cook.",
+  "ready.heatRice": "Heat it until steaming hot, only once. Rice is best eaten within a day.",
+  "ready.ideas": "Other ways to use it"
 }

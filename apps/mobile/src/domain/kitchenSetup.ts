@@ -39,7 +39,12 @@ export function suggestionsFor(
   return SUGGESTIONS[place].filter((n) => !have.has(n) && lookup(n) !== undefined && fitsDiet(diet, lookup(n)));
 }
 
-export type SetupItem = { name: string; place: SetupPlace; known: boolean };
+export type SetupItem = { name: string; place: SetupPlace; known: boolean; state?: "leftover" };
+
+/** "leftover dal", "bacha hua chawal", "कल की कढ़ी": cooked food typed in, kept as leftovers in the fridge. */
+export function isLeftoverText(text: string): boolean {
+  return /\b(leftovers?|left over|bacha|bachi|bache|bacha hua|kal ka|kal ki|kal ke)\b|बचा|बची|बचे|कल का|कल की|कल के/i.test(text);
+}
 
 /** Add an item (once per name; a second tap in another place moves it). Own items keep the words typed. */
 export function addSetupItem(items: SetupItem[], item: SetupItem): SetupItem[] {

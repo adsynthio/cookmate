@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { ideasFor, leftoverKind, needsRiceCare } from "./leftovers.ts";
+import { ideasFor, leftoverKind, needsRiceCare, readyMeal } from "./leftovers.ts";
 
 test("the kind of leftover is read from its name in any language", () => {
   const cases: [string, string][] = [
@@ -37,4 +37,17 @@ test("rice and khichdi carry the rice safety line", () => {
   assert.equal(needsRiceCare("rice"), true);
   assert.equal(needsRiceCare("khichdi"), true);
   assert.equal(needsRiceCare("dal"), false);
+});
+
+test("what is already cooked makes dinner: kadhi and rice is kadhi chawal", () => {
+  const kadhi = { name: "leftover kadhi", state: "leftover", daysLeft: 1 };
+  const rice = { name: "leftover rice", state: "leftover", daysLeft: 1 };
+  assert.deepEqual(readyMeal([rice, kadhi]), { key: "kadhiChawal", main: kadhi, side: rice });
+  assert.equal(readyMeal([{ name: "Dal Tadka leftovers", state: "leftover" }, rice])?.key, "dalChawal");
+  assert.equal(readyMeal([{ name: "Matar Paneer leftovers", state: "leftover" }, { name: "4 roti", state: "cooked" }])?.key, "withRoti");
+  assert.equal(readyMeal([{ name: "Jeera Aloo leftovers", state: "leftover" }])?.key, "heatEat");
+  assert.equal(readyMeal([rice]), null);
+  assert.equal(readyMeal([{ name: "tomato", state: "raw" }]), null);
+  // The one going off first leads.
+  assert.equal(readyMeal([{ name: "rajma", state: "leftover", daysLeft: 2 }, { name: "dal", state: "leftover", daysLeft: 0 }])?.main.name, "dal");
 });

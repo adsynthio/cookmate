@@ -956,5 +956,15 @@
   "restock.add": "List mein jodein",
   "restock.notYet": "Abhi hai",
   "restock.added": "{item} list mein hai.",
-  "restock.never": "Cookmate khud kuch order nahi karta, yeh sirf yaad dilana hai."
+  "restock.never": "Cookmate khud kuch order nahi karta, yeh sirf yaad dilana hai.",
+  "ready.overline": "Khane ko taiyaar",
+  "ready.kadhiChawal": "Aaj kadhi chawal",
+  "ready.dalChawal": "Aaj dal chawal",
+  "ready.rajmaChawal": "Aaj rajma chawal",
+  "ready.withRice": "{dish} chawal ke saath",
+  "ready.withRoti": "{dish} roti ke saath",
+  "ready.heatEat": "{dish}, bas garam kijiye",
+  "ready.body": "Aapki rasoi mein pehle se bana hai: {items}. Paanch minute mein khana taiyaar, kuch naya banane ki zaroorat nahi.",
+  "ready.heatRice": "Ek hi baar, bhaap nikalne tak garam karein. Chawal ek din ke andar kha lein.",
+  "ready.ideas": "Istemaal ke aur tareeke"
 }

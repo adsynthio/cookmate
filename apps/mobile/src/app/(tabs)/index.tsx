@@ -10,6 +10,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
 import { WantDish } from "@/components/home/WantDish";
+import { ReadyCard } from "@/components/home/ReadyCard";
 import { Greeting, InventCard, PickCard, pickPhoto, ResumeCard, SearchPill, UseSoonCards } from "@/components/home/HomeParts";
 
 import { itemName } from "@/components/kitchen/names";
@@ -322,6 +323,8 @@ export default function HomeScreen() {
           {t("home.check.thanks")}
         </Text>
       ) : null}
+
+      {!focus ? <ReadyCard items={kitchen.data ?? []} /> : null}
 
       <View style={{ gap: space.xs }}>
         <SectionHeader title={t("home.ideas")} dot={undefined} note={hero ? t("home.ideasCount", { n: 1 + (picks.data?.alternates.length ?? 0) }) : undefined} />

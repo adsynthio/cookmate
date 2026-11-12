@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  alreadyCooked,
   choosePicks,
+  dishKind,
   coverageFactor,
   DEFAULT_WEIGHTS,
   dietAllows,
@@ -249,4 +251,17 @@ test("dishes you can make now come before dishes that need shopping, whatever el
   assert.deepEqual(ranked.map((r) => r.recipe.id), ["aloo", "palak"]);
   assert.equal(shoppingTier(ranked[0]!.match), 0);
   assert.equal(shoppingTier(ranked[1]!.match), 1);
+});
+
+test("a dish already cooked in the kitchen is not suggested again", () => {
+  const kadhi = recipe({ id: "kadhi-pakora", title: "Kadhi Pakora" });
+  const dal = recipe({ id: "dal-tadka", title: "Dal Tadka" });
+  const khichdi = recipe({ id: "moong-dal-khichdi", title: "Moong Dal Khichdi" });
+  const leftovers = ["leftover kadhi", "leftover rice"];
+  assert.equal(excludedBecause(kadhi, ctx({ alreadyCooked: leftovers })), "leftover");
+  assert.equal(excludedBecause(dal, ctx({ alreadyCooked: leftovers })), null, "rice on its own rules nothing out");
+  assert.equal(excludedBecause(dal, ctx({ alreadyCooked: ["बची हुई दाल"] })), "leftover");
+  assert.equal(excludedBecause(khichdi, ctx({ alreadyCooked: ["dal tadka leftovers"] })), null, "khichdi is not dal");
+  assert.equal(alreadyCooked(kadhi, undefined), false);
+  assert.equal(dishKind("Moong Dal Khichdi"), "khichdi");
 });

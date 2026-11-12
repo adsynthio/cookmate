@@ -95,6 +95,9 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
         "prep_time_min: number | null; cook_time_min: number | null; spice_level: number; tags: string[] | null; "
         "score: number }[]",
     ),
+    "pantry_check_today": ("{ p_household: string; p_item?: string | null }", "string | null"),
+    "get_notification_settings": ("{ p_household: string }", "Json"),
+    "set_notification_settings": ("{ p_household: string; p_settings: Json; p_policy_version?: string }", "Json"),
 }
 
 

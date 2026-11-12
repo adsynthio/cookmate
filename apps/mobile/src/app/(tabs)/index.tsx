@@ -1,8 +1,10 @@
 // Home: "Tonight, decided" (HOME-01/02, KIT-040), craving chips and free text (HOME-03, KIT-042), Use Soon strip
 // that opens waste-aware picks (HOME-04, KIT-043), meal slot switch (HOME-05, KIT-046), who's eating today
-// (HH-03, KIT-057), and every screen state (HOME-08).
+// (HH-03, KIT-057), and every screen state (HOME-08). Sprint 6: one "Still have X?" a day when the answer changes
+// the pick (KIT-035), today's festivals and "keeping the fast?" (KIT-144), the daily pick notification's batch opens
+// instantly (KIT-045), and "make something new" (KIT-056).
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 
@@ -18,7 +20,7 @@ import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { daysLeft } from "@/domain/pantry";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
-import { services, type MealSlot, type PantryItem, type Pick } from "@/services";
+import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick } from "@/services";
 import { useSession } from "@/state/session";
 
 const DISMISS_REASONS = ["not_today", "dont_like", "no_time", "missing_item"] as const;
@@ -42,6 +44,11 @@ export default function HomeScreen() {
   const [craving, setCraving] = useState("");
   const [focus, setFocus] = useState<PantryItem | null>(null);
   const [pickingSlot, setPickingSlot] = useState(false);
+  // KIT-045: tapping the daily pick notification opens its precomputed batch, until the cook changes anything.
+  const { batch } = useLocalSearchParams<{ batch?: string }>();
+  const notified = batch && !chips.length && !craving && !focus && whoEating === null && mealSlot === "dinner" ? batch : null;
+  const [checkDone, setCheckDone] = useState(false);
+  const [fastDeclined, setFastDeclined] = useState<string | null>(null);
 
   const members = useQuery({
     queryKey: ["members", householdId],
@@ -49,8 +56,9 @@ export default function HomeScreen() {
     enabled: !!householdId,
   });
   const picks = useQuery({
-    queryKey: ["picks", householdId, mealSlot, chips, craving, whoEating, focus?.ingredientKey, getLocale()],
-    queryFn: () =>
+    queryKey: ["picks", householdId, mealSlot, chips, craving, whoEating, focus?.ingredientKey, getLocale(), notified],
+    queryFn: async () =>
+      (notified ? await services.recipe.getBatch(householdId!, notified).catch(() => null) : null) ??
       services.recipe.getPicks({
         householdId: householdId!,
         memberId: memberId!,
@@ -100,6 +108,22 @@ export default function HomeScreen() {
       void queryClient.invalidateQueries({ queryKey: ["memories"] });
       void queryClient.invalidateQueries({ queryKey: ["picks"] });
     },
+  });
+
+  // KIT-035: the answer updates the pantry and the picks.
+  const answer = useMutation({
+    mutationFn: ({ q, there }: { q: PantryQuestion; there: boolean }) =>
+      there ? services.kitchen.updateItem(q.itemId, { confirm: true }) : services.kitchen.finishItem(q.itemId, false),
+    onSuccess: () => {
+      setCheckDone(true);
+      void queryClient.invalidateQueries({ queryKey: ["picks"] });
+      void queryClient.invalidateQueries({ queryKey: ["useSoon"] });
+      void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
+    },
+  });
+  const keepFast = useMutation({
+    mutationFn: (eventId: string) => services.recipe.keepFast(householdId!, eventId),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["picks"] }),
   });
 
   const toggleChip = (key: string) => setChips((c) => (c.includes(key) ? c.filter((x) => x !== key) : [...c, key]));
@@ -209,6 +233,24 @@ export default function HomeScreen() {
         </Text>
       ) : null}
 
+      {picks.data?.calendar ? (
+        <CalendarNote
+          calendar={picks.data.calendar}
+          declined={fastDeclined}
+          busy={keepFast.isPending}
+          onKeep={(id) => keepFast.mutate(id)}
+          onDecline={(id) => setFastDeclined(id)}
+        />
+      ) : null}
+
+      {picks.data?.check && !checkDone ? (
+        <CheckCard question={picks.data.check} busy={answer.isPending} onAnswer={(there) => answer.mutate({ q: picks.data!.check!, there })} />
+      ) : checkDone ? (
+        <Text variant="label" muted accessibilityLiveRegion="polite">
+          {t("home.check.thanks")}
+        </Text>
+      ) : null}
+
       {picks.isPending ? (
         <StateView state="loading" title={t("state.loading.home")} />
       ) : picks.isError ? (
@@ -223,9 +265,9 @@ export default function HomeScreen() {
         <StateView
           state="empty"
           illustration={illustrations.emptyPicks}
-          title={t("home.nothingFits.title")}
-          body={t("home.nothingFits.body")}
-          actionLabel={t("home.nothingFits.action")}
+          title={t(picks.data.calendar?.today.some((e) => e.kept) ? "home.fast.none.title" : "home.nothingFits.title")}
+          body={t(picks.data.calendar?.today.some((e) => e.kept) ? "home.fast.none.body" : "home.nothingFits.body")}
+          actionLabel={picks.data.calendar?.today.some((e) => e.kept) ? undefined : t("home.nothingFits.action")}
           onAction={clearFilters}
         />
       ) : (
@@ -285,7 +327,73 @@ export default function HomeScreen() {
       {useSoon.data && useSoon.data.length > 0 ? (
         <UseSoonStrip items={useSoon.data} focused={focus?.id ?? null} onPick={(i) => setFocus(focus?.id === i.id ? null : i)} />
       ) : null}
+
+      <View style={{ alignSelf: "flex-start" }}>
+        <Button kind="secondary" label={t("home.invent")} onPress={() => router.push("/invent")} />
+      </View>
     </Screen>
+  );
+}
+
+function eventLabel(names: EventNames, name: string): string {
+  const l = getLocale();
+  return (l === "hi" ? names?.hi : l === "hinglish" ? names?.["hi-Latn"] : names?.en) ?? name;
+}
+
+/** KIT-144: "Today: Ekadashi"; a fast the household might keep is offered once, and followed only on a yes. */
+function CalendarNote({
+  calendar,
+  declined,
+  busy,
+  onKeep,
+  onDecline,
+}: {
+  calendar: CalendarToday;
+  declined: string | null;
+  busy: boolean;
+  onKeep: (id: string) => void;
+  onDecline: (id: string) => void;
+}) {
+  const kept = calendar.today.find((e) => e.kept);
+  const offer = calendar.offerFast;
+  const names = [...new Set(calendar.today.filter((e) => !e.kept).map((e) => eventLabel(e.names, e.name)))];
+  return (
+    <View style={{ gap: space.sm }}>
+      {names.length ? (
+        <Text variant="label" muted>
+          {t("home.calendar.today", { names: names.join(", ") })}
+        </Text>
+      ) : null}
+      {kept ? (
+        <Text variant="label">{t("home.fast.kept", { name: eventLabel(kept.names, kept.name) })}</Text>
+      ) : offer?.id && declined !== offer.id ? (
+        <Card>
+          <Text variant="bodyStrong">{t("home.fast.title", { name: eventLabel(offer.names, offer.name) })}</Text>
+          <View style={styles.reasons}>
+            <Button kind="secondary" label={t("home.fast.yes")} disabled={busy} onPress={() => onKeep(offer.id!)} />
+            <Button kind="quiet" label={t("home.fast.no")} onPress={() => onDecline(offer.id!)} />
+          </View>
+        </Card>
+      ) : null}
+    </View>
+  );
+}
+
+/** KIT-035: the day's one check question, only asked because the answer changes tonight's pick. */
+function CheckCard({ question, busy, onAnswer }: { question: PantryQuestion; busy: boolean; onAnswer: (there: boolean) => void }) {
+  return (
+    <Card>
+      <Text variant="bodyStrong">{t("home.check.title", { item: question.name })}</Text>
+      {question.ifYes && question.ifNo ? (
+        <Text variant="label" muted>
+          {t("home.check.why", { yes: question.ifYes, no: question.ifNo })}
+        </Text>
+      ) : null}
+      <View style={styles.reasons}>
+        <Button kind="secondary" label={t("home.check.yes")} disabled={busy} onPress={() => onAnswer(true)} />
+        <Button kind="quiet" label={t("home.check.no")} disabled={busy} onPress={() => onAnswer(false)} />
+      </View>
+    </Card>
   );
 }
 

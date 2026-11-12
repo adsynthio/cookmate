@@ -175,7 +175,12 @@ function RecipeBody({
         </View>
       ) : (
         <>
-          {doc.review_status !== "approved" ? (
+          {doc.tags?.includes("new_creation") ? (
+            // KIT-056: invented from the kitchen's odds and ends, not a tested recipe.
+            <View style={[styles.badge, { backgroundColor: colors.limePale }]}>
+              <Text variant="caption">{t("invent.badge")}</Text>
+            </View>
+          ) : doc.review_status !== "approved" ? (
             <View style={[styles.badge, { backgroundColor: colors.amberSoft }]}>
               <Text variant="caption">{t("recipe.draft")}</Text>
             </View>

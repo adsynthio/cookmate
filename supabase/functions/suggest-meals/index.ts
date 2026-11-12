@@ -8,39 +8,10 @@ import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.1
 import { z } from "npm:zod@4.6.5";
 
 import { timedAiCall } from "../_shared/aiLog.ts";
-import { buildIndex, normalise } from "../_shared/pantryParse.ts";
-import {
-  choosePicks,
-  type Craving,
-  defaultBudget,
-  interpretCraving,
-  localHour,
-  type MealSlot,
-  rankRecipes,
-  reasonFor,
-  type Ranked,
-  type RankContext,
-  slotForHour,
-} from "../_shared/ranking.ts";
-import { type RecipeRow, recipeDocFromRow, toRankRecipe, totalTime } from "../_shared/recipes.ts";
-import {
-  acceptReason,
-  type CalendarRow,
-  eatersFromRows,
-  excludedRecipes,
-  type InventoryRow,
-  localDate,
-  localeFor,
-  type MemberRow,
-  type MemoryRow,
-  mergeCraving,
-  pantryFromRows,
-  prefsFromCalendar,
-  prefsFromMemories,
-  recentFrom,
-  SLOTS,
-  weightsFrom,
-} from "./logic.ts";
+import { type Craving } from "../_shared/ranking.ts";
+import { totalTime } from "../_shared/recipes.ts";
+import { calendarSummary, checkQuestion, type Kitchen, loadKitchen, rank } from "./engine.ts";
+import { acceptReason, localeFor, mergeCraving } from "./logic.ts";
 
 const MODEL = "claude-haiku-5-5";
 const KNOWN_TAGS = ["comforting", "quick", "high_protein", "kids_friendly", "light", "fasting", "one_pot", "tiffin", "festive"];
@@ -52,12 +23,6 @@ const CORS = {
 };
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
-
-const RANK_SELECT =
-  "id, slug, title, titles, description, cuisine_region, course, diet, base_servings, prep_time_min, cook_time_min, " +
-  "difficulty, spice_level, equipment, tags, flavor_profile, food_groups, review_status, " +
-  "recipe_ingredients(display_name, quantity, unit, local_measure, is_optional, group_name, role, substitutes, sort_order, ingredients(canonical_name)), " +
-  "recipe_variation_rules(rule_type, condition, action, note)";
 
 type Body = {
   household_id?: string;
@@ -166,112 +131,40 @@ Deno.serve(async (req) => {
   if (!me) return json({ error: "not a member of this household" }, 403);
 
   const now = new Date();
-  const weekAgo = new Date(now.getTime() - 7 * 86_400_000).toISOString();
-  const { data: hh } = await sb.from("households").select("timezone").eq("id", householdId).maybeSingle();
-  const tz = hh?.timezone ?? "Asia/Kolkata";
-  const today = localDate(now, tz);
-  const slot: MealSlot = SLOTS.includes(body.meal_slot as MealSlot) ? (body.meal_slot as MealSlot) : slotForHour(localHour(now, tz));
-
-  const [members, inventory, recipes, memories, calendar, recs, sessions, equipment, disliked, dismissed] = await Promise.all([
-    sb.from("household_members").select("id, display_name, age_group, diet, taste_profiles(spice)")
-      .eq("household_id", householdId).eq("status", "active"),
-    sb.from("inventory_items").select("id, confidence, expiry_date, staple_level, ingredients(canonical_name, names)")
-      .eq("household_id", householdId).eq("status", "active"),
-    sb.from("recipes").select(RANK_SELECT).is("household_id", null).is("parent_recipe_id", null),
-    sb.from("memories").select("polarity, scope, expires_at, member_id, subject_recipe_id, attributes, ingredients(canonical_name)")
-      .eq("household_id", householdId).eq("status", "active").not("subject_ingredient_id", "is", null),
-    sb.from("calendar_events").select("rules, event_date, end_date").lte("event_date", today)
-      .gte("event_date", localDate(new Date(now.getTime() - 60 * 86_400_000), tz))
-      .or(`household_id.is.null,household_id.eq.${householdId}`),
-    sb.from("recommendations").select("recipe_id, acted_at").eq("household_id", householdId)
-      .in("status", ["accepted", "cooked"]).gte("acted_at", weekAgo),
-    sb.from("cooking_sessions").select("recipe_id, completed_at").eq("household_id", householdId)
-      .eq("status", "completed").gte("completed_at", weekAgo),
-    sb.from("kitchen_equipment").select("equipment_type").eq("household_id", householdId),
-    sb.from("memories").select("subject_recipe_id").eq("household_id", householdId).eq("status", "active")
-      .lt("polarity", 0).eq("attributes->>about", "dislike").not("subject_recipe_id", "is", null),
-    sb.from("recommendations").select("recipe_id").eq("household_id", householdId).eq("status", "dismissed")
-      .gte("acted_at", new Date(now.getTime() - 18 * 3_600_000).toISOString()),
-  ]);
-  const failed = [members, inventory, recipes].find((r) => r.error);
-  if (failed?.error) return json({ error: failed.error.message }, 500);
-
-  // Ranking weights are a feature flag (KIT-041); flags are only readable with the service role.
-  let weightsRules: unknown = null;
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (serviceKey) {
-    const admin = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, { auth: { persistSession: false } });
-    const { data: flag } = await admin.from("feature_flags").select("enabled, rules").eq("key", "ranking_weights").maybeSingle();
-    if (flag?.enabled) weightsRules = flag.rules;
-  }
-
-  const excluded = excludedRecipes(
-    (disliked.data ?? []) as { subject_recipe_id: string | null }[],
-    (dismissed.data ?? []) as { recipe_id: string | null }[],
-  );
-  const docs = ((recipes.data ?? []) as unknown as RecipeRow[]).map(recipeDocFromRow).filter((d) => !excluded.has(d.id!));
-  const invRows = (inventory.data ?? []) as unknown as InventoryRow[];
-  const eaters = eatersFromRows((members.data ?? []) as unknown as MemberRow[], body.who_eating);
-  const memPrefs = prefsFromMemories((memories.data ?? []) as unknown as MemoryRow[], now, eaters.map((e) => e.id));
-  // Events running today: single-day events on today, multi-day ones that haven't ended.
-  const calPrefs = prefsFromCalendar(
-    ((calendar.data ?? []) as unknown as (CalendarRow & { event_date: string; end_date: string | null })[])
-      .filter((e) => (e.end_date ?? e.event_date) >= today),
-  );
-  const recent = recentFrom([
-    ...((recs.data ?? []) as { recipe_id: string; acted_at: string }[]).map((r) => ({ recipe_id: r.recipe_id, at: r.acted_at })),
-    ...((sessions.data ?? []) as { recipe_id: string; completed_at: string }[]).map((r) => ({ recipe_id: r.recipe_id, at: r.completed_at })),
-  ], now);
-  const kit = ((equipment.data ?? []) as { equipment_type: string }[]).map((e) => e.equipment_type);
-
-  // Ingredient names the craving might mention, from the recipes we can rank.
-  const index = buildIndex(docs.flatMap((d) => d.ingredients.map((i) => ({ name: i.ingredient }))));
-  const findIngredients = (text: string) => {
-    const words = normalise(text).split(" ").filter(Boolean);
-    return [...new Set(words.map((w) => index.get(w)?.name).filter((n): n is string => !!n))];
-  };
-  let craving = interpretCraving(body.craving ?? "", body.chips ?? [], findIngredients);
-
+  const admin = serviceKey ? createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, { auth: { persistSession: false } }) : null;
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   const client = apiKey ? new Anthropic() : null;
-  const cravingText = (body.craving ?? "").trim();
-  if (client && cravingText && !craving.tags.length && !craving.ingredients.length && craving.maxTimeMin === null) {
-    try {
-      craving = mergeCraving(craving, await modelCraving(client, householdId, cravingText), KNOWN_TAGS);
-    } catch (err) {
-      console.error("craving_interpret failed", err instanceof Error ? err.message : err);
-    }
-  }
-
-  const ctx: RankContext = {
-    slot,
-    eaters,
-    pantry: pantryFromRows(invRows, today),
-    staples: [], // filled below from the catalog
-    equipment: kit.length ? kit : null,
-    avoid: [...new Set([...memPrefs.avoid, ...calPrefs.avoid])],
-    like: memPrefs.like,
-    prefer: calPrefs.prefer,
-    recent,
-    craving,
-    timeBudgetMin: defaultBudget(slot),
-    weights: weightsFrom(weightsRules),
-    focus: body.focus?.filter((f) => typeof f === "string").slice(0, 10),
-  };
-  const { data: staples } = await sb.from("ingredients").select("canonical_name").eq("is_staple", true);
-  ctx.staples = ((staples ?? []) as { canonical_name: string }[]).map((s) => s.canonical_name);
-
   const locale = localeFor(body.language_code);
-  const names = new Map(invRows.filter((r) => r.ingredients).map((r) => [r.ingredients!.canonical_name, r.ingredients!.names]));
-  const nameOf = (key: string) => {
-    const n = names.get(key);
-    return (locale === "hi" ? n?.hi : locale === "hinglish" ? n?.["hi-Latn"] : undefined) ?? key;
-  };
 
-  const picks: Ranked[] = choosePicks(rankRecipes(docs.map(toRankRecipe), ctx));
+  let kitchen: Kitchen;
+  try {
+    kitchen = await loadKitchen(sb, admin, householdId, {
+      slot: body.meal_slot,
+      craving: body.craving,
+      chips: body.chips,
+      whoEating: body.who_eating,
+      focus: body.focus,
+      locale,
+    }, now, {
+      interpretCraving: client
+        ? async (text: string, base: Craving) => {
+          try {
+            return mergeCraving(base, await modelCraving(client, householdId, text), KNOWN_TAGS);
+          } catch (err) {
+            console.error("craving_interpret failed", err instanceof Error ? err.message : err);
+            return base;
+          }
+        }
+        : undefined,
+    });
+  } catch (err) {
+    return json({ error: err instanceof Error ? err.message : "could not load the kitchen" }, 500);
+  }
+  const ranking = rank(kitchen, locale);
+  const { picks, templates, ctx, slot, craving, nameOf } = ranking;
   const batchId = crypto.randomUUID();
-  const docById = new Map(docs.map((d) => [d.id!, d]));
-  const templates = picks.map((p) => reasonFor(p, ctx, locale, nameOf));
+  const docById = new Map(kitchen.docs.map((d) => [d.id!, d]));
 
   let reasons = templates;
   if (client && picks.length) {
@@ -318,9 +211,14 @@ Deno.serve(async (req) => {
     for (const r of (inserted ?? []).sort((a, b) => a.rank - b.rank)) ids.push(r.id);
   }
 
+  // KIT-035: at most one "Still have X?" a day, and only when the answer changes tonight's pick.
+  const check = await checkQuestion(sb, householdId, ranking).catch(() => null);
+
   return json({
     batch_id: batchId,
     meal_slot: slot,
+    check,
+    calendar: calendarSummary(kitchen),
     picks: picks.map((p, i) => {
       const d = docById.get(p.recipe.id)!;
       return {

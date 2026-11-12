@@ -190,6 +190,10 @@ const mocks: Services = {
     async getCurrentHousehold() {
       return readHousehold();
     },
+    async setLanguage(languageCode) {
+      const ref = readHousehold();
+      if (ref) globalThis.localStorage?.setItem(HOUSEHOLD_KEY, JSON.stringify({ ...ref, languageCode }));
+    },
   },
   preference: {
     async createHousehold({ language, members }) {

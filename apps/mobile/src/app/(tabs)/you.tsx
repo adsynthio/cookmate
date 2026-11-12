@@ -8,11 +8,14 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 
+import { AppHeader } from "@/components/AppHeader";
+import { LanguageCard, ProfileCard, StatGrid, TasteCard } from "@/components/you/YouParts";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
-import { Button, Card, Chip, Field, Screen, StateView, Text } from "@/design-system/primitives";
+import { Enter, PressableScale } from "@/design-system/motion";
+import { Badge, Button, Card, Chip, Field, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, space } from "@/design-system/tokens";
+import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { parseNote, preferenceStatement } from "@/domain/learning";
 import { indianMobile, maskPhone, PACES, SKILLS, stepWords, UNITS, VERBOSITIES, type VoiceProfile } from "@/domain/voiceStyle";
@@ -20,7 +23,8 @@ import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
 import { hush, say } from "@/services/feedback";
 import { useTimers } from "@/state/timers";
 import { recipeTitle } from "@/domain/recipes";
-import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { getLocale, setLocale, t, useLocale, type Locale, type StringKey } from "@/i18n";
+import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { clearBundles } from "@/offline/bundles";
 import { clearCopies } from "@/offline/kitchenCopy";
 import { useOutbox } from "@/offline/outbox";
@@ -66,36 +70,51 @@ export default function YouScreen() {
   const refresh = () => qc.invalidateQueries({ queryKey: ["memories", householdId] });
   const save = (input: Omit<NewMemory, "householdId">) => services.preference.saveMemory({ householdId: householdId!, ...input });
   const general = (memories.data ?? []).filter((m) => !isPreference(m));
+  const locale = useLocale();
+  const me = (members.data ?? []).find((m) => m.id === memberId);
+  const prefs = (memories.data ?? []).filter(isPreference);
+  const changeLanguage = (l: Locale) => {
+    if (l === locale) return;
+    setLocale(l);
+    // Kept on the account so the next launch, the picks and the voice agent use it too.
+    void services.auth.setLanguage(LANGUAGE_CODES[l]).catch(() => {});
+    void qc.invalidateQueries({ queryKey: ["picks"] });
+  };
 
   return (
-    <Screen>
-      <Text variant="display" accessibilityRole="header">
-        {t("you.title")}
-      </Text>
+    <Screen header={<AppHeader title={t("you.title")} />}>
+      <ProfileCard me={me} members={members.data ?? []} />
+      <StatGrid
+        stats={[
+          { icon: "heart", value: favourites.data?.length ?? 0, label: t("you.stat.saved"), tone: "accent" },
+          { icon: "sparkle", value: general.length, label: t("you.stat.learned"), tone: "primary" },
+          { icon: "users", value: members.data?.length ?? 0, label: t("you.stat.people"), tone: "primary" },
+          { icon: "shield", value: prefs.filter((p) => p.polarity < 0).length, label: t("you.stat.avoids"), tone: "accent" },
+        ]}
+      />
+      {members.data ? <TasteCard members={members.data} prefs={prefs} /> : null}
+      <LanguageCard value={locale} onChange={changeLanguage} />
 
       {householdId ? <TellMe members={members.data ?? []} selfId={memberId} onSave={save} onSaved={refresh} /> : null}
 
       <View style={{ gap: space.xs }}>
-        <Text variant="heading">{t("you.prefs")}</Text>
-        <Text muted>{t("you.prefsBody")}</Text>
+        <SectionHeader title={t("you.prefs")} dot={undefined} />
+        <Text variant="caption" muted>
+          {t("you.prefsBody")}
+        </Text>
       </View>
       {members.data && memories.data ? (
         <Preferences members={members.data} memories={memories.data.filter(isPreference)} onSave={save} onChanged={refresh} />
       ) : null}
 
-      <View style={{ gap: space.xs }}>
-        <Text variant="heading">{t("you.saved")}</Text>
-      </View>
+      <SectionHeader title={t("you.saved")} dot={undefined} note={favourites.data?.length ? String(favourites.data.length) : undefined} />
       <SavedDishes dishes={favourites.data} />
 
-      <VoiceSettings />
-      {householdId ? <DailyPick householdId={householdId} /> : null}
-      <PhoneLink />
-      {householdId ? <Privacy householdId={householdId} /> : null}
-
       <View style={{ gap: space.xs }}>
-        <Text variant="heading">{t("you.learned")}</Text>
-        <Text muted>{t("you.learnedBody")}</Text>
+        <SectionHeader title={t("you.learned")} dot={undefined} note={general.length ? t("you.learnedCount", { n: general.length }) : undefined} noteTone="primary" />
+        <Text variant="caption" muted>
+          {t("you.learnedBody")}
+        </Text>
       </View>
       {memories.isPending ? (
         <StateView state="loading" title={t("you.learned")} />
@@ -110,8 +129,19 @@ export default function YouScreen() {
       ) : general.length === 0 ? (
         <StateView state="empty" title={t("you.empty")} />
       ) : (
-        general.map((m) => <MemoryCard key={m.id} memory={m} onChanged={refresh} />)
+        general.map((m, i) => (
+          <Enter key={m.id} index={i}>
+            <MemoryCard memory={m} onChanged={refresh} />
+          </Enter>
+        ))
       )}
+
+      <SectionHeader title={t("you.settings")} dot={undefined} />
+      <VoiceSettings />
+      {householdId ? <DailyPick householdId={householdId} /> : null}
+      <PhoneLink />
+      <SectionHeader title={t("you.privacyTitle")} dot={undefined} />
+      {householdId ? <Privacy householdId={householdId} /> : null}
     </Screen>
   );
 }
@@ -650,27 +680,49 @@ function MemoryCard({ memory, onChanged }: { memory: Memory; onChanged: () => vo
         </>
       ) : (
         <>
-          <Text variant="heading">{memory.statement}</Text>
+          <Text variant="subheading">{`“${memory.statement}”`}</Text>
           <View style={styles.meta}>
-            <Text variant="caption" muted>
-              {[t(`you.source.${memory.source}` as StringKey), memory.memberName].filter(Boolean).join(" · ")}
-            </Text>
-            {memory.scope === "temporary" ? (
-              <View style={[styles.tag, { backgroundColor: colors.peach }]}>
-                <Text variant="caption">{t("you.temporary")}</Text>
-              </View>
+            <Badge tone={memory.source === "explicit" ? "peach" : "primary"} label={t(`you.source.${memory.source}` as StringKey)} />
+            {memory.memberName ? (
+              <Text variant="caption" muted>
+                {memory.memberName}
+              </Text>
             ) : null}
+            {memory.scope === "temporary" ? <Badge tone="accent" label={t("you.temporary")} /> : null}
           </View>
-          <View style={styles.actions}>
-            <Button label={t("you.edit")} kind="secondary" onPress={() => setEditing(true)} />
-            <Button label={keep.isSuccess ? t("you.kept") : t("you.keep")} kind="secondary" disabled={keep.isPending || keep.isSuccess} onPress={() => keep.mutate()} />
-            <Button
-              label={confirmForget ? t("you.forgetSure") : t("you.forget")}
-              kind="quiet"
-              textColor={confirmForget ? colors.alert : undefined}
+          <View style={[styles.memoryActions, { borderTopColor: colors.line }]}>
+            <PressableScale accessibilityRole="button" accessibilityLabel={t("you.edit")} onPress={() => setEditing(true)} hitSlop={8} style={styles.memoryAction}>
+              <Icon name="edit" size={16} color={colors.inkSecondary} />
+              <Text variant="label" weight={600} color={colors.inkSecondary}>
+                {t("you.edit")}
+              </Text>
+            </PressableScale>
+            <PressableScale
+              accessibilityRole="button"
+              accessibilityLabel={keep.isSuccess ? t("you.kept") : t("you.keep")}
+              disabled={keep.isPending || keep.isSuccess}
+              onPress={() => keep.mutate()}
+              hitSlop={8}
+              style={styles.memoryAction}
+            >
+              <Icon name="check" size={16} color={colors.primaryText} />
+              <Text variant="label" weight={600} color={colors.primaryText}>
+                {keep.isSuccess ? t("you.kept") : t("you.keep")}
+              </Text>
+            </PressableScale>
+            <PressableScale
+              accessibilityRole="button"
+              accessibilityLabel={confirmForget ? t("you.forgetSure") : t("you.forget")}
               disabled={forget.isPending}
               onPress={() => (confirmForget ? forget.mutate() : setConfirmForget(true))}
-            />
+              hitSlop={8}
+              style={styles.memoryAction}
+            >
+              <Icon name="trash" size={16} color={colors.alert} />
+              <Text variant="label" weight={600} color={colors.alert}>
+                {confirmForget ? t("you.forgetSure") : t("you.forget")}
+              </Text>
+            </PressableScale>
           </View>
         </>
       )}
@@ -687,6 +739,8 @@ const styles = StyleSheet.create({
   meta: { flexDirection: "row", alignItems: "center", gap: space.sm },
   tag: { borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 2 },
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginTop: space.sm },
+  memoryActions: { flexDirection: "row", flexWrap: "wrap", gap: space.lg, marginTop: space.xs, paddingTop: space.md, borderTopWidth: StyleSheet.hairlineWidth },
+  memoryAction: { flexDirection: "row", alignItems: "center", gap: 6, minHeight: 32 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   pref: { flexDirection: "row", alignItems: "center", gap: space.xs, borderRadius: radius.pill, paddingHorizontal: space.md, minHeight: 40 },
   dish: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 56 },

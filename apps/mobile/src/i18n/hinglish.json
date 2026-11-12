@@ -1011,5 +1011,18 @@
   "drinks.steps": "Kaise banayein",
   "home.hero.title": "Aaj {slot} mein kya banega?",
   "home.hero.cta": "Aaj ke sujhav dekhein",
-  "home.hero.kitchen": "Aapki rasoi mein {n} cheezein"
+  "home.hero.kitchen": "Aapki rasoi mein {n} cheezein",
+  "ask.title": "Cookmate se poochhein",
+  "ask.introTitle": "Apni rasoi ke baare mein kuch bhi poochhein",
+  "ask.introBody": "Cookmate jaanta hai ki rasoi mein kya hai, kaun kha raha hai aur aapko kya pasand hai.",
+  "ask.s.make": "20 minute mein kya bana sakte hain?",
+  "ask.s.soon": "Kya jaldi kharab hone wala hai?",
+  "ask.s.leftovers": "Bache khane ke liye sujhav",
+  "ask.s.guests": "Raat ko mehmaan aa rahe hain. Kya banayein?",
+  "ask.placeholder": "Apni rasoi ke baare mein poochhein…",
+  "ask.send": "Bhejein",
+  "ask.thinking": "Soch rahe hain…",
+  "ask.error": "Abhi jawab nahi mila. Connection dekhkar phir koshish karein.",
+  "ask.addToList": "List mein jodein: {items}",
+  "ask.added": "List mein jud gaya"
 }

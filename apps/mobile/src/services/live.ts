@@ -61,6 +61,15 @@ export class NotImplemented extends Error {
 }
 
 export const liveServices: Services = {
+  assistant: {
+    async ask({ householdId, question, history, languageCode }) {
+      const { data, error } = await requireSupabase().functions.invoke<{
+        answer: string; recipes: { slug: string; title: string }[]; add_to_list: string[]; follow_ups: string[]; source: "model" | "fallback";
+      }>("ask-cookmate", { body: { household_id: householdId, question, history, language_code: languageCode } });
+      if (error || !data) throw error ?? new Error("no answer");
+      return { answer: data.answer, recipes: data.recipes, addToList: data.add_to_list, followUps: data.follow_ups, source: data.source };
+    },
+  },
   auth: {
     async ensureSignedIn() {
       const sb = requireSupabase();

@@ -18,7 +18,8 @@ import { radius, space } from "@/design-system/tokens";
 import { needsCheck, parseQuantity, readBackText } from "@/domain/kitchen";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
-import { services, type DraftItem, type FlavorRole, type LocationKind } from "@/services";
+import { services, type AddedVia, type DraftItem, type FlavorRole, type LocationKind } from "@/services";
+import { useScan } from "@/state/scan";
 import { toDraft } from "@/services/drafts";
 import { useSession } from "@/state/session";
 
@@ -36,6 +37,15 @@ export default function AddItemsScreen() {
   const householdId = useSession((s) => s.householdId)!;
   const [text, setText] = useState("");
   const [drafts, setDrafts] = useState<DraftItem[] | null>(null);
+  const [via, setVia] = useState<AddedVia>("text");
+  // Coming from a scan: open straight on the check screen with what was found.
+  useEffect(() => {
+    const scanned = useScan.getState().take();
+    if (scanned) {
+      setDrafts(scanned.items);
+      setVia(scanned.via);
+    }
+  }, []);
   // Leaving the screen stops the read-back.
   useEffect(() => () => void Speech.stop(), []);
 
@@ -44,7 +54,7 @@ export default function AddItemsScreen() {
     onSuccess: (r) => setDrafts(r.items),
   });
   const add = useMutation({
-    mutationFn: (items: DraftItem[]) => services.kitchen.addItems({ householdId, items, addedVia: "text" }),
+    mutationFn: (items: DraftItem[]) => services.kitchen.addItems({ householdId, items, addedVia: via }),
     onSuccess: async () => {
       Speech.stop();
       await Promise.all([

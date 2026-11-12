@@ -37,6 +37,14 @@
             "com.google.android.as"
           ]
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Cookmate uses the camera to see what's in your fridge or on a shop bill, and to scan barcodes, so you don't have to type it all.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
       ]
     ],
     "experiments": {

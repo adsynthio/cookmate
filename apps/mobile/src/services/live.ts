@@ -380,6 +380,31 @@ export const liveServices: Services = {
       };
     },
 
+    async scanItems(input) {
+      const sb = requireSupabase();
+      const body =
+        input.kind === "barcode"
+          ? { household_id: input.householdId, kind: "barcode", code: input.code }
+          : { household_id: input.householdId, kind: input.kind, image: input.image, media_type: input.mediaType ?? "image/jpeg" };
+      const { data, error } = await sb.functions.invoke("scan-pantry", { body });
+      if (error || !data) throw error ?? new Error("scan failed");
+      const result = data as { items: ParseInventoryItem[]; source: string };
+      return {
+        source: result.source,
+        items: result.items.map((i) =>
+          toDraft({
+            said: i.name,
+            ingredientKey: i.ingredient_key,
+            quantity: i.quantity,
+            unit: i.unit,
+            locationKind: i.location_kind,
+            state: i.state,
+            confidence: i.confidence,
+          }),
+        ),
+      };
+    },
+
     async addItems({ householdId, items, addedVia }) {
       const sb = requireSupabase();
       const { data, error } = await sb.rpc("add_inventory_items", {

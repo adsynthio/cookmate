@@ -448,7 +448,15 @@ Part 5, You and the Cook tab (branch `sprint-7/you`):
 - [x] App language can be changed any time on You (English, हिन्दी, Hinglish); it switches at once and is saved on the account (`profiles.preferred_language`) for the next launch, picks and the voice agent
 - [x] Cook tab: the dish on the stove with its photo, step progress and Continue cooking; with nothing on, your saved dishes one tap away
 - [x] All timers (Stitch "Multi Timer Hub"): every timer for the dish in one place, soonest first, each with a ring, its step and what to check when it rings, −30s / +30s / +1 min and Stop (Got it when it has rung); the recipe's other timed steps and 1 / 3 / 5 / 10 minute timers start from there. Opened from the timer button in Cook With Me and from the Cook tab
-- [ ] Next: Community (last stage)
+
+### Sprint 8 status — Community, first version (branch `sprint-8/community`)
+Private cooking circles for family and friends; a public feed and challenges wait for moderation rules.
+- [x] Circles: start one, invite with an 8-character code (7 days), join with it, see who's in it, leave (the longest-standing member takes over; an empty circle is deleted). Limits: 10 circles per household, 30 households per circle
+- [x] Share a dish you cooked from All done (with the changes you made) or from a recipe: pick the circle, say a line, keep or drop each change. Only the dish, the changes and the note are shared, under the name you chose for the circle
+- [x] Feed: what your circles cooked, newest first, with the dish photo, note and changes; Save and Cook it. Report (hidden for you at once, removed for everyone after 3 reports); the author or circle owner can remove a post; 20 shares a day
+- [x] Database: `20270315000000_community_circles.sql` (5 tables, read-only to clients, writes through 8 checked functions), 18 pgTAP tests; security review findings 16 and 17
+- [x] Community takes the List's place in the tab bar (as in Stitch); the list opens from the cart on Kitchen
+- [ ] **You:** sign off security findings 16 and 17; decide on photos of your own dish (needs a storage bucket and retention) and a public feed (needs moderation rules)
 
 ---
 

@@ -34,6 +34,8 @@ import {
   cookedFromRows,
   pantryFromRows,
   prefsFromMemories,
+  reactionsFromRows,
+  type ReactionRow,
   recentFrom,
   SLOTS,
   weightsFrom,
@@ -154,9 +156,14 @@ export async function loadKitchen(
     craving = await opts.interpretCraving(cravingText, craving);
   }
 
+  // D2: per-person reactions to dishes ("Aarav loved it", "not for Riya"), saved from the finish sheet.
+  const { data: reactionRows } = await sb.from("memories").select("polarity, member_id, subject_recipe_id")
+    .eq("household_id", householdId).eq("status", "active").eq("attributes->>about", "reaction")
+    .not("member_id", "is", null).not("subject_recipe_id", "is", null);
   const ctx: RankContext = {
     slot,
     eaters,
+    reactions: reactionsFromRows((reactionRows ?? []) as ReactionRow[]),
     pantry: pantryFromRows(invRows, today),
     alreadyCooked: cookedFromRows(invRows, today),
     staples: ((staples.data ?? []) as { canonical_name: string }[]).map((s) => s.canonical_name),

@@ -100,6 +100,8 @@ export type RankContext = {
   /** Names of cooked food already in the kitchen ("Kadhi Pakora leftovers", "leftover dal"): the same dish is not
    * suggested again, since there is some ready to eat. */
   alreadyCooked?: string[];
+  /** D2: how each person reacted to a dish after a meal (+1 loved it, -1 not for them). Only people eating count. */
+  reactions?: { memberId: string; recipeId: string; polarity: -1 | 1 }[];
 };
 
 export const CONFIDENT = 0.5;
@@ -252,12 +254,25 @@ export function targetSpice(ctx: Pick<RankContext, "eaters" | "craving">): numbe
   return Math.max(1, Math.min(5, base + ctx.craving.spiceDelta));
 }
 
-export function tasteFactor(r: RankRecipe, ctx: Pick<RankContext, "eaters" | "craving" | "like">): number {
+export function tasteFactor(r: RankRecipe, ctx: Pick<RankContext, "eaters" | "craving" | "like" | "reactions">): number {
   const target = targetSpice(ctx);
   // Milder than wanted is easy to fix at the table; hotter than the mildest eater is not.
   const spiceFit = r.spiceLevel <= target ? 1 - (target - r.spiceLevel) * 0.1 : Math.max(0, 1 - (r.spiceLevel - target) * 0.35);
   const liked = r.ingredients.filter((i) => ctx.like.includes(i.key)).length;
-  return Math.max(0, Math.min(1, spiceFit + Math.min(0.3, liked * 0.15)));
+  // D2: someone at the table loved this last time (up), or said it isn't for them (well down).
+  const { loved, notFor } = reactionsFor(r.id, ctx);
+  const family = (loved.length ? 0.25 : 0) - (notFor.length ? 0.6 : 0);
+  return Math.max(0, Math.min(1, spiceFit + Math.min(0.3, liked * 0.15) + family));
+}
+
+/** People eating today who loved, or didn't like, this dish. */
+export function reactionsFor(recipeId: string, ctx: Pick<RankContext, "eaters" | "reactions">): { loved: Eater[]; notFor: Eater[] } {
+  const eating = new Map(ctx.eaters.map((e) => [e.id, e]));
+  const mine = (ctx.reactions ?? []).filter((x) => x.recipeId === recipeId && eating.has(x.memberId));
+  return {
+    loved: mine.filter((x) => x.polarity > 0).map((x) => eating.get(x.memberId)!),
+    notFor: mine.filter((x) => x.polarity < 0).map((x) => eating.get(x.memberId)!),
+  };
 }
 
 /** No repeat within 3 days; half marks within a week. */
@@ -446,6 +461,7 @@ export function defaultBudget(slot: MealSlot): number {
 // --- reasons (template fallback for pick_reasons; must cite a real factor) --------------------------------------
 
 const R = {
+  loved: { en: "{name} loved this last time", hinglish: "{name} ko pichhli baar bahut pasand aaya", hi: "{name} को पिछली बार बहुत पसंद आया" },
   useSoon: { en: "Uses your {item} before it goes off", hinglish: "Aapka {item} kharab hone se pehle use ho jayega", hi: "आपका {item} खराब होने से पहले इस्तेमाल हो जाएगा" },
   craving: { en: "{tag}, as you asked", hinglish: "{tag}, jaisa aapne kaha", hi: "{tag}, जैसा आपने कहा" },
   liked: { en: "Has {item}, a favourite here", hinglish: "Isme {item} hai, jo yahan pasand hai", hi: "इसमें {item} है, जो यहाँ पसंद है" },
@@ -474,6 +490,9 @@ const MAX_REASON = 90;
 /** One line, ≤ 90 characters, built only from factors that actually scored. */
 export function reasonFor(p: Ranked, ctx: RankContext, locale: Locale, nameOf: (key: string) => string): string {
   const parts: string[] = [];
+  // D2: "Aarav loved this last time" leads, it's the reason a family remembers.
+  const fan = reactionsFor(p.recipe.id, ctx).loved[0];
+  if (fan) parts.push(fill(R.loved[locale], { name: fan.name }));
   const soon = p.match.items
     .filter((i) => i.entry && i.entry.daysLeft !== null && i.entry.daysLeft <= 2)
     .sort((a, b) => (a.entry!.daysLeft ?? 9) - (b.entry!.daysLeft ?? 9))[0];

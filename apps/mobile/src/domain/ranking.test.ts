@@ -20,6 +20,7 @@ import {
   shoppingTier,
   reasonFor,
   slotForHour,
+  reactionsFor,
   tasteFactor,
   timeFactor,
   useSoonFactor,
@@ -264,4 +265,16 @@ test("a dish already cooked in the kitchen is not suggested again", () => {
   assert.equal(excludedBecause(khichdi, ctx({ alreadyCooked: ["dal tadka leftovers"] })), null, "khichdi is not dal");
   assert.equal(alreadyCooked(kadhi, undefined), false);
   assert.equal(dishKind("Moong Dal Khichdi"), "khichdi");
+});
+
+test("family reactions: a dish someone eating loved rises and says so; one they didn't like drops", () => {
+  const eaters = [{ id: "a", name: "Aarav", ageGroup: "child" as const, diet: "veg" as const, spice: 1 }];
+  const r = { id: "r1", slug: "r1", title: "R", course: "main", diet: "veg", timeMin: 30, spiceLevel: 1, equipment: [], tags: [], flavor: {}, ingredients: [], equipmentFallbacks: [] } as never;
+  const base = { eaters, craving: NO_CRAVING, like: [] as string[] };
+  const plain = tasteFactor(r, base);
+  assert.ok(tasteFactor(r, { ...base, reactions: [{ memberId: "a", recipeId: "r1", polarity: 1 }] }) >= plain);
+  assert.ok(tasteFactor(r, { ...base, reactions: [{ memberId: "a", recipeId: "r1", polarity: -1 }] }) < plain - 0.4);
+  // Someone not eating today doesn't count.
+  assert.equal(tasteFactor(r, { ...base, reactions: [{ memberId: "z", recipeId: "r1", polarity: -1 }] }), plain);
+  assert.equal(reactionsFor("r1", { eaters, reactions: [{ memberId: "a", recipeId: "r1", polarity: 1 }] }).loved[0]!.name, "Aarav");
 });

@@ -92,3 +92,13 @@ Deno.test("disliked dishes and dishes turned down today are left out", () => {
   assertEquals([...out].sort(), ["r1", "r2"]);
   assertEquals(excludedRecipes([], []).size, 0);
 });
+
+Deno.test("family reactions: only loved or not-for-me count", async () => {
+  const { reactionsFromRows } = await import("./logic.ts");
+  assertEquals(reactionsFromRows([
+    { polarity: 1, member_id: "m1", subject_recipe_id: "r1" },
+    { polarity: 0, member_id: "m1", subject_recipe_id: "r2" },
+    { polarity: -1, member_id: "m2", subject_recipe_id: "r1" },
+    { polarity: 1, member_id: null, subject_recipe_id: "r3" },
+  ]), [{ memberId: "m1", recipeId: "r1", polarity: 1 }, { memberId: "m2", recipeId: "r1", polarity: -1 }]);
+});

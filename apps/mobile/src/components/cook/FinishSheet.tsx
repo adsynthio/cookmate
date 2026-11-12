@@ -34,6 +34,7 @@ export function FinishSheet({
   memberId,
   changes,
   cookChanges = [],
+  eaters = [],
   offline = false,
   photo,
   steps,
@@ -51,6 +52,8 @@ export function FinishSheet({
   changes?: Map<string, AmountChange>;
   /** What the cook said they changed while cooking (KIT-075): read into suggestions for next time (AI 4). */
   cookChanges?: string[];
+  /** D2: who ate, so each can react ("Aarav loved it"); the picks learn per person. */
+  eaters?: { id: string; name: string }[];
   sessionId: string;
   householdId: string;
   dish: string;
@@ -93,6 +96,7 @@ export function FinishSheet({
     staleTime: Infinity,
   });
   const [dropped, setDropped] = useState<string[]>([]);
+  const [reactions, setReactions] = useState<Record<string, -1 | 0 | 1>>({});
   const keep = (learned.data ?? []).filter((c) => !dropped.includes(c.key));
   useEffect(() => setDropped([]), [learned.data]);
 
@@ -109,6 +113,20 @@ export function FinishSheet({
         if (!remember.includes(c.about) || saved.current.memories.has(c.about)) continue;
         await services.preference.saveMemory({ householdId, memberId, statement: c.statement, category: c.category, polarity: c.polarity, about: c.about, recipeId });
         saved.current.memories.add(c.about);
+      }
+      for (const e of eaters) {
+        const r = reactions[e.id];
+        if (!r || saved.current.memories.has(`reaction:${e.id}`)) continue;
+        await services.preference.saveMemory({
+          householdId,
+          memberId: e.id,
+          statement: t(r > 0 ? "finish.react.lovedStatement" : "finish.react.notForStatement", { name: e.name, dish }),
+          category: "taste",
+          polarity: r,
+          about: "reaction",
+          recipeId,
+        });
+        saved.current.memories.add(`reaction:${e.id}`);
       }
       for (const c of keep) {
         if (saved.current.memories.has(c.key)) continue;
@@ -250,6 +268,37 @@ export function FinishSheet({
                 />
               ))}
             </View>
+          </Card>
+        </Enter>
+      ) : null}
+
+      {eaters.length ? (
+        <Enter>
+          <Card style={styles.section}>
+            <View style={styles.row}>
+              <View style={[styles.well, { backgroundColor: colors.peach }]}>
+                <Icon name="users" size={20} color={colors.peachText} />
+              </View>
+              <Text variant="heading" style={{ flex: 1 }}>
+                {t("finish.react.title")}
+              </Text>
+            </View>
+            {eaters.map((e) => (
+              <View key={e.id} style={{ gap: space.xs }}>
+                <Text variant="bodyStrong">{e.name}</Text>
+                <View style={styles.chips} accessibilityRole="radiogroup" accessibilityLabel={e.name}>
+                  {([1, 0, -1] as const).map((v) => (
+                    <Chip
+                      key={v}
+                      icon={v > 0 ? "heart" : v < 0 ? "close" : "check"}
+                      label={t(v > 0 ? "finish.react.loved" : v < 0 ? "finish.react.notFor" : "finish.react.okay")}
+                      selected={reactions[e.id] === v}
+                      onPress={() => setReactions((r) => ({ ...r, [e.id]: r[e.id] === v ? 0 : v }))}
+                    />
+                  ))}
+                </View>
+              </View>
+            ))}
           </Card>
         </Enter>
       ) : null}

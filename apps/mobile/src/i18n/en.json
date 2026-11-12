@@ -1095,5 +1095,11 @@
   "plan.need.marinate": "Marinate the {item} in the fridge ahead (about {hours} hours)",
   "plan.need.rest": "Start step {step} ahead (about {hours} hours)",
   "plan.need.set_curd": "Set curd from your milk tonight (about {hours} hours)",
-  "plan.need.defrost": "Move the {item} from the freezer to the fridge (about {hours} hours)"
+  "plan.need.defrost": "Move the {item} from the freezer to the fridge (about {hours} hours)",
+  "finish.react.title": "How did everyone like it?",
+  "finish.react.loved": "Loved it",
+  "finish.react.okay": "Okay",
+  "finish.react.notFor": "Not for me",
+  "finish.react.lovedStatement": "{name} loved {dish}",
+  "finish.react.notForStatement": "{dish} isn't a favourite of {name}"
 }

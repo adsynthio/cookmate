@@ -101,6 +101,7 @@ export function buildPicks(args: {
   recent?: RankContext["recent"];
   avoid?: string[];
   like?: string[];
+  reactions?: RankContext["reactions"];
   /** Calendar preferences for today (KIT-144). */
   prefer?: string[];
   weights?: Weights;
@@ -119,6 +120,7 @@ export function buildPicks(args: {
     equipment: null,
     avoid: args.avoid ?? [],
     like: args.like ?? [],
+    reactions: args.reactions ?? [],
     prefer: args.prefer ?? [],
     recent: args.recent ?? [],
     craving: interpretCraving(input.craving ?? "", input.chips ?? [], findIngredients),

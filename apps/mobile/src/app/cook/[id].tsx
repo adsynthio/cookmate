@@ -35,7 +35,7 @@ import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
 import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
-import { familyBranches, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
+import { familyBranches, localDoc, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
 import { leftoverSafety, safetyText } from "@/domain/rescue";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services, type CookSession, type Member } from "@/services";
@@ -120,14 +120,16 @@ function durationLabel(sec: number): string {
   return rest ? `${hours} ${t("cook.dur.min", { n: rest })}` : hours;
 }
 
-function Cooking({ session, doc, members, householdId }: { session: CookSession; doc: RecipeDoc; members: Member[]; householdId: string }) {
+function Cooking({ session, doc: rawDoc, members, householdId }: { session: CookSession; doc: RecipeDoc; members: Member[]; householdId: string }) {
   // Remembered "more garlic" and the like (KIT-104), shown in the ingredient list.
-  const changes = useAmountChanges(householdId, doc);
+  const changes = useAmountChanges(householdId, rawDoc);
   const voice = useVoiceProfile();
   const { colors } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
   const locale = getLocale();
+  // Steps, cues, safety and family notes in the cook's language; the bundle and the server keep the original.
+  const doc = useMemo(() => localDoc(rawDoc, locale), [rawDoc, locale]);
   const memberId = useSession((s) => s.memberId);
   const total = doc.steps.length;
   const dish = recipeTitle(doc, locale);
@@ -151,7 +153,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   // KIT-076: keep what's needed to finish this dish with no network, and fetch this cook's step recordings once.
   useEffect(() => {
     const had = getBundle(session.id);
-    putBundle(session.id, { householdId, session, doc });
+    putBundle(session.id, { householdId, session, doc: rawDoc });
     if (had && Object.keys(had.audio).length) return;
     services.cooking
       .getStepAudio(session.id)
@@ -290,10 +292,11 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     setReading(true);
     const done = () => setReading(false);
     const p = pace ?? voice.profile.pace;
-    if (playStepAudio(session.id, n, { rate: RECORDING_RATE[p], onEnd: done })) return;
+    // Recordings are made from the English text; in Hindi or Hinglish the phone reads the translated step.
+    if (locale === "en" && playStepAudio(session.id, n, { rate: RECORDING_RATE[p], onEnd: done })) return;
     // Recipe text is written in English for now, so it is read by the English voice.
     // KIT-068: the same words the voice agent would say for this cook (cue for learners, safety always).
-    say(stepWords(s, voice.profile), { language: "en-IN", onEnd: done });
+    say(stepWords(s, voice.profile), { language: locale === "hi" ? "hi-IN" : "en-IN", onEnd: done });
   };
 
   /** A short spoken reply; listening pauses until it ends. */

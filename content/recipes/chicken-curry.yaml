@@ -3,6 +3,9 @@ title: Chicken Curry
 titles: {hi: चिकन करी, hi-Latn: Chicken Curry}
 description: >-
   Home-style bone-in chicken in a browned onion and tomato gravy with whole spices. Good with rice or roti.
+descriptions:
+  hi: "घर जैसा हड्डी वाला चिकन, भुने प्याज़-टमाटर की ग्रेवी और साबुत मसालों के साथ। चावल या रोटी के साथ अच्छा।"
+  hi-Latn: "Ghar jaisa haddi wala chicken, bhune pyaaz-tamatar ki gravy aur saabut masaalon ke saath. Chaawal ya roti ke saath achha."
 cuisine_region: generic_north
 course: main
 diet: nonveg
@@ -41,6 +44,15 @@ steps:
     safety: Wash your hands, the board and the knife with soap after handling raw chicken, and keep raw chicken away from food that will not be cooked. Marinate in the fridge, not on the counter.
     cues:
       look: "Every piece is coated in the marinade."
+    say:
+      hi:
+        text: "चिकन में दही, आधा अदरक-लहसुन पेस्ट, आधी हल्दी, आधा मिर्च पाउडर और थोड़ा नमक मिलाएँ। ढककर फ्रिज में रखें।"
+        look: "हर टुकड़े पर मसाला अच्छे से लगा हो।"
+        safety: "कच्चा चिकन छूने के बाद हाथ, बोर्ड और चाकू साबुन से धोएँ, और कच्चे चिकन को बिना पके खाने से दूर रखें। मैरिनेट फ्रिज में करें, बाहर नहीं।"
+      hi-Latn:
+        text: "Chicken mein dahi, aadha adrak-lahsun paste, aadhi haldi, aadha mirch powder aur thoda namak milaayein. Dhak kar fridge mein rakhein."
+        look: "Har tukde par masala achhe se laga ho."
+        safety: "Kachcha chicken chhoone ke baad haath, board aur chaaku saabun se dhoyein, aur kachche chicken ko bina pake khaane se door rakhein. Marinate fridge mein karein, bahar nahi."
   - text: Heat the oil in a heavy kadai. Add the whole spices for 30 seconds, then the sliced onions. Cook, stirring more often as they colour.
     technique: saute_onion
     minutes: 14
@@ -51,6 +63,19 @@ steps:
       sound: "The sizzle softens as the onions lose their water."
       smell: "Sweet and caramel-like."
       avoid: "Don't let the edges go black: the curry turns bitter."
+    say:
+      hi:
+        text: "भारी कड़ाही में तेल गरम करें। साबुत मसाले 30 सेकंड डालें, फिर कटे प्याज़। प्याज़ का रंग बदलने लगे तो ज़्यादा चलाते रहें।"
+        look: "प्याज़ हर तरफ़ से गहरे सुनहरे-भूरे हो जाएँ।"
+        sound: "प्याज़ का पानी सूखने पर छन-छन धीमी हो जाए।"
+        smell: "मीठी, कैरामल जैसी ख़ुशबू।"
+        avoid: "किनारे काले न होने दें, वरना करी कड़वी हो जाएगी।"
+      hi-Latn:
+        text: "Bhaari kadaahi mein tel garam karein. Saabut masaale 30 second daalein, phir kate pyaaz. Pyaaz ka rang badalne lage to zyaada chalaate rahein."
+        look: "Pyaaz har taraf se gehre sunehre-bhoore ho jaayein."
+        sound: "Pyaaz ka paani sookhne par chhan-chhan dheemi ho jaaye."
+        smell: "Meethi, caramel jaisi khushboo."
+        avoid: "Kinaare kaale na hone dein, warna curry kadvi ho jaayegi."
   - text: Add the rest of the ginger garlic paste for a minute, then the chopped tomatoes, the remaining turmeric and chilli powder, coriander powder and salt. Cook, stirring.
     technique: bhuna
     minutes: 8
@@ -60,6 +85,17 @@ steps:
       look: "The tomatoes melt into the masala and oil shines at the edges."
       smell: "The raw ginger-garlic smell is gone."
       touch: "The masala comes away from the pan in one soft mass."
+    say:
+      hi:
+        text: "बचा अदरक-लहसुन पेस्ट एक मिनट भूनें, फिर कटे टमाटर, बची हल्दी और मिर्च पाउडर, धनिया पाउडर और नमक डालें। चलाते हुए पकाएँ।"
+        look: "टमाटर मसाले में घुल जाएँ और किनारों पर तेल चमकने लगे।"
+        smell: "कच्चे अदरक-लहसुन की महक चली जाए।"
+        touch: "मसाला कड़ाही से एक नरम गोले की तरह अलग होने लगे।"
+      hi-Latn:
+        text: "Bacha adrak-lahsun paste ek minute bhoonein, phir kate tamatar, bachi haldi aur mirch powder, dhaniya powder aur namak daalein. Chalaate hue pakaayein."
+        look: "Tamatar masaale mein ghul jaayein aur kinaaron par tel chamakne lage."
+        smell: "Kachche adrak-lahsun ki mehak chali jaaye."
+        touch: "Masala kadaahi se ek naram gole ki tarah alag hone lage."
   - text: Add the chicken with all its marinade. Cook on high heat, stirring, so it sears and the masala coats every piece.
     technique: bhuna
     minutes: 6
@@ -69,6 +105,17 @@ steps:
       look: "Every piece turns opaque on the outside and is coated in masala."
       sound: "A loud sizzle when the chicken goes in."
       avoid: "Keep stirring so the masala doesn't catch on the bottom."
+    say:
+      hi:
+        text: "चिकन को उसके पूरे मसाले के साथ डालें। तेज़ आँच पर चलाते हुए पकाएँ ताकि चिकन सिक जाए और हर टुकड़े पर मसाला लग जाए।"
+        look: "हर टुकड़ा बाहर से सफ़ेद हो जाए और मसाले से ढका हो।"
+        sound: "चिकन डालते ही तेज़ छन-छन आवाज़।"
+        avoid: "चलाते रहें ताकि मसाला तले में न लगे।"
+      hi-Latn:
+        text: "Chicken ko uske poore masaale ke saath daalein. Tez aanch par chalaate hue pakaayein taaki chicken sik jaaye aur har tukde par masala lag jaaye."
+        look: "Har tukda bahar se safed ho jaaye aur masaale se dhaka ho."
+        sound: "Chicken daalte hi tez chhan-chhan awaaz."
+        avoid: "Chalaate rahein taaki masala tale mein na lage."
   - text: Add 300 ml hot water, cover and simmer on low heat, stirring now and then.
     technique: simmer
     minutes: 25
@@ -79,10 +126,28 @@ steps:
     cues:
       look: "The gravy bubbles gently, with oil on top."
       touch: "The meat pulls away from the bone easily; cut the largest piece: no pink inside."
+    say:
+      hi:
+        text: "300 ml गरम पानी डालें, ढककर धीमी आँच पर पकाएँ, बीच-बीच में चलाते रहें।"
+        look: "ग्रेवी धीरे-धीरे उबले और ऊपर तेल आ जाए।"
+        touch: "मांस हड्डी से आसानी से अलग हो जाए; सबसे बड़ा टुकड़ा काटकर देखें: अंदर गुलाबी न हो।"
+        safety: "चिकन पूरा पका होना चाहिए। सबसे मोटा टुकड़ा हड्डी तक काटें; मांस सफ़ेद हो, गुलाबी न हो और रस साफ़ हो। शक हो तो 5 मिनट और पकाकर फिर देखें।"
+      hi-Latn:
+        text: "300 ml garam paani daalein, dhak kar dheemi aanch par pakaayein, beech-beech mein chalaate rahein."
+        look: "Gravy dheere-dheere ubale aur upar tel aa jaaye."
+        touch: "Maas haddi se aasaani se alag ho jaaye; sabse bada tukda kaatkar dekhein: andar gulaabi na ho."
+        safety: "Chicken poora paka hona chahiye. Sabse mota tukda haddi tak kaatein; maas safed ho, gulaabi na ho aur ras saaf ho. Shak ho to 5 minute aur pakaakar phir dekhein."
   - text: Add the garam masala and coriander leaves, cover and rest for 5 minutes before serving.
     minutes: 5
     cues:
       smell: "Fresh garam masala and coriander."
+    say:
+      hi:
+        text: "गरम मसाला और हरा धनिया डालें, ढककर 5 मिनट रखें, फिर परोसें।"
+        smell: "ताज़े गरम मसाले और धनिए की ख़ुशबू।"
+      hi-Latn:
+        text: "Garam masala aur hara dhaniya daalein, dhak kar 5 minute rakhein, phir parosein."
+        smell: "Taaze garam masaale aur dhaniye ki khushboo."
 variation_rules:
   - {type: spice, condition: {member_age_group: child}, action: {reduce: {kashmiri chilli powder: 0.5}}, note: Kashmiri chilli is mild in heat; halve it for young children.}
   - {type: equipment, condition: {have_equipment: pressure_cooker}, action: {method: pressure_cook, whistles: 3, at_step: 5, water_ml: 150}, note: Pressure-cook for 3 whistles with less water instead of simmering; still check that the chicken is cooked through.}

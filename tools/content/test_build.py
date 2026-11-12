@@ -88,6 +88,8 @@ class ContentTests(unittest.TestCase):
         def senses_only(r):
             r["steps"][1].pop("cue", None)
             r["steps"][1]["cues"] = {"avoid": "Don't break them.", "look": "Even cubes."}
+            for lang in ("hi", "hi-Latn"):
+                r["steps"][1]["say"][lang]["avoid"] = "x"
         self.edit_recipe("jeera-aloo", senses_only)
         errors, sql = self.run_validation()
         self.assertEqual(errors, [])
@@ -146,6 +148,20 @@ class ContentTests(unittest.TestCase):
         self.edit_recipe("kadhi-pakora", lambda r: r["variation_rules"].append(
             {"type": "omit", "action": {"omit": ["dragon fruit"]}}))
         self.assertError("'dragon fruit' is not in the ingredient catalog")
+
+
+    def test_every_step_is_said_in_hindi_and_hinglish(self) -> None:
+        errors, sql = self.run_validation()
+        self.assertEqual(errors, [])
+        self.assertIn('"hi": {"look": "सब्ज़ियाँ', sql)
+
+    def test_a_translation_must_say_everything_the_english_does(self) -> None:
+        self.edit_recipe("jeera-aloo", lambda d: d["steps"][2]["say"]["hi"].pop("avoid"))
+        self.assertError("say.hi is missing ['avoid']")
+
+    def test_only_known_languages_and_keys(self) -> None:
+        self.edit_recipe("jeera-aloo", lambda d: d["steps"][0]["say"].update({"ta": {"text": "x"}}))
+        self.assertError("say must map some of")
 
 
 if __name__ == "__main__":

@@ -777,7 +777,6 @@
   "home.ideasBody": "Picked for what you have and who's eating.",
   "home.canMake": "Can make now",
   "home.needN": "Need {n} more",
-  "home.haveShort": "{have}/{total} items",
   "home.cookNow": "Cook now",
   "home.viewRecipe": "View recipe",
   "home.useSoonCount": "{n} to use soon",

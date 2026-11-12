@@ -1,10 +1,10 @@
 # Making the pictures with Cline and Vertex AI
 
-Cline (in VS Code) writes and runs a small Python script that calls Google's image model on Vertex AI for every row in `PROMPTS.md`, crops each result to the exact size, and saves it under `media/`. You upload the finished pictures exactly as described in `ANTIGRAVITY.md`, section 3.
+Cline (in VS Code) writes and runs a small Python script that calls Google's image model on Vertex AI for every row in `PROMPTS.md`, crops each result to the exact size, and saves it under `media/`. You then upload the finished pictures (section 3 below).
 
 ## 1. Set up the folder
 
-1. Make a folder, for example `cookmate-media`, and put `PROMPTS.md` in it (and the `media` folder from Antigravity, if you have one, so finished pictures are skipped).
+1. Make a folder, for example `cookmate-media`, and put `PROMPTS.md` in it.
 2. Open the folder in VS Code.
 3. Put your Vertex AI key in an environment variable, not in a file Cline will read or commit. In VS Code's terminal:
    - macOS / Linux: `export GOOGLE_API_KEY="your key"`
@@ -53,4 +53,8 @@ Cline (in VS Code) writes and runs a small Python script that calls Google's ima
 
 ## 3. Upload
 
-Zip the `media` folder (or just the new subfolder) and upload it in the Claude chat, or upload the folders on GitHub as described in `ANTIGRAVITY.md`. Leave out `DONE.md`, `FAILED.md`, `contact-sheet.png` and `make_images.py`. The key never leaves your computer.
+Upload as often as you like; a group at a time is fine. Leave out `DONE.md`, `FAILED.md`, `contact-sheet.png`, `make_images.py` and `.venv`. The key never leaves your computer.
+
+**A. In the Claude chat (easiest):** zip the `media` folder (or just the new subfolder) and upload the zip. Claude puts the files in place, checks every picture, connects them to the app and commits them.
+
+**B. On GitHub:** open the repo on github.com, switch to the branch Claude is working on (named in the chat), go to `apps/mobile/assets/media/`, click "Add file" → "Upload files", drag in the folders from inside your `media` folder (for example `ingredients`), commit to that branch, and tell Claude "photos uploaded".

@@ -174,7 +174,8 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     [doc, eaters, stepNo],
   );
 
-  const go = (delta: number): number => {
+  // `channel` is "voice" when a spoken command moved the step: taps and voice are counted apart (hands-free rate).
+  const go = (delta: number, channel: "touch" | "voice" = "touch"): number => {
     const next = Math.max(1, Math.min(total, stepNo + delta));
     if (next === stepNo) return stepNo;
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
@@ -184,7 +185,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     setStepNo(next);
     scroll.current?.scrollTo({ y: 0, animated: false });
     // Offline, the move waits in the outbox and this resolves straight away.
-    services.cooking.advanceStep(session.id, next - stepNo).then(
+    services.cooking.advanceStep(session.id, next - stepNo, channel).then(
       () => setUnsaved(false),
       () => setUnsaved(true),
     );
@@ -312,10 +313,10 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     switch (m.command) {
       case "next":
         if (last) speak(t("cook.hf.lastStep"));
-        else readStep(go(1));
+        else readStep(go(1, "voice"));
         return;
       case "back":
-        readStep(go(-1));
+        readStep(go(-1, "voice"));
         return;
       case "repeat":
       case "resume":

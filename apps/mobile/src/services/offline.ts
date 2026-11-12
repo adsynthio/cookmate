@@ -1,9 +1,14 @@
 // KIT-076: cooking keeps working when the network drops. Reads fall back to what the phone kept when cooking started
 // (offline/bundles.ts); writes that can't reach the server wait in the outbox and replay in order later. While a
 // write for a session is still waiting, later writes for it queue behind it, so the server sees them in order.
+// The kitchen and the shopping list work the same way (NFR-05): the phone keeps the last copy it saw, edits made
+// offline show on that copy at once and replay in order when the network is back.
 import { changeReply } from "@/domain/assist";
 import { localeFromLanguageCode } from "@/domain/onboarding";
+import { replayable, type KitchenEdit } from "@/domain/kitchenOffline";
 import { isNetworkError, type Call, type Op } from "@/domain/outbox";
+import { useSoon } from "@/domain/pantry";
+import { editCopy, getCopy, householdOf, putCopy } from "@/offline/kitchenCopy";
 import { bundleForRecipe, getBundle, latestBundle, putBundle } from "@/offline/bundles";
 import { hasPending, startOutbox, useOutbox } from "@/offline/outbox";
 
@@ -75,6 +80,32 @@ export function replay(inner: Services): (op: Op) => Promise<void> {
       case "kitchen.addItems":
         await inner.kitchen.addItems(a[0]);
         return;
+      case "kitchen.updateItem":
+        if (replayable({ call: op.call, itemId: a[0], changes: a[1] })) await inner.kitchen.updateItem(a[0], a[1]);
+        return;
+      case "kitchen.finishItem":
+        if (replayable({ call: op.call, itemId: a[0] })) await inner.kitchen.finishItem(a[0], a[1]);
+        return;
+      case "kitchen.reopenItem":
+        if (replayable({ call: op.call, itemId: a[0] })) await inner.kitchen.reopenItem(a[0]);
+        return;
+      case "kitchen.addToList":
+        await inner.kitchen.addToList(a[0], a[1]);
+        return;
+      case "kitchen.markBought": {
+        const all = a[1] as string[] | undefined;
+        if (!all?.length) {
+          await inner.kitchen.markBought(a[0], undefined);
+          return;
+        }
+        // Lines added offline have no server id; tick off the ones the server knows.
+        const known = all.filter((i) => !i.startsWith("local-"));
+        if (known.length) await inner.kitchen.markBought(a[0], known);
+        return;
+      }
+      case "kitchen.removeFromList":
+        if (replayable({ call: op.call, itemId: a[0] })) await inner.kitchen.removeFromList(a[0]);
+        return;
     }
   };
 }
@@ -91,6 +122,18 @@ export function withOffline(inner: Services): Services {
     return { currentStep, total };
   };
 
+  // Pantry and list edits: one queue per household, so they reach the server in the order they were made.
+  const seen = new Set<string>();
+  const kitchenKey = (householdId: string) => `kitchen:${householdId}`;
+  const homeOf = (id: string) => householdOf(id, [...seen]);
+  const kitchenWrite = async <T>(householdId: string | null, edit: KitchenEdit, args: unknown[], now: () => Promise<T>, queued: () => T): Promise<T> => {
+    // Without a copy of the kitchen there is nothing to show the edit on: behave as before (the call fails offline).
+    if (!householdId || !getCopy(householdId)) return now();
+    const r = await write(edit.call, kitchenKey(householdId), args, now, queued);
+    editCopy(householdId, edit);
+    return r;
+  };
+
   return {
     ...inner,
     recipe: {
@@ -103,7 +146,50 @@ export function withOffline(inner: Services): Services {
     },
     kitchen: {
       ...kitchen,
-      addItems: (input) => write("kitchen.addItems", null, [input], () => kitchen.addItems(input), () => []),
+      async getKitchen(householdId) {
+        seen.add(householdId);
+        const kept = getCopy(householdId);
+        // Edits still waiting: the phone is ahead of the server, so show the phone's copy.
+        if (kept && hasPending(kitchenKey(householdId))) {
+          void useOutbox.getState().flush();
+          return kept.items;
+        }
+        const items = await read(() => kitchen.getKitchen(householdId), () => kept?.items ?? null);
+        if (items !== kept?.items) putCopy(householdId, { items, removed: [] });
+        return items;
+      },
+      async getUseSoon(householdId, days) {
+        seen.add(householdId);
+        const kept = getCopy(householdId);
+        return read(() => kitchen.getUseSoon(householdId, days), () => (kept ? useSoon(kept.items, days ?? 3) : null));
+      },
+      async getList(householdId) {
+        seen.add(householdId);
+        const kept = getCopy(householdId);
+        if (kept && hasPending(kitchenKey(householdId))) {
+          void useOutbox.getState().flush();
+          return kept.list;
+        }
+        const list = await read(() => kitchen.getList(householdId), () => kept?.list ?? null);
+        if (list !== kept?.list) putCopy(householdId, { list });
+        return list;
+      },
+      addItems: (input) =>
+        getCopy(input.householdId)
+          ? kitchenWrite(input.householdId, { call: "kitchen.addItems", items: input.items }, [input], () => kitchen.addItems(input), () => [])
+          : write("kitchen.addItems", null, [input], () => kitchen.addItems(input), () => []),
+      updateItem: (itemId, changes) =>
+        kitchenWrite(homeOf(itemId), { call: "kitchen.updateItem", itemId, changes }, [itemId, changes], () => kitchen.updateItem(itemId, changes), () => undefined),
+      finishItem: (itemId, discarded) =>
+        kitchenWrite(homeOf(itemId), { call: "kitchen.finishItem", itemId }, [itemId, discarded], () => kitchen.finishItem(itemId, discarded), () => undefined),
+      reopenItem: (itemId) =>
+        kitchenWrite(homeOf(itemId), { call: "kitchen.reopenItem", itemId }, [itemId], () => kitchen.reopenItem(itemId), () => undefined),
+      addToList: (householdId, items) =>
+        kitchenWrite(householdId, { call: "kitchen.addToList", items }, [householdId, items], () => kitchen.addToList(householdId, items), () => undefined),
+      markBought: (householdId, itemIds) =>
+        kitchenWrite(householdId, { call: "kitchen.markBought", itemIds }, [householdId, itemIds], () => kitchen.markBought(householdId, itemIds), () => []),
+      removeFromList: (itemId) =>
+        kitchenWrite(homeOf(itemId), { call: "kitchen.removeFromList", itemId }, [itemId], () => kitchen.removeFromList(itemId), () => undefined),
     },
     cooking: {
       ...cooking,

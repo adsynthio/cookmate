@@ -92,6 +92,27 @@ def render(start: date, end: date, ai: list[list[str]], voice: list[list[str]], 
     return "\n".join(out)
 
 
+GATE_UNITS = {"cooking_frequency": "{:.2f} a week", "voice_latency_p50_ms": "{:.0f} ms", "voice_latency_p95_ms": "{:.0f} ms",
+              "pantry_trust": "{:.2f} a week", "voice_cost_inr": "₹{:.2f}"}
+# Fewer measurements than this and the number says little, whatever it is.
+GATE_MIN_SAMPLE = 20
+
+
+def render_gate(rows: list[list[str]]) -> str:
+    """Beta launch targets (KIT-152): value against target, with how much it was measured on."""
+    if not rows:
+        return ""
+    out = ["## Beta targets (PRD §15)\n"]
+    body = []
+    for kpi, value, target, met, sample, definition in rows:
+        fmt = GATE_UNITS.get(kpi, "{:.0%}")
+        shown = fmt.format(num(value)) if value else "–"
+        verdict = "no data" if not value else "too few to say" if int(num(sample)) < GATE_MIN_SAMPLE else "met" if met == "t" else "**not met**"
+        body.append([definition, shown, fmt.format(num(target)), sample, verdict])
+    out.append(table(["Target", "Now", "Goal", "Measured on", "Verdict"], body))
+    return "\n".join(out)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--days", type=int, default=7)
@@ -111,6 +132,10 @@ def main() -> int:
         print(str(err), file=sys.stderr)
         return 1
     print(render(start, end, ai, voice, targets))
+    try:
+        print(render_gate(query(url, f"select * from private.beta_gate_report({span})")))
+    except QueryError:
+        pass  # The gate report arrives with a later migration; the rest of the report stands without it.
     return 0
 
 

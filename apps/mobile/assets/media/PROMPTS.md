@@ -2,13 +2,7 @@
 
 How to hand this file to Antigravity and get the images back: see `ANTIGRAVITY.md` next to it.
 
-The app is being rebuilt to match the Stitch designs (warm cream pages, olive green and terracotta, soft rounded cards, real food photos everywhere). This file lists every picture that look needs, **pantry first**, then the other modules. Generate each one with the prompt given, save it at the exact path, then run from the repo root:
-
-```
-python3 tools/media/sync.py
-```
-
-The script connects every file that exists to the app and warns you if a size is wrong (`--list` shows what is still missing). Until a file exists the app shows a soft placeholder, so you can work in any order, a section at a time.
+The app is being rebuilt to match the Stitch designs (warm cream pages, olive green and terracotta, soft rounded cards, real food photos everywhere). This file lists every picture that look needs, **pantry first**, then the other modules. Save each picture at the exact path in its table (`media/...`), at the exact size given. Upload them as described in `ANTIGRAVITY.md`; Claude then runs `python3 tools/media/sync.py`, which connects every file that exists to the app and flags any wrong size. Until a picture exists the app shows a soft placeholder, so any order works, a group at a time.
 
 UI icons (tabs, mic, add, back, burner and location glyphs) are **not** in this list. They are drawn in code so they follow the theme and the text size.
 

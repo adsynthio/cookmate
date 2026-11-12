@@ -468,7 +468,8 @@ What the family ate, by food group, never calories (KIT-170, KIT-171).
 ### Sprint 10 status — Leftovers, V2 (branch `sprint-10/leftovers`)
 - [x] Ideas to use leftovers (KIT-180): a leftover is known by its name ("Dal Tadka leftovers" saved from All done, "leftover dal" or "बची हुई दाल" typed in), as dal, rajma, rice, khichdi, roti, sabzi, curry, kadhi or poha, and its item page shows two or three quick ways to turn it into a new meal (dal paratha, lemon rice, roti noodles, stuffed paratha …), the reheating rule, and for rice and khichdi the rice rule (fridge, within a day). On Home, a leftover in Use Soon has Ideas instead of Find recipes
 - [ ] **Culinary lead:** check the ideas and the safety lines (`left.*` in `apps/mobile/src/i18n/*.json`)
-- Waiting on you: predictive restocking (KIT-181) needs a few weeks of real buying history; grocery providers (KIT-190/191), WhatsApp voice notes (KIT-200) and cook handoff (KIT-201) need accounts and a decision on which providers
+- [x] Restocking reminders (KIT-181): every night `private.refresh_purchase_patterns` learns how often each thing is bought (days something was added to the kitchen, not counting onboarding; at least three buys in six months) into `purchase_patterns`; `restock_due` (read as the caller) lists what runs out in the next two days, skipping what is on the list or already Low / Out. Kitchen asks one question at a time: "Running low on besan? You usually buy it every 10 days." Add to list (reason predicted) or Still have it (quiet for half the usual gap, 2 to 7 days). Never an order. Migration `20270415000000_restock.sql`, 8 pgTAP tests
+- Waiting on you: grocery providers (KIT-190/191), WhatsApp voice notes (KIT-200) and cook handoff (KIT-201) need accounts and a decision on which providers
 
 ---
 

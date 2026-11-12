@@ -487,6 +487,14 @@ const mocks: Services = {
       changed();
       return before - pantry.length;
     },
+    async restockDue() {
+      // Preview: besan is bought about every 10 days and the last packet was 9 days ago. Gone once it's on the list.
+      await delay(150);
+      const key = "gram flour";
+      if (list.some((l) => l.ingredientKey === key)) return [];
+      if (pantry.some((p) => p.ingredientKey === key && (p.stapleLevel === "low" || p.stapleLevel === "out"))) return [];
+      return [{ ingredientKey: key, everyDays: 10, lastBought: isoInDays(-9), dueInDays: 1 }];
+    },
     async addToList(_householdId, items) {
       await delay(150);
       for (const i of items) {

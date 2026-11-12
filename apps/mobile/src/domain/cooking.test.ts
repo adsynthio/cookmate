@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { adjustmentFor, offersTimer, rememberedQty, readableLine, clock, convertQty, countWhistle, deductionPreview, remaining, stepSeconds, timerCue } from "./cooking.ts";
+import { adjustmentFor, offersTimer, rememberedQty, readableLine, clock, convertQty, countWhistle, deductionPreview, remaining, stepSeconds, timerBoard, timerCue } from "./cooking.ts";
 
 test("step times and clocks", () => {
   assert.equal(stepSeconds({ minutes: 5 }), 300);
@@ -108,4 +108,13 @@ test("a ringing timer says what to check, looking first", () => {
   assert.equal(timerCue({ cues: { sound: "Quiet sizzle." } }), "Quiet sizzle.");
   assert.equal(timerCue({ cue: "Soft." }), "Soft.");
   assert.equal(timerCue({}), undefined);
+});
+
+test("timers screen: soonest first, and the timed steps without a timer can be started", () => {
+  const b = timerBoard(
+    [{ endsAt: 5000, stepNo: 3 }, { endsAt: 1000, stepNo: 1 }],
+    [{ minutes: 2 }, {}, { minutes: 10 }, { seconds: 45 }],
+  );
+  assert.deepEqual(b.timers.map((x) => x.stepNo), [1, 3]);
+  assert.deepEqual(b.startable, [{ stepNo: 4, seconds: 45 }]);
 });

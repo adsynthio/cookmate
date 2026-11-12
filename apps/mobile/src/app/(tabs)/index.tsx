@@ -11,7 +11,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { WantDish } from "@/components/home/WantDish";
 import { HomeHero } from "@/components/home/HomeHero";
 import { ReadyCard } from "@/components/home/ReadyCard";
-import { InventCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
+import { InventCard, NewDishCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
 
 import { itemName } from "@/components/kitchen/names";
 import { dishImage, illustrations } from "@/design-system/media";
@@ -230,6 +230,7 @@ export default function HomeScreen() {
           items={kitchen.data ?? []}
           onOpen={(id) => router.push(`/recipe/${id}`)}
           onInvent={() => router.push("/invent")}
+          onMake={(dish) => router.push({ pathname: "/invent", params: { dish } })}
         />
       ) : null}
 
@@ -377,6 +378,9 @@ export default function HomeScreen() {
           {picks.data.alternates.map((p, i) => (
             <PickCard key={p.recommendationId} pick={p} index={i + 1} onOpen={() => open(p)} />
           ))}
+          {picks.data.newDish ? (
+            <NewDishCard dish={picks.data.newDish} onPress={() => router.push({ pathname: "/invent", params: { dish: picks.data!.newDish!.name } })} />
+          ) : null}
         </>
       )}
 

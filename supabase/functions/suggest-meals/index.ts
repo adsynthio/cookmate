@@ -1,19 +1,24 @@
 // suggest-meals (KIT-040/041/042/043/046): "Tonight, decided". One hero pick and two alternates for the meal slot.
-// Ranking is deterministic (../_shared/ranking.ts, the same code the app runs in mock mode); Claude Haiku is only
-// used to read a free-text craving and to reword the reason, and both fall back to rules. Every batch is stored in
-// recommendations with its score breakdown so a pick can always be explained.
+// The rules (../_shared/ranking.ts, the same code the app runs in mock mode) rank every recipe and drop anything that
+// breaks a diet, allergy, fast or leftover rule. Claude Haiku reads a free-text craving; then the chef step (./chef.ts)
+// lets Claude Sonnet choose tonight's three from the rules' best eight, say why, and name one new dish idea. Every
+// model step falls back to the rules. Every batch is stored in recommendations with its score breakdown (and who
+// chose it) so a pick can always be explained.
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.119.0";
 import { z } from "npm:zod@4.6.5";
 
 import { timedAiCall } from "../_shared/aiLog.ts";
-import { type Craving } from "../_shared/ranking.ts";
+import { type Craving, type Ranked, reasonFor } from "../_shared/ranking.ts";
 import { totalTime } from "../_shared/recipes.ts";
+import { acceptChef, acceptNewDish, CHEF_POOL, chefBrief, type ChefOut } from "./chef.ts";
 import { calendarSummary, checkQuestion, type Kitchen, loadKitchen, rank } from "./engine.ts";
-import { acceptReason, localeFor, mergeCraving } from "./logic.ts";
+import { localeFor, mergeCraving } from "./logic.ts";
 
 const MODEL = "claude-haiku-5-5";
+// Choosing tonight's picks is the reasoning step, so it gets the stronger model; it falls back to the rules on timeout.
+const CHEF_MODEL = "claude-sonnet-5-5";
 const KNOWN_TAGS = ["comforting", "quick", "high_protein", "kids_friendly", "light", "fasting", "one_pot", "tiffin", "festive"];
 
 const CORS = {
@@ -67,35 +72,46 @@ tags: only from ${KNOWN_TAGS.join(", ")}. max_time_min: only if they mention tim
   return { tags: o.tags, maxTimeMin: o.max_time_min, spiceDelta: o.spice_delta, course: o.course };
 }
 
-const ReasonsOut = z.object({ reasons: z.array(z.object({ id: z.string(), text: z.string() })) });
+const ChefOutSchema = z.object({
+  picks: z.array(z.object({ id: z.string(), reason: z.string() })),
+  new_dish: z.object({ name: z.string(), why: z.string() }).nullable(),
+});
 
-async function modelReasons(
-  client: Anthropic,
-  householdId: string,
-  language: string,
-  items: { id: string; title: string; template: string; facts: Record<string, number> }[],
-): Promise<Map<string, string>> {
-  const r = await timedAiCall({ householdId, task: "pick_reasons", model: MODEL, promptVersion: "pick_reasons@1" }, () => client.messages.parse(
+const CHEF_SYSTEM = `You are the cook's friend in an Indian family kitchen, choosing what to make for one meal.
+You get the household's facts and up to eight candidate dishes. Every candidate already fits everyone's diet, allergies,
+fasts and equipment, so choose only from them, by id.
+
+Choose three, best first, the way a thoughtful home cook would:
+- Leftovers ready to eat come first: if there is dal or kadhi left over, don't cook the same thing again; pick what
+  goes with it or something different.
+- Use what is going off soon (days_left 0 to 2) before it spoils.
+- Fit the people eating: the children, the spice level, what they like; nothing from "avoid".
+- Not the same dish as the last few days; three different kinds of dish (not three paneer dishes).
+- Fit the meal, the time asked for, the season (warming food in winter, light food in summer, monsoon snacks) and
+  any festival today.
+- Prefer dishes with nothing to buy.
+
+For each pick write one warm line (at most 90 characters) saying the real reason, naming the actual ingredient,
+person or number it rests on. Write in the language given: Hindi in Devanagari for hi-IN, Hinglish in Latin script
+for hi-Latn-IN, Indian English for en-IN. No health, nutrition or weight claims. No emoji.
+
+new_dish: optionally, one everyday Indian home dish that is NOT among the candidates' titles and that this kitchen
+can make with at most two things to buy (e.g. "Aloo Methi", "Tomato Rice"), with one line on why it suits tonight.
+Only dishes that fit everyone's diet. Null if nothing good comes to mind.`;
+
+async function modelChef(client: Anthropic, householdId: string, language: string, brief: unknown) {
+  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@1" }, () => client.messages.parse(
     {
-      model: MODEL,
-      max_tokens: 300,
+      model: CHEF_MODEL,
+      max_tokens: 800,
       thinking: { type: "disabled" },
-      output_config: { effort: "low", format: zodOutputFormat(ReasonsOut) },
-      system: [{
-        type: "text",
-        cache_control: { type: "ephemeral" },
-        text: `You reword one-line reasons for dinner picks in an Indian family cooking app. Keep the same facts as the
-draft reason (same items, numbers and names), make it sound warm and natural, at most 90 characters, in the language
-given (Hindi in Devanagari for hi-IN, Hinglish in Latin script for hi-Latn-IN, Indian English for en-IN).
-No health or nutrition claims. No emoji.`,
-      }],
-      messages: [{ role: "user", content: `Language: ${language}\n${JSON.stringify(items)}` }],
+      output_config: { effort: "low", format: zodOutputFormat(ChefOutSchema) },
+      system: [{ type: "text", cache_control: { type: "ephemeral" }, text: CHEF_SYSTEM }],
+      messages: [{ role: "user", content: `Language: ${language}\n${JSON.stringify(brief)}` }],
     },
-    { timeout: 1500 },
+    { timeout: 4000 },
   ));
-  const out = new Map<string, string>();
-  for (const x of r.parsed_output?.reasons ?? []) out.set(x.id, x.text);
-  return out;
+  return r.stop_reason === "refusal" ? null : (r.parsed_output as ChefOut | null);
 }
 
 // --- handler ---------------------------------------------------------------------------------------------------
@@ -162,30 +178,46 @@ Deno.serve(async (req) => {
     return json({ error: err instanceof Error ? err.message : "could not load the kitchen" }, 500);
   }
   const ranking = rank(kitchen, locale);
-  const { picks, templates, ctx, slot, craving, nameOf } = ranking;
+  const { templates, ctx, slot, craving, nameOf } = ranking;
   const batchId = crypto.randomUUID();
   const docById = new Map(kitchen.docs.map((d) => [d.id!, d]));
 
+  // The chef step: the model chooses tonight's three from the rules' best few and says why, and may name a new dish.
+  // Without a model, or when its answer fails the checks, the rules' picks and reasons stand.
+  let picks = ranking.picks;
   let reasons = templates;
-  if (client && picks.length) {
+  let newDish: { name: string; why: string } | null = null;
+  let chose: "model" | "rules" = "rules";
+  const anchorsOf = (p: Ranked, t: string) => [
+    ...p.match.items.filter((m) => m.entry?.daysLeft !== null && (m.entry?.daysLeft ?? 9) <= 2).map((m) => nameOf(m.key)),
+    ...ctx.eaters.filter((e) => t.includes(e.name)).map((e) => e.name),
+    ...(t.match(/\d+/g) ?? []),
+  ];
+  if (client && ranking.ranked.length) {
+    const pool = ranking.ranked.slice(0, CHEF_POOL);
+    const templateOf = (p: Ranked) => reasonFor(p, ctx, locale, nameOf);
     try {
-      const reworded = await modelReasons(client, householdId, body.language_code ?? "en-IN", picks.map((p, i) => ({
-        id: String(i),
-        title: p.recipe.title,
-        template: templates[i]!,
-        facts: p.breakdown,
-      })));
-      reasons = templates.map((t, i) => {
-        const p = picks[i]!;
-        const anchors = [
-          ...p.match.items.filter((m) => m.entry?.daysLeft !== null && (m.entry?.daysLeft ?? 9) <= 2).map((m) => nameOf(m.key)),
-          ...ctx.eaters.filter((e) => t.includes(e.name)).map((e) => e.name),
-          ...(t.match(/\d+/g) ?? []),
-        ];
-        return acceptReason(t, reworded.get(String(i)), anchors);
+      const brief = chefBrief({
+        ranked: pool,
+        templates: new Map(pool.map((p) => [p.recipe.id, templateOf(p)])),
+        ctx,
+        slot,
+        today: kitchen.today,
+        festivals: kitchen.calendarToday.map((e) => e.name),
+        craving,
+        cravingText: body.craving ?? null,
+        nameOf,
       });
+      const out = await modelChef(client, householdId, body.language_code ?? "en-IN", brief);
+      const accepted = acceptChef(out, pool, ranking.picks, templateOf, anchorsOf);
+      if (accepted) {
+        picks = accepted.picks;
+        reasons = accepted.reasons;
+        chose = "model";
+      }
+      newDish = acceptNewDish(out?.new_dish ?? null, kitchen.docs.map((d) => d.title));
     } catch (err) {
-      console.error("pick_reasons failed", err instanceof Error ? err.message : err);
+      console.error("pick_chef failed", err instanceof Error ? err.message : err);
     }
   }
 
@@ -198,7 +230,7 @@ Deno.serve(async (req) => {
     recipe_id: p.recipe.id,
     rank: i,
     score: p.score,
-    score_breakdown: p.breakdown,
+    score_breakdown: { ...p.breakdown, chosen_by: chose === "model" ? 1 : 0 },
     reason_text: reasons[i],
     uses_item_ids: p.match.items.filter((m) => m.entry).map((m) => m.entry!.itemId),
     missing: p.match.items.filter((m) => m.status === "missing").map((m) => ({ ingredient: m.key, substitute: m.substitute ?? null })),
@@ -219,6 +251,8 @@ Deno.serve(async (req) => {
     meal_slot: slot,
     check,
     calendar: calendarSummary(kitchen),
+    chosen_by: chose,
+    new_dish: newDish,
     picks: picks.map((p, i) => {
       const d = docById.get(p.recipe.id)!;
       return {

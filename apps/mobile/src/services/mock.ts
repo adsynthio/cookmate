@@ -16,10 +16,11 @@ import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 import { deductionPreview } from "@/domain/cooking";
 import { plateWeeks, type CookedMeal } from "@/domain/plate";
 import { localAnswer } from "@/domain/ask";
+import { ideaFor, ideaRecipe } from "@/domain/ideas";
 
 import { localeFromLanguageCode } from "@/domain/onboarding";
 
-import { buildPicks, findIngredients } from "./picks";
+import { buildPicks, findIngredients, STAPLES } from "./picks";
 import { changeReply, fallbackAnswer } from "@/domain/assist";
 
 import { localRescue } from "./rescue";
@@ -594,6 +595,14 @@ const mocks: Services = {
         offerFast: offer ? { id: offer.id ?? null, name: offer.name, names: offer.rules?.names ?? null, note: offer.rules?.note ?? null } : null,
       };
       for (const p of [batch.hero, ...batch.alternates]) if (p) shown.set(p.recommendationId, p.recipeId);
+      batch.chosenBy = "rules";
+      batch.newDish = batch.hero
+        ? ideaFor(
+          new Set(pantry.filter((p) => p.ingredientKey && p.confidence >= 0.5).map((p) => p.ingredientKey!)),
+          recipeDocs.map((d) => d.title),
+          localeFromLanguageCode(input.languageCode) ?? "en",
+        )
+        : null;
       batches.set(batch.batchId, batch);
       return batch;
     },
@@ -646,8 +655,22 @@ const mocks: Services = {
       const e = globalEvents.find((x) => x.id === eventId);
       if (e) keptEvents.push({ ...keepFastRow(e, householdId), id: `kept-${keptEvents.length}` });
     },
-    async inventDish() {
+    async inventDish(_householdId, dish) {
       await delay(900);
+      if (dish) {
+        // The preview knows a few everyday dishes by name; the live app has the model write any dish.
+        const doc = ideaRecipe(dish);
+        if (!doc) return { recipeId: null, reason: "nothing_safe" };
+        const id = `invented-${nextId++}`;
+        adapted.set(id, { ...doc, id, slug: id });
+        const have = new Set(pantry.filter((p) => p.ingredientKey).map((p) => p.ingredientKey!));
+        const staples = new Set(STAPLES);
+        return {
+          recipeId: id, title: doc.title, titles: doc.titles ?? null, description: doc.description, named: true,
+          uses: doc.ingredients.map((i) => i.ingredient).filter((k) => have.has(k)),
+          toBuy: doc.ingredients.map((i) => i.ingredient).filter((k) => !have.has(k) && !staples.has(k)),
+        };
+      }
       const cat = new Map((catalog as CatalogEntry[]).map((c) => [c.name, c]));
       const items: InventItem[] = pantry.map((p) => ({
         itemId: p.id,

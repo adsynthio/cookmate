@@ -97,6 +97,10 @@ export type PickBatch = {
   check?: PantryQuestion | null;
   /** KIT-144: festivals and fasts today, and a fast the household might be keeping. */
   calendar?: CalendarToday | null;
+  /** Who chose these: the model's chef step, or the rules when there is no model or its answer failed the checks. */
+  chosenBy?: "model" | "rules";
+  /** An everyday dish beyond Cookmate's recipes that this kitchen can make tonight; tap to have it written out. */
+  newDish?: { name: string; why: string } | null;
 };
 
 export type PantryQuestion = { itemId: string; name: string; ifYes: string | null; ifNo: string | null };
@@ -112,7 +116,7 @@ export type NotificationSettings = { dailyPick: boolean; pickTime: string; quiet
 
 /** KIT-056: a dish invented from the odds and ends in the kitchen, saved as the household's own "new creation". */
 export type InventResult =
-  | { recipeId: string; title: string; titles?: EventNames; description: string; uses: string[] }
+  | { recipeId: string; title: string; titles?: EventNames; description: string; uses: string[]; toBuy?: string[]; named?: boolean }
   | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" };
 
 export type PickInput = {
@@ -319,8 +323,11 @@ export interface RecipeService {
   getBatch(householdId: string, batchId: string): Promise<PickBatch | null>;
   /** KIT-144: the household keeps this fast today, so picks follow its food rules. */
   keepFast(householdId: string, eventId: string): Promise<void>;
-  /** KIT-056: invent a dish from what's here; never returns one that failed the safety checks. */
-  inventDish(householdId: string): Promise<InventResult>;
+  /**
+   * KIT-056: invent a dish from what's here; never returns one that failed the safety checks. With `dish`, write that
+   * dish the home way from this kitchen instead (at most three things to buy, returned in toBuy).
+   */
+  inventDish(householdId: string, dish?: string): Promise<InventResult>;
 }
 
 export type CookSession = {

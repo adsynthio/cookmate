@@ -67,7 +67,7 @@ export type Kitchen = {
   nameOf: (key: string) => string;
 };
 
-export type Ranking = Kitchen & { picks: Ranked[]; templates: string[] };
+export type Ranking = Kitchen & { picks: Ranked[]; templates: string[]; ranked: Ranked[] };
 
 /**
  * Load everything the ranking needs. `admin` (service role) reads feature flags; when `sb` is itself the service
@@ -181,8 +181,9 @@ export async function loadKitchen(
 }
 
 export function rank(k: Kitchen, locale: Locale): Ranking {
-  const picks = choosePicks(rankRecipes(k.recipes, k.ctx));
-  return { ...k, picks, templates: picks.map((p) => reasonFor(p, k.ctx, locale, k.nameOf)) };
+  const ranked = rankRecipes(k.recipes, k.ctx);
+  const picks = choosePicks(ranked);
+  return { ...k, picks, ranked, templates: picks.map((p) => reasonFor(p, k.ctx, locale, k.nameOf)) };
 }
 
 /** The one check question for today, if any (KIT-035): proposed here, capped and remembered by the database. */

@@ -774,7 +774,7 @@
   "home.want.title": "{dish} banaayein",
   "home.want.need": "{n} cheezein khareedni hongi:",
   "home.want.none": "\"{dish}\" ki recipe abhi nahi hai",
-  "home.want.noneBody": "Neeche ki dish jahaan tak ho sake aapki baat se mel khaati hain. Ya Cookmate aapki rasoi se kuch naya bana de.",
+  "home.want.noneBody": "Cookmate aapki rasoi ke hisaab se iski recipe likh sakta hai, ya jo hai usse kuch naya bana sakta hai.",
   "recipe.stepHours": "lagbhag {h} ghante",
   "you.cooksForSelf": "Apne liye banaate hain",
   "you.cooksFor": "{n} logon ke liye banaate hain",
@@ -1024,5 +1024,14 @@
   "ask.thinking": "Soch rahe hain…",
   "ask.error": "Abhi jawab nahi mila. Connection dekhkar phir koshish karein.",
   "ask.addToList": "List mein jodein: {items}",
-  "ask.added": "List mein jud gaya"
+  "ask.added": "List mein jud gaya",
+  "home.newDish.overline": "Aaj kuch naya",
+  "home.newDish.action": "{dish} ki recipe likhwayein",
+  "home.want.make": "{dish} ki recipe likhwayein",
+  "invent.named.title": "{dish}",
+  "invent.named.loading": "Aapki rasoi ke liye {dish} likhi ja rahi hai…",
+  "invent.named.toBuy": "Khareedna hai: {items}",
+  "invent.named.note": "Cookmate ne aapki rasoi ke liye likhi hai, yeh jaanchi-parkhi recipe nahi hai. Yeh hamari food safety jaanch mein pass hai; chakhte hue banaiye.",
+  "invent.named.fail.title": "Abhi {dish} nahi likh paaye",
+  "invent.named.fail.body": "Ismein bahut zyada khareedari lagti, ya yeh food safety jaanch mein pass nahi hui. Koi aur dish aazmayein, ya thodi der mein phir koshish karein."
 }

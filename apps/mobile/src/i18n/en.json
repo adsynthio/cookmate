@@ -808,7 +808,7 @@
   "home.want.title": "Make {dish}",
   "home.want.need": "You'll need to buy {n}:",
   "home.want.none": "No recipe for \"{dish}\" yet",
-  "home.want.noneBody": "The dishes below still match what you typed where they can. Or let Cookmate make something new from your kitchen.",
+  "home.want.noneBody": "Cookmate can write it for your kitchen, or make something new from what's here.",
   "recipe.stepHours": "about {h} hr",
   "you.cooksForSelf": "Cooks for one",
   "you.cooksFor": "Cooks for {n} people",
@@ -1058,5 +1058,14 @@
   "ask.thinking": "Thinking…",
   "ask.error": "Couldn't answer just now. Check the connection and try again.",
   "ask.addToList": "Add to list: {items}",
-  "ask.added": "Added to your list"
+  "ask.added": "Added to your list",
+  "home.newDish.overline": "Something new tonight",
+  "home.newDish.action": "Write the recipe for {dish}",
+  "home.want.make": "Write a recipe for {dish}",
+  "invent.named.title": "{dish}",
+  "invent.named.loading": "Writing {dish} for your kitchen…",
+  "invent.named.toBuy": "To buy: {items}",
+  "invent.named.note": "Written by Cookmate for your kitchen, not a tested recipe. It passed our food-safety checks; taste as you go.",
+  "invent.named.fail.title": "Couldn't write {dish} just now",
+  "invent.named.fail.body": "It needed too much shopping, or didn't pass our food-safety checks. Try another dish, or try again in a bit."
 }

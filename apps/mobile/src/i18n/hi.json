@@ -804,7 +804,7 @@
   "home.want.title": "{dish} बनाएँ",
   "home.want.need": "{n} चीज़ें ख़रीदनी होंगी:",
   "home.want.none": "\"{dish}\" की रेसिपी अभी नहीं है",
-  "home.want.noneBody": "नीचे की डिश जहाँ तक हो सके आपकी बात से मेल खाती हैं। या Cookmate आपकी रसोई से कुछ नया बना दे।",
+  "home.want.noneBody": "Cookmate आपकी रसोई के हिसाब से इसकी रेसिपी लिख सकता है, या जो है उससे कुछ नया बना सकता है।",
   "recipe.stepHours": "लगभग {h} घंटे",
   "you.cooksForSelf": "अपने लिए बनाते हैं",
   "you.cooksFor": "{n} लोगों के लिए बनाते हैं",
@@ -1054,5 +1054,14 @@
   "ask.thinking": "सोच रहे हैं…",
   "ask.error": "अभी जवाब नहीं मिला। कनेक्शन देखकर फिर कोशिश करें।",
   "ask.addToList": "लिस्ट में जोड़ें: {items}",
-  "ask.added": "लिस्ट में जुड़ गया"
+  "ask.added": "लिस्ट में जुड़ गया",
+  "home.newDish.overline": "आज कुछ नया",
+  "home.newDish.action": "{dish} की रेसिपी लिखवाएँ",
+  "home.want.make": "{dish} की रेसिपी लिखवाएँ",
+  "invent.named.title": "{dish}",
+  "invent.named.loading": "आपकी रसोई के लिए {dish} लिखी जा रही है…",
+  "invent.named.toBuy": "खरीदना है: {items}",
+  "invent.named.note": "Cookmate ने आपकी रसोई के लिए लिखी है, यह जाँची-परखी रेसिपी नहीं है। यह हमारी खाद्य सुरक्षा जाँच में पास है; चखते हुए बनाइए।",
+  "invent.named.fail.title": "अभी {dish} नहीं लिख पाए",
+  "invent.named.fail.body": "इसमें बहुत ज़्यादा खरीदारी लगती, या यह खाद्य सुरक्षा जाँच में पास नहीं हुई। कोई और डिश आज़माएँ, या थोड़ी देर में फिर कोशिश करें।"
 }

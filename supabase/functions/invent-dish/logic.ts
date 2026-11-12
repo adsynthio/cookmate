@@ -88,3 +88,33 @@ export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
     })),
   };
 }
+
+// --- "Make Aloo Methi": a dish the cook named (from Home's search or Cookmate's new-dish idea) ------------------
+
+export const MAX_DISH_CHARS = 60;
+export const MAX_TO_BUY = 3;
+
+/** A dish name worth asking for: letters, spaces and a few marks, in any script. */
+export function cleanDishName(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const name = raw.trim().replace(/\s+/g, " ");
+  if (name.length < 3 || name.length > MAX_DISH_CHARS || !/^[\p{L}\p{M} '&()-]+$/u.test(name)) return null;
+  return name;
+}
+
+/**
+ * Things a named dish needs that the kitchen doesn't have (not staples, not optional). A named dish may need a few
+ * (they go on the list); more than MAX_TO_BUY means it isn't a dish for this kitchen tonight.
+ */
+export function toBuyFor(doc: RecipeDoc, have: Set<string>): string[] {
+  return [...new Set(doc.ingredients
+    .filter((i) => !i.optional && !have.has(i.ingredient) && !CATALOG.get(i.ingredient)?.staple)
+    .map((i) => i.ingredient))];
+}
+
+/** The plan a named dish is judged against: no odds and ends to use up, but any cooked food it uses gets reheated. */
+export function namedPlan(doc: RecipeDoc, items: InventItem[]) {
+  const used = new Set(doc.ingredients.map((i) => i.ingredient));
+  const cooked = items.filter((i) => (i.state === "cooked" || i.state === "leftover") && used.has(i.key)).map((i) => i.key);
+  return { use: [], roles: [], gaps: [], cooked };
+}

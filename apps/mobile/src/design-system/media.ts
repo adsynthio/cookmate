@@ -32,7 +32,7 @@ export const dishes: Record<"besan-chilla" | "chicken-curry" | "dal-tadka" | "eg
 };
 
 export const scenes: Record<"welcome" | "fridgeOpen" | "pantryShelf", ImageSourcePropType | null> = {
-  welcome: null,
+  welcome: require("../../assets/media/scenes/welcome.png") as ImageSourcePropType,
   fridgeOpen: null,
   pantryShelf: null,
 };

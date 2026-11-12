@@ -20,6 +20,8 @@ export type ResponseItem = {
   location_kind: CatalogEntry["location"] | null;
   state: ParsedItem["state"];
   confidence: number;
+  /** The cook said it ran out: the app marks it finished and offers the list instead of adding it. */
+  out?: boolean;
 };
 
 export function toCatalog(rows: CatalogRow[]): CatalogEntry[] {
@@ -69,6 +71,7 @@ export function toResponseItem(item: ParsedItem, ids: Map<string, string>): Resp
     location_kind: item.locationKind,
     state: item.state,
     confidence: Math.round(item.confidence * 100) / 100,
+    ...(item.out ? { out: true } : {}),
   };
 }
 

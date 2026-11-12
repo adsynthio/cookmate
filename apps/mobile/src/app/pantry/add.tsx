@@ -1,6 +1,6 @@
 // KIT-031: add items by typing them the way you'd say them. Cookmate reads the list back, marks anything it
 // isn't sure about, and only adds once the user has seen (or heard) it. Nothing is written before "Add".
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Speech from "expo-speech";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -28,7 +28,7 @@ const PLACES: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready
 const FLAVORS: FlavorRole[] = ["rich", "heat", "acid", "crunch", "starch", "sweet"];
 const PLACE_ICON: Record<LocationKind, IconName> = { fridge: "fridge", pantry: "pantry", freezer: "freezer", staples: "box", ready_made: "cart", counter: "counter" };
 // Typed the way people say them; tapping one adds it to the box.
-const EXAMPLES = ["2 kilo aloo", "1 dozen eggs", "half kg paneer", "palak", "thoda atta", "leftover dal"];
+const EXAMPLES = ["2 kilo aloo", "1 dozen eggs", "dhai sau gram paneer", "palak", "kal ki bachi dal", "dahi khatam"];
 
 export default function AddItemsScreen() {
   useLocale();
@@ -54,13 +54,28 @@ export default function AddItemsScreen() {
     mutationFn: () => services.kitchen.parseItems({ householdId, text, languageCode: LANGUAGE_CODES[getLocale()] }),
     onSuccess: (r) => setDrafts(r.items),
   });
+  const kitchen = useQuery({ queryKey: ["kitchen", householdId], queryFn: () => services.kitchen.getKitchen(householdId) });
   const add = useMutation({
-    mutationFn: (items: DraftItem[]) => services.kitchen.addItems({ householdId, items, addedVia: via }),
+    mutationFn: async (items: DraftItem[]) => {
+      const toAdd = items.filter((d) => !d.out);
+      const ranOut = items.filter((d) => d.out);
+      if (toAdd.length) await services.kitchen.addItems({ householdId, items: toAdd, addedVia: via });
+      if (ranOut.length) {
+        // What ran out is marked finished (if Cookmate had it) and goes on the shopping list.
+        const have = kitchen.data ?? [];
+        for (const d of ranOut) {
+          const item = have.find((p) => (d.ingredientKey ? p.ingredientKey === d.ingredientKey : p.name.toLowerCase() === d.said.toLowerCase()));
+          if (item) await services.kitchen.finishItem(item.id, false);
+        }
+        await services.kitchen.addToList(householdId, ranOut.map((d) => ({ name: d.ingredientKey ?? d.said, reason: "running_low" as const })));
+      }
+    },
     onSuccess: async () => {
       Speech.stop();
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["kitchen", householdId] }),
         queryClient.invalidateQueries({ queryKey: ["useSoon", householdId] }),
+        queryClient.invalidateQueries({ queryKey: ["list", householdId] }),
       ]);
       router.back();
     },
@@ -147,7 +162,11 @@ export default function AddItemsScreen() {
             {drafts.map((d, i) => (
               <Layout key={d.key}>
                 <Enter index={i}>
-                  <DraftCard draft={d} onChange={(p) => update(d.key, p)} onRemove={() => remove(d.key)} />
+                  {d.out ? (
+                    <OutCard draft={d} onKeep={() => update(d.key, { out: false })} onRemove={() => remove(d.key)} />
+                  ) : (
+                    <DraftCard draft={d} onChange={(p) => update(d.key, p)} onRemove={() => remove(d.key)} />
+                  )}
                 </Enter>
               </Layout>
             ))}
@@ -164,7 +183,13 @@ export default function AddItemsScreen() {
               kind="accent"
               stretch
               icon="checkCircle"
-              label={ready.length === 1 ? t("kitchen.confirmAddOne") : t("kitchen.confirmAdd", { count: ready.length })}
+              label={
+                ready.every((d) => d.out)
+                  ? t("kitchen.confirmOut")
+                  : ready.filter((d) => !d.out).length === 1
+                    ? t("kitchen.confirmAddOne")
+                    : t("kitchen.confirmAdd", { count: ready.filter((d) => !d.out).length })
+              }
               size="cook"
               disabled={ready.length === 0 || add.isPending}
               onPress={() => add.mutate(ready)}
@@ -173,6 +198,32 @@ export default function AddItemsScreen() {
         )}
       </Screen>
     </KeyboardAvoidingView>
+  );
+}
+
+/** Something the cook said ran out: confirming marks it finished and puts it on the list. */
+function OutCard({ draft, onKeep, onRemove }: { draft: DraftItem; onKeep: () => void; onRemove: () => void }) {
+  const { colors } = useTheme();
+  const entry = catalogEntry(draft.ingredientKey);
+  return (
+    <Card style={{ backgroundColor: colors.surfaceMuted }}>
+      <View style={styles.cardHead}>
+        <Photo source={ingredientImage(draft.ingredientKey, entry?.category ?? "homemade")} size={52} radius={radius.tag} />
+        <View style={{ flex: 1, gap: 4 }}>
+          <Badge label={t("kitchen.ranOut")} tone="accent" icon="cart" />
+          <Text variant="bodyStrong">{draftName(draft)}</Text>
+          <Text variant="caption" muted>
+            {t("kitchen.ranOutBody")}
+          </Text>
+        </View>
+        <IconButton label={t("kitchen.remove")} muted size={36} onPress={onRemove}>
+          <Icon name="trash" size={18} color={colors.inkSecondary} />
+        </IconButton>
+      </View>
+      <View style={{ alignSelf: "flex-start" }}>
+        <Button kind="quiet" size="small" label={t("kitchen.stillHave")} onPress={onKeep} />
+      </View>
+    </Card>
   );
 }
 

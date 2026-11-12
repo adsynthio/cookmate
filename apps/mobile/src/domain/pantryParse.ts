@@ -29,6 +29,8 @@ export type ParsedItem = {
   state: ItemState | null;
   /** How sure the parser is about this item, 0-1. Below 0.8 the confirm sheet highlights it. */
   confidence: number;
+  /** "dahi khatam ho gaya", "out of milk": the cook says it ran out (mark it finished, put it on the list). */
+  out?: boolean;
 };
 
 const NUMBER_WORDS: Record<string, number> = {
@@ -83,8 +85,16 @@ const FILLER = new Set([
   "rakha", "rakhe", "rakhi", "mein", "me", "main", "ka", "ki", "ke", "se", "ko", "wala", "wali", "wale", "abhi", "bas",
   "kuch", "thoda", "thodi", "thode", "zyada", "jyada", "kam", "sa", "si",
   "i", "have", "got", "bought", "some", "of", "in", "the", "we", "there", "is", "are", "added", "add", "also", "my",
-  "है", "हैं", "भी", "और", "लिया", "लाया", "में", "का", "की", "के", "थोड़ा", "थोड़ी", "कुछ",
+  "है", "हैं", "भी", "और", "लिया", "लाया", "में", "का", "की", "के", "थोड़ा", "थोड़ी", "कुछ", "सा", "सी", "से",
+  // When it was made or bought says nothing about the item ("kal ki bachi dal", "leftover rice from last night").
+  "kal", "raat", "aaj", "subah", "shaam", "dopahar", "parso", "yesterday", "today", "tonight", "last", "night",
+  "morning", "evening", "from", "hui", "hua", "hue", "ho", "gaya", "gayi", "gaye", "ran", "has", "had", "it", "all",
+  "कल", "रात", "आज", "सुबह", "शाम", "हुई", "हुआ", "हुए", "हो", "गया", "गई", "गए",
 ]);
+
+const LEFTOVER = new Set(["bacha", "bachi", "bache", "bachaa", "leftover", "leftovers", "बचा", "बची", "बचे"]);
+/** "dahi khatam ho gaya", "out of milk", "chini nahi hai", "चीनी ख़त्म": the item ran out. */
+const OUT = new Set(["khatam", "khatm", "khtm", "finished", "nahi", "nahin", "nai", "खत्म", "ख़त्म", "नहीं", "समाप्त"]);
 
 const HOMEMADE = new Set(["ghar", "homemade", "home-made", "घर"]);
 
@@ -154,6 +164,7 @@ export function parseSegment(segment: string, index: CatalogIndex): ParsedItem |
   let locationKind: LocationKind | null = null;
   let state: ItemState | null = null;
   let vague = false;
+  let out = false;
   const rest: string[] = [];
 
   for (let i = 0; i < tokens.length; i++) {
@@ -170,7 +181,23 @@ export function parseSegment(segment: string, index: CatalogIndex): ParsedItem |
       i++;
       continue;
     }
+    if (t === "left" && next === "over") {
+      state = "leftover";
+      i++;
+      continue;
+    }
+    if (OUT.has(t) || ((t === "out" || t === "over") && quantity === null)) {
+      out = true;
+      if (next === "of") i++;
+      continue;
+    }
     const n = parseNumber(t);
+    // "dhai sau gram" = 250 g, "do sau" = 200
+    if (n !== null && quantity === null && n < 100 && next !== undefined && (next === "sau" || next === "सौ" || next === "hundred")) {
+      quantity = n * 100;
+      i++;
+      continue;
+    }
     // "a"/"an" only count as one before a unit or a known item ("a dozen eggs"), never inside a name.
     if (n !== null && quantity === null && !((t === "a" || t === "an") && next === undefined)) {
       quantity = n;
@@ -199,7 +226,7 @@ export function parseSegment(segment: string, index: CatalogIndex): ParsedItem |
       locationKind ??= "ready_made";
       continue;
     }
-    if (t === "bacha" || t === "bachi" || t === "leftover" || t === "बचा") {
+    if (LEFTOVER.has(t)) {
       state = "leftover";
       continue;
     }
@@ -210,10 +237,15 @@ export function parseSegment(segment: string, index: CatalogIndex): ParsedItem |
 
   tokens = rest;
   if (tokens.length === 0) return null;
+  // Leftovers live in the fridge unless the cook said otherwise.
+  if (state === "leftover") locationKind ??= "fridge";
   const said = tokens.join(" ");
   const hit = findIngredient(tokens, index);
+  const flags = out ? { out: true } : {};
   if (!hit) {
-    return { said, ingredientKey: null, quantity, unit, locationKind, state, confidence: 0.4 };
+    // Leftover cooked food ("kal ki bachi dal") is the household's own dish: its name is enough, no catalog match needed.
+    const ownDish = state === "leftover" && tokens.length <= 3;
+    return { said, ingredientKey: null, quantity, unit, locationKind, state, confidence: ownDish ? 0.85 : 0.4, ...flags };
   }
   // Leftover words around the match ("aloo bhujia" vs "aloo") mean we may have matched the wrong thing.
   const extra = tokens.length - (hit.end - hit.start);
@@ -228,6 +260,7 @@ export function parseSegment(segment: string, index: CatalogIndex): ParsedItem |
     locationKind,
     state,
     confidence,
+    ...flags,
   };
 }
 

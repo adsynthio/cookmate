@@ -134,7 +134,7 @@
   "kitchen.remove": "Remove",
   "kitchen.parseEmpty": "I couldn't find any items. Try \"2 kilo aloo\".",
   "kitchen.addError": "Couldn't add these. Your list is still here; try again.",
-  "kitchen.stillHave": "Still have this?",
+  "kitchen.stillHave": "I still have some",
   "kitchen.yes": "Yes",
   "kitchen.expiry.today": "Use today",
   "kitchen.expiry.expired": "Past its date",
@@ -1067,5 +1067,8 @@
   "invent.named.toBuy": "To buy: {items}",
   "invent.named.note": "Written by Cookmate for your kitchen, not a tested recipe. It passed our food-safety checks; taste as you go.",
   "invent.named.fail.title": "Couldn't write {dish} just now",
-  "invent.named.fail.body": "It needed too much shopping, or didn't pass our food-safety checks. Try another dish, or try again in a bit."
+  "invent.named.fail.body": "It needed too much shopping, or didn't pass our food-safety checks. Try another dish, or try again in a bit.",
+  "kitchen.ranOut": "Ran out",
+  "kitchen.ranOutBody": "Cookmate will mark it finished and put it on your list.",
+  "kitchen.confirmOut": "Mark finished and add to list"
 }

@@ -125,7 +125,8 @@ Deno.serve(async (req) => {
           unit: m.unit,
           locationKind: m.location_kind,
           state: m.state,
-          confidence: Math.max(0, Math.min(1, m.confidence)) * (key ? 1 : 0.7),
+          confidence: Math.max(0, Math.min(1, m.confidence)) * (key || m.state === "leftover" ? 1 : 0.7),
+          ...(m.out ? { out: true } : {}),
         } satisfies ParsedItem;
       })
       .filter((i) => i.said && wasMentioned(text, i.said, i.ingredientKey ? entries.get(i.ingredientKey) : undefined));

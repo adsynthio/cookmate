@@ -1,42 +1,341 @@
 [
-  { "text": "do kilo aloo, pyaaz, besan, dahi hai", "language": "hi-Latn-IN",
-    "expect": [{ "key": "potato", "quantity": 2, "unit": "kg" }, { "key": "onion" }, { "key": "gram flour" }, { "key": "curd" }] },
-  { "text": "आधा किलो टमाटर और एक पैकेट दूध", "language": "hi-IN",
-    "expect": [{ "key": "tomato", "quantity": 0.5, "unit": "kg" }, { "key": "milk", "quantity": 1, "unit": "packet" }] },
-  { "text": "200 g paneer in the fridge and a bunch of dhaniya", "language": "en-IN",
-    "expect": [{ "key": "paneer", "quantity": 200, "unit": "g" }, { "key": "coriander leaves", "quantity": 1, "unit": "bunch" }] },
-  { "text": "ghar ki hari chutney bani hai", "language": "hi-Latn-IN",
-    "expect": [{ "key": null, "said": "chutney" }] },
-  { "text": "bachi hui dal fridge mein rakhi hai", "language": "hi-Latn-IN",
-    "expect": [{ "key": null, "said": "dal" }] },
-  { "text": "dedh kilo atta aur paav kilo chana dal", "language": "hi-Latn-IN",
-    "expect": [{ "key": "whole wheat flour", "quantity": 1.5, "unit": "kg" }, { "key": "chana dal", "quantity": 0.25, "unit": "kg" }] },
-  { "text": "one dozen eggs", "language": "en-IN",
-    "expect": [{ "key": "egg", "quantity": 12, "unit": "piece" }] },
-  { "text": "adrak lehsun hari mirch sab hai", "language": "hi-Latn-IN",
-    "expect": [{ "key": "ginger" }, { "key": "garlic" }, { "key": "green chilli" }] },
-  { "text": "palak ka ek gaddi, gajar aadha kilo", "language": "hi-Latn-IN",
-    "expect": [{ "key": "spinach", "quantity": 1, "unit": "bunch" }, { "key": "carrot", "quantity": 0.5, "unit": "kg" }] },
-  { "text": "freezer mein matar ka packet hai", "language": "hi-Latn-IN",
-    "expect": [{ "key": "green peas", "quantity": 1, "unit": "packet" }] },
-  { "text": "2 litre mustard oil, 1 kg sugar, haldi", "language": "en-IN",
-    "expect": [{ "key": "mustard oil", "quantity": 2, "unit": "l" }, { "key": "sugar", "quantity": 1, "unit": "kg" }, { "key": "turmeric powder" }] },
-  { "text": "चावल पाँच किलो, अरहर दाल दो किलो", "language": "hi-IN",
-    "expect": [{ "key": "rice", "quantity": 5, "unit": "kg" }, { "key": "toor dal", "quantity": 2, "unit": "kg" }] },
-  { "text": "bhindi, baingan aur shimla mirch le aaye", "language": "hi-Latn-IN",
-    "expect": [{ "key": "okra" }, { "key": "brinjal" }, { "key": "capsicum" }] },
-  { "text": "half a cabbage and some cauliflower", "language": "en-IN",
-    "expect": [{ "key": "cabbage" }, { "key": "cauliflower" }] },
-  { "text": "rajma soaked overnight, ek katori", "language": "hi-Latn-IN",
-    "expect": [{ "key": "kidney beans", "quantity": 1, "unit": "katori" }] },
-  { "text": "curry patta, pudina, nimbu", "language": "hi-Latn-IN",
-    "expect": [{ "key": "curry leaves" }, { "key": "mint leaves" }, { "key": "lemon" }] },
-  { "text": "do bread packet aur amul butter", "language": "hi-Latn-IN",
-    "expect": [{ "key": "bread", "quantity": 2, "unit": "packet" }, { "key": "butter" }] },
-  { "text": "poha khatam ho gaya, but there's suji", "language": "hi-Latn-IN",
-    "expect": [{ "key": "semolina" }] },
-  { "text": "ढाई सौ ग्राम घी", "language": "hi-IN",
-    "expect": [{ "key": "ghee", "quantity": 250, "unit": "g" }] },
-  { "text": "kheera, seb aur kele", "language": "hi-Latn-IN",
-    "expect": [{ "key": "cucumber" }, { "key": "apple" }, { "key": "banana" }] }
+  {
+    "text": "do kilo aloo, pyaaz, besan, dahi hai",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "potato",
+        "quantity": 2,
+        "unit": "kg"
+      },
+      {
+        "key": "onion"
+      },
+      {
+        "key": "gram flour"
+      },
+      {
+        "key": "curd"
+      }
+    ]
+  },
+  {
+    "text": "आधा किलो टमाटर और एक पैकेट दूध",
+    "language": "hi-IN",
+    "expect": [
+      {
+        "key": "tomato",
+        "quantity": 0.5,
+        "unit": "kg"
+      },
+      {
+        "key": "milk",
+        "quantity": 1,
+        "unit": "packet"
+      }
+    ]
+  },
+  {
+    "text": "200 g paneer in the fridge and a bunch of dhaniya",
+    "language": "en-IN",
+    "expect": [
+      {
+        "key": "paneer",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "key": "coriander leaves",
+        "quantity": 1,
+        "unit": "bunch"
+      }
+    ]
+  },
+  {
+    "text": "ghar ki hari chutney bani hai",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": null,
+        "said": "chutney"
+      }
+    ]
+  },
+  {
+    "text": "bachi hui dal fridge mein rakhi hai",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": null,
+        "said": "dal"
+      }
+    ]
+  },
+  {
+    "text": "dedh kilo atta aur paav kilo chana dal",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "whole wheat flour",
+        "quantity": 1.5,
+        "unit": "kg"
+      },
+      {
+        "key": "chana dal",
+        "quantity": 0.25,
+        "unit": "kg"
+      }
+    ]
+  },
+  {
+    "text": "one dozen eggs",
+    "language": "en-IN",
+    "expect": [
+      {
+        "key": "egg",
+        "quantity": 12,
+        "unit": "piece"
+      }
+    ]
+  },
+  {
+    "text": "adrak lehsun hari mirch sab hai",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "ginger"
+      },
+      {
+        "key": "garlic"
+      },
+      {
+        "key": "green chilli"
+      }
+    ]
+  },
+  {
+    "text": "palak ka ek gaddi, gajar aadha kilo",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "spinach",
+        "quantity": 1,
+        "unit": "bunch"
+      },
+      {
+        "key": "carrot",
+        "quantity": 0.5,
+        "unit": "kg"
+      }
+    ]
+  },
+  {
+    "text": "freezer mein matar ka packet hai",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "green peas",
+        "quantity": 1,
+        "unit": "packet"
+      }
+    ]
+  },
+  {
+    "text": "2 litre mustard oil, 1 kg sugar, haldi",
+    "language": "en-IN",
+    "expect": [
+      {
+        "key": "mustard oil",
+        "quantity": 2,
+        "unit": "l"
+      },
+      {
+        "key": "sugar",
+        "quantity": 1,
+        "unit": "kg"
+      },
+      {
+        "key": "turmeric powder"
+      }
+    ]
+  },
+  {
+    "text": "चावल पाँच किलो, अरहर दाल दो किलो",
+    "language": "hi-IN",
+    "expect": [
+      {
+        "key": "rice",
+        "quantity": 5,
+        "unit": "kg"
+      },
+      {
+        "key": "toor dal",
+        "quantity": 2,
+        "unit": "kg"
+      }
+    ]
+  },
+  {
+    "text": "bhindi, baingan aur shimla mirch le aaye",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "okra"
+      },
+      {
+        "key": "brinjal"
+      },
+      {
+        "key": "capsicum"
+      }
+    ]
+  },
+  {
+    "text": "half a cabbage and some cauliflower",
+    "language": "en-IN",
+    "expect": [
+      {
+        "key": "cabbage"
+      },
+      {
+        "key": "cauliflower"
+      }
+    ]
+  },
+  {
+    "text": "rajma soaked overnight, ek katori",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "kidney beans",
+        "quantity": 1,
+        "unit": "katori"
+      }
+    ]
+  },
+  {
+    "text": "curry patta, pudina, nimbu",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "curry leaves"
+      },
+      {
+        "key": "mint leaves"
+      },
+      {
+        "key": "lemon"
+      }
+    ]
+  },
+  {
+    "text": "do bread packet aur amul butter",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "bread",
+        "quantity": 2,
+        "unit": "packet"
+      },
+      {
+        "key": "butter"
+      }
+    ]
+  },
+  {
+    "text": "poha khatam ho gaya, but there's suji",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "semolina"
+      }
+    ]
+  },
+  {
+    "text": "ढाई सौ ग्राम घी",
+    "language": "hi-IN",
+    "expect": [
+      {
+        "key": "ghee",
+        "quantity": 250,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "text": "kheera, seb aur kele",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "cucumber"
+      },
+      {
+        "key": "apple"
+      },
+      {
+        "key": "banana"
+      }
+    ]
+  },
+  {
+    "text": "aadha kilo pyaaz aur kal ki bachi dal",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "onion",
+        "quantity": 0.5,
+        "unit": "kg"
+      },
+      {
+        "key": null,
+        "said": "dal"
+      }
+    ]
+  },
+  {
+    "text": "dhai sau gram paneer, ek packet maggi, 3 nimbu",
+    "language": "hi-Latn-IN",
+    "expect": [
+      {
+        "key": "paneer",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "key": null,
+        "said": "maggi"
+      },
+      {
+        "key": "lemon",
+        "quantity": 3,
+        "unit": "piece"
+      }
+    ]
+  },
+  {
+    "text": "leftover rice from last night and some palak",
+    "language": "en-IN",
+    "expect": [
+      {
+        "key": "rice"
+      },
+      {
+        "key": "spinach"
+      }
+    ]
+  },
+  {
+    "text": "डेढ़ किलो टमाटर और थोड़ा सा पनीर",
+    "language": "hi-IN",
+    "expect": [
+      {
+        "key": "tomato",
+        "quantity": 1.5,
+        "unit": "kg"
+      },
+      {
+        "key": "paneer"
+      }
+    ]
+  }
 ]

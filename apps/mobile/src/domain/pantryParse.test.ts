@@ -77,3 +77,17 @@ test("a bare pav is bread, not a quarter", () => {
 test("splitting keeps multi-word items together", () => {
   assert.deepEqual(splitItems("hari mirch, kasuri methi aur sarson ka tel"), ["hari mirch", "kasuri methi", "sarson ka tel"]);
 });
+
+test("everyday sentences: compound numbers, time words, leftovers and things that ran out", () => {
+  const p = (s: string) => parsePantryText(s, index).map((i) => [i.ingredientKey ?? i.said, i.quantity, i.unit, i.state, i.out ?? false]);
+  assert.deepEqual(p("aadha kilo pyaaz aur kal ki bachi dal"), [["onion", 0.5, "kg", null, false], ["dal", null, null, "leftover", false]]);
+  assert.deepEqual(p("dhai sau gram paneer"), [["paneer", 250, "g", null, false]]);
+  assert.deepEqual(p("leftover rice from last night"), [["rice", null, null, "leftover", false]]);
+  assert.deepEqual(p("थोड़ा सा पनीर"), [["paneer", null, null, null, false]]);
+  assert.deepEqual(p("kal raat ki sabzi bachi hai, dahi khatam ho gaya"), [["sabzi", null, null, "leftover", false], ["curd", null, null, null, true]]);
+  assert.deepEqual(p("out of milk"), [["milk", null, null, null, true]]);
+  assert.deepEqual(p("chini nahi hai"), [["sugar", null, null, null, true]]);
+  assert.deepEqual(p("rice left over"), [["rice", null, null, "leftover", false]]);
+  // A leftover dish's own name is enough; it isn't sent to the model.
+  assert.ok(parsePantryText("kal ki bachi dal", index)[0]!.confidence >= 0.8);
+});

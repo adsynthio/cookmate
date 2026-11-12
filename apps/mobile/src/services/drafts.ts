@@ -17,6 +17,7 @@ export function toDraft(p: ParsedItem): DraftItem {
     state: p.state,
     flavorRoles: [] as FlavorRole[],
     confidence: p.confidence,
+    ...(p.out ? { out: true } : {}),
   };
 }
 

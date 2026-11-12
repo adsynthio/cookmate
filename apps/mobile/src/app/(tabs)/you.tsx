@@ -9,6 +9,7 @@ import { useCallback, useState } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
+import { PlateCard } from "@/components/you/PlateCard";
 import { LanguageCard, ProfileCard, StatGrid, TasteCard } from "@/components/you/YouParts";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
@@ -93,6 +94,7 @@ export default function YouScreen() {
         ]}
       />
       {members.data ? <TasteCard members={members.data} prefs={prefs} /> : null}
+      {householdId ? <PlateCard householdId={householdId} /> : null}
       <LanguageCard value={locale} onChange={changeLanguage} />
 
       {householdId ? <TellMe members={members.data ?? []} selfId={memberId} onSave={save} onSaved={refresh} /> : null}

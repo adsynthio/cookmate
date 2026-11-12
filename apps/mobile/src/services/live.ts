@@ -4,6 +4,7 @@ import { catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import type { ListLine } from "@/domain/shopping";
+import { weeksFromRows } from "@/domain/plate";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 import { parsePantryText, type ParsedItem } from "@/domain/pantryParse";
 
@@ -852,6 +853,11 @@ export const liveServices: Services = {
         p_make_again: makeAgain,
       });
       if (error) throw error;
+    },
+    async weeklyPlate(householdId, weeks = 4) {
+      const { data, error } = await requireSupabase().rpc("weekly_plate", { p_household: householdId, p_weeks: weeks });
+      if (error) throw error;
+      return weeksFromRows(data ?? [], Date.now(), weeks);
     },
     async getStepAudio(sessionId) {
       const sb = requireSupabase();

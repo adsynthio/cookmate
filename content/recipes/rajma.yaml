@@ -37,27 +37,48 @@ steps:
     technique: soak
     minutes: 480
     cue: The beans double in size and the skins are smooth.
+    cues:
+      look: "The beans double in size and the skins are smooth."
   - text: Drain and throw away the soaking water. Pressure-cook the rajma with 750 ml fresh water and the salt.
     technique: pressure_cook
     whistles: 8
     minutes: 30
     cue: Let the pressure drop by itself. A bean should mash easily between two fingers and be creamy inside.
     safety: Raw or undercooked kidney beans are poisonous. Always soak, throw away the soaking water, and cook until every bean is completely soft. If any bean is still firm, cook for more whistles. Never cook rajma from raw in a slow cooker.
+    heat: medium
+    cues:
+      sound: "Count the whistles, then let the pressure drop by itself."
+      touch: "A bean mashes easily between two fingers and is creamy inside."
   - text: Heat the oil in a kadai. Add cumin and the bay leaf, then the finely chopped onion and cook until deep golden.
     technique: saute_onion
     minutes: 10
     cue: The onion is evenly golden brown at the edges.
+    heat: medium
+    cues:
+      look: "The onion is evenly golden brown."
+      smell: "Sweet, browned onion."
+      avoid: "Don't rush on high heat: the edges burn before the middle cooks."
   - text: Add grated ginger, garlic and green chilli for a minute, then the tomato puree, turmeric, Kashmiri chilli and coriander powder. Cook, stirring.
     technique: bhuna
     minutes: 10
     cue: The masala is thick and dark and the oil leaves the sides.
+    heat: medium
+    cues:
+      look: "The masala is thick and dark and the oil leaves the sides."
+      smell: "The raw tomato smell is gone."
   - text: Add the rajma with its cooking water. Mash a few beans against the side of the pan for body and simmer on low heat.
     technique: simmer
     minutes: 15
     timer: true
     cue: The gravy thickens and coats the beans.
+    heat: low
+    cues:
+      look: "The gravy thickens and coats the beans."
+      avoid: "Stir from the bottom every few minutes; rajma gravy sticks."
   - text: Add garam masala and coriander leaves and serve with rice.
     minutes: 1
+    cues:
+      smell: "Fresh garam masala and coriander."
 variation_rules:
   - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: boil, minutes: 90, at_step: 2}, note: "Boil hard for the first 10 minutes, then simmer covered until every bean is completely soft."}
   - {type: time, condition: {max_time_min: 45}, action: {requires: soaked_or_cooked_rajma}, note: Only quick if the rajma is already soaked or boiled.}

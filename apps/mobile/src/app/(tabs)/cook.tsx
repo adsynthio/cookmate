@@ -93,6 +93,11 @@ export default function CookTab() {
             </View>
           </Enter>
           <TimerChips timers={timers} now={now} onStop={(id) => void stopTimer(id)} />
+          {timers.length ? (
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button kind="secondary" size="small" icon="timer" label={t("timers.open")} onPress={() => router.push(`/timers/${session.id}`)} />
+            </View>
+          ) : null}
           {stop.isError ? <Text>{t("state.error.body")}</Text> : null}
           <View style={{ alignSelf: "flex-start" }}>
             <Button kind="quiet" size="small" icon="close" label={t("cook.resume.stop")} disabled={stop.isPending} onPress={() => stop.mutate(session.id)} />

@@ -435,6 +435,13 @@ Part 2, cooking (branch `sprint-7/cook`):
 Part 3, Home and recipe (branch `sprint-7/home`):
 - [x] Home in the Stitch layout: greeting by time of day with the dish of the moment, "What's cooking for dinner?" meal switch, the mood search with the mic, Use my … and craving chips, Pick up where you left off (the dish you're cooking, with its step), Your kitchen has ideas (photo cards with Can make now or Need N more, time, items in kitchen, Cook now / View recipe), Use Soon photo cards with Find recipes, and Make something new; everything eases in
 - [x] Recipe detail: big dish photo with kitchen match, cuisine, time / how hard / spice, the olive For your kitchen card (have N of M, swaps from your kitchen, add missing to the list), Ingredients / Steps / Why it works tabs that slide, ingredient rows with photos, steps with cues and heat, and a fixed Cook with me bar
+
+Part 4, from the first phone test (branch `sprint-7/hindi-amounts`):
+- [x] Recipes in Hindi and Hinglish: every step, cue, safety note, family note and description is translated (`say:` and `descriptions:` in the recipe files, checked by the content build so nothing is left in English; `recipe_steps.instructions` and the new `recipes.descriptions`, migration `20270301000000_recipe_descriptions.sql`). Cook With Me reads the translated step aloud in Hindi
+- [x] Amounts the way people cook: onion, tomato, potato and other counted vegetables and fruit as ¼, ½, 1 small, 1, 1 big, 2 small or 1 big + 1 small; garlic in cloves, ginger in inches, salt in chhota chammach, a speck of soda as a chutki; no grams for these
+- [x] Picks cook from the kitchen first: dishes with nothing to buy, then one or two things short, then the rest
+- [x] Type a dish on Home ("rajma"): it shows how much of it you have, what you'd need to buy (add all to the list in one tap) and the recipe; if there's no such recipe it says so and offers Make something new
+- [ ] **Culinary lead / Hindi reviewer:** read the Hindi and Hinglish in `content/recipes/*.yaml`
 - [ ] Next: You (memory), the Cook tab's empty page, then Community last
 
 ---

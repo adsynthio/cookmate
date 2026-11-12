@@ -14,6 +14,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space, touch } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
+import { localStep } from "@/domain/recipes";
 import { PROBLEMS, type Problem } from "@/domain/rescue";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type RescueFix } from "@/services";
@@ -74,7 +75,8 @@ export default function RescueScreen() {
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
   const stepNo = session.data?.currentStep ?? 1;
   // How to tell the pan is back on track: this step's own cues, good sign and bad sign side by side.
-  const current = recipe.data?.steps[stepNo - 1];
+  const raw = recipe.data?.steps[stepNo - 1];
+  const current = raw ? localStep(raw, locale) : undefined;
   const good = current?.cues?.look ?? current?.cues?.smell ?? current?.cue;
   const bad = current?.cues?.avoid;
 

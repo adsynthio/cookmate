@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
+import { WantDish } from "@/components/home/WantDish";
 import { Greeting, InventCard, PickCard, pickPhoto, ResumeCard, SearchPill, UseSoonCards } from "@/components/home/HomeParts";
 
 import { itemName } from "@/components/kitchen/names";
@@ -221,6 +222,17 @@ export default function HomeScreen() {
       ) : null}
 
       <SearchPill value={draft} onChange={setDraft} onSubmit={() => setCraving(draft.trim())} onMic={() => router.push("/voice")} />
+
+      {craving && householdId ? (
+        <WantDish
+          key={craving}
+          query={craving}
+          householdId={householdId}
+          items={kitchen.data ?? []}
+          onOpen={(id) => router.push(`/recipe/${id}`)}
+          onInvent={() => router.push("/invent")}
+        />
+      ) : null}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
         {(useSoon.data ?? []).slice(0, 2).map((item) => (

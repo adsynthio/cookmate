@@ -3,6 +3,9 @@ title: Jeera Aloo
 titles: {hi: जीरा आलू, hi-Latn: Jeera Aloo}
 description: >-
   Boiled potatoes tossed in a cumin tadka with turmeric, chilli and a squeeze of amchur. Quick, dry and loved by children.
+descriptions:
+  hi: "उबले आलू जीरे के तड़के में, हल्दी, मिर्च और थोड़े आमचूर के साथ। जल्दी बनते हैं, सूखे, और बच्चों को पसंद।"
+  hi-Latn: "Ubale aloo jeere ke tadke mein, haldi, mirch aur thode amchur ke saath. Jaldi bante hain, sookhe, aur bachchon ko pasand."
 cuisine_region: generic_north
 course: side
 diet: vegan
@@ -39,11 +42,29 @@ steps:
     cues:
       sound: "Count two whistles, then let the pressure drop by itself."
       touch: "A knife slides in easily but the potato still holds its shape."
+    say:
+      hi:
+        text: "साबुत आलू को डूबने लायक पानी में कुकर में उबालें।"
+        sound: "दो सीटी गिनें, फिर प्रेशर अपने आप उतरने दें।"
+        touch: "चाकू आसानी से अंदर जाए पर आलू अपना आकार न छोड़े।"
+      hi-Latn:
+        text: "Saabut aloo ko doobne laayak paani mein cooker mein ubaalein."
+        sound: "Do seeti ginein, phir pressure apne aap utarne dein."
+        touch: "Chaaku aasaani se andar jaaye par aloo apna aakaar na chhode."
   - text: Peel the potatoes once cool enough to touch and cut into bite-sized cubes.
     minutes: 5
     cues:
       look: "Even, bite-sized cubes so they brown together."
       touch: "Cool enough to hold before peeling."
+    say:
+      hi:
+        text: "आलू छूने लायक ठंडे हों तो छीलकर छोटे टुकड़ों में काटें।"
+        look: "बराबर छोटे टुकड़े, ताकि सब एक साथ सिकें।"
+        touch: "छीलने से पहले हाथ में पकड़ने लायक ठंडे हों।"
+      hi-Latn:
+        text: "Aloo chhoone laayak thande hon to chheel kar chhote tukdon mein kaatein."
+        look: "Barabar chhote tukde, taaki sab ek saath sikein."
+        touch: "Chheelne se pehle haath mein pakadne laayak thande hon."
   - text: Heat the oil in a kadai. Add cumin, then hing, green chilli and ginger and stir for 30 seconds.
     technique: tadka
     minutes: 1
@@ -54,6 +75,19 @@ steps:
       sound: "The cumin sizzles and crackles straight away."
       smell: "Toasty, nutty cumin."
       avoid: "If the cumin turns black, start again: it will taste bitter."
+    say:
+      hi:
+        text: "कड़ाही में तेल गरम करें। जीरा डालें, फिर हींग, हरी मिर्च और अदरक डालकर 30 सेकंड चलाएँ।"
+        look: "जीरा एक रंग गहरा हो जाए।"
+        sound: "जीरा डालते ही चटकने लगे।"
+        smell: "भुने जीरे की सोंधी ख़ुशबू।"
+        avoid: "अगर जीरा काला हो जाए तो दोबारा शुरू करें: वरना कड़वा लगेगा।"
+      hi-Latn:
+        text: "Kadaahi mein tel garam karein. Jeera daalein, phir hing, hari mirch aur adrak daalkar 30 second chalaayein."
+        look: "Jeera ek rang gehra ho jaaye."
+        sound: "Jeera daalte hi chatakne lage."
+        smell: "Bhune jeere ki sondhi khushboo."
+        avoid: "Agar jeera kaala ho jaaye to dobaara shuru karein: warna kadva lagega."
   - text: Add turmeric, chilli powder and coriander powder, then immediately the potatoes and salt. Toss on medium heat.
     technique: shallow_fry
     minutes: 6
@@ -64,10 +98,28 @@ steps:
       look: "The edges turn golden and slightly crisp."
       sound: "A steady sizzle as you toss."
       avoid: "Toss gently so the potatoes don't break into mash."
+    say:
+      hi:
+        text: "हल्दी, मिर्च पाउडर और धनिया पाउडर डालें, फिर तुरंत आलू और नमक डालें। मध्यम आँच पर उछालते हुए मिलाएँ।"
+        look: "आलू के किनारे सुनहरे और थोड़े कुरकुरे हो जाएँ।"
+        sound: "मिलाते समय लगातार छन-छन।"
+        avoid: "हल्के हाथ से मिलाएँ ताकि आलू टूटकर भरता न बन जाएँ।"
+      hi-Latn:
+        text: "Haldi, mirch powder aur dhaniya powder daalein, phir turant aloo aur namak daalein. Madhyam aanch par uchhaalte hue milaayein."
+        look: "Aloo ke kinaare sunehre aur thode kurkure ho jaayein."
+        sound: "Milaate samay lagaataar chhan-chhan."
+        avoid: "Halke haath se milaayein taaki aloo toot kar bharta na ban jaayein."
   - text: Sprinkle amchur and coriander leaves, toss once and serve.
     minutes: 1
     cues:
       taste: "Taste one piece for salt and sourness."
+    say:
+      hi:
+        text: "आमचूर और हरा धनिया छिड़कें, एक बार मिलाएँ और परोसें।"
+        taste: "एक टुकड़ा चखकर नमक और खटास देखें।"
+      hi-Latn:
+        text: "Amchur aur hara dhaniya chhidkein, ek baar milaayein aur parosein."
+        taste: "Ek tukda chakh kar namak aur khataas dekhein."
 variation_rules:
   - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: boil, minutes: 20, at_step: 1}, note: Boil in a covered pot for about 20 minutes until tender.}
   - {type: spice, condition: {member_age_group: child}, action: {omit: [green chilli, red chilli powder]}, note: Leave out the chillies; the cumin and amchur carry the flavour.}

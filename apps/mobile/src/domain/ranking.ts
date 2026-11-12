@@ -294,7 +294,18 @@ export function rankRecipes(recipes: RankRecipe[], ctx: RankContext): Ranked[] {
   let pool = recipes.filter((r) => excludedBecause(r, ctx) === null);
   // Nothing uses the items the cook wanted to use up: show ordinary picks rather than nothing.
   if (!pool.length && ctx.focus?.length) pool = recipes.filter((r) => excludedBecause(r, { ...ctx, focus: [] }) === null);
-  return pool.map((r) => scoreRecipe(r, ctx)).sort((a, b) => b.score - a.score || a.recipe.slug.localeCompare(b.recipe.slug));
+  return pool
+    .map((r) => scoreRecipe(r, ctx))
+    .sort((a, b) => shoppingTier(a.match) - shoppingTier(b.match) || b.score - a.score || a.recipe.slug.localeCompare(b.recipe.slug));
+}
+
+/**
+ * Cook from what's in the kitchen first: dishes with nothing to buy come before dishes missing one or two things,
+ * and those before dishes that need a shop. The score orders dishes within each group.
+ */
+export function shoppingTier(m: PantryMatch): number {
+  const missing = m.items.filter((i) => i.status === "missing").length;
+  return missing === 0 ? 0 : missing <= 2 ? 1 : 2;
 }
 
 function mainIngredient(r: RankRecipe): string | undefined {

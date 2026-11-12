@@ -37,6 +37,9 @@ RECIPES_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "recipes.json"
 # Step cues by sense, in the order they are read out; "avoid" is the warning (\"don't let it...\").
 SENSES = ("look", "sound", "smell", "touch", "taste", "avoid")
 HEATS = {"low", "medium", "high"}
+# Each step in the app's other languages: the instruction, the cues, safety and the family note, translated.
+SAY_LANGS = ("hi", "hi-Latn")
+SAY_KEYS = ("text",) + SENSES + ("safety", "branch")
 CALENDAR_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "calendar.json"
 
 UNITS = {"g", "ml", "piece", "bunch", "packet"}
@@ -223,7 +226,11 @@ def load_recipes(v: Validator, catalog: dict[str, dict], techniques: dict[str, d
         v.keys(where, r, {"slug", "title", "titles", "description", "course", "diet", "base_servings", "difficulty",
                           "spice_level", "review_status", "ingredients", "steps"},
                {"cuisine_region", "prep_time_min", "cook_time_min", "equipment", "tags", "flavor_profile",
-                "food_groups", "variation_rules"})
+                "food_groups", "variation_rules", "descriptions"})
+        ds = r.get("descriptions")
+        if ds is not None and (not isinstance(ds, dict) or not set(ds) <= set(SAY_LANGS)
+                               or not all(isinstance(x, str) and x.strip() for x in ds.values())):
+            v.err(where, f"descriptions must map some of {list(SAY_LANGS)} to a sentence")
         if r.get("slug") != path.stem or not SLUG.match(str(r.get("slug", ""))):
             v.err(where, "slug must be lowercase-hyphenated and match the file name")
         v.enum(where, "recipes", "course", r.get("course"))
@@ -278,7 +285,7 @@ def load_recipes(v: Validator, catalog: dict[str, dict], techniques: dict[str, d
             v.err(where, "no steps")
         for k, st in enumerate(steps, start=1):
             w = f"{where} step {k}"
-            v.keys(w, st, {"text"}, {"technique", "minutes", "seconds", "timer", "whistles", "cue", "cues", "heat", "safety", "branch"})
+            v.keys(w, st, {"text"}, {"technique", "minutes", "seconds", "timer", "whistles", "cue", "cues", "heat", "safety", "branch", "say"})
             if st.get("heat") is not None and st["heat"] not in HEATS:
                 v.err(w, f"heat must be one of {sorted(HEATS)}")
             cues = st.get("cues")
@@ -290,6 +297,20 @@ def load_recipes(v: Validator, catalog: dict[str, dict], techniques: dict[str, d
                 elif not st.get("cue"):
                     # The one-line cue (voice agent, older app builds) is the senses joined, warning last.
                     st["cue"] = " ".join(cues[k].strip() for k in SENSES if k in cues)
+            say = st.get("say")
+            if say is not None:
+                if not isinstance(say, dict) or not set(say) <= set(SAY_LANGS):
+                    v.err(w, f"say must map some of {list(SAY_LANGS)} to the translated step")
+                else:
+                    # A translation says everything the English does, so nothing is left in English.
+                    needed = {"text"} | set(st.get("cues") or {}) | ({"safety"} if st.get("safety") else set()) | ({"branch"} if st.get("branch") else set())
+                    for lang, tr in say.items():
+                        if not isinstance(tr, dict) or not set(tr) <= set(SAY_KEYS):
+                            v.err(w, f"say.{lang} keys must be some of {list(SAY_KEYS)}")
+                        elif not all(isinstance(x, str) and x.strip() for x in tr.values()):
+                            v.err(w, f"say.{lang}: every line must be a sentence")
+                        elif needed - set(tr):
+                            v.err(w, f"say.{lang} is missing {sorted(needed - set(tr))}")
             if "minutes" in st and "seconds" in st:
                 v.err(w, "use minutes or seconds, not both")
             if st.get("timer") and not (st.get("minutes") or st.get("seconds")):
@@ -441,16 +462,16 @@ def render(catalog: dict[str, dict], techniques: dict[str, dict], flags: list[di
         out += [
             "",
             f"-- Recipe: {slug} ({r['review_status']}{', published' if published else ', not published'})",
-            "insert into public.recipes (slug, title, titles, description, cuisine_region, course, diet, base_servings,",
+            "insert into public.recipes (slug, title, titles, description, descriptions, cuisine_region, course, diet, base_servings,",
             "  prep_time_min, cook_time_min, difficulty, spice_level, equipment, tags, flavor_profile, food_groups,",
             "  source, review_status, is_published) values",
             f"  ({q(slug)}, {q(r['title'])}, {j(titles)}, {q(' '.join(r['description'].split()))}, "
-            f"{q(r.get('cuisine_region'))}, {q(r['course'])}, {q(r['diet'])}, {r['base_servings']}, "
+            f"{j(r.get('descriptions') or {})}, {q(r.get('cuisine_region'))}, {q(r['course'])}, {q(r['diet'])}, {r['base_servings']}, "
             f"{q(r.get('prep_time_min'))}, {q(r.get('cook_time_min'))}, {r['difficulty']}, {r['spice_level']}, "
             f"{arr(r.get('equipment'))}, {arr(r.get('tags'))}, {j(r.get('flavor_profile') or {})}, "
             f"{arr(r.get('food_groups'))}, 'curated', {q(r['review_status'])}, {q(published)})",
             "on conflict (slug) where household_id is null do update set title = excluded.title, titles = excluded.titles,",
-            "  description = excluded.description, cuisine_region = excluded.cuisine_region, course = excluded.course,",
+            "  description = excluded.description, descriptions = excluded.descriptions, cuisine_region = excluded.cuisine_region, course = excluded.course,",
             "  diet = excluded.diet, base_servings = excluded.base_servings, prep_time_min = excluded.prep_time_min,",
             "  cook_time_min = excluded.cook_time_min, difficulty = excluded.difficulty,",
             "  spice_level = excluded.spice_level, equipment = excluded.equipment, tags = excluded.tags,",
@@ -490,7 +511,7 @@ def render(catalog: dict[str, dict], techniques: dict[str, dict], flags: list[di
             # sensory_cues: {en: the one-line cue, look/sound/smell/touch/taste/avoid: one sentence each, heat}.
             sensory = ({"en": cue} if cue else {}) | dict(st.get("cues") or {}) | ({"heat": st["heat"]} if st.get("heat") else {})
             rows.append(
-                f"  ({rid}, {k}, {q(st['text'])}, {j({'en': st['text']})}, {tech}, {q(secs)}, "
+                f"  ({rid}, {k}, {q(st['text'])}, {j({'en': st['text']} | dict(st.get('say') or {}))}, {tech}, {q(secs)}, "
                 f"{q(bool(st.get('timer')))}, {q(st.get('whistles'))}, {q(cue)}, {j(sensory)}, "
                 f"{j(st['branch']) if st.get('branch') else 'null'}, {q(st.get('safety'))})"
             )

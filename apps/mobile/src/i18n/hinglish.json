@@ -1036,5 +1036,7 @@
   "invent.named.fail.body": "Ismein bahut zyada khareedari lagti, ya yeh food safety jaanch mein pass nahi hui. Koi aur dish aazmayein, ya thodi der mein phir koshish karein.",
   "kitchen.ranOut": "Khatam",
   "kitchen.ranOutBody": "Cookmate ise khatam maankar aapki list mein jod dega.",
-  "kitchen.confirmOut": "Khatam karein aur list mein jodein"
+  "kitchen.confirmOut": "Khatam karein aur list mein jodein",
+  "finish.noticed": "Cookmate ne dhyaan diya",
+  "finish.noticedBody": "Khana banate samay aapne jo badla, usse. Jo sirf aaj ke liye tha, uska nishaan hata dein."
 }

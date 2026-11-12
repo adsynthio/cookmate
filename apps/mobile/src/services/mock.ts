@@ -16,6 +16,8 @@ import { searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 import { deductionPreview } from "@/domain/cooking";
 import { plateWeeks, type CookedMeal } from "@/domain/plate";
 import { localAnswer } from "@/domain/ask";
+import { changeCandidates } from "@/domain/learning";
+import { displayName } from "@/domain/kitchen";
 import { ideaFor, ideaRecipe } from "@/domain/ideas";
 
 import { localeFromLanguageCode } from "@/domain/onboarding";
@@ -303,6 +305,11 @@ const mocks: Services = {
       subjects.delete(id);
     },
     async keepMemory() {},
+    async learnFromCooking({ dish, changes, languageCode }) {
+      await delay(300);
+      const locale = localeFromLanguageCode(languageCode) ?? "en";
+      return changeCandidates(changes, dish, locale, findIngredients, readMembers().map((m) => ({ id: m.id, name: m.displayName })), (k) => displayName(catalogEntry(k), k, locale));
+    },
     async saveMemory(input) {
       await delay(150);
       const same = memories.find((m) => m.statement.toLowerCase() === input.statement.trim().toLowerCase());
@@ -318,7 +325,7 @@ const mocks: Services = {
         {
           id,
           statement: input.statement.trim(),
-          source: "explicit",
+          source: input.source ?? "explicit",
           scope: "permanent",
           memberId: input.memberId ?? null,
           memberName: member?.displayName ?? null,

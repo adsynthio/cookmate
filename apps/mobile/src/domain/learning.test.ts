@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { feedbackCandidates } from "./learning.ts";
+import { changeCandidates, feedbackCandidates } from "./learning.ts";
 
 test("feedback tags become things to remember about this dish", () => {
   const c = feedbackCandidates(["too_spicy", "more_garlic"], true, "Dal Tadka", "en");
@@ -81,4 +81,22 @@ test("remembered amounts: the dish's own note wins, then the newest", () => {
   assert.equal(amountChanges(memories, ["rajma"]).get("garlic")?.statement, "newest general");
   // Likes, dislikes and unrelated memories change nothing.
   assert.equal(amountChanges([mem({ polarity: -1, ingredientKey: "garlic", about: "preference" }), mem({ about: "favourite", polarity: 1, recipeId: "dal" })], ["dal"]).size, 0);
+});
+
+test("changes made while cooking become suggestions for next time", () => {
+  const find = (s: string) => ["green chilli", "onion", "green peas"].filter((k) => s.includes(k === "green chilli" ? "mirch" : k === "onion" ? "pyaaz" : "peas"));
+  const members = [{ id: "m2", name: "Aarav" }];
+  const c = changeCandidates(["kam mirch daali", "Aarav ke liye pyaaz nahi chahiye", "added peas", "kam mirch daali"], "Dal Tadka", "en", find, members, (k) => k);
+  assert.deepEqual(c.map((x) => [x.about, x.ingredientKey ?? null, x.amount ?? null, x.memberId ?? null]), [
+    ["preference", "onion", null, "m2"],
+    ["change:added peas", null, null, null],
+    ["amount", "green chilli", "less", null],
+  ]);
+  // Chilli that isn't one ingredient ("kam mirchi", "less spicy") is the spice subject, as on the finish sheet.
+  const none = () => [] as string[];
+  const s = changeCandidates(["thoda kam teekha banaya", "namak kam"], "Rajma", "en", none);
+  assert.deepEqual(s.map((x) => [x.about, x.statement]), [["spice", "Less chilli in Rajma next time"], ["salt", "Less salt in Rajma next time"]]);
+  assert.equal(c[0]!.statement, "Aarav avoids onion");
+  assert.equal(c[1]!.statement, "Last time in Dal Tadka: added peas");
+  assert.equal(changeCandidates([" ", ""], "Dal", "hi", find).length, 0);
 });

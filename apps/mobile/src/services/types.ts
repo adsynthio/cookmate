@@ -14,6 +14,8 @@ export type MealSlot = Row<"recommendations">["meal_slot"];
 export type LocationKind = Row<"storage_locations">["kind"];
 export type StapleLevel = NonNullable<Row<"inventory_items">["staple_level"]>;
 export type MemorySource = Row<"memories">["source"];
+export type { LearnedCandidate } from "@/domain/learning";
+import type { LearnedCandidate } from "@/domain/learning";
 export type ItemState = Row<"inventory_items">["state"];
 export type FlavorRole = "rich" | "heat" | "acid" | "crunch" | "starch" | "sweet";
 
@@ -206,6 +208,8 @@ export type NewMemory = {
   ingredientKey?: string;
   /** With about = "amount": more or less of the ingredient from now on. Keep polarity 0 for these. */
   amount?: "more" | "less";
+  /** "observed" for what Cookmate noticed (kept by the cook); it never replaces what someone said outright. */
+  source?: "explicit" | "observed";
 };
 
 export type NewMember = {
@@ -258,6 +262,11 @@ export interface PreferenceService {
   keepMemory(memoryId: string): Promise<void>;
   /** KIT-101: something the user said or confirmed. Returns the memory's id. */
   saveMemory(input: NewMemory): Promise<string>;
+  /**
+   * AI 4: what the cook changed while cooking, read into suggestions for next time (amounts for this dish, a family
+   * member's likes and dislikes, plain notes). Nothing is saved; the finish sheet offers them.
+   */
+  learnFromCooking(input: { sessionId: string; householdId: string; dish: string; changes: string[]; languageCode: string }): Promise<LearnedCandidate[]>;
   /** KIT-102 Edit: the user's own words replace ours. */
   updateMemory(memoryId: string, statement: string): Promise<void>;
   /** KIT-068: how Cookmate talks to this member (by voice and when the app reads aloud). */

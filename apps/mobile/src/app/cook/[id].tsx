@@ -253,6 +253,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           recipeId={doc.parent_id ?? doc.id ?? doc.slug}
           memberId={memberId ?? undefined}
           changes={changes}
+          cookChanges={session.changes.map((c) => c.change)}
           leftoverNote={safetyText([leftoverSafety(doc.ingredients)].filter((x) => x !== null), locale)}
           offline={getBundle(session.id)?.finishedOffline === true}
           photo={dishImage(doc.slug)}

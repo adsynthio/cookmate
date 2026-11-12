@@ -127,7 +127,7 @@ export default function KitchenScreen() {
 
         <View style={styles.actions}>
           <QuickAction index={0} icon="plus" tone="primary" label={t("kitchen.action.add")} onPress={() => router.push("/pantry/add")} />
-          <QuickAction index={1} icon="receipt" tone="accent" label={t("kitchen.action.scan")} soon />
+          <QuickAction index={1} icon="camera" tone="accent" label={t("kitchen.action.scan")} onPress={() => router.push("/pantry/scan")} />
           <QuickAction index={2} icon="mic" tone="peach" label={t("kitchen.action.voice")} onPress={() => router.push("/voice")} />
         </View>
 

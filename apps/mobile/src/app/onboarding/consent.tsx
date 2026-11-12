@@ -66,7 +66,7 @@ export default function ConsentScreen() {
           if (kitchen.length) {
             await services.kitchen.addItems({
               householdId,
-              addedVia: "manual",
+              addedVia: "onboarding",
               items: kitchen.map((k, i) => ({
                 key: `setup-${i}`,
                 said: k.name,

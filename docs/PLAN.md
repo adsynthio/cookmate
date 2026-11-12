@@ -409,6 +409,22 @@ From `11_ai_tasks_and_models.csv`. All calls go through one `_shared/ai.ts` (Edg
 - Security review before beta: RLS pgTAP suite on every table, grep the app bundle for service keys in CI, Supabase advisors clean.
 - Hosting: Supabase `ap-south-1`, agent containers in Mumbai.
 
+
+### Sprint 7 status (12 Nov 2026) — new look and pantry module (branch `sprint-7/new-look`)
+The app now follows the Stitch "Kitchen AI" designs (cream, olive and terracotta, soft cards, photos everywhere) with Inter for English and Hinglish and Noto Sans Devanagari for Hindi, in plain English and Hindi. Community is the last stage.
+
+Part 1, foundation and pantry:
+- [x] Design system: new colours (light and dark), type sizes, rounder cards, warm shadows; motion everywhere (press to shrink, ease-in with stagger, gliding progress bars and tab pill, tabs shift, pushed screens slide), all following the phone's reduce-motion setting
+- [x] Floating tab bar: Home, Kitchen, List, Cook, You; the mic sits in the same place on every tab's header (VOICE-01)
+- [x] Onboarding in the Stitch flow: welcome (language switch), who eats here and food rules, your kitchen (tap common things by place, filtered by diet, "I can already suggest N dishes"), your taste (spice, favourite regional food, weekday time, dislikes and allergies), privacy. Cuisines and weekday time are saved in each member's taste profile (migration `20270216000000_onboarding_taste.sql`, 5 pgTAP tests); kitchen items are added and dislikes and allergies remembered when the household is created
+- [x] Kitchen: count, Add / Scan / Say it, the Use Soon card, place filters, Needs care above Fresh and stocked with photos and day badges, staples as Full / Low / Out, and the closest dish this kitchen can make; the pan button opens Home focused on that item
+- [x] Add items, item detail and the shopping list (now a tab) restyled
+- [x] Scanning (KIT-160/161/162): fridge or shelf photo and shop bill read by the new `scan-pantry` function (photo never stored), barcodes looked up in Open Food Facts; everything is checked on the add screen before it is saved
+- [x] Pictures: the brief for all 219 images is in `apps/mobile/assets/media/PROMPTS.md` (Cline + Vertex AI or Antigravity); 12 vegetable photos are in
+- [ ] **You:** generate the remaining pictures (`CLINE.md`); the scan screen and Kitchen show soft placeholders until then
+- [ ] Apply `20270216000000_onboarding_taste.sql` to ChefMate (Claude does this on merge); `scan-pantry` deploys with the functions workflow and needs `ANTHROPIC_API_KEY` (already set for the other functions)
+- [ ] Next: Home, Cook (sensory cues, timers, step transitions), recipe detail, You, then Community last
+
 ---
 
 ## 10. Build sequence

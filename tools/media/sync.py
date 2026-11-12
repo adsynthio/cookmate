@@ -21,6 +21,25 @@ OUT = APP / "src" / "design-system" / "media.ts"
 
 RECIPES = sorted(p.stem for p in (ROOT / "content" / "recipes").glob("*.yaml"))
 
+
+def catalog() -> list[tuple[str, str]]:
+    """(name, category) for every catalog ingredient, in file order. Plain parsing: the rows are one-line maps."""
+    out = []
+    for line in (ROOT / "content" / "catalog" / "ingredients.yaml").read_text().splitlines():
+        line = line.strip()
+        if line.startswith("- {name:"):
+            name = line.split("name:", 1)[1].split(",", 1)[0].strip()
+            cat = line.split("category:", 1)[1].split(",", 1)[0].strip() if "category:" in line else "other"
+            out.append((name, cat))
+    return out
+
+
+def slug(name: str) -> str:
+    return "-".join(name.lower().replace("(", " ").replace(")", " ").split())
+
+
+CATALOG = catalog()
+
 # key -> (path under assets/media, width, height). Keep in step with PROMPTS.md.
 ILLUSTRATIONS = {
     "emptyKitchen": ("illustrations/empty-kitchen.png", 480, 480),
@@ -36,7 +55,18 @@ ONBOARDING = {
     "leafMethi": ("onboarding/leaf-methi.png", 240, 240),
     "leafCoriander": ("onboarding/leaf-coriander.png", 240, 240),
 }
-DISHES = {slug: (f"dishes/{slug}.png", 1080, 1080) for slug in RECIPES}
+DISHES = {s: (f"dishes/{s}.png", 1080, 1080) for s in RECIPES}
+# One photo per catalog ingredient, keyed by its canonical name (pantry rows, chips, lists).
+INGREDIENTS = {name: (f"ingredients/{slug(name)}.png", 480, 480) for name, _ in CATALOG}
+# Fallbacks for things the catalog doesn't know (homemade food, leftovers) and for a missing photo.
+CATEGORY_KEYS = sorted({cat for _, cat in CATALOG} | {"leftover", "homemade"})
+CATEGORIES = {c: (f"ingredients/category-{slug(c)}.png", 480, 480) for c in CATEGORY_KEYS}
+# Larger photos for onboarding and the kitchen screens (Stitch layouts).
+SCENES = {
+    "welcome": ("scenes/welcome.png", 1080, 690),
+    "fridgeOpen": ("scenes/fridge-open.png", 1080, 1600),
+    "pantryShelf": ("scenes/pantry-shelf.png", 1080, 690),
+}
 
 
 def png_size(path: Path) -> tuple[int, int] | None:
@@ -76,6 +106,17 @@ def render() -> tuple[str, list[str]]:
         + block("onboarding", ONBOARDING)
         + "\n"
         + block("dishes", DISHES, quote=True)
+        + "\n"
+        + block("scenes", SCENES)
+        + "\n"
+        + block("ingredientPhotos", INGREDIENTS, quote=True)
+        + "\n"
+        + block("categoryPhotos", CATEGORIES, quote=True)
+        + "\n/** Photo for a pantry item: its own if generated, else its category's, else null. */\n"
+        "export function ingredientImage(name: string | null | undefined, category?: string | null): ImageSourcePropType | null {\n"
+        "  const own = name ? (ingredientPhotos as Record<string, ImageSourcePropType | null>)[name] : null;\n"
+        "  return own ?? (category ? (categoryPhotos as Record<string, ImageSourcePropType | null>)[category] ?? null : null);\n"
+        "}\n"
         + "\n/** Photo for a recipe by slug, if one has been generated. */\n"
         "export function dishImage(slug: string): ImageSourcePropType | null {\n"
         "  return (dishes as Record<string, ImageSourcePropType | null>)[slug] ?? null;\n"
@@ -87,7 +128,7 @@ def render() -> tuple[str, list[str]]:
 def main() -> int:
     check = "--check" in sys.argv
     src, problems = render()
-    all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES}
+    all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES, **SCENES, **INGREDIENTS, **CATEGORIES}
     missing = [rel for rel, _, _ in all_items.values() if not (MEDIA / rel).exists()]
     for p in problems:
         print(f"wrong size: {p}", file=sys.stderr)
@@ -99,8 +140,11 @@ def main() -> int:
         return 1 if problems else 0
     OUT.write_text(src)
     print(f"wrote {OUT.relative_to(ROOT)}: {len(all_items) - len(missing)} of {len(all_items)} images present")
-    for rel in missing:
-        print(f"  still to generate: assets/media/{rel}")
+    if "--list" in sys.argv:
+        for rel in missing:
+            print(f"  still to generate: assets/media/{rel}")
+    elif missing:
+        print(f"  {len(missing)} still to generate (add --list to see them)")
     return 1 if problems else 0
 
 

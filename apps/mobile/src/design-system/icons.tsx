@@ -1,4 +1,4 @@
-// Outline icons from the brand kit: 24 box, 1.75 stroke, round caps and joins, ink or ink-secondary.
+// Outline icons: 24 box, 1.75 stroke, round caps and joins, ink or ink-secondary.
 // Drawn in code (not images) so they follow the theme, the active state and the text size.
 import Svg, { Circle, Path, Rect } from "react-native-svg";
 
@@ -24,7 +24,32 @@ export type IconName =
   | "freezer"
   | "pantry"
   | "counter"
-  | "heart";
+  | "heart"
+  | "checkCircle"
+  | "receipt"
+  | "camera"
+  | "sparkle"
+  | "hourglass"
+  | "more"
+  | "list"
+  | "bell"
+  | "timer"
+  | "alarm"
+  | "leaf"
+  | "barcode"
+  | "flame"
+  | "box"
+  | "skillet"
+  | "edit"
+  | "trash"
+  | "play"
+  | "pause"
+  | "bulb"
+  | "shield"
+  | "undo"
+  | "minus"
+  | "share"
+  | "filter";
 
 const STROKE = 1.75;
 
@@ -114,6 +139,83 @@ function shapes(name: IconName) {
       );
     case "heart":
       return <Path d="M12 19.5s-7.5-4.6-7.5-10.2A4.1 4.1 0 0 1 12 7a4.1 4.1 0 0 1 7.5 2.3c0 5.6-7.5 10.2-7.5 10.2z" />;
+    case "checkCircle":
+      return (
+        <>
+          <Circle cx={12} cy={12} r={8.5} />
+          <Path d="M8.5 12.2l2.4 2.4 4.6-4.9" />
+        </>
+      );
+    case "receipt":
+      return <Path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4zM9 8h6M9 11.5h6M9 15h3.5" />;
+    case "camera":
+      return (
+        <>
+          <Path d="M4 8.5a1.5 1.5 0 0 1 1.5-1.5h2.3L9.3 5h5.4l1.5 2h2.3A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z" />
+          <Circle cx={12} cy={12.8} r={3.4} />
+        </>
+      );
+    case "sparkle":
+      return <Path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6zM18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" />;
+    case "hourglass":
+      return <Path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 4 5.5 4 8.5s-4 4-4 8.5M16 3.5c0 4.5-4 5.5-4 8.5s4 4 4 8.5" />;
+    case "more":
+      return (
+        <>
+          <Circle cx={12} cy={5.5} r={0.6} />
+          <Circle cx={12} cy={12} r={0.6} />
+          <Circle cx={12} cy={18.5} r={0.6} />
+        </>
+      );
+    case "list":
+      return <Path d="M9 6.5h11M9 12h11M9 17.5h11M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01" />;
+    case "bell":
+      return <Path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 1.5H5zM10 20.5a2 2 0 0 0 4 0" />;
+    case "timer":
+    case "alarm":
+      return (
+        <>
+          <Circle cx={12} cy={13} r={7.5} />
+          <Path d="M12 9.5V13l2.5 1.5M9.5 3h5M12 3v2.5" />
+        </>
+      );
+    case "leaf":
+      return <Path d="M5 19c0-8 5-13.5 14.5-14-.5 9.5-6 14.5-14 14zM5 19l7-7" />;
+    case "barcode":
+      return <Path d="M4 6v12M7 6v12M10.5 6v12M13 6v12M16.5 6v12M20 6v12" />;
+    case "flame":
+      return <Path d="M12 21a6 6 0 0 1-6-6c0-4 3-5.5 3.5-9.5C12 7 13 9 13 11c1-.5 1.8-1.6 2-3 2 1.8 3 4.2 3 7a6 6 0 0 1-6 6z" />;
+    case "box":
+      return <Path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5zM4 7.5 12 11l8-3.5M12 11v9" />;
+    case "skillet":
+      return <Path d="M3 11h13v1.5A5.5 5.5 0 0 1 10.5 18h-2A5.5 5.5 0 0 1 3 12.5zM16 11.5h5M7 7.5c0-1 .8-1 .8-2M11 7.5c0-1 .8-1 .8-2" />;
+    case "edit":
+      return <Path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 0 1 2.9 0l.1.1a2 2 0 0 1 0 2.9L8.5 18.5zM14 7l3 3" />;
+    case "trash":
+      return <Path d="M5 7h14M10 4h4M7 7l.8 12a1.5 1.5 0 0 0 1.5 1.4h5.4a1.5 1.5 0 0 0 1.5-1.4L17 7M10.5 11v5.5M13.5 11v5.5" />;
+    case "play":
+      return <Path d="M8 5.5v13l10.5-6.5z" />;
+    case "pause":
+      return <Path d="M8.5 5.5v13M15.5 5.5v13" />;
+    case "bulb":
+      return <Path d="M9 17.5h6M10 20.5h4M12 3.5a5.5 5.5 0 0 0-3.2 10c.7.5 1.2 1.3 1.2 2.2v.3h4v-.3c0-.9.5-1.7 1.2-2.2A5.5 5.5 0 0 0 12 3.5z" />;
+    case "shield":
+      return <Path d="M12 3.5 19 6v5.5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6z" />;
+    case "undo":
+      return <Path d="M8 8.5H15a4.5 4.5 0 0 1 0 9h-5M8 8.5l3-3M8 8.5l3 3" />;
+    case "minus":
+      return <Path d="M5 12h14" />;
+    case "share":
+      return (
+        <>
+          <Circle cx={17.5} cy={5.5} r={2.3} />
+          <Circle cx={6.5} cy={12} r={2.3} />
+          <Circle cx={17.5} cy={18.5} r={2.3} />
+          <Path d="M8.5 10.8l7-4M8.5 13.2l7 4" />
+        </>
+      );
+    case "filter":
+      return <Path d="M4 6.5h16M7 12h10M10 17.5h4" />;
     case "speaker":
       return <Path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />;
   }

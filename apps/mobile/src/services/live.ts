@@ -142,6 +142,8 @@ export const liveServices: Services = {
           diet: m.diet,
           spice: m.spice,
           is_self: m.isSelf ?? false,
+          preferred_cuisines: m.preferredCuisines ?? [],
+          max_time_min: m.maxTimeMin ?? null,
         })),
       });
       if (error) throw error;
@@ -361,6 +363,31 @@ export const liveServices: Services = {
         // Offline or the function is down: the on-device parser still gets most pantry sentences right.
         return { items: parsePantryText(text, catalogIndex).map(toDraft), source: "device" };
       }
+      const result = data as { items: ParseInventoryItem[]; source: string };
+      return {
+        source: result.source,
+        items: result.items.map((i) =>
+          toDraft({
+            said: i.name,
+            ingredientKey: i.ingredient_key,
+            quantity: i.quantity,
+            unit: i.unit,
+            locationKind: i.location_kind,
+            state: i.state,
+            confidence: i.confidence,
+          }),
+        ),
+      };
+    },
+
+    async scanItems(input) {
+      const sb = requireSupabase();
+      const body =
+        input.kind === "barcode"
+          ? { household_id: input.householdId, kind: "barcode", code: input.code }
+          : { household_id: input.householdId, kind: input.kind, image: input.image, media_type: input.mediaType ?? "image/jpeg" };
+      const { data, error } = await sb.functions.invoke("scan-pantry", { body });
+      if (error || !data) throw error ?? new Error("scan failed");
       const result = data as { items: ParseInventoryItem[]; source: string };
       return {
         source: result.source,

@@ -294,6 +294,29 @@ const mocks: Services = {
       await delay(300);
       return { items: parsePantryText(text, catalogIndex).map(toDraft), source: "rules" };
     },
+    async scanItems(input) {
+      await delay(900);
+      // Mock mode: a believable result for each kind, so the whole scan flow can be tried without a key.
+      const sample: Record<string, [string, number | null, string | null, number][]> = {
+        fridge: [["paneer", 200, "g", 0.9], ["tomato", 4, "piece", 0.95], ["egg", 6, "piece", 0.95], ["curd", null, null, 0.85], ["coriander leaves", 1, "bunch", 0.8], ["lemon", 2, "piece", 0.9], ["green chilli", null, null, 0.6]],
+        bill: [["toor dal", 1, "kg", 0.95], ["basmati rice", 5, "kg", 0.9], ["mustard oil", 1, "l", 0.9], ["sugar", 1, "kg", 0.95], ["milk", 2, "l", 0.9], ["onion", 2, "kg", 0.9]],
+        barcode: [["toor dal", 1, "kg", 0.9]],
+      };
+      return {
+        source: input.kind === "barcode" ? "barcode" : "model",
+        items: sample[input.kind]!.map(([name, quantity, unit, confidence]) =>
+          toDraft({
+            said: input.kind === "barcode" ? "Tata Sampann Toor Dal" : name,
+            ingredientKey: name,
+            quantity,
+            unit,
+            locationKind: null,
+            state: null,
+            confidence,
+          }),
+        ),
+      };
+    },
     async addItems({ items }) {
       await delay(250);
       const ids: string[] = [];

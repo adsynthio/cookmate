@@ -1,89 +1,160 @@
-// ONB-01 / KIT-020: start without email or password. "Try now" creates an anonymous account.
-// Layout follows the brand kit's onboarding screen: the wordmark, a display headline with one lime disc,
-// produce cut-outs piled along the bottom edge, and the start pill floating over them.
+// ONB-01 / KIT-020 welcome, from the Stitch "Meet your kitchen companion" screen: brand chip and language switch on
+// top, a big rounded food photo, the promise, three things Cookmate does (easing in one by one), and "Get started",
+// which creates an anonymous account (no email or password). The language is chosen here (ONB-02), so every step
+// after this one is already in it.
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Image, StyleSheet, useWindowDimensions, View } from "react-native";
+import { Image, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { StartPill } from "@/components/onboarding/StartPill";
-import { Icon } from "@/design-system/icons";
-import { onboarding } from "@/design-system/media";
-import { Text } from "@/design-system/primitives";
+import { Icon, type IconName } from "@/design-system/icons";
+import { scenes } from "@/design-system/media";
+import { Enter, PressableScale } from "@/design-system/motion";
+import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { space } from "@/design-system/tokens";
-import { t, useLocale } from "@/i18n";
+import { radius, shadow, space } from "@/design-system/tokens";
+import { LOCALES, setLocale, t, useLocale, type Locale, type StringKey } from "@/i18n";
 import { services } from "@/services";
 
+const FEATURES: { key: "f1" | "f2" | "f3"; icon: IconName; tone: "primary" | "accent" | "peach" }[] = [
+  { key: "f1", icon: "fridge", tone: "primary" },
+  { key: "f2", icon: "heart", tone: "accent" },
+  { key: "f3", icon: "speaker", tone: "peach" },
+];
+
 export default function WelcomeScreen() {
-  useLocale();
+  const locale = useLocale();
   const router = useRouter();
   const { colors } = useTheme();
-  // The pile is drawn wider than the screen so it bleeds off both sides, as in the brand kit.
-  const pileWidth = useWindowDimensions().width * 1.5;
+  const width = useWindowDimensions().width;
   const start = useMutation({
     mutationFn: () => services.auth.ensureSignedIn(),
-    onSuccess: () => router.push("/onboarding/language"),
+    onSuccess: () => router.push("/onboarding/family"),
   });
-
-  // The disc sits before the last word, like a word of its own: "Your kitchen, ● decided."
-  const title = t("onb.welcome.title");
-  const cut = title.lastIndexOf(" ");
-  const [lead, last] = cut > 0 ? [title.slice(0, cut + 1), title.slice(cut + 1)] : ["", title];
+  const wells = { primary: [colors.primarySoft, colors.primaryText], accent: [colors.accentSoft, colors.accentText], peach: [colors.peach, colors.peachText] };
+  const heroH = Math.min(320, (Math.min(width, 480) - space.gutter * 2) * 0.64);
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={[styles.screen, { backgroundColor: colors.canvas }]}>
-      {onboarding.producePile ? (
-        <Image
-          source={onboarding.producePile}
-          style={[styles.pile, { width: pileWidth, height: (pileWidth * 840) / 1179, left: -pileWidth / 6 }]}
-          resizeMode="contain"
-          accessible={false}
-        />
-      ) : null}
-      {onboarding.leafPalak ? (
-        <Image source={onboarding.leafPalak} style={[styles.leaf, { top: 24, right: 24, transform: [{ rotate: "-20deg" }] }]} accessible={false} />
-      ) : null}
-      {onboarding.leafCoriander ? (
-        <Image source={onboarding.leafCoriander} style={[styles.leaf, { top: 330, left: -12 }]} accessible={false} />
-      ) : null}
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.top}>
+          <View style={[styles.brand, { backgroundColor: colors.surfaceMuted }]}>
+            <Icon name="leaf" size={18} color={colors.primaryText} />
+            <Text variant="label" weight={600}>
+              Cookmate
+            </Text>
+          </View>
+          <LanguageSwitch value={locale} onChange={setLocale} />
+        </View>
 
-      <View style={styles.top}>
-        <Text variant="wordmark">Cookmate</Text>
-      </View>
+        <Enter>
+          <View style={[styles.hero, { height: heroH, backgroundColor: colors.primaryPale }]}>
+            {scenes.welcome ? <Image source={scenes.welcome} style={StyleSheet.absoluteFill} resizeMode="cover" accessible={false} /> : null}
+            <View style={[styles.heroBadge, { backgroundColor: colors.surface }]}>
+              <Icon name="sparkle" size={16} color={colors.accentText} />
+              <Text variant="label">{t("onb.w.badge")}</Text>
+            </View>
+          </View>
+        </Enter>
 
-      <View style={styles.copy}>
-        <Text variant="display" accessibilityRole="header" accessibilityLabel={title}>
-          {lead}
-          <View style={[styles.disc, { backgroundColor: colors.lime }]}>
-            <Icon name="cook" size={22} color={colors.onLime} />
-          </View>{" "}
-          {last}
-        </Text>
-        <Text muted>{t("onb.welcome.body")}</Text>
-      </View>
+        <Enter delay={80} style={styles.copy}>
+          <Text variant="overline" color={colors.accentText} style={styles.center}>
+            {t("onb.w.overline").toUpperCase()}
+          </Text>
+          <Text variant="title" accessibilityRole="header" style={styles.center}>
+            {t("onb.w.title")}
+          </Text>
+          <Text muted style={styles.center}>
+            {t("onb.w.body")}
+          </Text>
+        </Enter>
+
+        <View style={styles.features}>
+          {FEATURES.map((f, i) => {
+            const [bg, fg] = wells[f.tone];
+            return (
+              <Enter key={f.key} index={i} delay={160}>
+                <View style={[styles.feature, shadow.card, { backgroundColor: colors.surface }]}>
+                  <View style={[styles.well, { backgroundColor: bg }]}>
+                    <Icon name={f.icon} size={24} color={fg} />
+                  </View>
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Text variant="subheading">{t(`onb.w.${f.key}.title` as StringKey)}</Text>
+                    <Text variant="caption" muted>
+                      {t(`onb.w.${f.key}.body` as StringKey)}
+                    </Text>
+                  </View>
+                  <Icon name="checkCircle" size={22} color={colors.inkTertiary} />
+                </View>
+              </Enter>
+            );
+          })}
+        </View>
+      </ScrollView>
 
       <View style={styles.bottom}>
         {start.isError ? (
-          <Text color={colors.alert} accessibilityLiveRegion="assertive" style={{ textAlign: "center" }}>
+          <Text color={colors.alert} accessibilityLiveRegion="assertive" style={styles.center}>
             {t("onb.welcome.error")}
           </Text>
         ) : null}
-        <StartPill label={t("onb.welcome.try")} busy={start.isPending} onPress={() => start.mutate()} />
-        <Text variant="caption" muted style={{ textAlign: "center" }}>
-          {t("onb.welcome.note")}
+        <Button
+          kind="accent"
+          size="cook"
+          stretch
+          label={start.isPending ? t("onb.consent.creating") : t("onb.w.start")}
+          iconAfter="forward"
+          disabled={start.isPending}
+          onPress={() => start.mutate()}
+        />
+        <Text variant="caption" muted style={styles.center}>
+          {t("onb.w.note")}
         </Text>
       </View>
     </SafeAreaView>
   );
 }
 
+/** English · हिन्दी · Hinglish, as one pill with the chosen language filled in olive. */
+function LanguageSwitch({ value, onChange }: { value: Locale; onChange: (l: Locale) => void }) {
+  const { colors } = useTheme();
+  const order: Locale[] = ["en", "hi", "hinglish"].filter((l) => (LOCALES as readonly string[]).includes(l)) as Locale[];
+  return (
+    <View style={[styles.lang, { backgroundColor: colors.surfaceMuted }]} accessibilityRole="radiogroup">
+      {order.map((l) => {
+        const on = value === l;
+        return (
+          <PressableScale
+            key={l}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: on }}
+            accessibilityLabel={t(`lang.${l}` as StringKey)}
+            onPress={() => onChange(l)}
+            style={[styles.langItem, on && { backgroundColor: colors.primary }]}
+          >
+            <Text variant="caption" weight={600} color={on ? colors.onPrimary : colors.inkSecondary}>
+              {t(`lang.${l}` as StringKey)}
+            </Text>
+          </PressableScale>
+        );
+      })}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  screen: { flex: 1, paddingHorizontal: space.gutter },
-  top: { paddingTop: space.lg },
-  copy: { gap: space.lg, paddingTop: space.xxl },
-  disc: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", transform: [{ translateY: 4 }] },
-  bottom: { marginTop: "auto", gap: space.md, paddingBottom: space.lg },
-  pile: { position: "absolute", bottom: 0 },
-  leaf: { position: "absolute", width: 64, height: 64 },
+  screen: { flex: 1 },
+  content: { paddingHorizontal: space.gutter, paddingTop: space.sm, paddingBottom: space.xl, gap: space.xl },
+  top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.sm, flexWrap: "wrap" },
+  brand: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 8 },
+  lang: { flexDirection: "row", borderRadius: radius.pill, padding: 3 },
+  langItem: { borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 8, minHeight: 36, justifyContent: "center" },
+  hero: { borderRadius: radius.cardLg, overflow: "hidden", justifyContent: "flex-end", padding: space.lg },
+  heroBadge: { flexDirection: "row", alignItems: "center", gap: 6, alignSelf: "flex-start", borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 8 },
+  copy: { gap: space.sm, alignItems: "center" },
+  center: { textAlign: "center" },
+  features: { gap: space.md },
+  feature: { flexDirection: "row", alignItems: "center", gap: space.lg, borderRadius: radius.cardLg, padding: space.gutter },
+  well: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" },
+  bottom: { paddingHorizontal: space.gutter, paddingTop: space.sm, paddingBottom: space.sm, gap: space.sm },
 });

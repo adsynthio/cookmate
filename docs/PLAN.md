@@ -471,6 +471,12 @@ What the family ate, by food group, never calories (KIT-170, KIT-171).
 - [x] Restocking reminders (KIT-181): every night `private.refresh_purchase_patterns` learns how often each thing is bought (days something was added to the kitchen, not counting onboarding; at least three buys in six months) into `purchase_patterns`; `restock_due` (read as the caller) lists what runs out in the next two days, skipping what is on the list or already Low / Out. Kitchen asks one question at a time: "Running low on besan? You usually buy it every 10 days." Add to list (reason predicted) or Still have it (quiet for half the usual gap, 2 to 7 days). Never an order. Migration `20270415000000_restock.sql`, 8 pgTAP tests
 - Waiting on you: grocery providers (KIT-190/191), WhatsApp voice notes (KIT-200) and cook handoff (KIT-201) need accounts and a decision on which providers
 
+### Sprint 12 status — from the phone test (branch per part)
+- [x] Text one step smaller across the app; cook steps stay large
+- [x] Ask how much: one-tap amounts the way things are bought (Add screen, and a Kitchen "How much do you have?" screen)
+- [x] Drinks tab, off by default (switch in setup and on You): 8 everyday drinks and mocktails (nimbu pani, aam panna, jaljeera, lassi, chaas, cold coffee, adrak chai, virgin mojito) and 4 cocktails shown only after a one-time legal-drinking-age confirmation; each shows what the kitchen has and adds the rest to the list; English, Hindi, Hinglish
+- [ ] AI: ask Cookmate anything; AI picks and new dishes; understands anything typed; learns the family
+
 ---
 
 ## 10. Build sequence

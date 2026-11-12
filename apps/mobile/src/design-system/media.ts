@@ -240,6 +240,33 @@ export const categoryPhotos: Record<"beverage" | "condiment" | "dairy" | "egg" |
   "vegetable": null,
 };
 
+export const stepPhotos: Record<"besan-chilla/3" | "besan-chilla/4" | "chicken-curry/2" | "chicken-curry/3" | "chicken-curry/4" | "chicken-curry/5" | "dal-tadka/3" | "dal-tadka/4" | "egg-bhurji/2" | "egg-bhurji/4" | "jeera-aloo/3" | "jeera-aloo/4" | "kadhi-pakora/2" | "kadhi-pakora/3" | "kadhi-pakora/5" | "kadhi-pakora/7" | "kanda-poha/2" | "kanda-poha/3" | "kanda-poha/4" | "matar-paneer/2" | "matar-paneer/3" | "rajma/3" | "rajma/4" | "rajma/5", ImageSourcePropType | null> = {
+  "besan-chilla/3": null,
+  "besan-chilla/4": null,
+  "chicken-curry/2": null,
+  "chicken-curry/3": null,
+  "chicken-curry/4": null,
+  "chicken-curry/5": null,
+  "dal-tadka/3": null,
+  "dal-tadka/4": null,
+  "egg-bhurji/2": null,
+  "egg-bhurji/4": null,
+  "jeera-aloo/3": null,
+  "jeera-aloo/4": null,
+  "kadhi-pakora/2": null,
+  "kadhi-pakora/3": null,
+  "kadhi-pakora/5": null,
+  "kadhi-pakora/7": null,
+  "kanda-poha/2": null,
+  "kanda-poha/3": null,
+  "kanda-poha/4": null,
+  "matar-paneer/2": null,
+  "matar-paneer/3": null,
+  "rajma/3": null,
+  "rajma/4": null,
+  "rajma/5": null,
+};
+
 /** Photo for a pantry item: its own if generated, else its category's, else null. */
 export function ingredientImage(name: string | null | undefined, category?: string | null): ImageSourcePropType | null {
   const own = name ? (ingredientPhotos as Record<string, ImageSourcePropType | null>)[name] : null;
@@ -249,4 +276,9 @@ export function ingredientImage(name: string | null | undefined, category?: stri
 /** Photo for a recipe by slug, if one has been generated. */
 export function dishImage(slug: string): ImageSourcePropType | null {
   return (dishes as Record<string, ImageSourcePropType | null>)[slug] ?? null;
+}
+
+/** How a cooking step should look, if generated; else the dish photo. */
+export function stepImage(slug: string, step: number): ImageSourcePropType | null {
+  return (stepPhotos as Record<string, ImageSourcePropType | null>)[`${slug}/${step}`] ?? dishImage(slug);
 }

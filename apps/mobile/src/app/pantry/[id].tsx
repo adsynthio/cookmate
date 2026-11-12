@@ -18,6 +18,7 @@ import { expiryInfo, formatQuantity, parseQuantity, roughDuration, shelfLife } f
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type ItemChanges, type LocationKind, type PantryItem } from "@/services";
+import { LeftoverIdeas } from "@/components/pantry/LeftoverIdeas";
 import { useSession } from "@/state/session";
 import { useUndo } from "@/state/undo";
 
@@ -127,13 +128,17 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
         ) : null}
       </Enter>
 
-      <Button
-        kind="accent"
-        stretch
-        icon="skillet"
-        label={t("item.cookWith")}
-        onPress={() => router.navigate({ pathname: "/", params: { use: item.id } })}
-      />
+      {item.state === "leftover" || item.state === "cooked" ? null : (
+        <Button
+          kind="accent"
+          stretch
+          icon="skillet"
+          label={t("item.cookWith")}
+          onPress={() => router.navigate({ pathname: "/", params: { use: item.id } })}
+        />
+      )}
+
+      <LeftoverIdeas item={item} />
 
       <Card>
         <Text variant="subheading">{t("item.edit")}</Text>

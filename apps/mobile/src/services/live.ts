@@ -142,6 +142,8 @@ export const liveServices: Services = {
           diet: m.diet,
           spice: m.spice,
           is_self: m.isSelf ?? false,
+          preferred_cuisines: m.preferredCuisines ?? [],
+          max_time_min: m.maxTimeMin ?? null,
         })),
       });
       if (error) throw error;

@@ -61,8 +61,8 @@ type RecipeLike = {
 };
 
 /**
- * Dishes these items already go a long way towards: at least 70% of the dish's main ingredients (not staples, not
- * optional) are in the kitchen. Staples count as present. Most complete first.
+ * Dishes these items already go a long way towards: at least `minShare` (default 70%) of the dish's main ingredients
+ * (not staples, not optional) are in the kitchen. Staples count as present. Most complete first.
  */
 export function dishesWithin(
   items: SetupItem[],
@@ -70,6 +70,7 @@ export function dishesWithin(
   isStaple: (name: string) => boolean,
   diet: Diet,
   dietOf: (recipeDiet: string) => boolean = (d) => dietAllows(diet, d),
+  minShare = 0.7,
 ): { slug: string; title: string; share: number }[] {
   const have = new Set(items.map((i) => i.name));
   if (!have.size) return [];
@@ -80,7 +81,7 @@ export function dishesWithin(
       const got = main.filter((i) => have.has(i.ingredient)).length;
       return { slug: r.slug, title: r.title, share: main.length ? got / main.length : 0 };
     })
-    .filter((r) => r.share >= 0.7)
+    .filter((r) => r.share >= minShare)
     .sort((a, b) => b.share - a.share || a.title.localeCompare(b.title));
 }
 

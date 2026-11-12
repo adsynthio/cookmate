@@ -201,6 +201,9 @@ export type NewMember = {
   diet?: "veg" | "eggetarian" | "nonveg" | "jain" | "vegan";
   spice?: 1 | 2 | 3 | 4 | 5;
   isSelf?: boolean;
+  /** Taste profile: regional cuisines the household likes and the weekday time limit (minutes; null = none). */
+  preferredCuisines?: string[];
+  maxTimeMin?: number | null;
 };
 
 export type HouseholdRef = { householdId: string; memberId: string; languageCode: string | null };

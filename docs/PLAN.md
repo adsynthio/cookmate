@@ -458,6 +458,13 @@ Private cooking circles for family and friends; a public feed and challenges wai
 - [x] Community takes the List's place in the tab bar (as in Stitch); the list opens from the cart on Kitchen
 - [ ] **You:** sign off security findings 16 and 17; decide on photos of your own dish (needs a storage bucket and retention) and a public feed (needs moderation rules)
 
+### Sprint 9 status — Health, V1.5 (branch `sprint-9/plate`)
+What the family ate, by food group, never calories (KIT-170, KIT-171).
+- [x] This week's plate on You: meals cooked to the end, counted by food group (dal and pulses, sabzi, leafy greens, curd / milk / paneer, fruit, egg / fish / meat, rice / roti / poha) as bars toward a gentle weekly aim; This week / Last week; at most two tips for next week ("Add palak, methi or another leafy green a couple of times"), nothing for a thin week, a kind word for a balanced one
+- [x] Make it a full meal: one tip on a recipe when the dish is missing protein (dal or curd on the side; dal, chana or peanuts for vegan dishes) or vegetables (a sabzi or kachumber salad); nothing for sides or balanced dishes; hiding it is remembered for that dish
+- [x] Database: `20270401000000_weekly_plate.sql` (`weekly_plate`, read as the caller; `private.snapshot_weekly_plate` keeps the week just gone in `nutrition_weekly` every Monday 03:15 IST), 7 pgTAP tests. Tips are fixed rules on the phone, not a model, so there are no health claims and no cost
+- [ ] **Nutritionist / culinary lead:** check the weekly aims (`WEEKLY_AIM` in `apps/mobile/src/domain/plate.ts`) and the tip wording; check each recipe's `food_groups`
+
 ---
 
 ## 10. Build sequence

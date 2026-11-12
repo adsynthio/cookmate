@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { adjustmentFor, offersTimer, rememberedQty, readableLine, clock, convertQty, countWhistle, deductionPreview, remaining, stepSeconds } from "./cooking.ts";
+import { adjustmentFor, offersTimer, rememberedQty, readableLine, clock, convertQty, countWhistle, deductionPreview, remaining, stepSeconds, timerCue } from "./cooking.ts";
 
 test("step times and clocks", () => {
   assert.equal(stepSeconds({ minutes: 5 }), 300);
@@ -101,4 +101,11 @@ test("remembered amounts in the deduction", () => {
   // The cook didn't touch it, but the remembered amount differs from the recipe's: it is sent as an adjustment.
   const line = { itemId: "g", ingredient: "garlic", quantity: 10, unit: "g", currentQuantity: 100, staple: false };
   assert.deepEqual(adjustmentFor(line, { on: true, qty: String(rememberedQty(10, 1.25)), level: null }), { itemId: "g", quantity: 13 });
+});
+
+test("a ringing timer says what to check, looking first", () => {
+  assert.equal(timerCue({ cues: { smell: "Toasty.", look: "Golden." }, cue: "x" }), "Golden.");
+  assert.equal(timerCue({ cues: { sound: "Quiet sizzle." } }), "Quiet sizzle.");
+  assert.equal(timerCue({ cue: "Soft." }), "Soft.");
+  assert.equal(timerCue({}), undefined);
 });

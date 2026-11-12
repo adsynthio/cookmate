@@ -40,33 +40,59 @@ steps:
     technique: batter
     minutes: 3
     cue: No lumps at all, and as thin as buttermilk.
+    cues:
+      look: "No lumps at all, and as thin as buttermilk."
   - text: Pour into the kadai with the grated ginger. Bring to a boil on medium heat, stirring all the time.
     technique: simmer
     minutes: 8
     cue: Keep stirring until the first boil. If you stop, the curd can split.
+    heat: medium
+    cues:
+      look: "Small bubbles start rising all over."
+      avoid: "Keep stirring until the first boil, or the curd can split."
   - text: Lower the heat and let the kadhi simmer, stirring every few minutes.
     technique: simmer
     minutes: 25
     timer: true
     cue: It thickens enough to coat the back of a spoon, and the raw besan smell is gone.
+    heat: low
+    cues:
+      look: "It coats the back of a spoon."
+      smell: "The raw besan smell is gone."
   - text: Meanwhile make the pakora batter. Mix 2 katori besan with the sliced onion, green chilli, ajwain, a little salt and the soda, adding about 100 ml water slowly. Beat for 2 minutes.
     technique: batter
     minutes: 4
     cue: Thick enough to drop from a spoon in a blob. A drop of batter floats in a bowl of water.
+    cues:
+      look: "A drop of batter floats in a bowl of water."
+      touch: "Thick enough to drop from a spoon in a blob."
   - text: Heat the oil in a second pan on medium. Drop small spoonfuls of batter and fry in batches until golden all over.
     technique: deep_fry
     minutes: 12
     cue: The pakoras rise to the top and turn golden in about 4 minutes per batch.
     safety: Keep children away from the hot oil. Slide the batter in close to the oil so it does not splash, and never let water drip into hot oil.
+    heat: medium
+    cues:
+      look: "The pakoras rise to the top and turn golden all over."
+      sound: "Fast, steady bubbling around each pakora; it quietens as they cook through."
+      avoid: "If the oil smokes, turn it down: the outside browns before the inside cooks."
   - text: Add the pakoras to the kadhi and simmer for 5 more minutes so they soak it up.
     technique: simmer
     minutes: 5
     timer: true
+    heat: low
+    cues:
+      touch: "The pakoras turn soft and soak up the kadhi."
   - text: For the tadka, heat the ghee. Add cumin, methi dana, dry red chillies and hing. Turn off the heat, add Kashmiri chilli powder and pour over the kadhi at once.
     technique: tadka
     minutes: 1
     cue: Cumin darkens one shade in a few seconds. Add the chilli powder off the heat so it turns red, not black.
     branch: {age_group: child, action: Take out the child's portion before pouring the chilli tadka}
+    heat: medium
+    cues:
+      look: "Cumin darkens one shade in a few seconds; the chilli powder turns red."
+      sound: "A loud sizzle as the tadka hits the kadhi."
+      avoid: "Add the chilli powder off the heat so it turns red, not black."
 variation_rules:
   - {type: substitute, condition: {missing: curd}, action: {use: buttermilk, qty_ratio: 4, at_step: 1, reduce_water_ml: 900}, note: Use about 1.2 litres chaas and skip the extra water.}
   - {type: omit, condition: {max_time_min: 30}, action: {skip_steps: [4, 5]}, note: Plain kadhi without pakoras is ready in about 30 minutes.}

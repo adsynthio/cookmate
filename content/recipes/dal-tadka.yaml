@@ -37,22 +37,41 @@ steps:
     minutes: 20
     timer: true
     cue: Soaking is optional but makes the dal cook softer and faster.
+    cues:
+      look: "The rinse water runs almost clear."
   - text: Drain and pressure-cook the dal with 600 ml water and the turmeric on medium heat.
     technique: pressure_cook
     whistles: 4
     minutes: 15
     cue: Let the pressure drop by itself. The dal should mash completely when pressed with a spoon.
+    heat: medium
+    cues:
+      sound: "Count the whistles; then let the pressure drop by itself."
+      touch: "The dal mashes completely when pressed with a spoon."
   - text: Whisk the dal smooth, add the salt and hot water until it pours like thick soup, and simmer.
     technique: simmer
     minutes: 5
+    heat: low
+    cues:
+      look: "It pours like thick soup and bubbles gently."
+      avoid: "Stir now and then; dal sticks to the bottom as it thickens."
   - text: For the tadka heat the ghee in a kadai. Add cumin, hing and garlic; when the garlic is golden add onion, ginger and green chilli and cook until the onion is light golden. Add the tomato and chilli powder and cook until soft.
     technique: tadka
     minutes: 7
     cue: Garlic should be golden, not brown. The tomato breaks down and the ghee shines at the edges.
     branch: {age_group: child, action: Take out the child's dal before adding the chilli tadka; give it a little ghee and cumin only}
+    heat: medium
+    cues:
+      look: "Garlic is golden, the tomato has broken down and the ghee shines at the edges."
+      sound: "Cumin crackles as soon as it hits the ghee."
+      smell: "Nutty garlic and toasted cumin."
+      avoid: "Don't let the garlic go brown: it turns bitter."
   - text: Pour the tadka into the dal, simmer 2 minutes, then add coriander leaves and lemon juice.
     technique: simmer
     minutes: 2
+    heat: low
+    cues:
+      taste: "Taste for salt and sourness after the lemon."
 variation_rules:
   - {type: diet, condition: {diet: jain}, action: {omit: [onion, garlic, ginger], add: [{ingredient: asafoetida, qty: 0.2, unit: g}]}, note: A pinch more hing and a little tomato keep the flavour.}
   - {type: equipment, condition: {missing_equipment: pressure_cooker}, action: {method: simmer, minutes: 45, at_step: 2}, note: "Simmer in a covered pot with extra water, stirring, until soft."}

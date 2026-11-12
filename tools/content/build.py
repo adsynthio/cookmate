@@ -33,6 +33,10 @@ ARCH = ROOT / "docs" / "architecture"
 OUT = ROOT / "supabase" / "seed.sql"
 CATALOG_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "catalog.json"
 RECIPES_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "recipes.json"
+
+# Step cues by sense, in the order they are read out; "avoid" is the warning (\"don't let it...\").
+SENSES = ("look", "sound", "smell", "touch", "taste", "avoid")
+HEATS = {"low", "medium", "high"}
 CALENDAR_OUT = ROOT / "apps" / "mobile" / "src" / "data" / "calendar.json"
 
 UNITS = {"g", "ml", "piece", "bunch", "packet"}
@@ -274,7 +278,18 @@ def load_recipes(v: Validator, catalog: dict[str, dict], techniques: dict[str, d
             v.err(where, "no steps")
         for k, st in enumerate(steps, start=1):
             w = f"{where} step {k}"
-            v.keys(w, st, {"text"}, {"technique", "minutes", "seconds", "timer", "whistles", "cue", "safety", "branch"})
+            v.keys(w, st, {"text"}, {"technique", "minutes", "seconds", "timer", "whistles", "cue", "cues", "heat", "safety", "branch"})
+            if st.get("heat") is not None and st["heat"] not in HEATS:
+                v.err(w, f"heat must be one of {sorted(HEATS)}")
+            cues = st.get("cues")
+            if cues is not None:
+                if not isinstance(cues, dict) or not cues or not set(cues) <= set(SENSES):
+                    v.err(w, f"cues must map some of {list(SENSES)} to sentences")
+                elif not all(isinstance(x, str) and x.strip() for x in cues.values()):
+                    v.err(w, "every cue must be a sentence")
+                elif not st.get("cue"):
+                    # The one-line cue (voice agent, older app builds) is the senses joined, warning last.
+                    st["cue"] = " ".join(cues[k].strip() for k in SENSES if k in cues)
             if "minutes" in st and "seconds" in st:
                 v.err(w, "use minutes or seconds, not both")
             if st.get("timer") and not (st.get("minutes") or st.get("seconds")):
@@ -472,9 +487,11 @@ def render(catalog: dict[str, dict], techniques: dict[str, dict], flags: list[di
             secs = st.get("seconds") or (st["minutes"] * 60 if st.get("minutes") else None)
             tech = f"(select id from public.techniques where slug = {q(st['technique'])})" if st.get("technique") else "null"
             cue = st.get("cue")
+            # sensory_cues: {en: the one-line cue, look/sound/smell/touch/taste/avoid: one sentence each, heat}.
+            sensory = ({"en": cue} if cue else {}) | dict(st.get("cues") or {}) | ({"heat": st["heat"]} if st.get("heat") else {})
             rows.append(
                 f"  ({rid}, {k}, {q(st['text'])}, {j({'en': st['text']})}, {tech}, {q(secs)}, "
-                f"{q(bool(st.get('timer')))}, {q(st.get('whistles'))}, {q(cue)}, {j({'en': cue} if cue else {})}, "
+                f"{q(bool(st.get('timer')))}, {q(st.get('whistles'))}, {q(cue)}, {j(sensory)}, "
                 f"{j(st['branch']) if st.get('branch') else 'null'}, {q(st.get('safety'))})"
             )
         out.append(",\n".join(rows))

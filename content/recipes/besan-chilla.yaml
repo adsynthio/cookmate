@@ -34,16 +34,31 @@ steps:
     timer: true
     cue: Smooth and pourable, like thin dosa batter. No lumps.
     branch: {age_group: child, action: Make the child's chillas first, before the green chilli goes into the batter}
+    cues:
+      look: "Smooth and pourable, like thin dosa batter, with no lumps."
+      touch: "It runs off the whisk in a steady ribbon."
   - text: Stir in the finely chopped onion, tomato, green chilli and coriander.
     minutes: 2
+    cues:
+      look: "The vegetables are spread evenly through the batter."
   - text: Heat the tawa on medium and grease it lightly. Pour a ladle of batter in the centre and spread it into a thin circle. Drizzle a little oil around the edge.
     technique: tawa_cook
     minutes: 2
     cue: Small bubbles appear and the edges start to lift on their own.
+    heat: medium
+    cues:
+      look: "Small bubbles appear and the edges lift on their own."
+      sound: "A gentle sizzle when the batter touches the tawa."
+      avoid: "If the tawa smokes, take it off the flame for a few seconds first, or the chilla sticks and burns."
   - text: Flip and cook the other side, pressing gently. Repeat with the rest of the batter.
     technique: tawa_cook
     minutes: 15
     cue: Golden-brown spots on both sides and no raw batter in the middle.
+    heat: medium
+    cues:
+      look: "Golden-brown spots on both sides and no wet batter in the middle."
+      smell: "Roasted besan, not raw flour."
+      touch: "The middle springs back when pressed with the spatula."
 variation_rules:
   - {type: diet, condition: {diet: jain}, action: {omit: [onion]}, note: Use finely chopped capsicum instead of onion.}
   - {type: add, condition: {have: [paneer]}, action: {add: [{ingredient: paneer, qty: 100, unit: g}], at_step: 4}, note: Crumble paneer over the chilla before folding for a stuffed chilla.}

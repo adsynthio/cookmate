@@ -34,20 +34,38 @@ steps:
     minutes: 5
     timer: true
     cue: A flake pressed between two fingers mashes easily but the poha is not mushy or wet.
+    cues:
+      touch: "A flake pressed between two fingers mashes easily but isn't mushy or wet."
+      avoid: "Don't soak it: wet poha turns into a lump."
   - text: Heat the oil in a kadai and fry the peanuts until crunchy. Lift them out.
     technique: shallow_fry
     minutes: 3
     cue: The peanuts turn a shade darker and smell roasted.
+    heat: medium
+    cues:
+      look: "The peanuts turn one shade darker."
+      smell: "Roasted, like a street-side mungfali cart."
   - text: In the same oil add mustard seeds. When they pop, add curry leaves and green chilli, then the onion. Cook until soft.
     technique: saute_onion
     minutes: 3
     cue: The onion turns translucent, not brown.
+    heat: medium
+    cues:
+      look: "The onion turns translucent, not brown."
+      sound: "Mustard seeds pop; wait for the popping before adding the rest."
+      smell: "Curry leaves smell fresh and sharp when they hit the oil."
   - text: Add the poha and toss gently on low heat. Cover and steam for 2 minutes.
     minutes: 2
     timer: true
     cue: The poha is hot all the way through and every flake is yellow.
+    heat: low
+    cues:
+      look: "Every flake is yellow and steam rises when you lift the lid."
+      touch: "Hot all the way through."
   - text: Turn off the heat. Add the peanuts, lemon juice and coriander leaves and toss once.
     minutes: 1
+    cues:
+      taste: "Taste for lemon and salt."
 variation_rules:
   - {type: omit, condition: {allergen: peanut}, action: {omit: [peanuts]}, note: Leave out the peanuts; add a handful of roasted chana dal or none.}
   - {type: add, condition: {have: [potato]}, action: {add: [{ingredient: potato, qty: 150, unit: g}], at_step: 3}, note: Add one small diced potato with the onion and cook covered until soft for batata poha.}

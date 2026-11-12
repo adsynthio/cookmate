@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { DEFAULT_WEIGHTS, NO_CRAVING, rankRecipes, type RankContext } from "./ranking.ts";
-import { familyBranches, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
+import { cueSenses, familyBranches, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, stepCuesFromJson, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
 
 const docs = JSON.parse(readFileSync(new URL("../data/recipes.json", import.meta.url), "utf8")) as RecipeDoc[];
 const catalog = JSON.parse(readFileSync(new URL("../data/catalog.json", import.meta.url), "utf8")) as {
@@ -127,6 +127,7 @@ test("database rows map back to the same document the app bundles", () => {
     recipe_steps: d.steps.map((s, n) => ({
       step_no: n + 1, instruction: s.text, duration_sec: s.seconds ?? (s.minutes ? s.minutes * 60 : null),
       timer_required: !!s.timer, whistles: s.whistles ?? null, sensory_cue: s.cue ?? null,
+      sensory_cues: { ...(s.cue ? { en: s.cue } : {}), ...(s.cues ?? {}), ...(s.heat ? { heat: s.heat } : {}) },
       member_branch: s.branch ?? null, safety_note: s.safety ?? null, techniques: s.technique ? { slug: s.technique } : null,
     })),
     recipe_variation_rules: (d.variation_rules ?? []).map((r) => ({ rule_type: r.type, condition: r.condition ?? null, action: r.action, note: r.note ?? null })),
@@ -146,4 +147,15 @@ test("why this works: four bars and one balancing sentence", () => {
   assert.ok(whyThisWorks({ starch: 0.9, rich: 0.5 }, "hi")!.sentence.startsWith("ज़्यादातर"));
   assert.equal(whyThisWorks({ starch: 0.9, rich: 0.6 }, "en")!.sentence, "Mostly filling.");
   assert.equal(whyThisWorks({}, "en"), null);
+});
+
+test("step cues: senses in a fixed order, the warning kept apart, unknown keys and heats dropped", () => {
+  assert.deepEqual(stepCuesFromJson({ en: "x", smell: " Toasty. ", look: "Golden.", avoid: "Do not burn.", heat: "medium", odd: 1 }), {
+    cues: { look: "Golden.", smell: "Toasty.", avoid: "Do not burn." },
+    heat: "medium",
+  });
+  assert.deepEqual(stepCuesFromJson({ heat: "scorching" }), {});
+  assert.deepEqual(stepCuesFromJson(null), {});
+  assert.deepEqual(cueSenses({ cues: { smell: "a", look: "b", avoid: "c" } }).map((c) => c.sense), ["look", "smell"]);
+  assert.ok(doc("jeera-aloo").steps.some((s) => s.heat && s.cues?.look), "bundled recipes carry cues and heat");
 });

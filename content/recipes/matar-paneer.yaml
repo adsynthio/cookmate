@@ -38,26 +38,46 @@ ingredients:
 steps:
   - text: Cut the paneer into cubes and soak them in warm water so they stay soft. Grind the onion, ginger, garlic and green chilli to a paste, and the tomatoes to a separate puree.
     minutes: 10
+    cues:
+      touch: "The paneer stays soft in the warm water."
   - text: Heat the oil in a kadai. Add cumin and the bay leaf, then the onion paste. Cook, stirring.
     technique: saute_onion
     minutes: 10
     cue: The raw onion smell goes and the paste turns golden.
+    heat: medium
+    cues:
+      look: "The paste turns golden."
+      smell: "The raw onion smell goes away."
+      avoid: "Stir often; onion paste catches on the bottom quickly."
   - text: Add turmeric, Kashmiri chilli and coriander powder with a splash of water, stir for a minute, then add the tomato puree. Keep cooking and stirring.
     technique: bhuna
     minutes: 10
     cue: The masala thickens, darkens and the oil separates at the edges.
+    heat: medium
+    cues:
+      look: "The masala thickens, darkens and the oil separates at the edges."
+      sound: "The masala splutters less as the water cooks off."
   - text: Add the peas, salt and 300 ml water. Cover and simmer until the peas are soft.
     technique: simmer
     minutes: 8
     timer: true
     cue: Fresh peas take about 8 minutes; frozen peas about 4.
+    heat: low
+    cues:
+      touch: "A pea squashes easily between two fingers."
   - text: Drain the paneer and add it to the gravy. Simmer for 3 minutes only.
     technique: simmer
     minutes: 3
     timer: true
     cue: Do not boil the paneer for long or it turns rubbery.
+    heat: low
+    cues:
+      touch: "The paneer is soft when pressed with a spoon."
+      avoid: "Don't boil the paneer for long or it turns rubbery."
   - text: Add garam masala, crushed kasuri methi and cream. Stir, top with coriander leaves and serve.
     minutes: 1
+    cues:
+      smell: "Kasuri methi smells sweet and grassy."
 variation_rules:
   - {type: diet, condition: {diet: vegan}, action: {replace: {paneer: tofu}, omit: [fresh cream]}, note: Firm tofu and no cream.}
   - {type: diet, condition: {diet: jain}, action: {omit: [onion, ginger, garlic], add: [{ingredient: asafoetida, qty: 0.2, unit: g}]}, note: A tomato-only gravy with hing; add a little cashew paste for body.}

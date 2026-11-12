@@ -76,6 +76,24 @@ class ContentTests(unittest.TestCase):
         self.assertError("region 'Bihar' is not a two-letter state code")
         self.assertError("global rows are festivals or fasts")
 
+    def test_step_cues_by_sense_and_heat(self) -> None:
+        def bad(r):
+            r["steps"][0]["heat"] = "volcanic"
+            r["steps"][1]["cues"] = {"feel": "soft"}
+        self.edit_recipe("jeera-aloo", bad)
+        self.assertError("heat must be one of")
+        self.assertError("cues must map some of")
+
+    def test_cues_fill_the_one_line_cue_and_reach_the_seed(self) -> None:
+        def senses_only(r):
+            r["steps"][1].pop("cue", None)
+            r["steps"][1]["cues"] = {"avoid": "Don't break them.", "look": "Even cubes."}
+        self.edit_recipe("jeera-aloo", senses_only)
+        errors, sql = self.run_validation()
+        self.assertEqual(errors, [])
+        self.assertIn("'Even cubes. Don''t break them.'", sql, "the one-line cue lists the senses, warning last")
+        self.assertIn('"heat": "medium"', sql)
+
     def test_meat_dish_cannot_be_labelled_veg(self) -> None:
         self.edit_recipe("chicken-curry", lambda r: r.update(diet="veg"))
         self.assertError("diet 'veg' contradicts the ingredients")

@@ -113,15 +113,6 @@ export function excludedRecipes(disliked: { subject_recipe_id: string | null }[]
   return new Set([...disliked.map((d) => d.subject_recipe_id), ...dismissedToday.map((d) => d.recipe_id)].filter((x): x is string => !!x));
 }
 
-export type CalendarRow = { rules: { avoid?: string[]; prefer?: string[] } | null };
-
-export function prefsFromCalendar(rows: CalendarRow[]): { avoid: string[]; prefer: string[] } {
-  return {
-    avoid: [...new Set(rows.flatMap((r) => r.rules?.avoid ?? []))],
-    prefer: [...new Set(rows.flatMap((r) => r.rules?.prefer ?? []))],
-  };
-}
-
 /** Accepted or cooked in the last week, as days ago (most recent wins). */
 export function recentFrom(rows: { recipe_id: string; at: string }[], now: Date): RankContext["recent"] {
   return rows.map((r) => ({ recipeId: r.recipe_id, daysAgo: Math.max(0, Math.floor((now.getTime() - Date.parse(r.at)) / DAY_MS)) }));

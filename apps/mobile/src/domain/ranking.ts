@@ -450,3 +450,38 @@ export function reasonFor(p: Ranked, ctx: RankContext, locale: Locale, nameOf: (
   }
   return out || R.fallback[locale];
 }
+
+// --- targeted pantry check (KIT-035, KIT-08) -------------------------------------------------------------------
+
+export type PantryCheck = {
+  itemId: string;
+  key: string;
+  /** Hero pick if the cook says the item is there. */
+  ifYes: string;
+  /** Hero pick if it isn't. */
+  ifNo: string;
+};
+
+/** Items we're unsure about: low enough that we might be wrong either way (PLAN.md §5.1). */
+export const CHECK_RANGE = { min: 0.3, max: 0.6 } as const;
+
+/**
+ * The one question worth asking today: an item we're unsure of whose answer changes tonight's hero pick. Returns
+ * null when no answer would change the pick, so the cook isn't asked anything. Ties go to the item that spoils
+ * first, then the one closest to "we have no idea" (0.5).
+ */
+export function pantryCheck(recipes: RankRecipe[], ctx: RankContext): PantryCheck | null {
+  const hero = (pantry: PantryEntry[]) => choosePicks(rankRecipes(recipes, { ...ctx, pantry }), 1)[0]?.recipe.id ?? null;
+  const unsure = ctx.pantry
+    .filter((e) => !e.out && e.confidence >= CHECK_RANGE.min && e.confidence <= CHECK_RANGE.max)
+    .sort((a, b) => (a.daysLeft ?? 999) - (b.daysLeft ?? 999) || Math.abs(a.confidence - 0.5) - Math.abs(b.confidence - 0.5) || a.itemId.localeCompare(b.itemId));
+  const used = new Set(recipes.flatMap((r) => r.ingredients.flatMap((i) => [i.key, ...i.substitutes])));
+  for (const e of unsure) {
+    if (!used.has(e.key)) continue;
+    const set = (confidence: number) => ctx.pantry.map((p) => (p.itemId === e.itemId ? { ...p, confidence } : p));
+    const ifYes = hero(set(0.95));
+    const ifNo = hero(set(0));
+    if (ifYes && ifNo && ifYes !== ifNo) return { itemId: e.itemId, key: e.key, ifYes, ifNo };
+  }
+  return null;
+}

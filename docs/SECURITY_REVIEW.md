@@ -28,9 +28,12 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 7 | `voice-token` puts the user's JWT in the LiveKit dispatch metadata so the agent reads as the user | Low | **Accepted**: the metadata goes only to our agent worker, the JWT expires within the hour, and the agent never logs it |
 | 8 | The voice agent logs fast-path arguments (for example a timer label the cook said) | Low | **Accepted for beta**: no transcript is logged; revisit when logs ship to a third party |
 | 9 | Anonymous sign-ins can be abused to create many users (Supabase docs) | Medium | **Open (you)**: turn on CAPTCHA / Cloudflare Turnstile for anonymous sign-ins and review the auth rate limits before the beta |
-| 10 | Old exports of households that never export again stay in the `exports` bucket | Low | **Open (me, Sprint 6)**: each export removes the household's earlier ones, and links expire after 24 h, but a storage sweep for files older than 7 days is still to do |
+| 10 | Old exports of households that never export again stay in the `exports` bucket | Low | **Fixed (Sprint 6 part 4)**: the `notify` job, which runs every 15 minutes, lists export files older than 7 days (`stale_exports`, service role only) and removes them through the Storage API (SQL deletes on `storage.objects` are blocked by Supabase) |
 | 11 | Photo and scan images must be removed through the Storage API, not by deleting rows | Info | **Open (me)**: no image features have shipped; retention for their files comes with them (KIT-073, V1.5 scans) |
 | 12 | `record_voice_session` (Sprint 6 part 3) is a second SECURITY DEFINER function signed-in users can call | Low | **Accepted (needs your sign-off)**: it lets a member of the household close their own voice session once, writes only that row, its usage lines in `ai_requests` and turn latencies on that household's cooking session, and computes cost on the server. The guard-rail test lists it by name, so any other such function still fails CI |
+| 13 | Sprint 6 part 4 adds three more SECURITY DEFINER functions signed-in users can call: `pantry_check_today`, `get_notification_settings`, `set_notification_settings` | Low | **Accepted (needs your sign-off)**: each first checks the caller is an active member of the household (`private.current_member`) and only touches that member's or household's rows in `private.pantry_checks` / `private.notification_settings`, which no client can read directly. The guard-rail test lists them by name so a new one can't slip in |
+| 14 | `notify` is deployed without JWT verification so pg_cron can call it | Low | **Accepted**: it refuses any call without the shared secret, which is random, kept in Vault and compared inside the database (`notify_secret_ok`, service role only); the function does nothing a caller can steer (no input is read) |
+| 15 | Notification settings and the day's pantry question live in private tables, so "Download my data" doesn't include them | Info | **Open (me)**: add them to the export with the next export change; both are deleted with the member or household |
 
 ## Privacy rights (DPDP)
 
@@ -43,5 +46,5 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 
 ## Sign-off
 
-- [ ] Product owner accepts findings 2, 3, 5, 7 and 8 as written
+- [ ] Product owner accepts findings 2, 3, 5, 7, 8, 12, 13 and 14 as written
 - [ ] Findings 6 and 9 done before the closed beta

@@ -431,7 +431,11 @@ Part 2, cooking (branch `sprint-7/cook`):
 - [x] All done (finish) and Something's wrong (rescue) restyled; rescue shows the step's good sign and bad sign
 - [ ] **Culinary lead:** review the draft cues in `content/recipes/*.yaml` (they are written in plain English and marked by the recipe's `review_status`)
 - [ ] **You:** 24 step photos ("how it should look") are listed in section 5.2 of `PROMPTS.md`; until one is generated the step shows the dish photo
-- [ ] Next: Home, recipe detail, You, then Community last
+
+Part 3, Home and recipe (branch `sprint-7/home`):
+- [x] Home in the Stitch layout: greeting by time of day with the dish of the moment, "What's cooking for dinner?" meal switch, the mood search with the mic, Use my … and craving chips, Pick up where you left off (the dish you're cooking, with its step), Your kitchen has ideas (photo cards with Can make now or Need N more, time, items in kitchen, Cook now / View recipe), Use Soon photo cards with Find recipes, and Make something new; everything eases in
+- [x] Recipe detail: big dish photo with kitchen match, cuisine, time / how hard / spice, the olive For your kitchen card (have N of M, swaps from your kitchen, add missing to the list), Ingredients / Steps / Why it works tabs that slide, ingredient rows with photos, steps with cues and heat, and a fixed Cook with me bar
+- [ ] Next: You (memory), the Cook tab's empty page, then Community last
 
 ---
 

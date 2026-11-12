@@ -66,17 +66,20 @@ export function Screen({
   children,
   scroll = true,
   header,
+  footer,
   tabBar = true,
 }: {
   children: ReactNode;
   scroll?: boolean;
   /** Sticky header (AppHeader) above the scrolling content. */
   header?: ReactNode;
+  /** Fixed bar under the scrolling content (the recipe's Cook with me). */
+  footer?: ReactNode;
   /** Leave room for the floating tab bar (tabs only). */
   tabBar?: boolean;
 }) {
   const { colors } = useTheme();
-  const bottom = tabBar ? TAB_BAR_SPACE : space.xxxl;
+  const bottom = tabBar ? TAB_BAR_SPACE : footer ? space.xl : space.xxxl;
   const body = scroll ? (
     <ScrollView contentContainerStyle={[styles.screenContent, { paddingBottom: bottom }]} showsVerticalScrollIndicator={false}>
       {children}
@@ -85,9 +88,10 @@ export function Screen({
     <View style={[styles.screenContent, { flex: 1, paddingBottom: bottom }]}>{children}</View>
   );
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
+    <SafeAreaView edges={footer ? ["top", "bottom"] : ["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       {header}
       {body}
+      {footer}
     </SafeAreaView>
   );
 }

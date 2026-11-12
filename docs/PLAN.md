@@ -447,7 +447,8 @@ Part 5, You and the Cook tab (branch `sprint-7/you`):
 - [x] You in the Stitch "You & Memory" layout: profile with who you cook for, four numbers (saved dishes, things remembered, people, never picked), your table's taste (spice per person, loved things, never in your dishes), What I've learned as quote cards with Edit / Keep / Forget, then settings and privacy
 - [x] App language can be changed any time on You (English, हिन्दी, Hinglish); it switches at once and is saved on the account (`profiles.preferred_language`) for the next launch, picks and the voice agent
 - [x] Cook tab: the dish on the stove with its photo, step progress and Continue cooking; with nothing on, your saved dishes one tap away
-- [ ] Next: multi-timer screen, then Community last
+- [x] All timers (Stitch "Multi Timer Hub"): every timer for the dish in one place, soonest first, each with a ring, its step and what to check when it rings, −30s / +30s / +1 min and Stop (Got it when it has rung); the recipe's other timed steps and 1 / 3 / 5 / 10 minute timers start from there. Opened from the timer button in Cook With Me and from the Cook tab
+- [ ] Next: Community (last stage)
 
 ---
 

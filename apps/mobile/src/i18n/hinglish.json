@@ -797,5 +797,18 @@
   "you.settings": "Settings",
   "you.privacyTitle": "Yaad aur privacy",
   "cook.resume.badge": "Chulhe par",
-  "cook.savedTitle": "Aapki saved dishes"
+  "cook.savedTitle": "Aapki saved dishes",
+  "timers.title": "Saare timer",
+  "timers.open": "Saare timer dekhein",
+  "timers.running": "{n} chal rahe hain",
+  "timers.none": "Koi timer nahi chal raha",
+  "timers.next": "Agla: {label}, {time} mein",
+  "timers.noneBody": "Neeche kisi step ka ya jaldi wala timer shuru karein.",
+  "timers.soon": "Bas hone wala hai",
+  "timers.fromRecipe": "Samay wale baaki steps",
+  "timers.stepTime": "Step {n} · {time}",
+  "timers.startStep": "Step {n} ka timer shuru karein, {time}",
+  "timers.quick": "Jaldi wala timer",
+  "timers.plain": "{n} min",
+  "timers.back": "Waapas khaana banaane par"
 }

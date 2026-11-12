@@ -24,7 +24,8 @@ import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { clearBundles } from "@/offline/bundles";
 import { useOutbox } from "@/offline/outbox";
 import { resetAnalytics } from "@/services/analytics";
-import { services, type Member, type Memory, type NewMemory } from "@/services";
+import { services, type Member, type Memory, type NewMemory, type NotificationSettings } from "@/services";
+import { preparePush } from "@/state/push";
 import { findIngredients } from "@/services/picks";
 import { useSession } from "@/state/session";
 
@@ -87,6 +88,7 @@ export default function YouScreen() {
       <SavedDishes dishes={favourites.data} />
 
       <VoiceSettings />
+      {householdId ? <DailyPick householdId={householdId} /> : null}
       <PhoneLink />
       {householdId ? <Privacy householdId={householdId} /> : null}
 
@@ -342,6 +344,79 @@ function VoiceSettings() {
         {row("skill", SKILLS, "you.voice.skillLabel")}
         {row("units", UNITS, "you.voice.unitsLabel")}
         <Button kind="secondary" label={t("you.voice.try")} onPress={() => say(stepWords(SAMPLE_STEP[getLocale()], profile))} />
+      </Card>
+    </>
+  );
+}
+
+const PICK_TIMES = ["15:00", "16:00", "17:00", "18:00", "19:00"];
+const QUIET_FROM = ["21:00", "22:00", "23:00"];
+const QUIET_UNTIL = ["06:00", "07:00", "08:00"];
+
+/** KIT-045, NOTIF-01: one nudge a day with tonight's pick, off until the cook turns it on, never in quiet hours. */
+function DailyPick({ householdId }: { householdId: string }) {
+  const qc = useQueryClient();
+  const memberId = useSession((s) => s.memberId);
+  const [note, setNote] = useState<StringKey | null>(null);
+  const key = ["notifySettings", householdId];
+  const settings = useQuery({ queryKey: key, queryFn: () => services.preference.getNotificationSettings(householdId) });
+  const save = useMutation({
+    mutationFn: async (changes: Partial<NotificationSettings>) => {
+      if (changes.dailyPick) {
+        // The phone has to be able to receive it: permission, then this phone's push token.
+        const push = await preparePush();
+        if (push === "denied") throw new Error("denied");
+        if (push === "no_device") setNote("you.notify.noDevice");
+        else await services.preference.registerDevice({ householdId, memberId: memberId!, pushToken: push.token, platform: push.platform, locale: getLocale() });
+      }
+      return services.preference.setNotificationSettings(householdId, changes);
+    },
+    onMutate: (changes) => changes.dailyPick !== undefined && setNote(null),
+    onSuccess: (s) => qc.setQueryData(key, s),
+    onError: (e) => setNote(e instanceof Error && e.message === "denied" ? "you.notify.denied" : "you.notify.badTime"),
+  });
+  const s = settings.data;
+  if (!s || !memberId) return null;
+  const times = (values: string[], current: string, field: keyof NotificationSettings, label: (v: string) => string) => (
+    <View style={styles.chips}>
+      {values.map((v) => (
+        <Chip key={v} label={label(v)} selected={current === v} onPress={() => !save.isPending && save.mutate({ [field]: v })} />
+      ))}
+    </View>
+  );
+  return (
+    <>
+      <View style={{ gap: space.xs }}>
+        <Text variant="heading">{t("you.notify.title")}</Text>
+        <Text muted>{t("you.notify.body")}</Text>
+      </View>
+      <Card>
+        <View style={{ alignSelf: "flex-start" }}>
+          <Button
+            kind={s.dailyPick ? "quiet" : "secondary"}
+            label={t(s.dailyPick ? "you.notify.off" : "you.notify.on")}
+            disabled={save.isPending}
+            onPress={() => save.mutate({ dailyPick: !s.dailyPick })}
+          />
+        </View>
+        {s.dailyPick ? (
+          <>
+            <Text variant="label" muted>
+              {t("you.notify.time")}
+            </Text>
+            {times(PICK_TIMES, s.pickTime, "pickTime", (v) => v)}
+            <Text variant="label" muted>
+              {t("you.notify.quiet")}
+            </Text>
+            {times(QUIET_FROM, s.quietStart, "quietStart", (v) => t("you.notify.quietFrom", { time: v }))}
+            {times(QUIET_UNTIL, s.quietEnd, "quietEnd", (v) => t("you.notify.quietUntil", { time: v }))}
+          </>
+        ) : null}
+        {note ? (
+          <Text variant="label" accessibilityLiveRegion="polite">
+            {t(note)}
+          </Text>
+        ) : null}
       </Card>
     </>
   );

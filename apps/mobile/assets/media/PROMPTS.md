@@ -424,9 +424,38 @@ The current ten are temporary and must be replaced before any release. Same file
 | `media/dishes/moong-dal-khichdi.png` | moong dal khichdi with ghee melting on top | steel bowl |
 | `media/dishes/rajma.png` | rajma in thick gravy, sliced onion on the side | steel bowl |
 
-### 5.2 Coming with the Cook module
+### 5.2 Cooking steps: how it should look (`media/steps/`, 1080 x 720, 24 photos)
 
-"How it should look" photos for the cooking steps (golden onions, oil separating from masala, dal at the right thickness and so on). Claude will add that list here when the Cook module starts, generated from the recipes' sensory cues.
+Shown at the top of each Cook With Me step, so the cook can compare their pan with the photo. Until a step's photo exists the dish photo is shown. Prompt (after the shared style):
+
+> Overhead or close three-quarter photograph of a home cooking pan on an Indian gas stove, showing exactly this moment: **{LOOKS LIKE}** The step: {STEP}. Real home kitchen, steel or iron vessel, steam if it is hot, a wooden spoon resting on the rim. The food fills the middle 70% of the 3:2 frame; keep the bottom 20% calm (labels sit there).
+
+| File | STEP | LOOKS LIKE |
+| --- | --- | --- |
+| `media/steps/besan-chilla-3.png` | Besan Chilla, step 3: Heat the tawa on medium and grease it lightly. Pour a ladle of batter in the centre and spread it into a thin circle. Drizzle a little oil around the edge. | Small bubbles appear and the edges lift on their own. |
+| `media/steps/besan-chilla-4.png` | Besan Chilla, step 4: Flip and cook the other side, pressing gently. Repeat with the rest of the batter. | Golden-brown spots on both sides and no wet batter in the middle. |
+| `media/steps/chicken-curry-2.png` | Chicken Curry, step 2: Heat the oil in a heavy kadai. Add the whole spices for 30 seconds, then the sliced onions. Cook, stirring more often as they colour. | The onions are deep golden brown all over. |
+| `media/steps/chicken-curry-3.png` | Chicken Curry, step 3: Add the rest of the ginger garlic paste for a minute, then the chopped tomatoes, the remaining turmeric and chilli powder, coriander powder and salt. Cook, stirring. | The tomatoes melt into the masala and oil shines at the edges. |
+| `media/steps/chicken-curry-4.png` | Chicken Curry, step 4: Add the chicken with all its marinade. Cook on high heat, stirring, so it sears and the masala coats every piece. | Every piece turns opaque on the outside and is coated in masala. |
+| `media/steps/chicken-curry-5.png` | Chicken Curry, step 5: Add 300 ml hot water, cover and simmer on low heat, stirring now and then. | The gravy bubbles gently, with oil on top. |
+| `media/steps/dal-tadka-3.png` | Dal Tadka, step 3: Whisk the dal smooth, add the salt and hot water until it pours like thick soup, and simmer. | It pours like thick soup and bubbles gently. |
+| `media/steps/dal-tadka-4.png` | Dal Tadka, step 4: For the tadka heat the ghee in a kadai. Add cumin, hing and garlic; when the garlic is golden add onion, ginger and green chilli and cook until the onion is light golden. Add the tomato and chilli powder and cook until soft. | Garlic is golden, the tomato has broken down and the ghee shines at the edges. |
+| `media/steps/egg-bhurji-2.png` | Egg Bhurji, step 2: Heat the oil in a kadai and cook the onion until soft. Add the green chilli and ginger, then the tomato, and cook until the tomato is soft. | The onion is soft and see-through, the tomato breaks down when pressed. |
+| `media/steps/egg-bhurji-4.png` | Egg Bhurji, step 4: Lower the heat and pour in the eggs. Leave them for 20 seconds, then scramble, scraping the bottom, until fully set. | Soft, moist curds with no runny egg left. |
+| `media/steps/jeera-aloo-3.png` | Jeera Aloo, step 3: Heat the oil in a kadai. Add cumin, then hing, green chilli and ginger and stir for 30 seconds. | Cumin darkens one shade. |
+| `media/steps/jeera-aloo-4.png` | Jeera Aloo, step 4: Add turmeric, chilli powder and coriander powder, then immediately the potatoes and salt. Toss on medium heat. | The edges turn golden and slightly crisp. |
+| `media/steps/kadhi-pakora-2.png` | Kadhi Pakora, step 2: Pour into the kadai with the grated ginger. Bring to a boil on medium heat, stirring all the time. | Small bubbles start rising all over. |
+| `media/steps/kadhi-pakora-3.png` | Kadhi Pakora, step 3: Lower the heat and let the kadhi simmer, stirring every few minutes. | It coats the back of a spoon. |
+| `media/steps/kadhi-pakora-5.png` | Kadhi Pakora, step 5: Heat the oil in a second pan on medium. Drop small spoonfuls of batter and fry in batches until golden all over. | The pakoras rise to the top and turn golden all over. |
+| `media/steps/kadhi-pakora-7.png` | Kadhi Pakora, step 7: For the tadka, heat the ghee. Add cumin, methi dana, dry red chillies and hing. Turn off the heat, add Kashmiri chilli powder and pour over the kadhi at once. | Cumin darkens one shade in a few seconds; the chilli powder turns red. |
+| `media/steps/kanda-poha-2.png` | Kanda Poha, step 2: Heat the oil in a kadai and fry the peanuts until crunchy. Lift them out. | The peanuts turn one shade darker. |
+| `media/steps/kanda-poha-3.png` | Kanda Poha, step 3: In the same oil add mustard seeds. When they pop, add curry leaves and green chilli, then the onion. Cook until soft. | The onion turns translucent, not brown. |
+| `media/steps/kanda-poha-4.png` | Kanda Poha, step 4: Add the poha and toss gently on low heat. Cover and steam for 2 minutes. | Every flake is yellow and steam rises when you lift the lid. |
+| `media/steps/matar-paneer-2.png` | Matar Paneer, step 2: Heat the oil in a kadai. Add cumin and the bay leaf, then the onion paste. Cook, stirring. | The paste turns golden. |
+| `media/steps/matar-paneer-3.png` | Matar Paneer, step 3: Add turmeric, Kashmiri chilli and coriander powder with a splash of water, stir for a minute, then add the tomato puree. Keep cooking and stirring. | The masala thickens, darkens and the oil separates at the edges. |
+| `media/steps/rajma-3.png` | Rajma, step 3: Heat the oil in a kadai. Add cumin and the bay leaf, then the finely chopped onion and cook until deep golden. | The onion is evenly golden brown. |
+| `media/steps/rajma-4.png` | Rajma, step 4: Add grated ginger, garlic and green chilli for a minute, then the tomato puree, turmeric, Kashmiri chilli and coriander powder. Cook, stirring. | The masala is thick and dark and the oil leaves the sides. |
+| `media/steps/rajma-5.png` | Rajma, step 5: Add the rajma with its cooking water. Mash a few beans against the side of the pan for body and simmer on low heat. | The gravy thickens and coats the beans. |
 
 ---
 
@@ -440,4 +469,5 @@ The current ten are temporary and must be replaced before any release. Same file
 - [ ] 3. Six state illustrations in the new colours
 - [ ] 4. App icon set and splash in olive
 - [ ] 5.1 Ten dish photos
+- [ ] 5.2 Cooking step photos (24)
 - [ ] `python3 tools/media/sync.py` reports no problems

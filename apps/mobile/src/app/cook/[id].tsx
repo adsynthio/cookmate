@@ -28,7 +28,7 @@ import { stepWords } from "@/domain/voiceStyle";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { SlideIn } from "@/design-system/motion";
-import { dishImage } from "@/design-system/media";
+import { dishImage, stepImage } from "@/design-system/media";
 import { Button, Card, IconButton, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
@@ -438,7 +438,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
         ) : null}
 
         <SlideIn key={stepNo} from={dir} style={styles.step}>
-          <StepPhoto source={dishImage(doc.slug)} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
+          <StepPhoto source={stepImage(doc.slug, stepNo)} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
 
           <DirectionCard step={step} />
 

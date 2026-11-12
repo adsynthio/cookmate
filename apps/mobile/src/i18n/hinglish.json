@@ -947,5 +947,14 @@
   "left.idea.pohaCutlet.b": "Uble aloo ke saath maslein, cutlet banayein aur sunehra hone tak halka talein.",
   "left.idea.anyWrap.t": "Roti roll",
   "left.idea.anyWrap.b": "Garam karein, pyaaz aur chutney ke saath roti mein lapetein, aur khana taiyaar.",
-  "left.ideas": "Ideas"
+  "left.ideas": "Ideas",
+  "restock.title": "{item} khatam hone ko hai?",
+  "restock.days": "Aap ise aamtaur par har {n} din mein laate hain.",
+  "restock.week": "Aap ise aamtaur par har hafte laate hain.",
+  "restock.weeks": "Aap ise aamtaur par har do hafte mein laate hain.",
+  "restock.month": "Aap ise aamtaur par har mahine laate hain.",
+  "restock.add": "List mein jodein",
+  "restock.notYet": "Abhi hai",
+  "restock.added": "{item} list mein hai.",
+  "restock.never": "Cookmate khud kuch order nahi karta, yeh sirf yaad dilana hai."
 }

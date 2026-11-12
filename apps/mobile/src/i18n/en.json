@@ -981,5 +981,14 @@
   "left.idea.pohaCutlet.b": "Mash with a boiled potato, shape into cutlets and shallow fry until golden.",
   "left.idea.anyWrap.t": "Roti roll",
   "left.idea.anyWrap.b": "Warm it up, wrap it in a roti with onion and chutney, and it's a meal.",
-  "left.ideas": "Ideas"
+  "left.ideas": "Ideas",
+  "restock.title": "Running low on {item}?",
+  "restock.days": "You usually buy it every {n} days.",
+  "restock.week": "You usually buy it every week.",
+  "restock.weeks": "You usually buy it every two weeks.",
+  "restock.month": "You usually buy it every month.",
+  "restock.add": "Add to list",
+  "restock.notYet": "Still have it",
+  "restock.added": "{item} is on your list.",
+  "restock.never": "Cookmate never orders anything. This is only a reminder."
 }

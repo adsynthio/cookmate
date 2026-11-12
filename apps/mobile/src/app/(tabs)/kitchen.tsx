@@ -1,6 +1,7 @@
 // Kitchen (KIT-030/033/034), from the Stitch "Pantry & Larder" screen: how many things are in, three ways to add,
 // the terracotta "Use soon" card, place filters, "Needs care" (going off, or not sure it's still there) above
 // "Fresh and stocked", staples as Full / Low / Out, and a dish this kitchen can make right now. Live across phones.
+import { RestockCard } from "@/components/kitchen/RestockCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -141,6 +142,8 @@ export default function KitchenScreen() {
           <QuickAction index={1} icon="camera" tone="accent" label={t("kitchen.action.scan")} onPress={() => router.push("/pantry/scan")} />
           <QuickAction index={2} icon="mic" tone="peach" label={t("kitchen.action.voice")} onPress={() => router.push("/voice")} />
         </View>
+
+        {householdId ? <RestockCard householdId={householdId} /> : null}
 
         {goingOff.length && !hideSoon ? (
           <Enter index={3}>

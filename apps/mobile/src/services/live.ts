@@ -493,6 +493,11 @@ export const liveServices: Services = {
       const { error } = await requireSupabase().rpc("remove_list_item", { p_item: itemId });
       if (error) throw error;
     },
+    async restockDue(householdId) {
+      const { data, error } = await requireSupabase().rpc("restock_due", { p_household: householdId });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({ ingredientKey: r.name, everyDays: Number(r.every_days), lastBought: r.last_bought, dueInDays: r.due_in_days }));
+    },
     async addToList(householdId, items) {
       const { error } = await requireSupabase().rpc("add_to_shopping_list", {
         p_household: householdId,

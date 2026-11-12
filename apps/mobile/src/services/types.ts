@@ -5,6 +5,7 @@ import type { VoiceProfile } from "@/domain/voiceStyle";
 import type { Problem } from "@/domain/rescue";
 import type { ListLine } from "@/domain/shopping";
 import type { PlateWeek } from "@/domain/plate";
+import type { RestockDue } from "@/domain/restock";
 import type { AgeGroup, Diet } from "@/domain/ranking";
 import type { RecipeDoc } from "@/domain/recipes";
 import type { Row } from "@/types/database";
@@ -287,7 +288,9 @@ export interface KitchenService {
   /** KIT-026: clear guesses nobody confirmed (all of them, or just these). */
   clearGuesses(householdId: string, itemIds?: string[]): Promise<number>;
   /** KIT-033: Low/Out staples -> shopping list. */
-  addToList(householdId: string, items: { name: string; reason: "running_low" | "manual" }[]): Promise<void>;
+  addToList(householdId: string, items: { name: string; reason: "running_low" | "manual" | "predicted" }[]): Promise<void>;
+  /** KIT-181: things this household usually buys that are about to run out, soonest first (needs buying history). */
+  restockDue(householdId: string): Promise<RestockDue[]>;
   /** KIT-110: what still needs buying. */
   getList(householdId: string): Promise<ListLine[]>;
   /** KIT-111: bought items go into the pantry; no ids means everything on the list. Returns pantry item ids. */

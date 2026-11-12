@@ -3320,6 +3320,10 @@ export type Database = {
         Args: { p_household: string; p_settings: Json; p_policy_version?: string };
         Returns: Json;
       };
+      restock_due: {
+        Args: { p_household: string; p_days?: number };
+        Returns: { ingredient_id: string; name: string; every_days: number; last_bought: string; due_in_days: number }[];
+      };
       weekly_plate: {
         Args: { p_household: string; p_weeks?: number };
         Returns: { week_start: string; meals: number; food_groups: Json }[];

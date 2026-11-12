@@ -109,7 +109,18 @@ export default function KitchenScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Screen header={<AppHeader title={t("kitchen.title")} />}>
+      <Screen
+        header={
+          <AppHeader
+            title={t("kitchen.title")}
+            right={
+              <IconButton label={t("tab.list")} tone="plain" onPress={() => router.navigate("/list")}>
+                <Icon name="cart" />
+              </IconButton>
+            }
+          />
+        }
+      >
         <Enter>
           <View style={styles.titleRow}>
             <Text variant="heading" accessibilityRole="header" style={{ flex: 1 }}>

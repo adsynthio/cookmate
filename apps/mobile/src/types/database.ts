@@ -3320,6 +3320,42 @@ export type Database = {
         Args: { p_household: string; p_settings: Json; p_policy_version?: string };
         Returns: Json;
       };
+      community_circles: {
+        Args: { p_household: string };
+        Returns: { id: string; name: string; role: string; members: Json }[];
+      };
+      community_create_circle: {
+        Args: { p_household: string; p_name: string; p_display_name: string };
+        Returns: string;
+      };
+      community_create_invite: {
+        Args: { p_circle: string; p_household: string };
+        Returns: string;
+      };
+      community_join: {
+        Args: { p_code: string; p_household: string; p_display_name: string };
+        Returns: string;
+      };
+      community_leave: {
+        Args: { p_circle: string; p_household: string };
+        Returns: undefined;
+      };
+      community_share: {
+        Args: { p_circle: string; p_household: string; p_recipe_id: string | null; p_recipe_slug: string | null; p_dish_title: string; p_note: string | null; p_changes: string[] };
+        Returns: string;
+      };
+      community_remove_post: {
+        Args: { p_post: string; p_household: string };
+        Returns: undefined;
+      };
+      community_report: {
+        Args: { p_post: string; p_household: string; p_reason: string };
+        Returns: undefined;
+      };
+      community_feed: {
+        Args: { p_household: string; p_circle?: string | null; p_limit?: number };
+        Returns: { id: string; circle_id: string; circle_name: string; author_name: string; recipe_id: string | null; recipe_slug: string | null; dish_title: string; note: string | null; changes: string[] | null; created_at: string; mine: boolean; can_remove: boolean }[];
+      };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

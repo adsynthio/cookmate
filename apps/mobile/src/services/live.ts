@@ -28,6 +28,7 @@ import type {
   RecipeSummary,
   Services,
 } from "./types";
+import { CommunityError } from "./types";
 
 type UseSoonRow = {
   id: string;
@@ -861,6 +862,66 @@ export const liveServices: Services = {
       return data.audio.map((a) => ({ stepNo: a.step_no, url: a.url }));
     },
   },
+  community: {
+    async listCircles(householdId) {
+      const { data, error } = await requireSupabase().rpc("community_circles", { p_household: householdId });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        id: r.id,
+        name: r.name,
+        role: r.role === "owner" ? ("owner" as const) : ("member" as const),
+        members: ((r.members ?? []) as { display_name: string; mine: boolean }[]).map((m) => ({ displayName: m.display_name, mine: m.mine })),
+      }));
+    },
+    async createCircle({ householdId, name, displayName }) {
+      const { data, error } = await requireSupabase().rpc("community_create_circle", { p_household: householdId, p_name: name, p_display_name: displayName });
+      if (error) throw communityError(error);
+      return data as string;
+    },
+    async createInvite(circleId, householdId) {
+      const { data, error } = await requireSupabase().rpc("community_create_invite", { p_circle: circleId, p_household: householdId });
+      if (error) throw error;
+      return data as string;
+    },
+    async join({ code, householdId, displayName }) {
+      const { data, error } = await requireSupabase().rpc("community_join", { p_code: code, p_household: householdId, p_display_name: displayName });
+      if (error) throw communityError(error);
+      return data as string;
+    },
+    async leave(circleId, householdId) {
+      const { error } = await requireSupabase().rpc("community_leave", { p_circle: circleId, p_household: householdId });
+      if (error) throw error;
+    },
+    async feed(householdId, circleId) {
+      const { data, error } = await requireSupabase().rpc("community_feed", { p_household: householdId, p_circle: circleId ?? null });
+      if (error) throw error;
+      type Row = {
+        id: string; circle_id: string; circle_name: string; author_name: string; recipe_id: string | null; recipe_slug: string | null;
+        dish_title: string; note: string | null; changes: string[] | null; created_at: string; mine: boolean; can_remove: boolean;
+      };
+      return ((data ?? []) as Row[]).map((r) => ({
+        id: r.id, circleId: r.circle_id, circleName: r.circle_name, authorName: r.author_name, recipeId: r.recipe_id,
+        recipeSlug: r.recipe_slug, dishTitle: r.dish_title, note: r.note, changes: r.changes ?? [], createdAt: r.created_at,
+        mine: r.mine, canRemove: r.can_remove,
+      }));
+    },
+    async share(input) {
+      const { data, error } = await requireSupabase().rpc("community_share", {
+        p_circle: input.circleId, p_household: input.householdId, p_recipe_id: input.recipeId, p_recipe_slug: input.recipeSlug,
+        p_dish_title: input.dishTitle, p_note: input.note ?? null, p_changes: input.changes,
+      });
+      if (error) throw communityError(error);
+      return data as string;
+    },
+    async removePost(postId, householdId) {
+      const { error } = await requireSupabase().rpc("community_remove_post", { p_post: postId, p_household: householdId });
+      if (error) throw error;
+    },
+    async report(postId, householdId, reason) {
+      const { error } = await requireSupabase().rpc("community_report", { p_post: postId, p_household: householdId, p_reason: reason });
+      if (error) throw error;
+    },
+  },
   voice: {
     async getToken(input) {
       const sb = requireSupabase();
@@ -907,6 +968,17 @@ function toSession(r: {
           .map((m) => ({ change: m.change!, notes: Array.isArray(m.notes) ? m.notes : [] }))
       : [],
   };
+}
+
+/** Database errors from the community functions, as problems the screen can explain. */
+function communityError(error: { code?: string; message?: string }): Error {
+  if (error.code === "P0002") return new CommunityError("invite_not_found");
+  if (error.code === "54000") {
+    if (error.message?.includes("full")) return new CommunityError("circle_full");
+    if (error.message?.includes("posts")) return new CommunityError("too_many_posts");
+    return new CommunityError("too_many_circles");
+  }
+  return error instanceof Error ? error : new Error(error.message ?? "community error");
 }
 
 type SuggestMealsResponse = {

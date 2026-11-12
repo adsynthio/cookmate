@@ -27,7 +27,8 @@ import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type Ca
 import { planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
 import { daysLeft as daysLeftOf } from "@/domain/pantry";
 
-import type { CookSession, HouseholdRef, ListLine, Member, Memory, NotificationSettings, PantryItem, PickBatch, Services } from "./types";
+import type { Circle, CommunityPost, CookSession, HouseholdRef, ListLine, Member, Memory, NotificationSettings, PantryItem, PickBatch, Services } from "./types";
+import { CommunityError } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -153,6 +154,40 @@ let sessionNo = 1;
 /** The household's adapted variants (KIT-051), kept for the session. */
 const adapted = new Map<string, RecipeDoc>();
 let adaptedNo = 1;
+
+// --- Community (mock): circles live on this phone; any well-formed invite code joins a sample family circle with
+// a few dishes in it, so the feed can be tried without a second phone.
+const COMMUNITY_KEY = "cookmate.mock.community";
+type MockCommunity = { circles: Circle[]; posts: CommunityPost[]; invites: Record<string, string> };
+function readCommunity(): MockCommunity {
+  try {
+    const raw = globalThis.localStorage?.getItem(COMMUNITY_KEY);
+    if (raw) return JSON.parse(raw) as MockCommunity;
+  } catch {
+    // Start empty.
+  }
+  return { circles: [], posts: [], invites: {} };
+}
+function writeCommunity(c: MockCommunity) {
+  try {
+    globalThis.localStorage?.setItem(COMMUNITY_KEY, JSON.stringify(c));
+  } catch {
+    // Kept for this launch only.
+  }
+}
+const SAMPLE_CIRCLE = "mock-circle-family";
+function samplePosts(): CommunityPost[] {
+  const ago = (h: number) => new Date(Date.now() - h * 3600_000).toISOString();
+  const post = (id: string, author: string, slug: string, title: string, note: string, changes: string[], h: number): CommunityPost => ({
+    id, circleId: SAMPLE_CIRCLE, circleName: "Sharma family", authorName: author, recipeId: slug, recipeSlug: slug, dishTitle: title,
+    note, changes, createdAt: ago(h), mine: false, canRemove: false,
+  });
+  return [
+    post("mock-post-1", "Mummy's kitchen", "rajma", "Rajma", "Soak it the night before, and don't skip the second whistle.", ["More ginger", "A little less chilli"], 3),
+    post("mock-post-2", "Riya's kitchen", "kanda-poha", "Kanda poha", "Made it for Sunday breakfast. The kids finished it!", ["Added peas"], 20),
+    post("mock-post-3", "Mummy's kitchen", "dal-tadka", "Dal tadka", "Garlic tadka at the very end, it smells like home.", [], 52),
+  ];
+}
 
 const mocks: Services = {
   auth: {
@@ -693,6 +728,88 @@ const mocks: Services = {
       // Mock mode has no recordings: steps are read by the phone's own voice.
       await delay(150);
       return [];
+    },
+  },
+  community: {
+    async listCircles() {
+      await delay();
+      return readCommunity().circles;
+    },
+    async createCircle({ name, displayName }) {
+      await delay();
+      const c = readCommunity();
+      if (c.circles.length >= 10) throw new CommunityError("too_many_circles");
+      const id = `mock-circle-${Date.now()}`;
+      c.circles.push({ id, name: name.trim(), role: "owner", members: [{ displayName: displayName.trim(), mine: true }] });
+      writeCommunity(c);
+      return id;
+    },
+    async createInvite(circleId) {
+      await delay();
+      const c = readCommunity();
+      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const code = Array.from({ length: 8 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join("");
+      c.invites[code] = circleId;
+      writeCommunity(c);
+      return code;
+    },
+    async join({ code, displayName }) {
+      await delay();
+      const clean = code.trim().toUpperCase();
+      if (!/^[A-Z2-9]{8}$/.test(clean)) throw new CommunityError("invite_not_found");
+      const c = readCommunity();
+      const own = c.invites[clean];
+      if (own) return own;
+      if (!c.circles.some((x) => x.id === SAMPLE_CIRCLE)) {
+        c.circles.push({
+          id: SAMPLE_CIRCLE,
+          name: "Sharma family",
+          role: "member",
+          members: [{ displayName: "Mummy's kitchen", mine: false }, { displayName: "Riya's kitchen", mine: false }, { displayName: displayName.trim(), mine: true }],
+        });
+        c.posts.push(...samplePosts());
+        writeCommunity(c);
+      }
+      return SAMPLE_CIRCLE;
+    },
+    async leave(circleId) {
+      await delay();
+      const c = readCommunity();
+      c.circles = c.circles.filter((x) => x.id !== circleId);
+      c.posts = c.posts.filter((p) => p.circleId !== circleId);
+      writeCommunity(c);
+    },
+    async feed(_householdId, circleId) {
+      await delay();
+      return readCommunity()
+        .posts.filter((p) => !circleId || p.circleId === circleId)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    },
+    async share(input) {
+      await delay();
+      const c = readCommunity();
+      const circle = c.circles.find((x) => x.id === input.circleId);
+      if (!circle) throw new Error("not in this circle");
+      const id = `mock-post-${Date.now()}`;
+      c.posts.push({
+        id, circleId: circle.id, circleName: circle.name, authorName: circle.members.find((m) => m.mine)?.displayName ?? "You",
+        recipeId: input.recipeId, recipeSlug: input.recipeSlug, dishTitle: input.dishTitle, note: input.note?.trim() || null,
+        changes: input.changes.filter((x) => x.trim()), createdAt: new Date().toISOString(), mine: true, canRemove: true,
+      });
+      writeCommunity(c);
+      return id;
+    },
+    async removePost(postId) {
+      await delay();
+      const c = readCommunity();
+      c.posts = c.posts.filter((p) => p.id !== postId);
+      writeCommunity(c);
+    },
+    async report(postId) {
+      await delay();
+      const c = readCommunity();
+      c.posts = c.posts.filter((p) => p.id !== postId);
+      writeCommunity(c);
     },
   },
   voice: {

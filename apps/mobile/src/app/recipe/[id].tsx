@@ -60,7 +60,25 @@ export default function RecipeScreen() {
       title={t("recipe.title")}
       back
       mic={false}
-      right={recipe.data && householdId ? <SaveHeart householdId={householdId} recipeId={recipe.data.parent_id ?? recipe.data.id ?? recipe.data.slug} /> : null}
+      right={
+        recipe.data && householdId ? (
+          <>
+            <IconButton
+              label={t("community.shareRecipe")}
+              tone="plain"
+              onPress={() =>
+                router.push({
+                  pathname: "/community/share",
+                  params: { recipeId: recipe.data.parent_id ?? recipe.data.id ?? recipe.data.slug, slug: recipe.data.slug, title: recipeTitle(recipe.data, getLocale()) },
+                })
+              }
+            >
+              <Icon name="share" />
+            </IconButton>
+            <SaveHeart householdId={householdId} recipeId={recipe.data.parent_id ?? recipe.data.id ?? recipe.data.slug} />
+          </>
+        ) : null
+      }
     />
   );
   if (recipe.isSuccess) {

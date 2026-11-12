@@ -167,3 +167,12 @@ export function acceptReason(template: string, reworded: string | null | undefin
   const low = r.toLowerCase();
   return anchors.some((a) => a && low.includes(a.toLowerCase())) ? r : template;
 }
+
+export type ReactionRow = { polarity: number; member_id: string | null; subject_recipe_id: string | null };
+
+/** D2: reactions as the ranking wants them; a neutral "okay" carries nothing. */
+export function reactionsFromRows(rows: ReactionRow[]): NonNullable<RankContext["reactions"]> {
+  return rows
+    .filter((r) => r.member_id && r.subject_recipe_id && r.polarity !== 0)
+    .map((r) => ({ memberId: r.member_id!, recipeId: r.subject_recipe_id!, polarity: r.polarity > 0 ? 1 as const : -1 as const }));
+}

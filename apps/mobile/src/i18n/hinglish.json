@@ -1061,5 +1061,11 @@
   "plan.need.marinate": "{item} pehle se fridge mein marinate karein (lagbhag {hours} ghante)",
   "plan.need.rest": "Step {step} pehle se shuru karein (lagbhag {hours} ghante)",
   "plan.need.set_curd": "Aaj raat doodh se dahi jama dein (lagbhag {hours} ghante)",
-  "plan.need.defrost": "{item} freezer se fridge mein rakh dein (lagbhag {hours} ghante)"
+  "plan.need.defrost": "{item} freezer se fridge mein rakh dein (lagbhag {hours} ghante)",
+  "finish.react.title": "Sabko kaisa laga?",
+  "finish.react.loved": "Bahut pasand aaya",
+  "finish.react.okay": "Theek tha",
+  "finish.react.notFor": "Pasand nahi aaya",
+  "finish.react.lovedStatement": "{name} ko {dish} bahut pasand aaya",
+  "finish.react.notForStatement": "{name} ko {dish} pasand nahi aaya"
 }

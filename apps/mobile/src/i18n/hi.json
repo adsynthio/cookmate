@@ -1091,5 +1091,11 @@
   "plan.need.marinate": "{item} पहले से फ़्रिज में मैरिनेट करें (लगभग {hours} घंटे)",
   "plan.need.rest": "स्टेप {step} पहले से शुरू करें (लगभग {hours} घंटे)",
   "plan.need.set_curd": "आज रात दूध से दही जमा दें (लगभग {hours} घंटे)",
-  "plan.need.defrost": "{item} फ़्रीज़र से फ़्रिज में रख दें (लगभग {hours} घंटे)"
+  "plan.need.defrost": "{item} फ़्रीज़र से फ़्रिज में रख दें (लगभग {hours} घंटे)",
+  "finish.react.title": "सबको कैसा लगा?",
+  "finish.react.loved": "बहुत पसंद आया",
+  "finish.react.okay": "ठीक था",
+  "finish.react.notFor": "पसंद नहीं आया",
+  "finish.react.lovedStatement": "{name} को {dish} बहुत पसंद आया",
+  "finish.react.notForStatement": "{name} को {dish} पसंद नहीं आया"
 }

@@ -575,6 +575,9 @@ const mocks: Services = {
           ...calendarPrefs(eventsOn([...globalEvents, ...keptEvents], mockToday(), null)).avoid,
         ],
         like: prefs.filter((m) => m.polarity > 0).map((m) => m.ingredientKey!),
+        reactions: memories
+          .filter((m) => m.about === "reaction" && m.memberId && m.recipeId && m.polarity !== 0)
+          .map((m) => ({ memberId: m.memberId!, recipeId: m.recipeId!, polarity: m.polarity > 0 ? (1 as const) : (-1 as const) })),
         // Left out: dishes turned down today, and dishes the household said it doesn't like.
         docs: recipeDocs.filter((d) => !dismissedToday.has(d.slug) && ![...subjects.values()].includes(`${d.slug}:dislike`)),
         items: pantry,

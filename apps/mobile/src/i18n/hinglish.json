@@ -966,5 +966,22 @@
   "ready.heatEat": "{dish}, bas garam kijiye",
   "ready.body": "Aapki rasoi mein pehle se bana hai: {items}. Paanch minute mein khana taiyaar, kuch naya banane ki zaroorat nahi.",
   "ready.heatRice": "Ek hi baar, bhaap nikalne tak garam karein. Chawal ek din ke andar kha lein.",
-  "ready.ideas": "Istemaal ke aur tareeke"
+  "ready.ideas": "Istemaal ke aur tareeke",
+  "amt.g": "{n} gram",
+  "amt.kg": "{n} kilo",
+  "amt.ml": "{n} ml",
+  "amt.l": "{n} litre",
+  "amt.piece": "{n}",
+  "amt.packet": "{n} packet",
+  "amt.bunch": "{n} gaddi",
+  "amt.howMuch": "Kitna hai?",
+  "amt.other": "Aur",
+  "amt.cardTitle": "Aapke paas kitna hai?",
+  "amt.cardBody": "{n} cheezon ki matra abhi nahi hai. Jod dein, taaki Cookmate ko pata rahe ki kab khatam hone wali hain.",
+  "amt.cardGo": "Matra jodein",
+  "amt.title": "Aapke paas kitna hai?",
+  "amt.body": "Sabse kareeb wali matra chunein. Andaaza bhi chalega.",
+  "amt.done": "Ho gaya",
+  "amt.allSet": "Har cheez ki matra jud gayi.",
+  "amt.skip": "Abhi chhodein"
 }

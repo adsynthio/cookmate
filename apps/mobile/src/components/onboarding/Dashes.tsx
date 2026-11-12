@@ -9,7 +9,7 @@ export function Dashes({ count, current }: { count: number; current: number }) {
   return (
     <View style={styles.row} accessibilityRole="progressbar" accessibilityValue={{ min: 1, max: count, now: current + 1 }}>
       {Array.from({ length: count }, (_, i) => (
-        <View key={i} style={[styles.dash, { backgroundColor: i === current ? colors.lime : colors.line }]} />
+        <View key={i} style={[styles.dash, { backgroundColor: i === current ? colors.primary : colors.line }]} />
       ))}
     </View>
   );

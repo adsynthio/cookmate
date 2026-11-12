@@ -97,7 +97,7 @@ export default function RescueScreen() {
           ) : null}
           {fix.data.steps.map((s, i) => (
             <Card key={i} style={styles.step}>
-              <View style={[styles.stepNo, { backgroundColor: colors.limeSoft }]}>
+              <View style={[styles.stepNo, { backgroundColor: colors.primarySoft }]}>
                 <Text variant="bodyStrong">{i + 1}</Text>
               </View>
               <Text variant="heading" style={{ flex: 1 }}>

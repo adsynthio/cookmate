@@ -108,7 +108,7 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
           {[formatQuantity(item.quantity, item.unit), t(`kitchen.location.${item.location}` as StringKey)].filter(Boolean).join(" · ")}
         </Text>
         {useBy ? (
-          <Text color={colors.limeText}>
+          <Text color={colors.primaryText}>
             {t("item.useBy", { date: useBy })} {item.expiryEstimated ? t("item.estimated") : ""}
           </Text>
         ) : null}

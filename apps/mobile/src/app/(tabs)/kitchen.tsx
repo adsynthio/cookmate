@@ -178,7 +178,7 @@ function ItemRow({ item }: { item: PantryItem }) {
       <View style={{ flex: 1, gap: 2 }}>
         <Text variant="heading">{itemName(item)}</Text>
         {sub.length ? (
-          <Text variant="caption" color={expiry && expiry.kind !== "later" ? colors.limeText : colors.inkSecondary}>
+          <Text variant="caption" color={expiry && expiry.kind !== "later" ? colors.primaryText : colors.inkSecondary}>
             {sub.join(" · ")}
           </Text>
         ) : null}

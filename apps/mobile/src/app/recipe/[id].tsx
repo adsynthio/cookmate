@@ -163,11 +163,11 @@ function RecipeBody({
         {photo ? (
           <Image source={photo} style={styles.photo} accessible={false} />
         ) : (
-          <View style={[styles.photo, { backgroundColor: colors.limePale }]} accessible={false} />
+          <View style={[styles.photo, { backgroundColor: colors.primaryPale }]} accessible={false} />
         )}
       </View>
       {doc.parent_id ? (
-        <View style={[styles.note, { backgroundColor: colors.limePale, gap: space.xs }]}>
+        <View style={[styles.note, { backgroundColor: colors.primaryPale, gap: space.xs }]}>
           <Text variant="label" weight={500}>
             {t("adapt.yourVersion")}
           </Text>
@@ -177,11 +177,11 @@ function RecipeBody({
         <>
           {doc.tags?.includes("new_creation") ? (
             // KIT-056: invented from the kitchen's odds and ends, not a tested recipe.
-            <View style={[styles.badge, { backgroundColor: colors.limePale }]}>
+            <View style={[styles.badge, { backgroundColor: colors.primaryPale }]}>
               <Text variant="caption">{t("invent.badge")}</Text>
             </View>
           ) : doc.review_status !== "approved" ? (
-            <View style={[styles.badge, { backgroundColor: colors.amberSoft }]}>
+            <View style={[styles.badge, { backgroundColor: colors.peach }]}>
               <Text variant="caption">{t("recipe.draft")}</Text>
             </View>
           ) : null}
@@ -194,8 +194,8 @@ function RecipeBody({
         <Text variant="heading">
           {match.have === match.total ? t("recipe.haveAll") : t("recipe.haveOf", { have: match.have, total: match.total })}
         </Text>
-        <View style={[styles.track, { backgroundColor: colors.limePale }]} accessible={false}>
-          <View style={[styles.fill, { backgroundColor: colors.lime, width: `${match.total ? (match.have / match.total) * 100 : 0}%` }]} />
+        <View style={[styles.track, { backgroundColor: colors.primaryPale }]} accessible={false}>
+          <View style={[styles.fill, { backgroundColor: colors.primary, width: `${match.total ? (match.have / match.total) * 100 : 0}%` }]} />
         </View>
         {missing.length > 0 ? (
           <Button
@@ -208,7 +208,7 @@ function RecipeBody({
       </Card>
 
       {remembered.length ? (
-        <Card tint={colors.amberSoft}>
+        <Card tint={colors.peach}>
           <Text variant="label" muted>
             {t("recipe.remembered")}
           </Text>
@@ -272,7 +272,7 @@ function RecipeBody({
                   {t(`recipe.flavor.${b.key}` as StringKey)}
                 </Text>
                 <View style={[styles.track, { flex: 1, backgroundColor: colors.surfaceMuted }]}>
-                  <View style={[styles.fill, { backgroundColor: colors.limeText, width: `${b.value * 100}%` }]} />
+                  <View style={[styles.fill, { backgroundColor: colors.primaryText, width: `${b.value * 100}%` }]} />
                 </View>
               </View>
             ))}
@@ -327,7 +327,7 @@ function RecipeBody({
               </Text>
             ) : null}
             {branch ? (
-              <View style={[styles.note, { backgroundColor: colors.limePale }]}>
+              <View style={[styles.note, { backgroundColor: colors.primaryPale }]}>
                 <Text variant="label">
                   {branch.members.join(", ")}: {branch.action}
                 </Text>
@@ -384,12 +384,12 @@ function IngredientRow({
   const icon = status === "have" || status === "assumed" ? "check" : status === "substitute" ? "forward" : null;
   return (
     <View style={styles.ingRow} accessible accessibilityLabel={[nameOf(ing.ingredient), amount, changeNote, detail].filter(Boolean).join(", ")}>
-      <View style={[styles.ingIcon, { backgroundColor: status === "missing" ? colors.amberSoft : colors.surfaceMuted }]}>
-        {icon ? <Icon name={icon} size={16} color={status === "have" ? colors.limeText : colors.inkSecondary} /> : null}
+      <View style={[styles.ingIcon, { backgroundColor: status === "missing" ? colors.peach : colors.surfaceMuted }]}>
+        {icon ? <Icon name={icon} size={16} color={status === "have" ? colors.primaryText : colors.inkSecondary} /> : null}
       </View>
       <View style={{ flex: 1, gap: 2 }}>
         <Text variant="bodyStrong">{nameOf(ing.ingredient)}</Text>
-        <Text variant="caption" color={status === "missing" ? colors.orangeStrong : colors.inkSecondary}>
+        <Text variant="caption" color={status === "missing" ? colors.accentText : colors.inkSecondary}>
           {detail}
         </Text>
       </View>
@@ -398,13 +398,13 @@ function IngredientRow({
           {amount}
         </Text>
         {changeNote ? (
-          <Text variant="caption" color={colors.limeText} style={{ textAlign: "right" }}>
+          <Text variant="caption" color={colors.primaryText} style={{ textAlign: "right" }}>
             {changeNote}
           </Text>
         ) : null}
         {status === "missing" ? (
           listed ? (
-            <Text variant="caption" color={colors.limeText}>
+            <Text variant="caption" color={colors.primaryText}>
               {t("recipe.added")}
             </Text>
           ) : (

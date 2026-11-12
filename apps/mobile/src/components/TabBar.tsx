@@ -1,93 +1,97 @@
-// Bottom bar from the brand kit: four outline tabs on surface-muted around a raised lime mic (VOICE-01:
-// one mic, same place on every tab). The mic is wired to the LiveKit voice session in Sprint 4.
-import { useRouter } from "expo-router";
+// Floating tab bar from the Stitch design: a frosted white capsule above the bottom edge. The active tab sits in an
+// olive pill that glides from tab to tab. The mic lives in AppHeader, in the same place on every tab (VOICE-01).
 import type { BottomTabBarProps } from "expo-router/js-tabs";
-import { Pressable, StyleSheet, View } from "react-native";
+import * as Haptics from "expo-haptics";
+import { useEffect, useState } from "react";
+import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon, type IconName } from "@/design-system/icons";
+import { Animated, useReducedMotion } from "@/design-system/motion";
 import { Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { shadow, size, space, touch } from "@/design-system/tokens";
-import { t } from "@/i18n";
-import { useSession } from "@/state/session";
+import { motion, radius, shadow, space } from "@/design-system/tokens";
+import { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
-const ICONS: Record<string, IconName> = { index: "home", kitchen: "kitchen", cook: "cook", you: "you" };
+const ICONS: Record<string, IconName> = { index: "home", kitchen: "kitchen", list: "list", cook: "cook", you: "you" };
 
 export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
-  const { colors } = useTheme();
+  const { colors, scheme } = useTheme();
   const insets = useSafeAreaInsets();
-  const tabs = state.routes.map((route, index) => {
-    const focused = state.index === index;
-    const title = descriptors[route.key]?.options.title;
-    const label = typeof title === "string" ? title : route.name;
-    const onPress = () => {
-      const event = emitter.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-      if (!focused && !event.defaultPrevented) navigateToTab(route.key);
-    };
-    return (
-      <Pressable
-        key={route.key}
-        accessibilityRole="tab"
-        accessibilityState={{ selected: focused }}
-        accessibilityLabel={label}
-        onPress={onPress}
-        style={styles.tab}
-      >
-        <Icon name={ICONS[route.name] ?? "home"} muted={!focused} />
-        <Text variant="caption" weight={focused ? 500 : 400} muted={!focused} numberOfLines={1}>
-          {label}
-        </Text>
-      </Pressable>
-    );
-  });
-  const middle = Math.ceil(tabs.length / 2);
+  const reduce = useReducedMotion();
+  const [width, setWidth] = useState(0);
+  const count = state.routes.length;
+  const tabW = width / Math.max(count, 1);
+  const x = useSharedValue(0);
+
+  useEffect(() => {
+    if (!tabW) return;
+    const to = state.index * tabW;
+    x.value = reduce ? withTiming(to, { duration: 0 }) : withSpring(to, motion.spring);
+  }, [state.index, tabW, reduce, x]);
+
+  const pill = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
+  const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
 
   return (
-    <View
-      accessibilityRole="tablist"
-      style={[styles.bar, { backgroundColor: colors.surfaceMuted, paddingBottom: Math.max(insets.bottom, space.sm) }]}
-    >
-      {tabs.slice(0, middle)}
-      <View style={styles.tab}>
-        <MicFab />
+    <View pointerEvents="box-none" style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+      <View
+        accessibilityRole="tablist"
+        style={[
+          styles.bar,
+          shadow.float,
+          {
+            backgroundColor: scheme === "dark" ? "rgba(31,30,25,0.94)" : "rgba(255,255,255,0.94)",
+            borderColor: scheme === "dark" ? colors.line : "rgba(232,201,170,0.45)",
+          },
+        ]}
+      >
+        <View style={styles.row} onLayout={onLayout}>
+          {tabW ? (
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.pill, { width: tabW - 6, backgroundColor: colors.primary }, pill]}
+            />
+          ) : null}
+          {state.routes.map((route, index) => {
+            const focused = state.index === index;
+            const title = descriptors[route.key]?.options.title;
+            const label = typeof title === "string" ? title : route.name;
+            const onPress = () => {
+              const event = emitter.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+              if (!focused && !event.defaultPrevented) {
+                if (Platform.OS !== "web") void Haptics.selectionAsync().catch(() => undefined);
+                navigateToTab(route.key);
+              }
+            };
+            const fg = focused ? colors.onPrimary : colors.inkSecondary;
+            return (
+              <Pressable
+                key={route.key}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: focused }}
+                accessibilityLabel={label}
+                onPress={onPress}
+                style={styles.tab}
+              >
+                <Icon name={ICONS[route.name] ?? "home"} size={22} color={fg} />
+                <Text variant="overline" color={fg} numberOfLines={1} style={styles.label}>
+                  {label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
-      {tabs.slice(middle)}
     </View>
   );
 }
 
-function MicFab() {
-  const { colors } = useTheme();
-  const router = useRouter();
-  const voice = useSession((s) => s.voice);
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t("mic.label")}
-      accessibilityState={{ busy: voice === "connecting" || voice === "thinking" }}
-      onPress={() => router.push("/voice")}
-      style={({ pressed }) => [
-        styles.fab,
-        shadow.glow,
-        { backgroundColor: pressed ? colors.limePressed : colors.lime, borderColor: colors.canvas },
-      ]}
-    >
-      <Icon name="mic" size={26} color={colors.onLime} />
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
-  bar: { flexDirection: "row", alignItems: "flex-start", paddingTop: space.sm, paddingHorizontal: space.sm },
-  tab: { flex: 1, alignItems: "center", gap: 2, minHeight: touch.min, justifyContent: "center" },
-  fab: {
-    width: size.fab,
-    height: size.fab,
-    borderRadius: size.fab / 2,
-    marginTop: -size.fab / 2,
-    borderWidth: 4,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  wrap: { position: "absolute", left: 0, right: 0, bottom: 0, alignItems: "center", paddingHorizontal: space.lg },
+  bar: { width: "100%", maxWidth: 420, borderRadius: radius.pill, borderWidth: 1, padding: 4 },
+  row: { flexDirection: "row" },
+  pill: { position: "absolute", left: 3, top: 0, bottom: 0, borderRadius: radius.pill },
+  tab: { flex: 1, alignItems: "center", justifyContent: "center", gap: 2, minHeight: 56, paddingVertical: 6 },
+  label: { letterSpacing: 0.2, textTransform: "none" },
 });

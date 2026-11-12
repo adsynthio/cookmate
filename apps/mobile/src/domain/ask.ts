@@ -9,7 +9,8 @@ export type AskReply = { answer: string; recipes: { slug: string; title: string 
 
 const T = {
   make: { en: "With what you have, {list} would work well.", hi: "आपके पास जो है, उससे {list} अच्छे बनेंगे।", hinglish: "Aapke paas jo hai, usse {list} achhe banenge." },
-  makeNone: { en: "Nothing from my recipes fits what's in the kitchen right now. Try Make something new on Home.", hi: "अभी रसोई की चीज़ों से मेरी कोई रेसिपी पूरी नहीं बनती। Home पर कुछ नया बनाइए आज़माएँ।", hinglish: "Abhi rasoi ki cheezon se meri koi recipe poori nahi banti. Home par Kuch naya banaiye aazmaayein." },
+  makeNone: { en: "Nothing from my recipes fits what's in the kitchen right now. Try “Make something new” on Home.", hi: "अभी रसोई की चीज़ों से मेरी कोई रेसिपी पूरी नहीं बनती। Home पर “कुछ नया बनाएँ” आज़माकर देखें।", hinglish: "Abhi rasoi ki cheezon se meri koi recipe poori nahi banti. Home par “Kuch naya banayein” aazmaakar dekhein." },
+  quickest: { en: "Nothing is quite that quick. The quickest you can make is {dish}, in about {n} minutes.", hi: "इतनी जल्दी कुछ नहीं बनेगा। सबसे जल्दी {dish} बनेगा, लगभग {n} मिनट में।", hinglish: "Itni jaldi kuch nahi banega. Sabse jaldi {dish} banega, lagbhag {n} minute mein." },
   within: { en: " (in {n} minutes or less)", hi: " ({n} मिनट या कम में)", hinglish: " ({n} minute ya kam mein)" },
   soon: { en: "Use these first: {list}.", hi: "ये पहले इस्तेमाल करें: {list}।", hinglish: "Ye pehle istemaal karein: {list}." },
   soonNone: { en: "Nothing is close to going off. Your kitchen looks fresh.", hi: "कुछ भी खराब होने के करीब नहीं है। रसोई ताज़ा है।", hinglish: "Kuch bhi kharab hone ke kareeb nahi hai. Rasoi taaza hai." },
@@ -59,10 +60,24 @@ export function localAnswer(a: { question: string; items: AskItem[]; recipes: As
   const { locale } = a;
   const L = (k: keyof typeof T) => T[k][locale];
   const intent = intentOf(a.question);
-  const followUps = [L("fuMake"), L("fuSoon"), L("fuLeft")];
+  // Never offer the question that was just asked.
+  const asked = a.question.trim().toLowerCase();
+  const followUps = [L("fuMake"), L("fuSoon"), L("fuLeft")].filter((f) => f.toLowerCase() !== asked);
 
   if (intent.kind === "make") {
     const top = makeable(a.items, a.recipes, a.staples, intent.minutes).slice(0, 3);
+    if (!top.length && intent.minutes !== null) {
+      // Nothing that quick: say so, and offer the quickest dish the kitchen can make.
+      const quick = makeable(a.items, a.recipes, a.staples, null).sort((x, y) => x.r.minutes - y.r.minutes)[0];
+      if (quick) {
+        return {
+          answer: fill(L("quickest"), { dish: quick.r.title, n: quick.r.minutes }),
+          recipes: [{ slug: quick.r.slug, title: quick.r.title }],
+          addToList: [...new Set(quick.missing)].map(a.nameOf).slice(0, 6),
+          followUps,
+        };
+      }
+    }
     if (!top.length) return { answer: L("makeNone"), recipes: [], addToList: [], followUps };
     const answer = fill(L("make"), { list: list(top.map((x) => x.r.title), locale) }) + (intent.minutes ? fill(L("within"), { n: intent.minutes }) : "");
     return {

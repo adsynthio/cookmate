@@ -1009,7 +1009,6 @@
   "drinks.addMissing": "{n} cheezein list mein jodein",
   "drinks.added": "List mein jud gaya",
   "drinks.steps": "Kaise banayein",
-  "home.hero.title": "Aaj {slot} mein kya banega?",
   "home.hero.cta": "Aaj ke sujhav dekhein",
   "home.hero.kitchen": "Aapki rasoi mein {n} cheezein",
   "ask.title": "Cookmate se poochhein",
@@ -1038,5 +1037,10 @@
   "kitchen.ranOutBody": "Cookmate ise khatam maankar aapki list mein jod dega.",
   "kitchen.confirmOut": "Khatam karein aur list mein jodein",
   "finish.noticed": "Cookmate ne dhyaan diya",
-  "finish.noticedBody": "Khana banate samay aapne jo badla, usse. Jo sirf aaj ke liye tha, uska nishaan hata dein."
+  "finish.noticedBody": "Khana banate samay aapne jo badla, usse. Jo sirf aaj ke liye tha, uska nishaan hata dein.",
+  "home.hero.title.breakfast": "Aaj naashte mein kya banega?",
+  "home.hero.title.lunch": "Aaj dopahar ke khane mein kya banega?",
+  "home.hero.title.tiffin": "Aaj tiffin mein kya jayega?",
+  "home.hero.title.dinner": "Aaj raat ke khane mein kya banega?",
+  "home.hero.title.snack": "Aaj shaam ke naashte mein kya banega?"
 }

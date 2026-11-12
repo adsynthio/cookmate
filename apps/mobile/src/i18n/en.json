@@ -1043,7 +1043,6 @@
   "drinks.addMissing": "Add {n} to the list",
   "drinks.added": "Added to your list",
   "drinks.steps": "How to make it",
-  "home.hero.title": "What's for {slot} tonight?",
   "home.hero.cta": "See tonight's picks",
   "home.hero.kitchen": "{n} things in your kitchen",
   "ask.title": "Ask Cookmate",
@@ -1072,5 +1071,10 @@
   "kitchen.ranOutBody": "Cookmate will mark it finished and put it on your list.",
   "kitchen.confirmOut": "Mark finished and add to list",
   "finish.noticed": "Cookmate noticed",
-  "finish.noticedBody": "From what you changed while cooking. Untick anything that was just for today."
+  "finish.noticedBody": "From what you changed while cooking. Untick anything that was just for today.",
+  "home.hero.title.breakfast": "What's for breakfast today?",
+  "home.hero.title.lunch": "What's for lunch today?",
+  "home.hero.title.tiffin": "What goes in the tiffin today?",
+  "home.hero.title.dinner": "What's for dinner tonight?",
+  "home.hero.title.snack": "What's for a snack today?"
 }

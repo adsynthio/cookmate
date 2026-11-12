@@ -193,6 +193,7 @@ export default function HomeScreen() {
           <HomeHero
             name={me?.displayName}
             slotLabel={slotLabel}
+            slot={mealSlot}
             slotOpen={pickingSlot}
             onSlot={() => setPickingSlot((v) => !v)}
             count={kitchen.data?.length ?? 0}

@@ -1039,7 +1039,6 @@
   "drinks.addMissing": "{n} चीज़ें लिस्ट में जोड़ें",
   "drinks.added": "लिस्ट में जुड़ गया",
   "drinks.steps": "कैसे बनाएँ",
-  "home.hero.title": "आज {slot} में क्या बनेगा?",
   "home.hero.cta": "आज के सुझाव देखें",
   "home.hero.kitchen": "आपकी रसोई में {n} चीज़ें",
   "ask.title": "Cookmate से पूछें",
@@ -1068,5 +1067,10 @@
   "kitchen.ranOutBody": "Cookmate इसे ख़त्म मानकर आपकी लिस्ट में जोड़ देगा।",
   "kitchen.confirmOut": "ख़त्म करें और लिस्ट में जोड़ें",
   "finish.noticed": "Cookmate ने ध्यान दिया",
-  "finish.noticedBody": "खाना बनाते समय आपने जो बदला, उससे। जो सिर्फ़ आज के लिए था, उसका निशान हटा दें।"
+  "finish.noticedBody": "खाना बनाते समय आपने जो बदला, उससे। जो सिर्फ़ आज के लिए था, उसका निशान हटा दें।",
+  "home.hero.title.breakfast": "आज नाश्ते में क्या बनेगा?",
+  "home.hero.title.lunch": "आज दोपहर के खाने में क्या बनेगा?",
+  "home.hero.title.tiffin": "आज टिफ़िन में क्या जाएगा?",
+  "home.hero.title.dinner": "आज रात के खाने में क्या बनेगा?",
+  "home.hero.title.snack": "आज शाम के नाश्ते में क्या बनेगा?"
 }

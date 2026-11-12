@@ -21,17 +21,17 @@ export function TimerChips({ timers, now, onStop }: { timers: RunningTimer[]; no
         return (
           <View
             key={x.id}
-            style={[styles.chip, { backgroundColor: done ? colors.lime : colors.surface }]}
+            style={[styles.chip, { backgroundColor: done ? colors.primary : colors.surface }]}
             accessible
             accessibilityRole="timer"
             accessibilityLiveRegion={done ? "assertive" : "none"}
             accessibilityLabel={done ? t("cook.timer.doneTitle", { label: x.label }) : t("cook.timer.left", { label: x.label, time: clock(left) })}
           >
-            <Icon name="clock" size={18} color={done ? colors.onLime : colors.inkSecondary} />
-            <Text variant="label" color={done ? colors.onLime : colors.inkSecondary}>
+            <Icon name="clock" size={18} color={done ? colors.onPrimary : colors.inkSecondary} />
+            <Text variant="label" color={done ? colors.onPrimary : colors.inkSecondary}>
               {x.label}
             </Text>
-            <Text variant="bodyStrong" color={done ? colors.onLime : colors.ink} style={styles.clock}>
+            <Text variant="bodyStrong" color={done ? colors.onPrimary : colors.ink} style={styles.clock}>
               {done ? t("cook.timer.done") : clock(left)}
             </Text>
             <Pressable
@@ -39,7 +39,7 @@ export function TimerChips({ timers, now, onStop }: { timers: RunningTimer[]; no
               accessibilityLabel={t("cook.timer.cancel", { label: x.label })}
               onPress={() => onStop(x.id)}
               hitSlop={8}
-              style={({ pressed }) => [styles.stop, { backgroundColor: done ? colors.limeSoft : colors.surfaceMuted, opacity: pressed ? 0.6 : 1 }]}
+              style={({ pressed }) => [styles.stop, { backgroundColor: done ? colors.primarySoft : colors.surfaceMuted, opacity: pressed ? 0.6 : 1 }]}
             >
               <Icon name="close" size={16} />
             </Pressable>

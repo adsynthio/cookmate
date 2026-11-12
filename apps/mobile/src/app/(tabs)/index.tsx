@@ -428,7 +428,7 @@ function HeroPick({ pick, onOpen, onCook }: { pick: Pick; onOpen: () => void; on
         {photo ? (
           <Image source={photo} style={styles.heroImage} accessible={false} />
         ) : (
-          <View style={[styles.heroImage, { backgroundColor: colors.limePale }]} accessible={false} />
+          <View style={[styles.heroImage, { backgroundColor: colors.primaryPale }]} accessible={false} />
         )}
       </Pressable>
       {missing.length > 0 ? (
@@ -452,7 +452,7 @@ function AlternatePick({ pick, onOpen }: { pick: Pick; onOpen: () => void }) {
           {photo ? (
             <Image source={photo} style={styles.thumb} accessible={false} />
           ) : (
-            <View style={[styles.thumb, { backgroundColor: colors.limePale }]} accessible={false} />
+            <View style={[styles.thumb, { backgroundColor: colors.primaryPale }]} accessible={false} />
           )}
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="bodyStrong">{name}</Text>
@@ -491,9 +491,9 @@ function UseSoonStrip({ items, focused, onPick }: { items: PantryItem[]; focused
               accessibilityLabel={`${itemName(item)}, ${label}`}
               onPress={() => onPick(item)}
             >
-              <Card tint={on ? colors.limeSoft : undefined} style={styles.useSoonCard}>
+              <Card tint={on ? colors.primarySoft : undefined} style={styles.useSoonCard}>
                 <Text variant="bodyStrong">{itemName(item)}</Text>
-                <Text variant="caption" color={days !== null && days <= 1 ? colors.orangeStrong : colors.inkSecondary}>
+                <Text variant="caption" color={days !== null && days <= 1 ? colors.accentText : colors.inkSecondary}>
                   {label}
                   {item.expiryEstimated ? ` · ${t("kitchen.estimated")}` : ""}
                 </Text>

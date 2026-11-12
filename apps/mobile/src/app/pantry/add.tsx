@@ -145,9 +145,9 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
   const custom = draft.ingredientKey === null || draft.state === "homemade";
 
   return (
-    <Card style={unsure ? { borderWidth: 2, borderColor: colors.amber } : undefined}>
+    <Card style={unsure ? { borderWidth: 2, borderColor: colors.accent } : undefined}>
       {unsure ? (
-        <View style={[styles.badge, { backgroundColor: colors.amberSoft }]}>
+        <View style={[styles.badge, { backgroundColor: colors.peach }]}>
           <Text variant="caption" weight={500}>
             {t("kitchen.check")}
           </Text>

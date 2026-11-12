@@ -87,7 +87,7 @@ function ResultRow({ recipe, onPress }: { recipe: RecipeSummary; onPress: () => 
           {photo ? (
             <Image source={photo} style={styles.thumb} accessible={false} />
           ) : (
-            <View style={[styles.thumb, { backgroundColor: colors.limePale }]} accessible={false} />
+            <View style={[styles.thumb, { backgroundColor: colors.primaryPale }]} accessible={false} />
           )}
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="bodyStrong">{title}</Text>

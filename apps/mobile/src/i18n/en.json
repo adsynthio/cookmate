@@ -533,5 +533,7 @@
   "you.notify.badTime": "That time is inside quiet hours.",
   "notify.channel": "Daily dinner idea",
   "home.fast.none.title": "No fasting dishes yet",
-  "home.fast.none.body": "Cookmate doesn't have dishes for this fast yet; more are being added."
+  "home.fast.none.body": "Cookmate doesn't have dishes for this fast yet; more are being added.",
+  "common.back": "Back",
+  "tab.list": "List"
 }

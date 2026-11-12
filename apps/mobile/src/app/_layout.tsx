@@ -14,6 +14,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { TimerAlarm } from "@/components/cook/TimerAlarm";
 import { StateView } from "@/design-system/primitives";
+import { useReducedMotion } from "@/design-system/motion";
 import { ThemeProvider, useTheme } from "@/design-system/theme";
 import { localeFromLanguageCode } from "@/domain/onboarding";
 import { setLocale, t, useLocale } from "@/i18n";
@@ -79,6 +80,7 @@ const FONTS = {
 function RootNavigator() {
   useLocale();
   const { scheme, colors } = useTheme();
+  const reduceMotion = useReducedMotion();
   const [fontsLoaded, fontError] = useFonts(FONTS);
   const ready = useSession((s) => s.ready) && (fontsLoaded || !!fontError);
   const onboarded = useSession((s) => s.householdId !== null);
@@ -87,7 +89,15 @@ function RootNavigator() {
   return (
     <>
       <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.canvas },
+          // Pushed screens slide in from the side; with "reduce motion" they fade instead.
+          animation: reduceMotion ? "fade" : "slide_from_right",
+          animationDuration: 280,
+        }}
+      >
         <Stack.Protected guard={onboarded}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="pantry/add" options={{ presentation: "modal" }} />

@@ -69,7 +69,7 @@ export default function ConsentScreen() {
       onAction={() => finish.mutate()}
       footer={
         finish.isError ? (
-          <Text color={colors.limeText} accessibilityLiveRegion="assertive">
+          <Text color={colors.primaryText} accessibilityLiveRegion="assertive">
             {t("onb.error.create")}
           </Text>
         ) : null
@@ -88,7 +88,7 @@ export default function ConsentScreen() {
                 accessibilityLabel={title}
                 value={consents[p] === true}
                 onValueChange={(v) => setConsent(p, v)}
-                trackColor={{ true: colors.lime, false: colors.line }}
+                trackColor={{ true: colors.primary, false: colors.line }}
               />
             </View>
           </Card>

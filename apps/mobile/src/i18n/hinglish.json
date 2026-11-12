@@ -499,5 +499,7 @@
   "you.notify.badTime": "Yeh time quiet time ke andar hai.",
   "notify.channel": "Roz ka khane ka suggestion",
   "home.fast.none.title": "Abhi vrat wale dishes nahi hain",
-  "home.fast.none.body": "Cookmate mein abhi is vrat ke dishes nahi hain; aur jode ja rahe hain."
+  "home.fast.none.body": "Cookmate mein abhi is vrat ke dishes nahi hain; aur jode ja rahe hain.",
+  "common.back": "Wapas",
+  "tab.list": "List"
 }

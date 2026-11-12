@@ -191,14 +191,14 @@ export function FinishSheet({
                     accessibilityLabel={t("finish.used", { name })}
                     onPress={() => patch(l.itemId, { on: !s.on })}
                     hitSlop={8}
-                    style={[styles.check, { backgroundColor: s.on ? colors.lime : colors.surfaceMuted }]}
+                    style={[styles.check, { backgroundColor: s.on ? colors.primary : colors.surfaceMuted }]}
                   >
-                    {s.on ? <Icon name="check" size={18} color={colors.onLime} /> : null}
+                    {s.on ? <Icon name="check" size={18} color={colors.onPrimary} /> : null}
                   </Pressable>
                   <View style={{ flex: 1, gap: 2, opacity: s.on ? 1 : 0.5 }}>
                     <Text variant="bodyStrong">{name}</Text>
                     {!l.staple && changes?.get(l.ingredient) ? (
-                      <Text variant="caption" color={colors.limeText}>
+                      <Text variant="caption" color={colors.primaryText}>
                         {t(changes.get(l.ingredient)!.amount === "more" ? "recipe.more" : "recipe.less")}
                       </Text>
                     ) : null}

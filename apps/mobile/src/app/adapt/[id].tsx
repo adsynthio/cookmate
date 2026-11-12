@@ -148,7 +148,7 @@ function AdaptForm({ doc, items, householdId }: { doc: RecipeDoc; items: Paramet
       ) : null}
 
       {unresolved.length ? (
-        <Card tint={colors.amberSoft} style={{ borderRadius: radius.card }}>
+        <Card tint={colors.peach} style={{ borderRadius: radius.card }}>
           <Text accessibilityLiveRegion="polite">{t("adapt.unresolved", { items: unresolved.map(nameOf).join(", ") })}</Text>
           <Button
             kind="secondary"

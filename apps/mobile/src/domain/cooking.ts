@@ -152,3 +152,9 @@ export function rememberedQty(qty: number, factor: number): number {
   const q = qty * factor;
   return q >= 10 ? Math.round(q) : Math.round(q * 10) / 10;
 }
+
+/** What to check when a step's timer rings: what it should look like first, else another sense, else the one-line cue. */
+export function timerCue(step: Pick<RecipeStepDoc, "cue" | "cues">): string | undefined {
+  const c = step.cues;
+  return c?.look ?? c?.smell ?? c?.sound ?? c?.touch ?? c?.taste ?? step.cue;
+}

@@ -8,10 +8,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Image, PanResponder, ScrollView, StyleSheet, useWindowDimensions, View, type ScrollViewInstance } from "react-native";
+import { PanResponder, ScrollView, StyleSheet, View, type ScrollViewInstance } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { FinishSheet } from "@/components/cook/FinishSheet";
+import { DirectionCard, HandCard, StepMeta, StepPhoto, StepProgress, StepTimerCard, TimeUpCard } from "@/components/cook/StepParts";
 import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
 import { WhistleCounter } from "@/components/cook/WhistleCounter";
@@ -26,12 +27,13 @@ import { downloadStepAudio, playStepAudio, removeStepAudio } from "@/offline/ste
 import { stepWords } from "@/domain/voiceStyle";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
+import { SlideIn } from "@/design-system/motion";
 import { dishImage } from "@/design-system/media";
 import { Button, Card, IconButton, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, space } from "@/design-system/tokens";
+import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
-import { countWhistle, offersTimer, remaining, stepSeconds } from "@/domain/cooking";
+import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
 import { leftoverSafety, safetyText } from "@/domain/rescue";
@@ -126,12 +128,15 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   const router = useRouter();
   const queryClient = useQueryClient();
   const locale = getLocale();
-  const { width: screenWidth } = useWindowDimensions();
   const memberId = useSession((s) => s.memberId);
   const total = doc.steps.length;
   const dish = recipeTitle(doc, locale);
 
   const [stepNo, setStepNo] = useState(() => Math.max(1, Math.min(total, session.currentStep)));
+  /** Which way the last move went, so the new step slides in from that side. */
+  const [dir, setDir] = useState<1 | -1 | 0>(0);
+  /** The companion's last words in "Need a hand?". */
+  const [reply, setReply] = useState(() => t("cook.hand.hello"));
   const [whistles, setWhistles] = useState<Record<number, number>>({});
   const [showIngredients, setShowIngredients] = useState(false);
   const [reading, setReading] = useState(false);
@@ -163,6 +168,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   const allTimers = useTimers((s) => s.timers);
   const startTimer = useTimers((s) => s.start);
   const stopTimer = useTimers((s) => s.cancel);
+  const extendTimer = useTimers((s) => s.extend);
   const clearTimers = useTimers((s) => s.clearSession);
   const silent = useTimers((s) => s.silent);
   const timers = useMemo(() => allTimers.filter((x) => x.sessionId === session.id), [allTimers, session.id]);
@@ -182,6 +188,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
     hush();
     setReading(false);
     tick();
+    setDir(next > stepNo ? 1 : -1);
     setStepNo(next);
     scroll.current?.scrollTo({ y: 0, animated: false });
     // Offline, the move waits in the outbox and this resolves straight away.
@@ -246,6 +253,8 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           changes={changes}
           leftoverNote={safetyText([leftoverSafety(doc.ingredients)].filter((x) => x !== null), locale)}
           offline={getBundle(session.id)?.finishedOffline === true}
+          photo={dishImage(doc.slug)}
+          steps={total}
           onClose={() => {
             removeStepAudio(session.id);
             void queryClient.invalidateQueries({ queryKey: ["kitchen"] });
@@ -261,10 +270,18 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
 
   const secs = stepSeconds(step);
   const stepTimer = timers.find((x) => x.stepNo === stepNo);
-  const offerTimer = secs !== null && !stepTimer && offersTimer(step);
+  // The step's own timer lives in the timer card; finished ones get a "Time's up" card; the rest stay as chips.
+  const finished = timers.filter((x) => remaining(x, now) === 0);
+  const otherRunning = timers.filter((x) => x !== stepTimer && remaining(x, now) > 0);
+  const showTimerCard = secs !== null && (offersTimer(step) || !!stepTimer);
   const count = whistles[stepNo] ?? 0;
-  const photo = last ? dishImage(doc.slug) : null;
-  const photoSize = Math.min(screenWidth - space.gutter * 2, 320);
+  const startStepTimer = (n: number) => {
+    const s = doc.steps[n - 1];
+    const sec = s ? stepSeconds(s) : null;
+    if (!s || !sec) return;
+    tick();
+    void startTimer({ sessionId: session.id, stepNo: n, label: t("cook.timer.label", { n }), durationSec: sec, cue: timerCue(s) });
+  };
 
   /** Reads a step: this cook's recording when the phone has it (works offline), else the phone's own voice. */
   const readStep = (n: number) => {
@@ -281,6 +298,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
 
   /** A short spoken reply; listening pauses until it ends. */
   const speak = (text: string) => {
+    setReply(text);
     setReading(true);
     say(text, { onEnd: () => setReading(false) });
   };
@@ -344,7 +362,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
       case "timer_set": {
         const sec = Math.round((m.minutes ?? 0) * 60);
         if (sec <= 0) return;
-        void startTimer({ sessionId: session.id, stepNo, label: m.label ?? t("cook.timer.label", { n: stepNo }), durationSec: sec });
+        void startTimer({ sessionId: session.id, stepNo, label: m.label ?? t("cook.timer.label", { n: stepNo }), durationSec: sec, cue: timerCue(step) });
         speak(t("cook.hf.timerSet", { time: durationLabel(sec) }));
         return;
       }
@@ -359,6 +377,8 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
   commandRef.current = command;
   unknownRef.current = () => speak(t("cook.hf.hint"));
 
+  const nextHint = () => (last ? speak(t("cook.hand.lastStep")) : speak(t("cook.hand.nextIs", { text: doc.steps[stepNo]!.text })));
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.header}>
@@ -366,10 +386,7 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           <Icon name="close" />
         </IconButton>
         <View style={styles.headerText}>
-          <Text variant="bodyStrong" accessibilityLiveRegion="polite">
-            {t("cook.stepOf", { n: stepNo, total })}
-          </Text>
-          <Text variant="caption" muted numberOfLines={1}>
+          <Text variant="heading" numberOfLines={1}>
             {dish}
           </Text>
         </View>
@@ -384,108 +401,106 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
           <Icon name="speaker" />
         </IconButton>
       </View>
+      <View style={styles.top}>
+        <StepMeta n={stepNo} total={total} heat={step.heat} />
+        <StepProgress n={stepNo} total={total} />
+      </View>
       {handsFree.state !== "off" ? (
         <Text variant="caption" muted style={styles.status} accessibilityLiveRegion="polite">
           {t(handsFree.state === "listening" ? "cook.hf.listening" : handsFree.state === "denied" ? "cook.hf.denied" : "cook.hf.unavailable")}
         </Text>
       ) : null}
-      <View
-        style={[styles.track, { backgroundColor: colors.line }]}
-        accessibilityRole="progressbar"
-        accessibilityValue={{ min: 1, max: total, now: stepNo }}
-      >
-        <View style={[styles.fill, { backgroundColor: colors.primary, width: `${(stepNo / total) * 100}%` }]} />
-      </View>
-
       {waiting ? (
-        <Text variant="caption" muted style={[styles.status, { paddingTop: space.sm }]} accessibilityLiveRegion="polite">
+        <Text variant="caption" muted style={styles.status} accessibilityLiveRegion="polite">
           {t("cook.offline")}
         </Text>
       ) : null}
 
       <ScrollView ref={scroll} style={{ flex: 1 }} contentContainerStyle={styles.content} {...pan.panHandlers}>
-        <TimerChips timers={timers} now={now} onStop={(timerId) => void stopTimer(timerId)} />
+        {finished.map((x) => (
+          <TimeUpCard
+            key={x.id}
+            timer={x}
+            nextStep={x.stepNo === stepNo && !last ? stepNo + 1 : undefined}
+            onDismiss={() => void stopTimer(x.id)}
+            onMore={() => void extendTimer(x.id, 60)}
+            onNext={() => {
+              void stopTimer(x.id);
+              readStep(go(1));
+            }}
+          />
+        ))}
+        <TimerChips timers={otherRunning} now={now} onStop={(timerId) => void stopTimer(timerId)} />
         {silent && timers.length ? (
           <Text variant="caption" muted>
             {t("cook.timer.silent")}
           </Text>
         ) : null}
 
-        <Text variant="cookStep" accessibilityRole="header">
-          {step.text}
-        </Text>
+        <SlideIn key={stepNo} from={dir} style={styles.step}>
+          <StepPhoto source={dishImage(doc.slug)} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
 
-        {step.safety ? (
-          <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
-            <Text variant="bodyStrong" color={colors.alert}>
-              {t("recipe.safety")}
-            </Text>
-            <Text color={colors.alert}>{step.safety}</Text>
-          </View>
-        ) : null}
+          <DirectionCard step={step} />
 
-        {step.cue ? (
-          <Card>
-            <Text variant="label" muted>
-              {t("recipe.cue")}
-            </Text>
-            <Text variant="bodyStrong">{step.cue}</Text>
-          </Card>
-        ) : null}
+          {step.safety ? (
+            <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
+              <View style={styles.noteHead}>
+                <Icon name="shield" size={18} color={colors.alert} />
+                <Text variant="bodyStrong" color={colors.alert}>
+                  {t("recipe.safety")}
+                </Text>
+              </View>
+              <Text color={colors.alert}>{step.safety}</Text>
+            </View>
+          ) : null}
 
-        {branch ? (
-          <View style={[styles.note, { backgroundColor: colors.primaryPale }]}>
-            <Text variant="label" muted>
-              {t("cook.for", { name: branch.members.join(", ") })}
-            </Text>
-            <Text variant="bodyStrong">{branch.action}</Text>
-          </View>
-        ) : null}
+          {branch ? (
+            <View style={[styles.note, { backgroundColor: colors.primaryPale }]}>
+              <Text variant="label" muted>
+                {t("cook.for", { name: branch.members.join(", ") })}
+              </Text>
+              <Text variant="bodyStrong">{branch.action}</Text>
+            </View>
+          ) : null}
 
-        {notesForStep(session.changes, stepNo).map((n, i) => (
-          <View key={i} style={[styles.note, { backgroundColor: colors.peach }]}>
-            <Text variant="label" muted>
-              {t("cook.youChanged", { change: n.change })}
-            </Text>
-            <Text variant="bodyStrong">{n.note}</Text>
-          </View>
-        ))}
+          {notesForStep(session.changes, stepNo).map((n, i) => (
+            <View key={i} style={[styles.note, { backgroundColor: colors.peach }]}>
+              <Text variant="label" muted>
+                {t("cook.youChanged", { change: n.change })}
+              </Text>
+              <Text variant="bodyStrong">{n.note}</Text>
+            </View>
+          ))}
 
-        {step.whistles ? (
-          <WhistleCounter
-            count={count}
-            target={step.whistles}
-            onWhistle={whistle}
-            onUndo={() => setWhistles((w) => ({ ...w, [stepNo]: Math.max(0, count - 1) }))}
-          />
-        ) : null}
+          {step.whistles ? (
+            <WhistleCounter
+              count={count}
+              target={step.whistles}
+              onWhistle={whistle}
+              onUndo={() => setWhistles((w) => ({ ...w, [stepNo]: Math.max(0, count - 1) }))}
+            />
+          ) : null}
 
-        {offerTimer ? (
-          <Button
-            kind="secondary"
-            size="cook"
-            label={t("cook.timer.start", { time: durationLabel(secs) })}
-            onPress={() => {
-              tick();
-              void startTimer({ sessionId: session.id, stepNo, label: t("cook.timer.label", { n: stepNo }), durationSec: secs });
-            }}
-          />
-        ) : null}
+          {showTimerCard ? (
+            <StepTimerCard
+              seconds={secs}
+              timer={stepTimer}
+              now={now}
+              onStart={() => startStepTimer(stepNo)}
+              onStop={() => stepTimer && void stopTimer(stepTimer.id)}
+              onMore={() => stepTimer && void extendTimer(stepTimer.id, 60)}
+            />
+          ) : null}
+        </SlideIn>
 
-        {photo ? (
-          <View style={{ gap: space.sm }}>
-            <Text variant="label" muted>
-              {t("cook.looksLike")}
-            </Text>
-            <Image source={photo} style={{ width: photoSize, height: photoSize, borderRadius: radius.card }} resizeMode="cover" accessibilityLabel={dish} />
-          </View>
-        ) : null}
-
-        <Button kind="secondary" size="cook" label={t("cook.wrong")} onPress={() => router.push(`/rescue/${session.id}`)} />
-        <View>
-          <Button kind="quiet" label={t("assist.ask")} onPress={() => router.push(`/assist/${session.id}?mode=ask`)} />
-          <Button kind="quiet" label={t("assist.changed")} onPress={() => router.push(`/assist/${session.id}?mode=changed`)} />
-        </View>
+        <HandCard
+          listening={handsFree.state === "listening"}
+          reply={reply}
+          onHeat={() => router.push(`/rescue/${session.id}`)}
+          onNext={nextHint}
+          onAsk={() => router.push(`/assist/${session.id}?mode=ask`)}
+          onChanged={() => router.push(`/assist/${session.id}?mode=changed`)}
+        />
 
         <Button
           kind="quiet"
@@ -517,20 +532,23 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
         ) : null}
       </ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: colors.canvas, borderTopColor: colors.line }]}>
+      <View style={[styles.footer, shadow.float, { backgroundColor: colors.canvas }]}>
         <View style={{ flex: 1 }}>
-          <Button kind="secondary" size="cook" label={t("cook.back")} disabled={stepNo === 1} onPress={() => go(-1)} />
+          <Button kind="secondary" size="cook" stretch icon="arrowLeft" label={t("cook.prev")} disabled={stepNo === 1} onPress={() => go(-1)} />
         </View>
-        <View style={{ flex: 2 }}>
+        <View style={{ flex: 1.3 }}>
           {last ? (
             <Button
+              kind="accent"
               size="cook"
+              stretch
+              icon="check"
               label={complete.isPending ? t("cook.finishing") : t("cook.finish")}
               disabled={complete.isPending}
               onPress={() => complete.mutate()}
             />
           ) : (
-            <Button size="cook" label={t("cook.next")} onPress={() => go(1)} />
+            <Button kind="accent" size="cook" stretch iconAfter="arrowRight" label={t("cook.next")} onPress={() => go(1)} />
           )}
         </View>
       </View>
@@ -541,13 +559,14 @@ function Cooking({ session, doc, members, householdId }: { session: CookSession;
 const styles = StyleSheet.create({
   plain: { flex: 1, paddingHorizontal: space.gutter, paddingTop: space.lg, gap: space.lg },
   header: { flexDirection: "row", alignItems: "center", gap: space.md, paddingHorizontal: space.gutter, paddingTop: space.md, paddingBottom: space.md },
-  headerText: { flex: 1, alignItems: "center", gap: 2 },
+  headerText: { flex: 1, gap: 2 },
+  top: { paddingHorizontal: space.gutter, gap: space.md, paddingBottom: space.sm },
   status: { textAlign: "center", paddingHorizontal: space.gutter, paddingBottom: space.sm },
-  track: { height: 6, marginHorizontal: space.gutter, borderRadius: radius.pill, overflow: "hidden" },
-  fill: { height: 6, borderRadius: radius.pill },
-  content: { paddingHorizontal: space.gutter, paddingTop: space.xl, paddingBottom: space.xxl, gap: space.lg },
+  content: { paddingHorizontal: space.gutter, paddingTop: space.md, paddingBottom: space.xxl, gap: space.lg },
+  step: { gap: space.lg },
+  noteHead: { flexDirection: "row", alignItems: "center", gap: space.sm },
   finish: { paddingHorizontal: space.gutter, paddingTop: space.lg, paddingBottom: space.xxxl, gap: space.lg },
   note: { borderRadius: radius.card, padding: space.lg, gap: space.xs },
   ingRow: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 36 },
-  footer: { flexDirection: "row", gap: space.md, paddingHorizontal: space.gutter, paddingTop: space.md, paddingBottom: space.md, borderTopWidth: StyleSheet.hairlineWidth },
+  footer: { flexDirection: "row", gap: space.md, paddingHorizontal: space.gutter, paddingTop: space.md, paddingBottom: space.md, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card },
 });

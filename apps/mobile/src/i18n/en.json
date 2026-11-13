@@ -1102,5 +1102,6 @@
   "finish.react.notFor": "Not for me",
   "finish.react.lovedStatement": "{name} loved {dish}",
   "finish.react.notForStatement": "{dish} isn't a favourite of {name}",
-  "recap.overline": "Your kitchen week"
+  "recap.overline": "Your kitchen week",
+  "cook.tip": "Chef's tip"
 }

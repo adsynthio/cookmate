@@ -33,6 +33,7 @@ import { Button, Card, IconButton, StateView, Text } from "@/design-system/primi
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
+import { tipFor } from "@/domain/tips";
 import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, localDoc, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
@@ -177,6 +178,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const now = useNow(timers.length > 0);
 
   const eaters = session.whoEating.length ? members.filter((m) => session.whoEating.includes(m.id)) : members;
+  const tip = useMemo(() => tipFor(rawDoc, Math.floor(Date.now() / 86_400_000), locale), [rawDoc, locale]);
   const branch = useMemo(
     () => familyBranches(doc, eaters.map((e) => ({ name: e.displayName, ageGroup: e.ageGroup }))).find((b) => b.step === stepNo),
     [doc, eaters, stepNo],
@@ -481,6 +483,19 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
                 {t("cook.for", { name: branch.members.join(", ") })}
               </Text>
               <Text variant="bodyStrong">{branch.action}</Text>
+            </View>
+          ) : null}
+
+          {/* D4: one chef's tip per cook, on the first step. */}
+          {stepNo === 1 ? (
+            <View style={[styles.note, { backgroundColor: colors.primaryPale }]} accessibilityLabel={`${t("cook.tip")}: ${tip.text}`}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: space.xs }}>
+                <Icon name="bulb" size={16} color={colors.primary} />
+                <Text variant="label" weight={600} color={colors.primary}>
+                  {t("cook.tip")}
+                </Text>
+              </View>
+              <Text>{tip.text}</Text>
             </View>
           ) : null}
 

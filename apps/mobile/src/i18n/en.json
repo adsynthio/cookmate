@@ -1151,5 +1151,14 @@
   "tools.youBody": "Picks leave out dishes you can't make, and each step shows the setting for your stove.",
   "tools.saved": "Saved",
   "cook.stove.gas": "Gas",
-  "cook.stove.induction": "Induction"
+  "cook.stove.induction": "Induction",
+  "air.title": "Air fryer",
+  "air.use": "Use it for this step",
+  "air.on": "Using air fryer",
+  "air.setting": "{temp}°C · {min} min · preheat {pre} min",
+  "air.general": "General guide: check a minute early",
+  "air.timer": "Start {min} min air fryer timer",
+  "air.timerLabel": "Air fryer",
+  "air.instead": "Instead of the pan above:",
+  "air.safety": "The basket and the steam that comes out are very hot: pull it out by the handle and keep children back."
 }

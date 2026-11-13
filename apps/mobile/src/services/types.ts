@@ -427,6 +427,8 @@ export interface CookingService {
   abandonSession(sessionId: string): Promise<void>;
   /** KIT-074: answer a question about the current step. The cook's place never moves. */
   ask(input: { sessionId: string; question: string; languageCode: string }): Promise<Answer>;
+  /** F5: a photo of the pan judged against this step's own cues. Never says food is safe to eat. */
+  photoCheck(input: { householdId: string; sessionId: string; image: string }): Promise<PhotoCheckResult>;
   /** KIT-075: record what the cook did differently; returns notes for the steps still ahead. */
   reportChange(input: { sessionId: string; change: string; languageCode: string }): Promise<ChangeResult>;
   /** KIT-091: a fix for this dish and step with what is in the kitchen. */
@@ -524,3 +526,8 @@ export type Services = {
   voice: VoiceService;
   community: CommunityService;
 };
+
+/** F5: what the photo check says about the current step. */
+export type PhotoCheckResult =
+  | { verdict: "carry_on" | "a_little_more" | "cant_tell"; note: string; safetyNote: string | null; cutCheck: boolean }
+  | { verdict: "unavailable" };

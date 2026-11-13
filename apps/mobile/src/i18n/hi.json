@@ -1240,5 +1240,10 @@
   "cook.fullSteps": "पूरे कदम दिखाएँ",
   "cook.mildShare": "मिर्च डालने से पहले थोड़ा कम तीखा हिस्सा अलग निकाल लें।",
   "you.learned.habits": "आपके बनाए {n} व्यंजनों से देखा: आप क्या छोड़ते हैं, और कौन से व्यंजन आपको याद हैं",
-  "you.learned.habitsReset": "ये भूल जाएँ"
+  "you.learned.habitsReset": "ये भूल जाएँ",
+  "buyFew.titleOne": "{a} ले आएँ, {n} और व्यंजन बना सकेंगे",
+  "buyFew.titleTwo": "{a} और {b} ले आएँ, {n} और व्यंजन बना सकेंगे",
+  "buyFew.more": "और {n}",
+  "buyFew.addOne": "लिस्ट में जोड़ें",
+  "buyFew.addBoth": "दोनों लिस्ट में जोड़ें"
 }

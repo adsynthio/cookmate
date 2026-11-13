@@ -1115,5 +1115,7 @@
   "tools.power.watts": "Watt (W)",
   "tools.youTitle": "Rasoi ke tools",
   "tools.youBody": "Sujhav mein woh dish nahi aayengi jo aap nahi bana sakte, aur har step aapke chulhe ki setting batayega.",
-  "tools.saved": "Save ho gaya"
+  "tools.saved": "Save ho gaya",
+  "cook.stove.gas": "Gas",
+  "cook.stove.induction": "Induction"
 }

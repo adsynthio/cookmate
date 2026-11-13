@@ -1149,5 +1149,7 @@
   "tools.power.watts": "Watts (W)",
   "tools.youTitle": "Kitchen tools",
   "tools.youBody": "Picks leave out dishes you can't make, and each step shows the setting for your stove.",
-  "tools.saved": "Saved"
+  "tools.saved": "Saved",
+  "cook.stove.gas": "Gas",
+  "cook.stove.induction": "Induction"
 }

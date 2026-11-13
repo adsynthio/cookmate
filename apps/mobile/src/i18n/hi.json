@@ -1166,5 +1166,14 @@
   "tools.togetherHint": "अगर एक ही सॉकेट है या स्विच ट्रिप हो जाता है, तो 'एक बार में एक' चुनें। मैं स्टेप उसी हिसाब से बताऊँगा।",
   "tools.pair": "{a} + {b}",
   "tools.together": "एक साथ चल जाते हैं",
-  "tools.oneAtATime": "एक बार में एक"
+  "tools.oneAtATime": "एक बार में एक",
+  "limits.device.gas": "गैस",
+  "limits.device.induction": "इंडक्शन",
+  "limits.device.air_fryer": "एयर फ्रायर",
+  "limits.busy": "आपका {device} अभी स्टेप {n} में लगा है ({time} बाकी)।",
+  "limits.busyGas": "गैस के सारे बर्नर चल रहे हैं (स्टेप {n} वाला {time} में खाली होगा)।",
+  "limits.clash": "आपका {other} अभी चल रहा है ({time} बाकी), और {device} इसके साथ नहीं चल सकता।",
+  "limits.useAlt": "यह स्टेप {alt} पर करें",
+  "limits.wait": "{other} के ख़त्म होने तक रुकें; उसका टाइमर बजेगा। तब तक सब तैयार रखें।",
+  "limits.airFirst": "आपका इंडक्शन और एयर फ्रायर एक साथ नहीं चलते: शुरू करने से पहले इंडक्शन बंद करें।"
 }

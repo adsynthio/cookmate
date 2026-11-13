@@ -1170,5 +1170,14 @@
   "tools.togetherHint": "Choose one at a time if they share a socket or the switch trips. I'll plan the steps around it.",
   "tools.pair": "{a} + {b}",
   "tools.together": "Together is fine",
-  "tools.oneAtATime": "One at a time"
+  "tools.oneAtATime": "One at a time",
+  "limits.device.gas": "gas",
+  "limits.device.induction": "induction",
+  "limits.device.air_fryer": "air fryer",
+  "limits.busy": "Your {device} is still busy with step {n} ({time} left).",
+  "limits.busyGas": "All your gas burners are in use (step {n} frees one in {time}).",
+  "limits.clash": "Your {other} is still on ({time} left), and your {device} can't run with it.",
+  "limits.useAlt": "Do this step on {alt}",
+  "limits.wait": "Wait for the {other} to finish; its timer will ring. Keep everything ready till then.",
+  "limits.airFirst": "Your induction and air fryer can't run together: switch the induction off before you start."
 }

@@ -34,11 +34,13 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
 import { stepIngredients, tipFor } from "@/domain/tips";
-import { stoveSetting, type Stove } from "@/domain/stoveGuide";
+import { planFor, stoveSetting, type Stove } from "@/domain/stoveGuide";
+import { clash, kitchenCheck, type Busy, type Device } from "@/domain/kitchenLimits";
 import { DEFAULT_POWER, has } from "@/domain/tools";
 import { useStove } from "@/state/stove";
 import { StoveCard } from "@/components/cook/StoveCard";
 import { AirFryerCard } from "@/components/cook/AirFryerCard";
+import { checkWords, KitchenCheckCard } from "@/components/cook/KitchenCheckCard";
 import { airFryFor } from "@/domain/airFryer";
 import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
@@ -196,13 +198,25 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const [airSteps, setAirSteps] = useState<Set<number>>(new Set());
   const airPlan = has(tools.data, "air_fryer") ? airFryFor(doc.slug, stepNo, doc.steps[stepNo - 1] ?? {}, locale) : null;
   const airOn = !!airPlan && airSteps.has(stepNo);
+  // A step moved to the other stove because this one was taken (or can't run with the air fryer).
+  const [stepStove, setStepStove] = useState<Record<number, Stove>>({});
+  const stoveFor = (n: number): Stove | null => stepStove[n] ?? stove;
+  /** What step n runs on: the air fryer when chosen, else the stove when the step needs heat. */
+  const deviceFor = (n: number): Device | null => {
+    const s = doc.steps[n - 1];
+    if (!s) return null;
+    if (airSteps.has(n) && has(tools.data, "air_fryer") && airFryFor(doc.slug, n, s, locale)) return "air_fryer";
+    return planFor(s) ? stoveFor(n) : null;
+  };
+  const stepStoveNow = stoveFor(stepNo);
   /** Pan notes ("use a flat-bottom kadai") are shown once per cook. */
   const notesSeen = useRef<Set<string>>(new Set());
   const settingFor = (n: number) => {
     const s = doc.steps[n - 1];
-    return s && stove ? stoveSetting(s, stove, power, locale, notesSeen.current) : null;
+    const on = stoveFor(n);
+    return s && on ? stoveSetting(s, on, power, locale, notesSeen.current) : null;
   };
-  const setting = useMemo(() => settingFor(stepNo), [stepNo, stove, power, locale, doc]); // eslint-disable-line react-hooks/exhaustive-deps
+  const setting = useMemo(() => settingFor(stepNo), [stepNo, stepStoveNow, power, locale, doc]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (setting?.noteKey) notesSeen.current.add(setting.noteKey);
   }, [setting]);
@@ -327,6 +341,16 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const finished = timers.filter((x) => remaining(x, now) === 0);
   const otherRunning = timers.filter((x) => x !== stepTimer && remaining(x, now) > 0);
   const showTimerCard = secs !== null && (offersTimer(step) || !!stepTimer);
+  // Is this step's stove or machine free, and can it run alongside what other steps' timers still have on?
+  const need = deviceFor(stepNo);
+  const busy: Busy[] = otherRunning.flatMap((x) => {
+    const d = deviceFor(x.stepNo);
+    return d ? [{ device: d, stepNo: x.stepNo, secondsLeft: remaining(x, now) }] : [];
+  });
+  const check = need ? kitchenCheck(need, busy, tools.data) : null;
+  const checkTime = check ? durationLabel(check.with.secondsLeft) : "";
+  // Induction and air fryer on one socket: say so whenever the air fryer is about to be used with the induction in play.
+  const airClash = airOn && hasInduction && clash(tools.data, "air_fryer", "induction");
   const count = whistles[stepNo] ?? 0;
   const startStepTimer = (n: number) => {
     const s = doc.steps[n - 1];
@@ -348,7 +372,8 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
     // Recipe text is written in English for now, so it is read by the English voice.
     // KIT-068: the same words the voice agent would say for this cook (cue for learners, safety always).
     const setting = settingFor(n);
-    say([stepWords(s, voice.profile), setting?.line].filter(Boolean).join(". "), { language: locale === "hi" ? "hi-IN" : "en-IN", onEnd: done });
+    const warn = n === stepNo && check && need ? Object.values(checkWords(check, need, checkTime)).join(". ") : null;
+    say([warn, stepWords(s, voice.profile), setting?.line].filter(Boolean).join(". "), { language: locale === "hi" ? "hi-IN" : "en-IN", onEnd: done });
   };
 
   /** A short spoken reply; listening pauses until it ends. */
@@ -498,12 +523,26 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
         <SlideIn key={stepNo} from={dir} style={styles.step}>
           <StepPhoto source={stepImage(doc.slug, stepNo)} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
 
+          {check && need ? (
+            <KitchenCheckCard
+              check={check}
+              need={need}
+              timeLeft={checkTime}
+              onAlt={() => {
+                tick();
+                const alt = check.alt;
+                if (alt === "gas" || alt === "induction") setStepStove((m) => ({ ...m, [stepNo]: alt }));
+              }}
+            />
+          ) : null}
+
           <DirectionCard step={step} />
 
           {airPlan ? (
             <AirFryerCard
               plan={airPlan}
               on={airOn}
+              warn={airClash ? t("limits.airFirst") : null}
               onToggle={() =>
                 setAirSteps((a) => {
                   const n = new Set(a);
@@ -519,8 +558,18 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
             />
           ) : null}
 
-          {setting && stove && !airOn ? (
-            <StoveCard stove={stove} line={setting.line} note={setting.note} both={hasGas && hasInduction} onStove={setStove} />
+          {setting && stepStoveNow && !airOn ? (
+            <StoveCard
+              stove={stepStoveNow}
+              line={setting.line}
+              note={setting.note}
+              both={hasGas && hasInduction}
+              onStove={(s) => {
+                // A step moved because of a clash keeps its own stove; the switch otherwise sets the usual one.
+                if (stepStove[stepNo]) setStepStove((m) => ({ ...m, [stepNo]: s }));
+                else setStove(s);
+              }}
+            />
           ) : null}
 
           {step.safety || airOn ? (

@@ -1136,5 +1136,14 @@
   "tools.togetherHint": "Agar ek hi socket hai ya switch trip ho jaata hai, to 'ek baar mein ek' chunein. Main steps usi hisaab se bataunga.",
   "tools.pair": "{a} + {b}",
   "tools.together": "Ek saath chal jaate hain",
-  "tools.oneAtATime": "Ek baar mein ek"
+  "tools.oneAtATime": "Ek baar mein ek",
+  "limits.device.gas": "gas",
+  "limits.device.induction": "induction",
+  "limits.device.air_fryer": "air fryer",
+  "limits.busy": "Aapka {device} abhi step {n} mein laga hai ({time} baaki).",
+  "limits.busyGas": "Gas ke saare burner chal rahe hain (step {n} wala {time} mein khaali hoga).",
+  "limits.clash": "Aapka {other} abhi chal raha hai ({time} baaki), aur {device} iske saath nahi chal sakta.",
+  "limits.useAlt": "Yeh step {alt} par karein",
+  "limits.wait": "{other} ke khatam hone tak rukein; uska timer bajega. Tab tak sab taiyaar rakhein.",
+  "limits.airFirst": "Aapka induction aur air fryer ek saath nahi chalte: shuru karne se pehle induction band karein."
 }

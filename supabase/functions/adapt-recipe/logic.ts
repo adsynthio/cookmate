@@ -3,6 +3,7 @@ import { ingredientFitsDiet, type ValidationContext } from "../_shared/adapt.ts"
 import catalogJson from "../_shared/catalog.json" with { type: "json" };
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
+import { checkRecipe, problemLines } from "../_shared/recipeSafety.ts";
 
 type CatalogRow = { name: string; category: string; flags?: string[]; allergens?: string[] };
 const catalog = new Map((catalogJson as CatalogRow[]).map((c) => [c.name, c]));
@@ -13,6 +14,11 @@ export function validationContext(diet?: Diet): ValidationContext {
     allowed: (d, k) => ingredientFitsDiet(d, catalog.get(k)),
     diet,
   };
+}
+
+/** The shared safety gate (G1) on an adapted recipe, for the table's diet when one was asked for. */
+export function safetyProblems(doc: RecipeDoc, diet?: Diet): string[] {
+  return problemLines(checkRecipe(doc, { catalog, diet }));
 }
 
 /** Every catalog ingredient, for the model's allowed list. */

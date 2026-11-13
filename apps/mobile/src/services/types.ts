@@ -16,7 +16,7 @@ export type StapleLevel = NonNullable<Row<"inventory_items">["staple_level"]>;
 export type MemorySource = Row<"memories">["source"];
 export type { WeekRecap } from "@/domain/recap";
 import type { WeekRecap } from "@/domain/recap";
-import type { Tool } from "@/domain/tools";
+import type { Tool, ToolKey } from "@/domain/tools";
 export type { LearnedCandidate } from "@/domain/learning";
 import type { LearnedCandidate } from "@/domain/learning";
 export type ItemState = Row<"inventory_items">["state"];
@@ -297,7 +297,8 @@ export interface KitchenService {
    * KIT-160/161/162: a photo or a barcode -> items to read back. Never writes, and the photo is not kept.
    * source: "model" / "barcode" when something was found, "barcode_unknown", "unreadable" or "not_configured" when not.
    */
-  scanItems(input: ScanInput): Promise<{ items: DraftItem[]; source: string }>;
+  /** Items found; `appliances` are cooking tools seen in a kitchen photo (offered, never added silently). */
+  scanItems(input: ScanInput): Promise<{ items: DraftItem[]; source: string; appliances?: ToolKey[] }>;
   /** KIT-031: add confirmed items; the same thing in the same place is topped up. */
   addItems(input: { householdId: string; items: DraftItem[]; addedVia: AddedVia }): Promise<string[]>;
   /** KIT-032: every change is logged as an inventory event. */

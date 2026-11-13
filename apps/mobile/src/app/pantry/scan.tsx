@@ -19,6 +19,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { catalogEntry } from "@/data/catalog";
 import { mergeTray } from "@/domain/scanTray";
+import type { ToolKey } from "@/domain/tools";
 import { t, useLocale, type StringKey } from "@/i18n";
 import { services, type DraftItem } from "@/services";
 import { useScan } from "@/state/scan";
@@ -51,13 +52,14 @@ export default function ScanScreen() {
   const [usedBarcode, setUsedBarcode] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [tray, setTray] = useState<DraftItem[]>([]);
+  const [appliances, setAppliances] = useState<ToolKey[]>([]);
   const lastCode = useRef<{ code: string; at: number } | null>(null);
   const looking = useRef(false);
   // The web build has no reliable camera access (and none inside a preview page): it shows a sample scene.
   const noCamera = Platform.OS === "web";
 
   const finish = () => {
-    hand(tray, photos > 0 ? "camera" : usedBarcode ? "barcode" : "camera");
+    hand(tray, photos > 0 ? "camera" : usedBarcode ? "barcode" : "camera", appliances);
     router.replace("/pantry/add");
   };
 
@@ -66,6 +68,7 @@ export default function ScanScreen() {
     setNote(null);
     try {
       const r = await services.kitchen.scanItems({ householdId, kind: "photo", image, mediaType: "image/jpeg" });
+      if (r.appliances?.length) setAppliances((a) => [...new Set([...a, ...r.appliances!])]);
       if (r.items.length) {
         setTray((t) => mergeTray(t, r.items));
         setPhotos((n) => n + 1);

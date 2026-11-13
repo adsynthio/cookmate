@@ -1160,5 +1160,9 @@
   "air.timer": "Start {min} min air fryer timer",
   "air.timerLabel": "Air fryer",
   "air.instead": "Instead of the pan above:",
-  "air.safety": "The basket and the steam that comes out are very hot: pull it out by the handle and keep children back."
+  "air.safety": "The basket and the steam that comes out are very hot: pull it out by the handle and keep children back.",
+  "tools.seen": "I also saw: {names}. Add to your kitchen tools?",
+  "tools.seenAdd": "Add",
+  "tools.seenNo": "No thanks",
+  "tools.seenAdded": "Added to your kitchen tools."
 }

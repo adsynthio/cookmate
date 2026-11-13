@@ -1126,5 +1126,9 @@
   "air.timer": "{min} minute ka air fryer timer",
   "air.timerLabel": "Air fryer",
   "air.instead": "Upar wali kadhai ki jagah:",
-  "air.safety": "Basket aur nikalti bhaap bahut garam hoti hai: handle se nikaalein aur bachchon ko door rakhein."
+  "air.safety": "Basket aur nikalti bhaap bahut garam hoti hai: handle se nikaalein aur bachchon ko door rakhein.",
+  "tools.seen": "Mujhe yeh bhi dikha: {names}. Rasoi ke tools mein jodein?",
+  "tools.seenAdd": "Jodein",
+  "tools.seenNo": "Nahi, rehne dein",
+  "tools.seenAdded": "Rasoi ke tools mein jud gaya."
 }

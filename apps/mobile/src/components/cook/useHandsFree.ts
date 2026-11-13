@@ -2,16 +2,16 @@
 // (on the device when it can, so nothing leaves the phone and no connection is needed) and the fast-path matcher
 // turns what it hears into next / back / repeat / slower / pause / timers / whistles. Listening pauses while the
 // phone is speaking, so it never hears itself.
-import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from "expo-speech-recognition";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { SpeechModule, useSpeechEvent } from "./speech";
 import { HINT_PHRASES, match, type FastPathMatch } from "@/domain/fastPath";
 
 export type HandsFreeState = "off" | "listening" | "unavailable" | "denied";
 
 function available(): boolean {
   try {
-    return ExpoSpeechRecognitionModule.isRecognitionAvailable();
+    return SpeechModule?.isRecognitionAvailable() ?? false;
   } catch {
     return false;
   }
@@ -19,7 +19,7 @@ function available(): boolean {
 
 function onDevice(): boolean {
   try {
-    return ExpoSpeechRecognitionModule.supportsOnDeviceRecognition();
+    return SpeechModule?.supportsOnDeviceRecognition() ?? false;
   } catch {
     return false;
   }
@@ -41,7 +41,7 @@ export function useHandsFree(opts: {
     if (running.current) return;
     running.current = true;
     try {
-      ExpoSpeechRecognitionModule.start({
+      SpeechModule!.start({
         lang: handlers.current.lang,
         interimResults: false,
         continuous: true,
@@ -59,13 +59,13 @@ export function useHandsFree(opts: {
     if (!running.current) return;
     running.current = false;
     try {
-      ExpoSpeechRecognitionModule.abort();
+      SpeechModule!.abort();
     } catch {
       // Already stopped.
     }
   }, []);
 
-  useSpeechRecognitionEvent("result", (e) => {
+  useSpeechEvent("result", (e) => {
     if (!e.isFinal) return;
     const heard = e.results[0]?.transcript?.trim() ?? "";
     if (!heard) return;
@@ -74,11 +74,11 @@ export function useHandsFree(opts: {
     else handlers.current.onUnknown(heard);
   });
   // Recognisers stop on silence even when asked to keep going: start again while hands-free is on.
-  useSpeechRecognitionEvent("end", () => {
+  useSpeechEvent("end", () => {
     running.current = false;
     if (state === "listening" && !handlers.current.paused) begin();
   });
-  useSpeechRecognitionEvent("error", (e) => {
+  useSpeechEvent("error", (e) => {
     running.current = false;
     if (e.error === "not-allowed") setState("denied");
     else if (e.error === "service-not-allowed" || e.error === "language-not-supported") setState("unavailable");
@@ -103,7 +103,7 @@ export function useHandsFree(opts: {
       return;
     }
     try {
-      const p = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+      const p = await SpeechModule!.requestPermissionsAsync();
       if (!p.granted) {
         setState("denied");
         return;

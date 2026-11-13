@@ -97,6 +97,7 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
     ),
     "pantry_check_today": ("{ p_household: string; p_item?: string | null }", "string | null"),
     "get_notification_settings": ("{ p_household: string }", "Json"),
+    "notification_opened": ("{ p_batch: string }", "undefined"),
     "set_notification_settings": ("{ p_household: string; p_settings: Json; p_policy_version?: string }", "Json"),
     "restock_due": ("{ p_household: string; p_days?: number }", "{ ingredient_id: string; name: string; every_days: number; last_bought: string; due_in_days: number }[]"),
     "weekly_plate": ("{ p_household: string; p_weeks?: number }", "{ week_start: string; meals: number; food_groups: Json }[]"),

@@ -14,7 +14,7 @@ insert into auth.users (id, is_anonymous) values
 
 select pg_temp.login('00000000-0000-0000-0000-000000000a01');
 select set_config('t.hh', public.create_household('Export test', 'en-IN', '[{"display_name":"Asha","is_self":true}]'::jsonb) ->> 'household_id', true);
-select public.set_notification_settings(current_setting('t.hh')::uuid, '{"daily_pick": true, "pick_time": "18:00"}');
+select public.set_notification_settings(current_setting('t.hh')::uuid, '{"daily_pick": true, "dinner_time": "19:00"}');
 select set_config('t.item', (public.add_inventory_items(current_setting('t.hh')::uuid, '[{"name":"paneer","quantity":200,"unit":"g"}]'::jsonb, 'text'))[1]::text, true);
 select public.pantry_check_today(current_setting('t.hh')::uuid, current_setting('t.item')::uuid);
 

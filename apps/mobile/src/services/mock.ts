@@ -33,6 +33,7 @@ import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type Ca
 import { planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
 import { daysLeft as daysLeftOf } from "@/domain/pantry";
 
+import { nudgeTime } from "@/domain/dinnerTime";
 import type { Circle, CommunityPost, CookSession, HouseholdRef, ListLine, Member, Memory, NotificationSettings, PantryItem, PickBatch, Services } from "./types";
 import { CommunityError } from "./types";
 import { equipmentList, type Tool } from "@/domain/tools";
@@ -151,7 +152,7 @@ function mockToday(): string {
 }
 /** KIT-035: the one check question per day, as pantry_check_today keeps it on the server. */
 let checkAsked: { day: string; itemId: string | null } | null = null;
-let notificationSettings: NotificationSettings = { dailyPick: false, pickTime: "16:00", quietStart: "22:00", quietEnd: "07:00" };
+let notificationSettings: NotificationSettings = { dailyPick: false, pickTime: "19:00", dinnerTime: "20:00", leadMinutes: 60, quietStart: "22:00", quietEnd: "07:00" };
 const inQuiet = (t: string, a: string, b: string) => (a === b ? false : a < b ? t >= a && t < b : t >= a || t < b);
 let batchNo = 1;
 /** Kitchen tools chosen in this preview (null until chosen). */
@@ -366,11 +367,13 @@ const mocks: Services = {
     },
     async setNotificationSettings(_householdId, changes) {
       await delay(120);
-      const next = { ...notificationSettings, ...changes };
+      const merged = { ...notificationSettings, ...changes };
+      const next = { ...merged, pickTime: nudgeTime(merged.dinnerTime, merged.leadMinutes) };
       if (inQuiet(next.pickTime, next.quietStart, next.quietEnd)) throw new Error("pick time is inside quiet hours");
       notificationSettings = next;
       return next;
     },
+    async notificationOpened() {},
     async registerDevice() {
       await delay(50);
     },

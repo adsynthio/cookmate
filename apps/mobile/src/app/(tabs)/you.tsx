@@ -32,6 +32,7 @@ import { clearBundles } from "@/offline/bundles";
 import { clearCopies } from "@/offline/kitchenCopy";
 import { useOutbox } from "@/offline/outbox";
 import { resetAnalytics } from "@/services/analytics";
+import { clock, nudgeTime } from "@/domain/dinnerTime";
 import { services, type Member, type Memory, type NewMemory, type NotificationSettings } from "@/services";
 import { preparePush } from "@/state/push";
 import { findIngredients } from "@/services/picks";
@@ -411,11 +412,15 @@ function VoiceSettings() {
   );
 }
 
-const PICK_TIMES = ["15:00", "16:00", "17:00", "18:00", "19:00"];
+const DINNER_TIMES = ["19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"];
+const LEADS = [30, 45, 60, 90];
 const QUIET_FROM = ["21:00", "22:00", "23:00"];
 const QUIET_UNTIL = ["06:00", "07:00", "08:00"];
 
-/** KIT-045, NOTIF-01: one nudge a day with tonight's pick, off until the cook turns it on, never in quiet hours. */
+/**
+ * S3 (KIT-045, NOTIF-01): when dinner is and how long before to be told. Home shows what fits in the time left from
+ * then; the notification is off until the cook turns it on, and never comes in quiet hours.
+ */
 function DailyPick({ householdId }: { householdId: string }) {
   const qc = useQueryClient();
   const memberId = useSession((s) => s.memberId);
@@ -461,12 +466,28 @@ function DailyPick({ householdId }: { householdId: string }) {
             onPress={() => save.mutate({ dailyPick: !s.dailyPick })}
           />
         </View>
+        <Text variant="label" muted>
+          {t("you.notify.time")}
+        </Text>
+        {times(DINNER_TIMES, s.dinnerTime, "dinnerTime", (v) => clock(v))}
+        <Text variant="label" muted>
+          {t("you.notify.lead")}
+        </Text>
+        <View style={styles.chips}>
+          {LEADS.map((n) => (
+            <Chip
+              key={n}
+              label={n === 60 ? t("you.notify.leadHour") : n === 90 ? t("you.notify.leadHours") : t("you.notify.leadMin", { n })}
+              selected={s.leadMinutes === n}
+              onPress={() => !save.isPending && save.mutate({ leadMinutes: n })}
+            />
+          ))}
+        </View>
         {s.dailyPick ? (
           <>
-            <Text variant="label" muted>
-              {t("you.notify.time")}
+            <Text variant="caption" muted>
+              {t("you.notify.when", { time: clock(nudgeTime(s.dinnerTime, s.leadMinutes)) })}
             </Text>
-            {times(PICK_TIMES, s.pickTime, "pickTime", (v) => v)}
             <Text variant="label" muted>
               {t("you.notify.quiet")}
             </Text>

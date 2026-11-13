@@ -1278,5 +1278,7 @@
   "tiffin.idea.chicken_roll": "Cook one portion extra: shred the chicken and roll it in a paratha tomorrow. Reheat until steaming hot.",
   "tiffin.idea.khichdi_cutlet": "Cook one portion extra: shape the cold khichdi into cutlets and shallow-fry them tomorrow.",
   "tiffin.idea.kadhi_rice": "Cook one portion extra: kadhi with rice is a good tiffin. Pack the pakoras separately so they stay crisp.",
-  "tiffin.fridge": "Cool the extra and keep it in the fridge overnight."
+  "tiffin.fridge": "Cool the extra and keep it in the fridge overnight.",
+  "invent.avoided.title": "Not {dish}, sorry",
+  "invent.avoided.body": "Your family never eats {items} (an allergy or a dislike you told me), so I won't write it. Try another dish, or change this on the You tab."
 }

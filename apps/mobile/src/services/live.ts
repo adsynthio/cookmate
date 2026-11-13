@@ -776,7 +776,8 @@ export const liveServices: Services = {
     async inventDish(householdId, dish) {
       const { data, error } = await requireSupabase().functions.invoke<{
         recipe_id: string | null;
-        reason?: "too_little" | "nothing_safe";
+        reason?: "too_little" | "nothing_safe" | "avoided";
+        avoided?: string[];
         title?: string;
         titles?: Record<string, string>;
         description?: string;
@@ -790,7 +791,8 @@ export const liveServices: Services = {
         if (status === 503) return { recipeId: null, reason: "unavailable" };
         throw error;
       }
-      if (!data?.recipe_id) return { recipeId: null, reason: data?.reason ?? "nothing_safe" };
+      if (!data?.recipe_id && data?.reason === "avoided") return { recipeId: null, reason: "avoided", avoided: data.avoided ?? [] };
+      if (!data?.recipe_id) return { recipeId: null, reason: data?.reason === "too_little" ? "too_little" : "nothing_safe" };
       return {
         recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? null, description: data.description ?? "",
         uses: data.uses ?? [], toBuy: data.to_buy ?? [], named: !!data.named,

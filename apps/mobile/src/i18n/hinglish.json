@@ -1244,5 +1244,7 @@
   "tiffin.idea.chicken_roll": "Ek hissa zyada banaayein: kal chicken ke tukde karke parathe mein roll banaayein. Achchhi tarah bhaap nikalne tak garam karein.",
   "tiffin.idea.khichdi_cutlet": "Ek hissa zyada banaayein: kal thandi khichdi ki tikki bana kar halka tal lein.",
   "tiffin.idea.kadhi_rice": "Ek hissa zyada banaayein: kadhi-chaawal achchha tiffin hai. Pakode alag rakhein taaki kurkure rahein.",
-  "tiffin.fridge": "Bacha hissa thanda karke raat bhar fridge mein rakhein."
+  "tiffin.fridge": "Bacha hissa thanda karke raat bhar fridge mein rakhein.",
+  "invent.avoided.title": "{dish} nahi bana sakte",
+  "invent.avoided.body": "Aapke parivaar mein {items} koi nahi khaata (allergy ya naapasand, jo aapne bataya tha), isliye main yeh nahi likhunga. Koi aur dish try kijiye, ya You tab par ise badliye."
 }

@@ -20,7 +20,7 @@ There are two ways AI recipes get into the app:
 ## What exists today, and the gaps
 
 - `invent-dish` already checks a dish in code (`validateInvention` in `supabase/functions/_shared/invent.ts`). It checks diet, the kitchen's own ingredients, reheating leftovers, cooking meat and egg through, and a short list of unsafe words.
-- **Gap 1, the most important:** `invent-dish` does not check the family's **allergies and dislikes**. Suggestions (`ranking.ts`) leave them out, but a new creation or a named dish can still use peanuts in a home with a peanut allergy. This gets fixed first.
+- **Gap 1, the most important:** `invent-dish` does not check the family's **allergies and dislikes**. Suggestions (`ranking.ts`) leave them out, but a new creation or a named dish can still use peanuts in a home with a peanut allergy. **Fixed in Sprint 14 G1a:** new creations and named dishes now leave out everything the family avoids, and a named dish built on an avoided item ("peanut chutney" with a peanut allergy) gets a plain "not this one" answer.
 - **Gap 2:** each AI feature has its own checks (`invent.ts`, `adapt.ts`, `assist.ts`). They need one shared checker so a new feature can't skip any.
 - **Gap 3:** there are no checks for hazards specific to Indian kitchens, such as rajma that wasn't boiled hard, pressure-cooker steps, water near hot oil, rice kept warm and reheated twice, or far too much salt or chilli.
 - **Gap 4:** no recipe shows its allergens. No one can report a bad AI recipe, and there is no switch to turn AI recipes off without an app update.

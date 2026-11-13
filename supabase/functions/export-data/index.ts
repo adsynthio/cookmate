@@ -4,6 +4,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { exportFiles, exportPath, zip } from "./logic.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -32,7 +33,7 @@ Deno.serve(async (req) => {
   if (!auth.user) return json({ error: "sign in first" }, 401);
 
   const { data, error } = await user.rpc("export_household", { p_household: body.household_id });
-  if (error) return json({ error: error.code === "42501" ? "not a member of this household" : error.message }, error.code === "42501" ? 403 : 500);
+  if (error) return error.code === "42501" ? json({ error: "not a member of this household" }, 403) : serverError(error, json);
 
   const now = new Date();
   const bytes = zip(exportFiles(data as Record<string, unknown[]>, now), now);
@@ -42,8 +43,8 @@ Deno.serve(async (req) => {
   if (old.data?.length) await bucket.remove(old.data.map((f) => `${body.household_id}/${f.name}`));
   const path = exportPath(body.household_id, crypto.randomUUID());
   const up = await bucket.upload(path, bytes, { contentType: "application/zip" });
-  if (up.error) return json({ error: up.error.message }, 500);
+  if (up.error) return serverError(up.error, json);
   const signed = await bucket.createSignedUrl(path, 24 * 60 * 60, { download: `cookmate-${now.toISOString().slice(0, 10)}.zip` });
-  if (signed.error) return json({ error: signed.error.message }, 500);
+  if (signed.error) return serverError(signed.error, json);
   return json({ url: signed.data.signedUrl, expires_at: new Date(now.getTime() + 86_400_000).toISOString(), bytes: bytes.length });
 });

@@ -15,6 +15,8 @@ import { totalTime } from "../_shared/recipes.ts";
 import { acceptChef, acceptNewDish, CHEF_POOL, chefBrief, type ChefOut } from "./chef.ts";
 import { calendarSummary, checkQuestion, type Kitchen, loadKitchen, rank } from "./engine.ts";
 import { localeFor, mergeCraving } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const MODEL = "claude-haiku-5-5";
 // Choosing tonight's picks is the reasoning step, so it gets the stronger model; it falls back to the rules on timeout.
@@ -145,6 +147,9 @@ Deno.serve(async (req) => {
     .eq("status", "active")
     .maybeSingle();
   if (!me) return json({ error: "not a member of this household" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const now = new Date();
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -239,7 +244,7 @@ Deno.serve(async (req) => {
   const ids: string[] = [];
   if (rows.length) {
     const { data: inserted, error } = await sb.from("recommendations").insert(rows).select("id, rank");
-    if (error) return json({ error: error.message }, 500);
+    if (error) return serverError(error, json);
     for (const r of (inserted ?? []).sort((a, b) => a.rank - b.rank)) ids.push(r.id);
   }
 

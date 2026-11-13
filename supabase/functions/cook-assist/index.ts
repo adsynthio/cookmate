@@ -16,6 +16,8 @@ import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from 
 import { playbookText, type RescueLocale } from "../_shared/rescue.ts";
 import { confidentPantry, LANGUAGE_NAME, localeFor, type PantryRow } from "../rescue/logic.ts";
 import { type Body, parseBody } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const MODEL = "claude-haiku-5-5";
 
@@ -76,16 +78,19 @@ Deno.serve(async (req) => {
   const { data: session, error: e0 } = await sb.from("cooking_sessions")
     .select("id, household_id, recipe_id, adapted_recipe_id, current_step, language_code, status")
     .eq("id", input.sessionId).maybeSingle();
-  if (e0) return json({ error: e0.message }, 500);
+  if (e0) return serverError(e0, json);
   if (!session) return json({ error: "session not found" }, 404);
   const householdId = session.household_id as string;
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const [{ data: row, error: e1 }, { data: items }] = await Promise.all([
     sb.from("recipes").select(RECIPE_SELECT).eq("id", session.adapted_recipe_id ?? session.recipe_id).maybeSingle(),
     sb.from("inventory_items").select("confidence, staple_level, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
   ]);
-  if (e1) return json({ error: e1.message }, 500);
+  if (e1) return serverError(e1, json);
   if (!row) return json({ error: "recipe not found" }, 404);
   const doc = recipeDocFromRow(row as unknown as RecipeRow);
   const stepNo = Math.max(1, Math.min(doc.steps.length, session.current_step as number));
@@ -155,7 +160,7 @@ Deno.serve(async (req) => {
     }
   }
   const { data: entry, error: e3 } = await sb.rpc("log_session_change", { p_session: session.id, p_change: input.text, p_notes: notes, p_channel: input.channel });
-  if (e3) return json({ error: e3.message }, 500);
+  if (e3) return serverError(e3, json);
   const kept = ((entry as { notes?: StepNote[] } | null)?.notes ?? []) as StepNote[];
   return json({ reply: changeReply(kept, locale), notes: kept, source });
 });

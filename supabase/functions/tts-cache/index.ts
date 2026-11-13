@@ -6,6 +6,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { logAiRequest } from "../_shared/aiLog.ts";
 import { decodeAudios, plan, SARVAM_TTS_URL, sarvamBody, type CacheRow, type StepRow } from "./logic.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
@@ -34,12 +35,12 @@ Deno.serve(async (req) => {
     .is("recipes.household_id", null)
     .order("recipe_id")
     .order("step_no");
-  if (error) return json({ error: error.message }, 500);
+  if (error) return serverError(error, json);
   const stepIds = (steps ?? []).map((s) => s.id as string);
   const { data: cached, error: cacheError } = stepIds.length
     ? await admin.from("step_audio_cache").select("step_id, language_code, voice_id, variant_hash").in("step_id", stepIds)
     : { data: [], error: null };
-  if (cacheError) return json({ error: cacheError.message }, 500);
+  if (cacheError) return serverError(cacheError, json);
 
   const jobs = await plan((steps ?? []) as unknown as StepRow[], (cached ?? []) as CacheRow[], { limit, languages: body.languages });
   let made = 0;

@@ -3,7 +3,7 @@
 
 begin;
 
--- Ingredients (177)
+-- Ingredients (182)
 insert into public.ingredients (canonical_name, names, aliases, category, default_unit, default_location_kind,
   shelf_life_days, grams_per_measure, food_groups, is_staple, allergens) values
   ('potato', '{"en": "potato", "hi": "आलू", "hi-Latn": "aloo"}'::jsonb, array['alu', 'aaloo', 'batata']::text[], 'vegetable', 'g', 'pantry', '{"counter": 21, "fridge": 30, "pantry": 30}'::jsonb, '{"katori": 140, "piece": 150}'::jsonb, array['sabzi']::text[], false, '{}'::text[]),
@@ -111,6 +111,8 @@ insert into public.ingredients (canonical_name, names, aliases, category, defaul
   ('khoya', '{"en": "khoya", "hi": "खोया", "hi-Latn": "khoya"}'::jsonb, array['mawa', 'khoa']::text[], 'dairy', 'g', 'fridge', '{"freezer": 60, "fridge": 3}'::jsonb, '{"katori": 130}'::jsonb, array['dairy']::text[], false, array['milk']::text[]),
   ('buttermilk', '{"en": "buttermilk", "hi": "छाछ", "hi-Latn": "chaas"}'::jsonb, array['chhachh', 'mattha', 'taak', 'majjige']::text[], 'dairy', 'ml', 'fridge', '{"fridge": 2}'::jsonb, '{"cup": 240, "katori": 150}'::jsonb, array['dairy']::text[], false, array['milk']::text[]),
   ('cheese', '{"en": "cheese", "hi": "चीज़", "hi-Latn": "cheese"}'::jsonb, array['processed cheese', 'cheese slice']::text[], 'dairy', 'g', 'fridge', '{"fridge": 30}'::jsonb, '{"piece": 20}'::jsonb, array['dairy']::text[], false, array['milk']::text[]),
+  ('milk powder', '{"en": "milk powder", "hi": "मिल्क पाउडर", "hi-Latn": "milk powder"}'::jsonb, array['dairy whitener', 'doodh powder', 'dry milk']::text[], 'dairy', 'g', 'pantry', '{"pantry": 180}'::jsonb, '{"chammach": 8, "chhota_chammach": 3, "katori": 70}'::jsonb, array['dairy']::text[], false, array['milk']::text[]),
+  ('condensed milk', '{"en": "condensed milk", "hi": "कंडेंस्ड मिल्क", "hi-Latn": "condensed milk"}'::jsonb, array['milkmaid', 'mithai mate']::text[], 'dairy', 'g', 'pantry', '{"fridge": 14, "pantry": 365}'::jsonb, '{"chammach": 20, "katori": 200}'::jsonb, array['dairy']::text[], false, array['milk']::text[]),
   ('egg', '{"en": "egg", "hi": "अंडा", "hi-Latn": "anda"}'::jsonb, array['ande', 'anday', 'eggs', 'motte']::text[], 'egg', 'piece', 'fridge', '{"counter": 10, "fridge": 21}'::jsonb, '{"piece": 50}'::jsonb, array['protein']::text[], false, array['egg']::text[]),
   ('chicken', '{"en": "chicken", "hi": "चिकन", "hi-Latn": "chicken"}'::jsonb, array['murga', 'murgi', 'kozhi', 'koli']::text[], 'meat', 'g', 'fridge', '{"freezer": 90, "fridge": 2}'::jsonb, '{"piece": 60}'::jsonb, array['protein']::text[], false, '{}'::text[]),
   ('mutton', '{"en": "mutton", "hi": "मटन", "hi-Latn": "mutton"}'::jsonb, array['goat meat', 'bakra', 'gosht', 'meat']::text[], 'meat', 'g', 'fridge', '{"freezer": 120, "fridge": 2}'::jsonb, '{"piece": 50}'::jsonb, array['protein']::text[], false, '{}'::text[]),
@@ -169,6 +171,9 @@ insert into public.ingredients (canonical_name, names, aliases, category, defaul
   ('bhujia', '{"en": "bhujia", "hi": "भुजिया", "hi-Latn": "bhujia"}'::jsonb, array['sev', 'namkeen', 'bikaneri bhujia']::text[], 'packaged', 'g', 'ready_made', '{"ready_made": 90}'::jsonb, '{"katori": 50, "mutthi": 20}'::jsonb, '{}'::text[], false, '{}'::text[]),
   ('baking soda', '{"en": "baking soda", "hi": "खाने का सोडा", "hi-Latn": "khane ka soda"}'::jsonb, array['meetha soda', 'soda', 'cooking soda']::text[], 'other', 'g', 'pantry', '{"pantry": 365}'::jsonb, '{"chhota_chammach": 4.6, "chutki": 0.3}'::jsonb, '{}'::text[], false, '{}'::text[]),
   ('baking powder', '{"en": "baking powder", "hi": "बेकिंग पाउडर", "hi-Latn": "baking powder"}'::jsonb, '{}'::text[], 'other', 'g', 'pantry', '{"pantry": 365}'::jsonb, '{"chhota_chammach": 4}'::jsonb, '{}'::text[], false, '{}'::text[]),
+  ('eno', '{"en": "eno", "hi": "ईनो", "hi-Latn": "eno"}'::jsonb, array['fruit salt', 'eno fruit salt', 'fruit salt eno']::text[], 'other', 'g', 'pantry', '{"pantry": 365}'::jsonb, '{"chhota_chammach": 5, "piece": 5}'::jsonb, '{}'::text[], false, '{}'::text[]),
+  ('rose water', '{"en": "rose water", "hi": "गुलाब जल", "hi-Latn": "gulab jal"}'::jsonb, array['gulab jal', 'gulabjal', 'rosewater']::text[], 'condiment', 'ml', 'pantry', '{"pantry": 365}'::jsonb, '{"chammach": 15, "chhota_chammach": 5}'::jsonb, '{}'::text[], false, '{}'::text[]),
+  ('agar agar', '{"en": "agar agar", "hi": "अगर अगर", "hi-Latn": "agar agar"}'::jsonb, array['china grass', 'agar']::text[], 'other', 'g', 'pantry', '{"pantry": 730}'::jsonb, '{"chhota_chammach": 2}'::jsonb, '{}'::text[], false, '{}'::text[]),
   ('peanuts', '{"en": "peanuts", "hi": "मूंगफली", "hi-Latn": "moongphali"}'::jsonb, array['mungfali', 'shengdana', 'singdana', 'groundnut', 'kadalai']::text[], 'nut_seed', 'g', 'pantry', '{"fridge": 240, "pantry": 120}'::jsonb, '{"chammach": 9, "katori": 110, "mutthi": 25}'::jsonb, array['protein']::text[], false, array['peanut']::text[]),
   ('cashews', '{"en": "cashews", "hi": "काजू", "hi-Latn": "kaju"}'::jsonb, array['cashew', 'godambi']::text[], 'nut_seed', 'g', 'pantry', '{"fridge": 365, "pantry": 180}'::jsonb, '{"katori": 100, "mutthi": 25, "piece": 1.5}'::jsonb, '{}'::text[], false, array['tree_nut']::text[]),
   ('almonds', '{"en": "almonds", "hi": "बादाम", "hi-Latn": "badam"}'::jsonb, array['baadaam']::text[], 'nut_seed', 'g', 'pantry', '{"fridge": 365, "pantry": 180}'::jsonb, '{"katori": 105, "mutthi": 25, "piece": 1.2}'::jsonb, '{}'::text[], false, array['tree_nut']::text[]),

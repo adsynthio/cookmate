@@ -4,6 +4,43 @@
 // (shahi, dum, kofta, tikka) that a plain dish can take from basics. Pure TypeScript with no imports: shared with the
 // Edge Functions by scripts/sync-shared.py.
 
+/**
+ * The job an ingredient does in a dish (Sprint 15 M1, "the cook's mind"). A real cook doesn't ask "do I have the
+ * recipe's ingredient?" but "what does it do, and what here can do that job?": baking soda makes it rise, so Eno can
+ * stand in. Swaps carry the job they keep, and the app says so ("Same job: makes it rise").
+ */
+export type Job = "rise" | "bind" | "sour" | "rich" | "sweet" | "thick" | "crunch" | "set" | "colour" | "aroma" | "fat" | "heat" | "base";
+
+/** Jobs by catalog name. Anything not listed is the dish itself ("base"). */
+export const JOBS: Record<string, Job[]> = {
+  "baking soda": ["rise"], "baking powder": ["rise"], eno: ["rise"],
+  "gram flour": ["bind", "thick"], cornflour: ["bind", "thick"], "rice flour": ["bind", "crunch"], "refined flour": ["bind"],
+  bread: ["bind"], potato: ["bind", "base"], semolina: ["crunch", "bind"],
+  lemon: ["sour"], "dry mango powder": ["sour"], tamarind: ["sour"], kokum: ["sour"], vinegar: ["sour"], tomato: ["sour", "base"],
+  curd: ["sour", "rich"], buttermilk: ["sour"], "raw mango": ["sour"],
+  ghee: ["rich", "fat"], butter: ["rich", "fat"], "fresh cream": ["rich", "thick"], khoya: ["rich", "thick"], "milk powder": ["rich", "thick"],
+  "condensed milk": ["rich", "sweet"], milk: ["rich"], cashews: ["rich", "thick"], "poppy seeds": ["thick"], peanuts: ["rich", "crunch"],
+  coconut: ["rich"], "desiccated coconut": ["rich"],
+  sugar: ["sweet"], jaggery: ["sweet"], honey: ["sweet"], raisins: ["sweet"],
+  bhujia: ["crunch"], papad: ["crunch"], "puffed rice": ["crunch"],
+  "agar agar": ["set"],
+  saffron: ["colour", "aroma"], "turmeric powder": ["colour"], "kashmiri chilli powder": ["colour", "heat"],
+  "rose water": ["aroma"], "green cardamom": ["aroma"], nutmeg: ["aroma"],
+  "refined oil": ["fat"], "mustard oil": ["fat"], "groundnut oil": ["fat"], "coconut oil": ["fat"], "sesame oil": ["fat"],
+  "green chilli": ["heat"], "red chilli powder": ["heat"], "black pepper": ["heat"],
+};
+
+/** The jobs an ingredient does. */
+export function jobsOf(key: string): Job[] {
+  return JOBS[key] ?? ["base"];
+}
+
+/** The job a swap keeps: the first job both sides share, or null when it swaps one dish for another. */
+export function jobOf(x: Pick<Swap, "from" | "to">): Job | null {
+  const to = new Set(jobsOf(x.to));
+  return jobsOf(x.from).find((j) => j !== "base" && to.has(j)) ?? null;
+}
+
 /** How the dish changes with the swap. */
 export type SwapTaste = "same" | "lighter" | "richer" | "tangier" | "milder" | "nuttier" | "earthier" | "sweeter";
 
@@ -72,6 +109,21 @@ export const SWAPS: Swap[] = [
   s("peas_corn", "green peas", "sweet corn", 1, "sweeter", false, "the same way"),
   s("bread_pav", "bread", "pav", 1, "same", false, "the same way"),
   s("pav_bread", "pav", "bread", 1, "same", true, "toast with butter or ghee"),
+  // M1: swaps by the job an ingredient does (Diwali boondi with Eno instead of soda).
+  s("soda_eno", "baking soda", "eno", 2, "same", false, "about twice as much Eno; add it last, mix gently and cook at once, before the fizz goes"),
+  s("eno_soda", "eno", "baking soda", 0.5, "same", true, "half as much soda with a few drops of lemon in the batter"),
+  s("powder_soda", "baking powder", "baking soda", 0.33, "same", true, "a third as much soda, with curd or lemon in the batter"),
+  s("soda_powder", "baking soda", "baking powder", 3, "milder", false, "three times as much baking powder"),
+  s("powder_eno", "baking powder", "eno", 1, "same", false, "the same amount; add it last and cook at once"),
+  s("eno_powder", "eno", "baking powder", 1, "same", false, "the same amount; it waits longer than Eno"),
+  s("khoya_milk_powder", "khoya", "milk powder", 0.8, "lighter", true, "knead milk powder with a spoon of ghee and a little warm milk into a soft dough"),
+  s("cream_milk_powder", "fresh cream", "milk powder", 0.3, "lighter", true, "whisk milk powder into a little warm milk until smooth; add off the heat"),
+  s("condensed_milk_powder", "condensed milk", "milk powder", 0.6, "lighter", true, "milk powder and sugar stirred into a little warm milk"),
+  s("saffron_turmeric", "saffron", "turmeric powder", 1, "milder", true, "a tiny pinch for the colour; the saffron smell is gone"),
+  s("rose_cardamom", "rose water", "green cardamom", 0.2, "same", true, "a pinch of crushed elaichi instead"),
+  s("kokum_tamarind", "kokum", "tamarind", 0.5, "tangier", false, "soak a small piece of tamarind and use the pulp"),
+  s("bhujia_peanuts", "bhujia", "peanuts", 1, "earthier", false, "roasted peanuts for the crunch"),
+  s("peanuts_bhujia", "peanuts", "bhujia", 1, "same", false, "a handful of bhujia on top for the crunch"),
 ];
 
 /** Ingredients a dish is fine without; picks don't hold a dish back for them. */

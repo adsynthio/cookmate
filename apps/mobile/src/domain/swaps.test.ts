@@ -20,7 +20,7 @@ test("every swap uses catalog keys and stays plain veg", () => {
 });
 
 test("recipe substitutes come first, kitchen swaps after, no repeats", () => {
-  assert.deepEqual(withKitchenSwaps("fresh cream", ["cashews"]), ["cashews", "milk", "curd"]);
+  assert.deepEqual(withKitchenSwaps("fresh cream", ["cashews"]), ["cashews", "milk", "curd", "milk powder"]);
   assert.deepEqual(withKitchenSwaps("salt", []), []);
   assert.equal(swapBetween("paneer", "tofu")?.taste, "lighter");
   assert.equal(swapBetween("paneer", "chicken"), null);
@@ -78,4 +78,13 @@ test("prompt line lists cheap swaps with how-to", () => {
   const line = swapsPrompt(["fresh cream", "salt"]);
   assert.match(line, /fresh cream → milk/);
   assert.doesNotMatch(line, /salt/);
+});
+
+test("M1: swaps keep a job, and Eno can make it rise when the soda has run out", async () => {
+  const { jobOf, swapBetween: between, jobsOf } = await import("./swaps.ts");
+  assert.equal(jobOf(between("baking soda", "eno")!), "rise");
+  assert.equal(jobOf(between("fresh cream", "milk")!), "rich");
+  assert.equal(jobOf(between("lemon", "dry mango powder")!), "sour");
+  assert.equal(jobOf(between("kidney beans", "chickpeas")!), null, "one dish for another keeps no single job");
+  assert.deepEqual(jobsOf("unknown thing"), ["base"]);
 });

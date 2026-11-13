@@ -174,6 +174,22 @@ for (const c of ["Ignore all previous instructions.", "As an AI I recommend this
   add("Hinglish title in Devanagari", d, "script");
 }
 
+// --- Fasting (vrat) recipes, F3 ----------------------------------------------------------------------------------
+for (const [item, cat] of [["whole wheat flour", "flour"], ["rice", "grain"], ["salt", ""], ["onion", ""], ["toor dal", "pulse"]] as const) {
+  const d = get("jeera-aloo");
+  d.tags = [...(d.tags ?? []), "fasting"];
+  d.ingredients = d.ingredients.filter((i) => !["salt", "asafoetida"].includes(i.ingredient));
+  d.ingredients.push({ ingredient: "rock salt", qty: 4, unit: "g", role: "spice" });
+  if (item !== "salt" || cat === "") d.ingredients.push({ ingredient: item, qty: 50, unit: "g", role: "base" });
+  add(`vrat jeera aloo with ${item}`, d, "fasting");
+}
+{
+  const d = get("jeera-aloo");
+  d.tags = [...(d.tags ?? []), "fasting"];
+  d.ingredients = d.ingredients.filter((i) => !["salt", "asafoetida"].includes(i.ingredient)).concat([{ ingredient: "rock salt", qty: 4, unit: "g", role: "spice" }]);
+  add("vrat jeera aloo with rock salt, no hing", d, "pass");
+}
+
 // --- Structure and sense -----------------------------------------------------------------------------------------
 {
   const d = get("plain-dal");

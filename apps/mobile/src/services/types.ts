@@ -133,7 +133,9 @@ export type NotificationSettings = {
 /** KIT-056: a dish invented from the odds and ends in the kitchen, saved as the household's own "new creation". */
 export type InventResult =
   | { recipeId: string; title: string; titles?: EventNames; description: string; uses: string[]; toBuy?: string[]; named?: boolean }
-  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" };
+  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" }
+  /** The dish asked for is built on something the family never eats (an allergy or dislike). */
+  | { recipeId: null; reason: "avoided"; avoided: string[] };
 
 export type PickInput = {
   householdId: string;

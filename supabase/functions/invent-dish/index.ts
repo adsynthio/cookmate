@@ -1,6 +1,7 @@
 // invent-dish (KIT-056, REC-06): "Kuch naya banao" from the odds and ends in the kitchen. Flavour logic picks what
 // to combine (../_shared/invent.ts, same code as the app); Claude Sonnet writes the dish; validateInvention() checks
-// it (catalog ingredients that fit the table's diet, nothing to buy beyond staples, every odd-and-end used,
+// it (nothing the family avoids: allergies and dislikes from memories, catalog ingredients that fit the table's diet,
+// nothing to buy beyond staples, every odd-and-end used,
 // leftovers reheated until steaming hot, raw meat and egg cooked through, no unsafe shortcuts). One retry with the
 // problems listed; a dish that still fails is never shown. A passing dish is saved as the household's own recipe,
 // source 'generated', labelled "new creation" (tag new_creation), so it can be cooked like any other.
@@ -13,12 +14,12 @@ import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import { z } from "npm:zod@4.6.5";
 
 import { logAiRequest } from "../_shared/aiLog.ts";
-import { type InventPlan, planInvention, validateInvention } from "../_shared/invent.ts";
+import { avoids, type InventPlan, planInvention, validateInvention } from "../_shared/invent.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { swapsPrompt } from "../_shared/swaps.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
-import { localDate } from "../suggest-meals/logic.ts";
+import { localDate, type MemoryRow, prefsFromMemories } from "../suggest-meals/logic.ts";
 import { CATALOG, cleanDishName, docFromModel, inventItems, type ItemRow, MAX_TO_BUY, type ModelDish, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
@@ -59,7 +60,8 @@ Besides those, use only these staples: ${staples.join(", ")}. Never ask the cook
 Only use what's here, with cheap swaps for anything richer: ${CHEAP_SWAPS}.
 Flavour logic: a good plate has a starch to carry it, something rich, some heat, something sour (acid) and some crunch;
 the "gaps" list says what the items lack, fill gaps from the staples where it makes sense.
-Diet: every ingredient must suit the given diet.
+Diet: every ingredient must suit the given diet. Never use, suggest or mention anything in "avoid" (allergies and
+dislikes), not even as a garnish or an option.
 Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
 safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;
 no shortcuts (no skipping soaking or boiling, no reheating more than once, no half-cooked anything).
@@ -67,7 +69,7 @@ Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 7 short step
 follows easily; minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari)
 and Hinglish (Latin script). No health or nutrition claims.`;
 
-async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, staples: string[], problems: string[]) {
+async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, avoid: string[], staples: string[], problems: string[]) {
   const started = Date.now();
   const r = await client.messages.parse(
     {
@@ -80,6 +82,7 @@ async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, staples
         role: "user",
         content: JSON.stringify({
           diet,
+          avoid,
           use: plan.use.map((u) => ({ item: u.key, state: u.state, brings: u.roles.length ? u.roles : undefined })),
           gaps: plan.gaps,
           ...(problems.length ? { fix_these_problems_from_your_last_answer: problems } : {}),
@@ -95,14 +98,15 @@ const NAMED_SYSTEM = (staples: string[]) => `You write one home recipe for an In
 the way it is usually made at home, cooked from what is in their kitchen ("have"). Use the usual ingredients of the
 dish; prefer what they have; besides "have" you may use these staples: ${staples.join(", ")}, and at most ${MAX_TO_BUY}
 other things they would buy. Before adding a costly thing to buy, use a cheap swap from "have": ${CHEAP_SWAPS}. Ingredient names must be plain lowercase English names from Indian kitchens (e.g.
-"potato", "fenugreek leaves", "toor dal"). If the dish can't suit the given diet, write the closest version that does.
+"potato", "fenugreek leaves", "toor dal"). If the dish can't suit the given diet, write the closest version that does. Never use, suggest or mention anything in
+"avoid" (allergies and dislikes), not even as a garnish or an option; make the dish without it.
 Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
 safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;
 no shortcuts. Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 8 short steps in plain English;
 minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari) and Hinglish
 (Latin script). No health or nutrition claims.`;
 
-async function askNamed(client: Anthropic, dish: string, have: string[], diet: Diet, staples: string[], problems: string[]) {
+async function askNamed(client: Anthropic, dish: string, have: string[], diet: Diet, avoid: string[], staples: string[], problems: string[]) {
   const started = Date.now();
   const r = await client.messages.parse(
     {
@@ -113,7 +117,7 @@ async function askNamed(client: Anthropic, dish: string, have: string[], diet: D
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: NAMED_SYSTEM(staples) }],
       messages: [{
         role: "user",
-        content: JSON.stringify({ dish, diet, have, ...(problems.length ? { fix_these_problems_from_your_last_answer: problems } : {}) }),
+        content: JSON.stringify({ dish, diet, avoid, have, ...(problems.length ? { fix_these_problems_from_your_last_answer: problems } : {}) }),
       }],
     },
     { timeout: 25_000 },
@@ -149,17 +153,26 @@ Deno.serve(async (req) => {
   if (!quota.ok) return quotaResponse(quota, CORS);
   if (!Deno.env.get("ANTHROPIC_API_KEY")) return json({ error: "invent_unavailable" }, 503);
 
-  const [{ data: hh }, { data: members }, { data: rows, error }] = await Promise.all([
+  const [{ data: hh }, { data: members }, { data: rows, error }, { data: memories, error: memError }] = await Promise.all([
     sb.from("households").select("timezone").eq("id", householdId).maybeSingle(),
     sb.from("household_members").select("diet").eq("household_id", householdId).eq("status", "active"),
     sb.from("inventory_items").select("id, custom_name, state, flavor_roles, confidence, expiry_date, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
+    // Allergies and dislikes, as suggest-meals reads them. Everyone's count: a new dish is for the whole table.
+    sb.from("memories").select("polarity, scope, expires_at, member_id, subject_recipe_id, attributes, ingredients(canonical_name)")
+      .eq("household_id", householdId).eq("status", "active").not("subject_ingredient_id", "is", null),
   ]);
   if (error) return serverError(error, json);
+  // Without the avoid list we can't promise the dish is safe for this family, so we don't write one.
+  if (memError) return serverError(memError, json);
+  const avoid = prefsFromMemories((memories ?? []) as unknown as MemoryRow[], new Date()).avoid.sort();
+  // "Peanut chutney" for a family with a peanut allergy: say so plainly instead of writing a dish without its point.
+  const avoidedInName = named ? avoid.filter((x) => avoids([x], named.toLowerCase())) : [];
+  if (avoidedInName.length) return json({ recipe_id: null, reason: "avoided", avoided: avoidedInName });
   const today = localDate(new Date(), (hh?.timezone as string | undefined) ?? "Asia/Kolkata");
   const items = inventItems((rows ?? []) as unknown as ItemRow[], today);
   const diet = tableDiet(((members ?? []) as { diet: Diet | null }[]).map((m) => m.diet));
-  const plan = named ? null : planInvention(items, CATALOG, diet);
+  const plan = named ? null : planInvention(items, CATALOG, diet, avoid);
   if (!named && !plan) return json({ recipe_id: null, reason: "too_little" });
 
   const staples = [...CATALOG.values()].filter((c) => c.staple && (diet === "nonveg" || !["meat", "seafood", "egg"].includes(c.category))).map((c) => c.name);
@@ -173,17 +186,17 @@ Deno.serve(async (req) => {
   for (let attempt = 0; attempt < 2 && !doc; attempt++) {
     try {
       const r = named
-        ? await askNamed(client, named, [...have].sort(), diet, staples, problems)
-        : await askModel(client, plan!, diet, staples, problems);
+        ? await askNamed(client, named, [...have].filter((h) => !avoids(avoid, h)).sort(), diet, avoid, staples.filter((st) => !avoids(avoid, st)), problems)
+        : await askModel(client, plan!, diet, avoid, staples.filter((st) => !avoids(avoid, st)), problems);
       const candidate = r.dish ? docFromModel(r.dish, diet) : null;
       if (!candidate) problems = ["no dish"];
       else if (named) {
         // A named dish may need a few things from the shop; the validator treats those as bought.
         toBuy = toBuyFor(candidate, have);
         problems = toBuy.length > MAX_TO_BUY ? [`needs ${toBuy.length} things to buy; at most ${MAX_TO_BUY}`] : [];
-        problems.push(...validateInvention(candidate, namedPlan(candidate, items), { catalog: CATALOG, diet, have: new Set([...have, ...toBuy]) }));
+        problems.push(...validateInvention(candidate, namedPlan(candidate, items), { catalog: CATALOG, diet, have: new Set([...have, ...toBuy]), avoid }));
       } else {
-        problems = validateInvention(candidate, plan!, { catalog: CATALOG, diet, have });
+        problems = validateInvention(candidate, plan!, { catalog: CATALOG, diet, have, avoid });
       }
       await logAiRequest({
         householdId, task, model: MODEL, promptVersion: version, latencyMs: r.ms, usage: r.usage,

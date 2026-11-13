@@ -54,11 +54,12 @@ export function rolesOf(item: Pick<InventItem, "key" | "roles">, cat: CatalogEnt
  * Pick the odds and ends worth combining: leftovers and homemade components first, then what spoils soonest, then
  * one starch to carry it. At most five things; staples are assumed. Null when there is too little to invent with.
  */
-export function planInvention(items: InventItem[], catalog: Map<string, CatalogEntry>, diet: Diet): InventPlan | null {
-  const fits = (k: string) => dietFits(diet, catalog.get(k));
+export function planInvention(items: InventItem[], catalog: Map<string, CatalogEntry>, diet: Diet, avoid: string[] = []): InventPlan | null {
+  // Never plan around something the family avoids (allergies, dislikes), even if it's in the kitchen.
+  const fits = (k: string) => dietFits(diet, catalog.get(k)) && !avoids(avoid, k);
   // Raw staples (rice, atta) are assumed; cooked rice from yesterday is exactly what we want to use.
   // Homemade components the catalog doesn't know ("hari chutney") are the household's own food: usable as they are.
-  const own = (i: InventItem) => !catalog.has(i.key) && ["homemade", "leftover", "cooked"].includes(i.state);
+  const own = (i: InventItem) => !catalog.has(i.key) && ["homemade", "leftover", "cooked"].includes(i.state) && !avoids(avoid, i.key);
   const usable = items.filter((i) =>
     i.confidence >= 0.5 && (own(i) || (fits(i.key) && (i.state !== "raw" || !catalog.get(i.key)?.staple))));
   const priority = (i: InventItem) =>
@@ -100,7 +101,23 @@ const REHEAT = /\b(steaming hot|piping hot|bubbling|boil(ing)?|simmer)/i;
 const COOKED_THROUGH = /\b(cooked through|no pink|firm|set completely|fully set|fully cooked|until done)\b/i;
 
 /**
+ * True when `key` is, or plainly contains, something the family avoids: "peanuts" avoids "peanuts" and the homemade
+ * "peanut chutney" (singular or plural), whole words only, so avoiding "egg" doesn't avoid "eggplant".
+ */
+export function avoids(avoid: Iterable<string>, key: string): boolean {
+  const k = ` ${key.trim().toLowerCase()} `;
+  for (const a of avoid) {
+    const w = a.trim().toLowerCase();
+    if (!w) continue;
+    const forms = [w, `${w}s`, `${w}es`, w.endsWith("s") ? w.slice(0, -1) : w];
+    if (forms.some((f) => k.includes(` ${f} `))) return true;
+  }
+  return false;
+}
+
+/**
  * Problems with an invented dish; empty means it can be shown (labelled "new creation") and cooked.
+ * - nothing the family avoids (allergies and dislikes), not even as an optional extra;
  * - only catalog ingredients that fit the diet, and nothing the kitchen doesn't have except staples;
  * - every planned odd-and-end is used (that's the point);
  * - leftovers and cooked food are reheated until steaming hot, in a step with a safety note;
@@ -109,9 +126,18 @@ const COOKED_THROUGH = /\b(cooked through|no pink|firm|set completely|fully set|
 export function validateInvention(
   doc: RecipeDoc,
   plan: InventPlan,
-  ctx: { catalog: Map<string, CatalogEntry>; diet: Diet; have: Set<string> },
+  ctx: { catalog: Map<string, CatalogEntry>; diet: Diet; have: Set<string>; avoid?: Iterable<string> },
 ): string[] {
   const problems: string[] = [];
+  const avoid = [...(ctx.avoid ?? [])];
+  for (const i of doc.ingredients) {
+    if (avoids(avoid, i.ingredient)) problems.push(`${i.ingredient} is something this family never eats (allergy or dislike)`);
+  }
+  // A garnish slipped into a step ("top with peanuts") counts too.
+  for (const s of doc.steps) {
+    const words = s.text.toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, " ");
+    for (const a of avoid) if (avoids([a], words)) problems.push(`a step uses ${a}, which this family never eats`);
+  }
   if (!doc.title.trim() || doc.title.length > 80) problems.push("bad title");
   if (doc.steps.length < 2 || doc.steps.length > 10) problems.push("needs 2 to 10 steps");
   for (const s of doc.steps) {

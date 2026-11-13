@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import catalogJson from "../data/catalog.json" with { type: "json" };
-import { type CatalogEntry, type InventItem, planInvention, templateInvention, validateInvention } from "./invent.ts";
+import { avoids, type CatalogEntry, type InventItem, planInvention, templateInvention, validateInvention } from "./invent.ts";
 
 const catalog = new Map((catalogJson as CatalogEntry[]).map((c) => [c.name, c]));
 const item = (key: string, extra: Partial<InventItem> = {}): InventItem => ({
@@ -72,4 +72,29 @@ test("the validator refuses unsafe or impossible dishes", () => {
       "raw chicken needs a cooked-through safety step");
   }
   assert.ok(validateInvention({ ...withChicken, diet: "veg" }, meatPlan, { catalog, diet: "veg", have }).length > 0);
+});
+
+test("allergies and dislikes: never planned around, never in a dish, not even in a step", () => {
+  const kitchen = [item("peanuts", { daysLeft: 1 }), item("rice", { state: "leftover", daysLeft: 1 }), item("spinach", { daysLeft: 2 })];
+  const plan = planInvention(kitchen, catalog, "veg", ["peanuts"]);
+  assert.ok(plan, "still a plan from the rest");
+  assert.ok(!plan!.use.some((u) => u.key === "peanuts"), "the avoided item is left out of the plan");
+
+  const doc = templateInvention(plan!, "veg");
+  const have = new Set(kitchen.map((i) => i.key));
+  assert.deepEqual(validateInvention(doc, plan!, { catalog, diet: "veg", have, avoid: ["peanuts"] }), []);
+
+  const withNuts = { ...doc, ingredients: [...doc.ingredients, { ingredient: "peanuts", qty: 20, unit: "g", role: "base" as const, optional: true }] };
+  assert.ok(validateInvention(withNuts, plan!, { catalog, diet: "veg", have, avoid: ["peanuts"] }).some((p) => p.includes("never eats")));
+
+  const garnish = { ...doc, steps: [...doc.steps, { text: "Top with crushed peanut and serve." }] };
+  assert.ok(validateInvention(garnish, plan!, { catalog, diet: "veg", have, avoid: ["peanuts"] }).some((p) => p.includes("a step uses peanuts")));
+});
+
+test("avoids matches whole words and simple plurals only", () => {
+  assert.equal(avoids(["egg"], "eggplant"), false);
+  assert.equal(avoids(["egg"], "boiled eggs"), true);
+  assert.equal(avoids(["peanuts"], "peanut chutney"), true);
+  assert.equal(avoids(["garlic"], "ginger garlic paste"), true);
+  assert.equal(avoids([], "anything"), false);
 });

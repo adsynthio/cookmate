@@ -41,8 +41,11 @@ export default function InventScreen() {
 
   const result = invent.data;
   const reason = result && result.recipeId === null ? result.reason : null;
+  const avoided = result && result.recipeId === null && result.reason === "avoided" ? result.avoided : [];
   const failure: { title: StringKey; body: StringKey } | null =
-    reason === "too_little"
+    reason === "avoided"
+      ? { title: "invent.avoided.title", body: "invent.avoided.body" }
+      : reason === "too_little"
       ? { title: "invent.tooLittle.title", body: "invent.tooLittle.body" }
       : reason === "unavailable"
         ? { title: "invent.unavailable.title", body: "invent.unavailable.body" }
@@ -69,8 +72,8 @@ export default function InventScreen() {
         <StateView
           state="empty"
           illustration={illustrations.emptyPicks}
-          title={dish && reason === "nothing_safe" ? t("invent.named.fail.title", { dish }) : t(failure.title)}
-          body={dish && reason === "nothing_safe" ? t("invent.named.fail.body") : t(failure.body)}
+          title={dish && reason === "nothing_safe" ? t("invent.named.fail.title", { dish }) : t(failure.title, { dish: dish ?? "" })}
+          body={dish && reason === "nothing_safe" ? t("invent.named.fail.body") : t(failure.body, { items: avoided.map((k) => displayName(catalogEntry(k), k, l)).join(", ") })}
           actionLabel={reason === "nothing_safe" ? t("state.retry") : t("onb.back")}
           onAction={() => (reason === "nothing_safe" ? mutate() : router.back())}
         />

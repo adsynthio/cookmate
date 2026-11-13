@@ -30,7 +30,7 @@ import { localRescue } from "./rescue";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import calendarJson from "@/data/calendar.json";
 import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type CalendarEvent } from "@/domain/calendar";
-import { planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
+import { avoids, planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
 import { daysLeft as daysLeftOf } from "@/domain/pantry";
 
 import { nudgeTime } from "@/domain/dinnerTime";
@@ -697,10 +697,15 @@ const mocks: Services = {
     },
     async inventDish(_householdId, dish) {
       await delay(900);
+      // Allergies and dislikes, as in the live function: never planned around, never in the dish.
+      const avoid = memories.filter((m) => m.ingredientKey && m.recipeId === null && (m.about ?? "preference") === "preference" && m.polarity < 0)
+        .map((m) => m.ingredientKey!);
+      const named = dish ? avoid.filter((a) => avoids([a], dish.toLowerCase())) : [];
+      if (named.length) return { recipeId: null, reason: "avoided", avoided: named };
       if (dish) {
         // The preview knows a few everyday dishes by name; the live app has the model write any dish.
         const doc = ideaRecipe(dish);
-        if (!doc) return { recipeId: null, reason: "nothing_safe" };
+        if (!doc || doc.ingredients.some((i) => avoids(avoid, i.ingredient))) return { recipeId: null, reason: "nothing_safe" };
         const id = `invented-${nextId++}`;
         adapted.set(id, { ...doc, id, slug: id });
         const have = new Set(pantry.filter((p) => p.ingredientKey).map((p) => p.ingredientKey!));
@@ -721,10 +726,10 @@ const mocks: Services = {
         daysLeft: p.expiryDate ? daysLeftOf(p.expiryDate) : null,
       }));
       const diet = readMembers().some((m) => m.diet === "jain") ? "jain" : "veg";
-      const plan = planInvention(items, cat, diet);
+      const plan = planInvention(items, cat, diet, avoid);
       if (!plan) return { recipeId: null, reason: "too_little" };
       const doc = templateInvention(plan, diet);
-      if (validateInvention(doc, plan, { catalog: cat, diet, have: new Set(items.map((i) => i.key)) }).length) {
+      if (validateInvention(doc, plan, { catalog: cat, diet, have: new Set(items.map((i) => i.key)), avoid }).length) {
         return { recipeId: null, reason: "nothing_safe" };
       }
       const id = `invented-${nextId++}`;

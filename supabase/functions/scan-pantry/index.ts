@@ -9,6 +9,7 @@ import { buildIndex, type CatalogIndex, type ParsedItem } from "../_shared/pantr
 import { type CatalogRow, catalogHints, toCatalog, toResponseItem } from "../parse-inventory/logic.ts";
 import { cleanAppliances, fromModel, fromOpenFoodFacts, type OffProduct, readBody } from "./logic.ts";
 import { callModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -76,6 +77,9 @@ Deno.serve(async (req) => {
     .eq("status", "active")
     .maybeSingle();
   if (!member) return json({ error: "not a member of this household" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(body.householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const catalog = await loadCatalog(sb);
   const reply = (items: ParsedItem[], source: string, appliances: string[] = []) =>

@@ -20,6 +20,8 @@ import { swapsPrompt } from "../_shared/swaps.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
 import { localDate } from "../suggest-meals/logic.ts";
 import { CATALOG, cleanDishName, docFromModel, inventItems, type ItemRow, MAX_TO_BUY, type ModelDish, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const TASK = "invent_combination";
 const MODEL = "claude-sonnet-5-5";
@@ -142,6 +144,9 @@ Deno.serve(async (req) => {
   const { data: me } = await sb.from("household_members").select("id")
     .eq("household_id", householdId).eq("user_id", auth.user.id).eq("status", "active").maybeSingle();
   if (!me) return json({ error: "not a member of this household" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
   if (!Deno.env.get("ANTHROPIC_API_KEY")) return json({ error: "invent_unavailable" }, 503);
 
   const [{ data: hh }, { data: members }, { data: rows, error }] = await Promise.all([
@@ -150,7 +155,7 @@ Deno.serve(async (req) => {
     sb.from("inventory_items").select("id, custom_name, state, flavor_roles, confidence, expiry_date, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
   ]);
-  if (error) return json({ error: error.message }, 500);
+  if (error) return serverError(error, json);
   const today = localDate(new Date(), (hh?.timezone as string | undefined) ?? "Asia/Kolkata");
   const items = inventItems((rows ?? []) as unknown as ItemRow[], today);
   const diet = tableDiet(((members ?? []) as { diet: Diet | null }[]).map((m) => m.diet));
@@ -201,12 +206,12 @@ Deno.serve(async (req) => {
   const rowsOut = variantRows({ ...doc, id: undefined }, doc, { recipeId: crypto.randomUUID(), householdId, memberId: me.id, ingredientIds }, doc.description);
   const recipe = { ...rowsOut.recipe, parent_recipe_id: null, source: "generated" };
   const { error: e1 } = await sb.from("recipes").insert(recipe);
-  if (e1) return json({ error: e1.message }, 500);
+  if (e1) return serverError(e1, json);
   const { error: e2 } = await sb.from("recipe_ingredients").insert(rowsOut.ingredients);
   const { error: e3 } = await sb.from("recipe_steps").insert(rowsOut.steps.map(({ technique_slug: _t, ...s }) => ({ ...s, technique_id: null })));
   if (e2 || e3) {
     await sb.from("recipes").delete().eq("id", recipe.id);
-    return json({ error: (e2 ?? e3)!.message }, 500);
+    return serverError(e2 ?? e3, json);
   }
   return json({
     recipe_id: recipe.id,

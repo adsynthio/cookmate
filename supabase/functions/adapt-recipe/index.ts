@@ -21,6 +21,8 @@ import {
 import type { Diet } from "../_shared/ranking.ts";
 import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
 import { catalogNames, DIETS, missingEquipment, validationContext, variantRows } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const TASK = "adapt_recipe";
 const MODEL = "claude-sonnet-5-5";
@@ -113,9 +115,12 @@ Deno.serve(async (req) => {
   const { data: me } = await sb.from("household_members").select("id")
     .eq("household_id", householdId).eq("user_id", auth.user.id).eq("status", "active").maybeSingle();
   if (!me) return json({ error: "not a member of this household" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const { data: row, error } = await sb.from("recipes").select(RECIPE_SELECT).eq("id", body.recipe_id).maybeSingle();
-  if (error) return json({ error: error.message }, 500);
+  if (error) return serverError(error, json);
   if (!row) return json({ error: "recipe not found" }, 404);
   const base = recipeDocFromRow(row as unknown as RecipeRow);
 
@@ -174,14 +179,14 @@ Deno.serve(async (req) => {
   const rows = variantRows(base, adaptation.doc, { recipeId: crypto.randomUUID(), householdId, memberId: me.id, ingredientIds }, summary);
 
   const { error: e1 } = await sb.from("recipes").insert(rows.recipe);
-  if (e1) return json({ error: e1.message }, 500);
+  if (e1) return serverError(e1, json);
   const { error: e2 } = await sb.from("recipe_ingredients").insert(rows.ingredients);
   const { error: e3 } = await sb.from("recipe_steps").insert(
     rows.steps.map(({ technique_slug, ...s }) => ({ ...s, technique_id: technique_slug ? (techIds.get(technique_slug) ?? null) : null })),
   );
   if (e2 || e3) {
     await sb.from("recipes").delete().eq("id", rows.recipe.id);
-    return json({ error: (e2 ?? e3)!.message }, 500);
+    return serverError(e2 ?? e3, json);
   }
 
   return json({

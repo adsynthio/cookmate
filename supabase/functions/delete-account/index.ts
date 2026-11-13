@@ -4,6 +4,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { confirmed } from "./logic.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -33,8 +34,8 @@ Deno.serve(async (req) => {
 
   const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
   const { data: result, error } = await admin.schema("private").rpc("delete_account_data", { p_user: auth.user.id });
-  if (error) return json({ error: error.message }, 500);
+  if (error) return serverError(error, json);
   const gone = await admin.auth.admin.deleteUser(auth.user.id);
-  if (gone.error) return json({ error: gone.error.message }, 500);
+  if (gone.error) return serverError(gone.error, json);
   return json({ deleted: true, ...(result as Record<string, unknown>) });
 });

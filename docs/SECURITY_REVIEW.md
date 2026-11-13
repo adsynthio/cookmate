@@ -42,6 +42,8 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 20 | One account could create any number of households, which also gets round per-household limits | Medium | **Fixed (Nov 2026 review)**: at most 5 households per account (trigger on `households`), tested |
 | 21 | `clear_pantry_guesses`, `guess_pantry_from_recipe` and `search_recipes` were callable without signing in (through the default `PUBLIC` grant). They ran with the caller's rights, so RLS still applied | Low | **Fixed (Nov 2026 review)**: signed-in users only; the default for new functions in `public` no longer grants `PUBLIC`/anon; a test checks nothing in `public` is callable by anon |
 | 22 | The `household-media` bucket accepted any image type, including SVG, which can carry script | Low | **Fixed (Nov 2026 review)**: JPEG, PNG and WebP only |
+| 23 | **No limit on AI calls.** Every AI Edge Function would call the model as often as asked; with anonymous sign-ins open (finding 9), a script could run up the Anthropic bill (photo scans and Sonnet especially) | **High** | **Fixed (Nov 2026 review)**: `_shared/quota.ts` counts the household's calls in `ai_requests` (every model and speech call is logged there) and refuses past 60 an hour or 300 a day with 429 and `Retry-After`, in all ten functions that call a model or start voice. Fails open if the count can't be read, so cooking never breaks. Pair with finding 9 (CAPTCHA) and the 5-household cap (20) |
+| 24 | Edge Functions returned raw database and storage error text, which names tables, columns and constraints | Low | **Fixed (Nov 2026 review)**: `_shared/errors.ts` logs the full error on the server and returns "something went wrong" |
 
 ## Privacy rights (DPDP)
 

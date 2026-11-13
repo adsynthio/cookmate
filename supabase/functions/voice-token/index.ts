@@ -5,6 +5,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { languageOr, mintToken, roomName } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -43,6 +44,9 @@ Deno.serve(async (req) => {
   const { data: consent } = await sb.from("consents").select("granted").eq("member_id", me.id).eq("consent_type", "voice_processing")
     .order("created_at", { ascending: false }).limit(1).maybeSingle();
   if (!consent?.granted) return json({ error: "voice_consent_needed" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(body.household_id);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   let sessionId: string | null = null;
   if (body.cooking_session_id) {

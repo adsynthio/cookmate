@@ -10,6 +10,7 @@ import { reasonFor } from "../_shared/ranking.ts";
 import { loadKitchen, rank } from "../suggest-meals/engine.ts";
 import { localeFor } from "../suggest-meals/logic.ts";
 import { dinnerMessage, type ExpoTicket, expoMessages, pickByTime, readTickets } from "./logic.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const EXPO_PUSH = "https://exp.host/--/api/v2/push/send";
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -49,7 +50,7 @@ Deno.serve(async (req) => {
   const summary = { due: 0, sent: 0, failed: 0, suppressed: 0, exports_removed: 0 };
 
   const { data: due, error } = await admin.rpc("notify_due", { p_now: now.toISOString() });
-  if (error) return json({ error: error.message }, 500);
+  if (error) return serverError(error, json);
   const byHousehold = new Map<string, Due[]>();
   for (const d of (due ?? []) as Due[]) byHousehold.set(d.household_id, [...(byHousehold.get(d.household_id) ?? []), d]);
   summary.due = (due ?? []).length;

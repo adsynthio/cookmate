@@ -13,6 +13,8 @@ import { z } from "npm:zod@4.6.5";
 import { logAiRequest } from "../_shared/aiLog.ts";
 import { LANGUAGE_NAME, localeFor } from "../rescue/logic.ts";
 import { type Body, cleanReply, contextFor, fallbackReply, type ItemRow, MAX_ANSWER_CHARS, type MemberRow, parseBody, type RecipeRow } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const MODEL = "claude-opus-5-5";
 const TASK = "ask_cookmate";
@@ -82,8 +84,11 @@ Deno.serve(async (req) => {
     sb.from("recipes").select("slug, title, course, diet, prep_time_min, cook_time_min").is("parent_recipe_id", null).eq("is_published", true),
   ]);
   // Members are read through RLS: none back means this user is not in the household.
-  if (members.error) return json({ error: members.error.message }, 500);
+  if (members.error) return serverError(members.error, json);
   if (!members.data?.length) return json({ error: "not a member of this household" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const locale = localeFor(input.languageCode);
   const recipeRows = (recipes.data ?? []) as RecipeRow[];

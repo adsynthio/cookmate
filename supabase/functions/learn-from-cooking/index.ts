@@ -14,6 +14,7 @@ import { z } from "npm:zod@4.6.5";
 import { timedAiCall } from "../_shared/aiLog.ts";
 import { LANGUAGE_NAME, localeFor } from "../rescue/logic.ts";
 import { acceptLearned, changesOf, type ModelItem } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 
 const MODEL = "claude-haiku-5-5";
 const TASK = "learn_from_cooking";
@@ -75,6 +76,9 @@ Deno.serve(async (req) => {
   if (!Deno.env.get("ANTHROPIC_API_KEY")) return json({ error: "learn_unavailable" }, 503);
 
   const householdId = session.household_id as string;
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
   const { data: memberRows } = await sb.from("household_members").select("id, display_name").eq("household_id", householdId).eq("status", "active");
   const members = ((memberRows ?? []) as { id: string; display_name: string }[]).map((m) => ({ id: m.id, name: m.display_name }));
   const dish = (session.recipes as unknown as { title: string } | null)?.title ?? "this dish";

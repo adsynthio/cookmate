@@ -11,6 +11,8 @@ import { RECIPE_SELECT, recipeDocFromRow, type RecipeRow } from "../_shared/reci
 import { missingResolved, mustUseRules, staticRescue, validateModelRescue } from "../_shared/rescue.ts";
 import { askModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
 import { type Body, cat, confidentPantry, contextFor, localeFor, type PantryRow, parseBody } from "./logic.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { serverError } from "../_shared/errors.ts";
 
 
 const CORS = {
@@ -49,16 +51,19 @@ Deno.serve(async (req) => {
   const { data: session, error: e0 } = await sb.from("cooking_sessions")
     .select("id, household_id, recipe_id, adapted_recipe_id, current_step, language_code")
     .eq("id", input.sessionId).maybeSingle();
-  if (e0) return json({ error: e0.message }, 500);
+  if (e0) return serverError(e0, json);
   if (!session) return json({ error: "session not found" }, 404);
   const householdId = session.household_id as string;
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const [{ data: row, error: e1 }, { data: items, error: e2 }] = await Promise.all([
     sb.from("recipes").select(RECIPE_SELECT).eq("id", session.adapted_recipe_id ?? session.recipe_id).maybeSingle(),
     sb.from("inventory_items").select("confidence, staple_level, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
   ]);
-  if (e1 || e2) return json({ error: (e1 ?? e2)!.message }, 500);
+  if (e1 || e2) return serverError(e1 ?? e2, json);
   if (!row) return json({ error: "recipe not found" }, 404);
   const doc = recipeDocFromRow(row as unknown as RecipeRow);
   const stepNo = Math.max(1, Math.min(doc.steps.length, session.current_step as number));

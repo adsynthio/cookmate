@@ -8,6 +8,7 @@ import { logAiRequest } from "../_shared/aiLog.ts";
 import { allConfident, buildIndex, type CatalogIndex, parsePantryText, type ParsedItem } from "../_shared/pantryParse.ts";
 import { type CatalogRow, catalogHints, toCatalog, toResponseItem, wasMentioned } from "./logic.ts";
 import { callModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
+import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 
 const MAX_TEXT = 600;
 
@@ -90,6 +91,9 @@ Deno.serve(async (req) => {
     .eq("status", "active")
     .maybeSingle();
   if (!member) return json({ error: "not a member of this household" }, 403);
+  // Finding 23: a per-household limit on AI calls.
+  const quota = await checkQuota(householdId);
+  if (!quota.ok) return quotaResponse(quota, CORS);
 
   const catalog = await loadCatalog(sb);
   const ruled = parsePantryText(text, catalog.index);

@@ -5,6 +5,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { audioLanguage, type AudioRow, pickAudio, type Profile, type StepWithNo } from "./logic.ts";
+import { serverError } from "../_shared/errors.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -36,7 +37,7 @@ Deno.serve(async (req) => {
     .select("id, member_id, recipe_id, language_code, status")
     .eq("id", body.session_id)
     .maybeSingle();
-  if (session.error) return json({ error: session.error.message }, 500);
+  if (session.error) return serverError(session.error, json);
   if (!session.data) return json({ error: "session not found" }, 404);
   const s = session.data as { member_id: string; recipe_id: string; language_code: string; status: string };
 
@@ -44,7 +45,7 @@ Deno.serve(async (req) => {
     user.from("voice_profiles").select("verbosity, skill_level, tts_voice_id").eq("member_id", s.member_id).maybeSingle(),
     user.from("recipe_steps").select("id, recipe_id, step_no, instruction, sensory_cue, safety_note").eq("recipe_id", s.recipe_id),
   ]);
-  if (steps.error) return json({ error: steps.error.message }, 500);
+  if (steps.error) return serverError(steps.error, json);
   const stepRows = (steps.data ?? []) as StepWithNo[];
 
   const cached = stepRows.length
@@ -54,7 +55,7 @@ Deno.serve(async (req) => {
       .in("step_id", stepRows.map((x) => x.id))
       .eq("language_code", audioLanguage(s.language_code))
     : { data: [], error: null };
-  if (cached.error) return json({ error: cached.error.message }, 500);
+  if (cached.error) return serverError(cached.error, json);
 
   const picked = await pickAudio(stepRows, (cached.data ?? []) as AudioRow[], {
     languageCode: s.language_code,

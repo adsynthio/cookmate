@@ -696,6 +696,20 @@ const mocks: Services = {
       const e = globalEvents.find((x) => x.id === eventId);
       if (e) keptEvents.push({ ...keepFastRow(e, householdId), id: `kept-${keptEvents.length}` });
     },
+    async saveFamilyRecipe(_householdId, telling, owner) {
+      await delay(900);
+      // The preview has no model: the telling becomes steps, one per sentence, so the flow can be tried.
+      const sentences = telling.split(/(?<=[.!?।])\s+|\n+/).map((x) => x.trim()).filter((x) => x.length > 3).slice(0, 10);
+      if (sentences.length < 2) return { recipeId: null, reason: "invalid" };
+      const id = `family-${nextId++}`;
+      const title = owner?.trim() ? `${owner.trim()}'s recipe` : "Family recipe";
+      adapted.set(id, {
+        id, slug: id, title, description: telling.slice(0, 160), course: "main", diet: "veg", base_servings: 4,
+        prep_time_min: 10, cook_time_min: 30, difficulty: 2, spice_level: 2, tags: ["family_recipe"], review_status: "draft",
+        ingredients: [], steps: sentences.map((text) => ({ text })),
+      });
+      return { recipeId: id, title, safetyAdded: [], questions: ["How many people does this serve?"] };
+    },
     async reportRecipe(_householdId, recipeId) {
       await delay(300);
       adapted.delete(recipeId); // hidden for this household, as in the live app

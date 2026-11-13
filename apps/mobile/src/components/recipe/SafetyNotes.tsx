@@ -21,7 +21,7 @@ const REASONS: RecipeReportReason[] = ["unsafe", "wrong", "didnt_work", "other"]
 
 /** True for a recipe Cookmate's AI wrote for this household. */
 export function isAiRecipe(doc: RecipeDoc): boolean {
-  return !!doc.tags?.includes("new_creation");
+  return !!doc.tags?.includes("new_creation") || !!doc.tags?.includes("family_recipe");
 }
 
 export function SafetyNotes({ doc, householdId, onReported }: { doc: RecipeDoc; householdId: string | null; onReported: () => void }) {
@@ -43,7 +43,7 @@ export function SafetyNotes({ doc, householdId, onReported }: { doc: RecipeDoc; 
       {ai ? (
         <View style={{ flexDirection: "row", gap: space.sm, alignItems: "flex-start" }}>
           <Icon name="sparkle" size={18} />
-          <Text style={{ flex: 1 }}>{t("safety.aiLabel")}</Text>
+          <Text style={{ flex: 1 }}>{t(doc.tags?.includes("family_recipe") ? "safety.familyLabel" : "safety.aiLabel")}</Text>
         </View>
       ) : null}
       {allergens.length ? (

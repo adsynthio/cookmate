@@ -149,6 +149,10 @@ export default function CookTab() {
           ) : null}
           {/* M4: what this kitchen can make right now, and what's one swap away. */}
           <KitchenIdeas householdId={householdId} />
+          {/* F2: a family recipe, told in any language, written down their way. */}
+          <View style={{ alignSelf: "flex-start" }}>
+            <Button kind="secondary" icon="edit" label={t("family.open")} onPress={() => router.push("/family-recipe")} />
+          </View>
           {/* S10: guests tonight, one menu and one timeline. */}
           <GuestsCard householdId={householdId} />
           {basics.length ? (

@@ -773,6 +773,19 @@ export const liveServices: Services = {
       });
       if (e2) throw e2;
     },
+    async saveFamilyRecipe(householdId, telling, owner) {
+      const { data, error } = await requireSupabase().functions.invoke<{
+        recipe_id: string | null; title?: string; titles?: Record<string, string>; safety_added?: string[]; questions?: string[];
+      }>("family-recipe", { body: { household_id: householdId, telling, ...(owner?.trim() ? { owner: owner.trim() } : {}) } });
+      if (error) {
+        const status = (error as { context?: { status?: number } }).context?.status;
+        if (status === 503) return { recipeId: null, reason: "unavailable" };
+        if (status === 400) return { recipeId: null, reason: "invalid" };
+        throw error;
+      }
+      if (!data?.recipe_id) return { recipeId: null, reason: "nothing_safe" };
+      return { recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? undefined, safetyAdded: data.safety_added ?? [], questions: data.questions ?? [] };
+    },
     async reportRecipe(householdId, recipeId, reason, note) {
       const { error } = await requireSupabase().rpc("report_recipe", {
         p_household_id: householdId, p_recipe_id: recipeId, p_reason: reason, p_note: note?.trim() || null,

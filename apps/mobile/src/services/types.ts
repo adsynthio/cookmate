@@ -368,7 +368,13 @@ export interface RecipeService {
   inventDish(householdId: string, dish?: string): Promise<InventResult>;
   /** G5: "Something's off" on this household's own AI recipe. It is hidden for the household and kept for review. */
   reportRecipe(householdId: string, recipeId: string, reason: RecipeReportReason, note?: string): Promise<void>;
+  /** F2: a family recipe told in any language, written down their way (private to the family). */
+  saveFamilyRecipe(householdId: string, telling: string, owner?: string): Promise<FamilyRecipeResult>;
 }
+
+export type FamilyRecipeResult =
+  | { recipeId: string; title: string; titles?: EventNames; safetyAdded: string[]; questions: string[] }
+  | { recipeId: null; reason: "nothing_safe" | "unavailable" | "invalid" };
 
 export type RecipeReportReason = "unsafe" | "wrong" | "didnt_work" | "other";
 

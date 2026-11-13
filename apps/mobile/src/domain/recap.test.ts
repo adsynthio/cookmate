@@ -23,3 +23,10 @@ test("warm lines, and nothing at all for a week without cooking", () => {
   assert.equal(recapLines(recapFrom([meal("dal", 20)], now, title), "en"), null);
   assert.equal(recapLines({ ...r, meals: 6 }, "hi")!.headline, "घर के खाने का बढ़िया हफ़्ता");
 });
+
+test("dish names in the reader's language, the loved line too", () => {
+  const titles = (s: string) => (s === "rajma" ? { hi: "राजमा", "hi-Latn": "Rajma" } : null);
+  const r = recapFrom([meal("rajma", 1), meal("rajma", 2)], now, title, [{ name: "Aarav", dish: "Rajma", titles: { hi: "राजमा" } }], titles);
+  const hi = (d: { title: string; titles?: { hi?: string } | null }) => d.titles?.hi ?? d.title;
+  assert.deepEqual(recapLines(r, "hi", hi)!.lines, ["सबसे ज़्यादा बना: राजमा (2 बार)", "कुछ नया बना: राजमा", "Aarav को राजमा बहुत पसंद आया"]);
+});

@@ -1085,5 +1085,11 @@
   "scan.readingOne": "1 photo padh rahe hain…",
   "scan.waitReading": "Bas ho gaya…",
   "scan.shotFailed": "Ek photo padhi nahi gayi. Thoda paas se phir lein.",
-  "scan.shotEmpty": "Us photo mein khaane ki cheez nahi mili. Paas se, achhi roshni mein lein."
+  "scan.shotEmpty": "Us photo mein khaane ki cheez nahi mili. Paas se, achhi roshni mein lein.",
+  "kitchen.scanFirst.title": "Ek minute mein rasoi bharein",
+  "kitchen.scanFirst.body": "Fridge aur almaari ki, ya bill ya online order ki kuch photo lein. Cookmate cheezein dhoondh lega, aap bas jaanch lein.",
+  "kitchen.scanFirst.go": "Meri rasoi scan karein",
+  "kitchen.scanFirst.type": "Likhkar batayein",
+  "kitchen.scanFirst.more": "Baaki cheezein kuch photo se jodein",
+  "kitchen.scanFirst.moreBody": "Fridge, almaari, bill ya order ka screenshot."
 }

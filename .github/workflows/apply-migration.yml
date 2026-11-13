@@ -17,6 +17,10 @@ concurrency:
   group: hosted-migrations
   cancel-in-progress: false
 
+# Read-only token: no job here writes to the repository (security review, finding 25).
+permissions:
+  contents: read
+
 jobs:
   apply:
     runs-on: ubuntu-24.04

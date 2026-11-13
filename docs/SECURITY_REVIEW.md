@@ -1,6 +1,6 @@
 # Security review before beta (KIT-124)
 
-Reviewed 11 Nov 2026 and again on 13 Nov 2026 (findings 19–25), on `main` plus Sprint 6 part 1, and on the hosted ChefMate project (`usuwwzkorhsbaaziaanl`)
+Reviewed 11 Nov 2026 and again on 13 Nov 2026 (findings 19–27), on `main` plus Sprint 6 part 1, and on the hosted ChefMate project (`usuwwzkorhsbaaziaanl`)
 using Supabase's security and performance advisors. Each finding is **fixed**, **accepted** (with the reason), or
 **open** (with who acts on it). Accepted findings need the product owner's sign-off below before the beta.
 
@@ -44,6 +44,9 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 22 | The `household-media` bucket accepted any image type, including SVG, which can carry script | Low | **Fixed (Nov 2026 review)**: JPEG, PNG and WebP only |
 | 23 | **No limit on AI calls.** Every AI Edge Function would call the model as often as asked; with anonymous sign-ins open (finding 9), a script could run up the Anthropic bill (photo scans and Sonnet especially) | **High** | **Fixed (Nov 2026 review)**: `_shared/quota.ts` counts the household's calls in `ai_requests` (every model and speech call is logged there) and refuses past 60 an hour or 300 a day with 429 and `Retry-After`, in all ten functions that call a model or start voice. Fails open if the count can't be read, so cooking never breaks. Pair with finding 9 (CAPTCHA) and the 5-household cap (20) |
 | 24 | Edge Functions returned raw database and storage error text, which names tables, columns and constraints | Low | **Fixed (Nov 2026 review)**: `_shared/errors.ts` logs the full error on the server and returns "something went wrong" |
+| 25 | GitHub workflows ran with the repository's default token permissions | Low | **Fixed (Nov 2026 review)**: every workflow now asks for `contents: read` only; none writes to the repository |
+| 26 | The sign-in session is kept on the phone in the app's private storage, unencrypted, and Android's automatic backup could copy it off the device | Low | **Backup fixed, storage accepted for beta**: `android.allowBackup` is off, so the token never leaves the phone. Moving the session to encrypted storage (SecureStore) comes with the first EAS build |
+| 27 | `apply-migration.yml` lets anyone with write access apply a migration file to ChefMate | Low | **Open (you)**: add a GitHub environment ("production") with you as required reviewer and point the workflow at it, so each run waits for your approval |
 
 ## Privacy rights (DPDP)
 

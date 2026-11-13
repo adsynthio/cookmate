@@ -20,6 +20,10 @@ concurrency:
 env:
   SUPABASE_URL: https://usuwwzkorhsbaaziaanl.supabase.co
 
+# Read-only token: no job here writes to the repository (security review, finding 25).
+permissions:
+  contents: read
+
 jobs:
   record:
     runs-on: ubuntu-24.04

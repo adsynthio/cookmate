@@ -194,7 +194,7 @@ on conflict (canonical_name) do update set names = excluded.names, aliases = exc
   grams_per_measure = excluded.grams_per_measure, food_groups = excluded.food_groups,
   is_staple = excluded.is_staple, allergens = excluded.allergens;
 
--- Techniques (16)
+-- Techniques (21)
 insert into public.techniques (slug, name, names, description, difficulty) values
   ('tadka', 'Tempering (tadka)', '{"en": "Tempering (tadka)", "hi": "तड़का", "hi-Latn": "tadka"}'::jsonb, 'Whole spices bloomed in hot oil or ghee, then poured over or stirred into the dish. Right: cumin sizzles and darkens a shade within seconds, mustard seeds pop, curry leaves crackle. Too far: spices turn black and smell bitter; start again rather than use it.', 2),
   ('bhuna', 'Frying the masala (bhuna)', '{"en": "Frying the masala (bhuna)", "hi": "भूनना", "hi-Latn": "bhunna"}'::jsonb, 'Cooking onion, tomato and ground spices in oil, stirring, until the raw smell goes and the masala comes together. Right: the masala darkens, thickens into a paste, and oil shines at the edges and leaves the masala. If it sticks, splash in a little water and keep going.', 3),
@@ -211,7 +211,12 @@ insert into public.techniques (slug, name, names, description, difficulty) value
   ('marinate', 'Marinating', '{"en": "Marinating", "hi": "मैरीनेट करना", "hi-Latn": "marinate karna"}'::jsonb, 'Coating meat, paneer or vegetables in curd, spices and acid before cooking. Right: evenly coated; raw meat marinates covered in the fridge, never on the counter.', 1),
   ('soak', 'Soaking', '{"en": "Soaking", "hi": "भिगोना", "hi-Latn": "bhigona"}'::jsonb, 'Soaking dals, beans, rice or sabudana in water before cooking. Right: grains swell and soften; discard the soaking water for rajma and other beans.', 1),
   ('batter', 'Making a batter', '{"en": "Making a batter", "hi": "घोल बनाना", "hi-Latn": "ghol banana"}'::jsonb, 'Whisking flour with water or curd into a smooth batter. Right: no lumps; coats the back of a spoon; thick enough to hold shape for pakoras, pourable for chillas.', 2),
-  ('dhungar', 'Smoking with charcoal (dhungar)', '{"en": "Smoking with charcoal (dhungar)", "hi": "धुंगार", "hi-Latn": "dhungar"}'::jsonb, 'Smoking a dish with a hot coal and ghee in a small bowl, covered for a few minutes. Right: the coal glows red before use; cover at once; remove the coal before serving. Keep the kitchen ventilated.', 3)
+  ('dhungar', 'Smoking with charcoal (dhungar)', '{"en": "Smoking with charcoal (dhungar)", "hi": "धुंगार", "hi-Latn": "dhungar"}'::jsonb, 'Smoking a dish with a hot coal and ghee in a small bowl, covered for a few minutes. Right: the coal glows red before use; cover at once; remove the coal before serving. Keep the kitchen ventilated.', 3),
+  ('sugar_syrup', 'Sugar syrup (chashni)', '{"en": "Sugar syrup (chashni)", "hi": "चाशनी", "hi-Latn": "chaashni"}'::jsonb, 'Sugar boiled with water to a set thickness, for gulab jamun, boondi, jalebi and ladoo. Right: one-string is when a cooled drop pressed between finger and thumb pulls a single thread. Careful: hot syrup burns badly; keep children away and never touch it straight from the pan.', 3),
+  ('reduce_milk', 'Reducing milk', '{"en": "Reducing milk", "hi": "दूध गाढ़ा करना", "hi-Latn": "doodh gaadha karna"}'::jsonb, 'Milk cooked down on low heat in a wide pan for rabdi, basundi, kheer and khoya. Right: it thickens like batter and coats the spoon; keep scraping the sides back in. If it catches at the bottom, move to a clean pan without scraping the burnt layer.', 2),
+  ('make_chenna', 'Making chenna', '{"en": "Making chenna", "hi": "छेना बनाना", "hi-Latn": "chhena banana"}'::jsonb, 'Fresh milk split with lemon or vinegar off the heat, then strained, for rasgulla, rasmalai and sandesh. Right: soft white curds and a clear greenish whey. Rinse to wash off the sourness.', 2),
+  ('shape', 'Shaping', '{"en": "Shaping", "hi": "आकार देना", "hi-Latn": "aakaar dena"}'::jsonb, 'Rolling ladoo, kofta or tikki by hand. Right: greased palms, mixture still warm for ladoo; it binds when pressed and doesn''t crack.', 1),
+  ('set_chill', 'Setting and chilling', '{"en": "Setting and chilling", "hi": "जमाना", "hi-Latn": "jamaana"}'::jsonb, 'Pouring barfi, halwa or pudding into a greased plate and letting it set. Right: firm enough to cut cleanly; in the fridge for milk sweets.', 1)
 on conflict (slug) do update set name = excluded.name, names = excluded.names,
   description = excluded.description, difficulty = excluded.difficulty;
 

@@ -15,6 +15,7 @@ import { BalanceTip } from "@/components/recipe/BalanceTip";
 import { MakeItDifferent } from "@/components/recipe/MakeItDifferent";
 import { PlanToDinner } from "@/components/recipe/PlanToDinner";
 import { SafetyNotes } from "@/components/recipe/SafetyNotes";
+import { EaseCard } from "@/components/recipe/EaseCard";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -286,6 +287,9 @@ function RecipeBody({
 
       {/* G6: allergens on every recipe; on an AI recipe, a plain label and "Something's off". */}
       <SafetyNotes doc={doc} householdId={householdId} onReported={() => router.back()} />
+
+      {/* M2: the dish as a few parts you already know. */}
+      <EaseCard doc={doc} />
 
       <Enter index={2}>
         <View style={[styles.stats, { backgroundColor: colors.surfaceMuted }]}>

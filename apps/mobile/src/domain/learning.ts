@@ -188,6 +188,24 @@ const CHANGE_TEXT: Record<"amount" | "avoid" | "note", L> = {
   note: { en: "Last time in {dish}: {change}", hi: "पिछली बार {dish} में: {change}", hinglish: "Pichhli baar {dish} mein: {change}" },
 };
 
+const TRICK_TEXT: L = { en: "Your trick: {use} instead of {from}", hi: "आपकी तरकीब: {from} की जगह {use}", hinglish: "Aapki trick: {from} ki jagah {use}" };
+const FAILED = /\b(didn'?t work|did not work|failed|bad|kharab|nahi bana|nahi bani|theek nahi|ठीक नहीं|ख़राब|खराब)\b/i;
+
+/**
+ * M5: "Eno instead of soda", "soda ki jagah Eno", "सोडा की जगह ईनो": the cook's own swap, when it didn't fail.
+ * Returns what was used and what it replaced (catalog keys), or null.
+ */
+export function trickIn(change: string, find: (text: string) => string[]): { use: string; from: string } | null {
+  if (FAILED.test(change)) return null;
+  const en = change.match(/^(.*?)\b(?:instead of|in place of|for)\b(.*)$/i);
+  const hi = change.match(/^(.*?)(?:\bki jagah\b|\bke badle\b|की जगह|के बदले)(.*)$/i);
+  const [useText, fromText] = hi ? [hi[2]!, hi[1]!] : en && /instead of|in place of/i.test(change) ? [en[1]!, en[2]!] : [null, null];
+  if (useText === null || fromText === null) return null;
+  const use = find(useText)[0];
+  const from = find(fromText)[0];
+  return use && from && use !== from ? { use, from } : null;
+}
+
 export function changeCandidates(
   changes: string[],
   dish: string,
@@ -202,6 +220,17 @@ export function changeCandidates(
     if (!change) continue;
     const fill = (k: keyof typeof CHANGE_TEXT, v: Record<string, string>) =>
       Object.entries(v).reduce((s, [a, b]) => s.replace(`{${a}}`, b), CHANGE_TEXT[k][locale]);
+    const trick = trickIn(change, find);
+    if (trick) {
+      const c: LearnedCandidate = {
+        key: `trick:${trick.from}`,
+        statement: TRICK_TEXT[locale].replace("{use}", nameOf(trick.use)).replace("{from}", nameOf(trick.from)),
+        category: "ingredient", polarity: 1, about: `trick:${trick.from}`, ingredientKey: trick.use,
+      };
+      out.delete(c.key);
+      out.set(c.key, c);
+      continue;
+    }
     const n = parseNote(change, find, members);
     const low = change.toLowerCase();
     // "kam mirch", "less spicy", "namak zyada": the same subjects as the finish sheet's tags (spice covers every chilli).

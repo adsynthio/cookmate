@@ -1332,5 +1332,6 @@
   "ideas.title": "Aapki rasoi mein abhi ye ban sakte hain",
   "ideas.titleFestive": "Is hafte tyohaar: aapki rasoi mein ye ban sakte hain",
   "ideas.ready": "Sab kuch hai · {n} aasaan hisse",
-  "ideas.oneSwap": "Ek badlaav: {instead} ki jagah {use} ({job})"
+  "ideas.oneSwap": "Ek badlaav: {instead} ki jagah {use} ({job})",
+  "mind.yourTrick": "Aapki trick: {instead} ki jagah {use}."
 }

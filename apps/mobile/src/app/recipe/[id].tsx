@@ -27,6 +27,7 @@ import { displayName } from "@/domain/kitchen";
 import { CUISINES, LANGUAGE_CODES } from "@/domain/onboarding";
 import { CONFIDENT, pantryMatch, type IngredientMatch } from "@/domain/ranking";
 import { jobOf, swapBetween } from "@/domain/swaps";
+import { trickFor, tricksFrom, type Trick } from "@/domain/tricks";
 import {
   cueSenses,
   familyBranches,
@@ -186,6 +187,11 @@ function RecipeBody({
   const byKey = new Map(match.items.map((m) => [m.key, m]));
   const missing = match.items.filter((m) => m.status === "missing" && !listed.includes(m.key) && !skips.includes(m.key));
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
+  // M5: the family's own tricks for what's missing ("Your trick: Eno instead of baking soda").
+  const yourTricks = match.items
+    .filter((m) => m.status === "missing")
+    .map((m) => trickFor(m.key, tricksFrom(memories.data ?? []), (k) => inKitchen.has(k), avoid))
+    .filter((x): x is Trick => !!x);
 
   const addToList = useMutation({
     mutationFn: (keys: string[]) => services.kitchen.addToList(householdId, keys.map((k) => ({ name: k, reason: "manual" as const }))),
@@ -318,6 +324,11 @@ function RecipeBody({
             {match.have === match.total ? t("recipe.haveAll") : t("recipe.haveOf", { have: match.have, total: match.total })}
           </Text>
           {doc.parent_id ? <Text color={colors.onPrimary}>{doc.description}</Text> : null}
+          {yourTricks.map((x) => (
+            <Text key={`trick-${x.from}`} color={colors.onPrimary} weight={600}>
+              {t("mind.yourTrick", { use: nameOf(x.use), instead: nameOf(x.from) })}
+            </Text>
+          ))}
           {subs.map((m) => (
             <Text key={m.key} color={colors.onPrimary}>
               {t("recipe.subLine", { item: nameOf(m.substitute!), instead: nameOf(m.key) })}

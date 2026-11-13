@@ -9,8 +9,10 @@ export const MAX_CHANGES = 6;
 export const MAX_CANDIDATES = 4;
 
 export type ModelItem = {
-  kind: "amount" | "avoid" | "like" | "note";
+  kind: "amount" | "avoid" | "like" | "note" | "trick";
   ingredient: string | null;
+  /** M5: for a trick, what the ingredient stood in for ("eno" instead of "baking soda"). */
+  instead_of?: string | null;
   amount: "more" | "less" | null;
   member: string | null;
   statement: string;
@@ -52,6 +54,11 @@ export function acceptLearned(items: ModelItem[] | null | undefined, members: { 
       c = { key: `amount:${ingredient}`, statement, category: "ingredient", polarity: 0, about: "amount", ingredient_key: ingredient, amount: i.amount };
     } else if ((i.kind === "avoid" || i.kind === "like") && ingredient) {
       c = { key: `${i.kind}:${member?.id ?? "all"}:${ingredient}`, statement, category: "ingredient", polarity: i.kind === "avoid" ? -1 : 1, about: "preference", ingredient_key: ingredient };
+    } else if (i.kind === "trick" && ingredient && i.instead_of) {
+      // M5, the cook's own trick: "Eno instead of soda, came out great". Offered first next time.
+      const from = i.instead_of.trim().toLowerCase();
+      if (!CATALOG.has(from) || from === ingredient) continue;
+      c = { key: `trick:${from}`, statement, category: "ingredient", polarity: 1, about: `trick:${from}`, ingredient_key: ingredient };
     } else if (i.kind === "note") {
       c = { key: `note:${statement.toLowerCase()}`, statement, category: "other", polarity: 0, about: `change:${statement.toLowerCase().slice(0, 40)}` };
     }

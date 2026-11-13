@@ -24,3 +24,12 @@ Deno.test("only known ingredients and family members, plain statements", () => {
     ["change:added peas to the dal", null, null, 0],
   ]);
 });
+
+Deno.test("M5: a trick that worked is kept as the family's own swap", () => {
+  const got = acceptLearned([
+    { kind: "trick", ingredient: "eno", instead_of: "baking soda", amount: null, member: null, statement: "Eno instead of soda worked well in boondi" },
+    { kind: "trick", ingredient: "eno", instead_of: "unicorn dust", amount: null, member: null, statement: "x" },
+    { kind: "trick", ingredient: "eno", instead_of: "eno", amount: null, member: null, statement: "y" },
+  ], []);
+  assertEquals(got, [{ key: "trick:baking soda", statement: "Eno instead of soda worked well in boondi", category: "ingredient", polarity: 1, about: "trick:baking soda", ingredient_key: "eno" }]);
+});

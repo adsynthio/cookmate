@@ -2,7 +2,8 @@ name: Apply a migration to the hosted database
 
 # Applies one file from supabase/migrations to the hosted project, in a single transaction, and records it in
 # supabase_migrations.schema_migrations by name so it is never applied twice. Run by hand (Actions > this workflow >
-# Run workflow), from the branch that has the file. Only people with write access can run it.
+# Run workflow). Only from main, so a migration reaches ChefMate only after its pull request was reviewed and CI
+# passed (security review finding 27). Only people with write access can run it.
 # Needs the repository secret SUPABASE_DB_URL, the same one the seed job uses.
 
 on:
@@ -23,6 +24,7 @@ permissions:
 
 jobs:
   apply:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

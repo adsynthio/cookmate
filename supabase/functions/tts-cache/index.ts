@@ -1,7 +1,7 @@
 // tts-cache (KIT-080, VOICE-14): records published recipe steps once per language and voice into the public
 // step-audio bucket and step_audio_cache, so the voice agent plays a file instead of paying for live speech every
-// time a step is read. Run hourly (pg_cron or the scheduled workflow) with the service role; each run does at most
-// `limit` recordings. Without SARVAM_API_KEY it answers 503 tts_not_configured and does nothing.
+// time a step is read. Run daily by pg_cron, which proves itself with the shared secret kept in Vault (x-tts-secret,
+// checked inside the database; security review finding 6); each run does at most `limit` recordings. Without SARVAM_API_KEY it answers 503 tts_not_configured and does nothing.
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { logAiRequest } from "../_shared/aiLog.ts";
@@ -13,8 +13,11 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  // Only the scheduler, holding the service key, may run this: it spends money and writes a public bucket.
-  if (!serviceKey || req.headers.get("Authorization") !== `Bearer ${serviceKey}`) return json({ error: "service role only" }, 401);
+  if (!serviceKey) return json({ error: "not configured" }, 503);
+  // Only the scheduler may run this: it spends money and writes a public bucket. The secret never leaves Vault.
+  const gate = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, { auth: { persistSession: false } });
+  const { data: allowed } = await gate.rpc("tts_secret_ok", { p_secret: req.headers.get("x-tts-secret") ?? "" });
+  if (allowed !== true) return json({ error: "scheduler only" }, 401);
   const apiKey = Deno.env.get("SARVAM_API_KEY");
   if (!apiKey) return json({ error: "tts_not_configured" }, 503);
 

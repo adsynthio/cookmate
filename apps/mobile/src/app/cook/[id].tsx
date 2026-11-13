@@ -39,6 +39,8 @@ import { clash, kitchenCheck, type Busy, type Device } from "@/domain/kitchenLim
 import { DEFAULT_POWER, has, heatOf, setHeat, type Tool } from "@/domain/tools";
 import { useStove } from "@/state/stove";
 import { useStepTimes } from "@/state/stepTimes";
+import { useTechniques } from "@/state/techniques";
+import { recordDone } from "@/domain/blueprint";
 import { useHabits } from "@/state/habits";
 import { heatStep, isFamiliar, mildShare, setFull } from "@/domain/habits";
 import { readyBases, shortcuts } from "@/domain/bases";
@@ -311,6 +313,8 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
       hush();
       buzz();
       void clearTimers(session.id);
+      // M2: every technique of this dish now counts as done ("you made sugar syrup for gulab jamun").
+      useTechniques.getState().set(recordDone(useTechniques.getState().done, doc, doc.title, Date.now()));
     },
   });
 

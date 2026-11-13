@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Speech from "expo-speech";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { draftName, rematch } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
@@ -23,6 +23,7 @@ import { services, type AddedVia, type DraftItem, type FlavorRole, type Location
 import { useScan } from "@/state/scan";
 import { toDraft } from "@/services/drafts";
 import { useSession } from "@/state/session";
+import { KeyboardSafe } from "@/design-system/KeyboardSafe";
 
 const PLACES: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready_made"];
 const FLAVORS: FlavorRole[] = ["rich", "heat", "acid", "crunch", "starch", "sweet"];
@@ -100,7 +101,7 @@ export default function AddItemsScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <KeyboardSafe>
       <Screen tabBar={false} header={<AppHeader title={t("kitchen.addHeader")} back mic={false} profile={false} />}>
         {drafts === null ? (
           <>
@@ -197,7 +198,7 @@ export default function AddItemsScreen() {
           </>
         )}
       </Screen>
-    </KeyboardAvoidingView>
+    </KeyboardSafe>
   );
 }
 

@@ -1,6 +1,6 @@
 # AI recipes, safely, and the next features
 
-Written 13 Nov 2026. Status: proposed, waiting for the four decisions at the end.
+Written 13 Nov 2026. Status: agreed 13 Nov 2026 (decisions at the end).
 
 ## The rule everything follows
 
@@ -225,7 +225,7 @@ written as blueprints from the start. M3 and M4 come next, in place of today's "
 | F4 | **Cook once, eat twice** | "Make double", then tomorrow's lunch or tiffin plan built from the second half | Storage time and reheating rules come from the gate, such as rice the same day only and dal for 2 days in the fridge | 2 PRs |
 | F5 | **Photo check while cooking** | Snap the pan; Cookmate compares it with the step's cues ("onions golden?" or "oil separating?") and says carry on or a minute more | It only judges doneness against the cue and **never says food is safe to eat**. The step's safety note is always shown, and meat steps keep "cut to check no pink" | 2 PRs |
 | F6 | **Meal cost** | Rough cost per meal and per week from the list and pantry, and a cheaper-week option | None beyond the gate | 2 PRs |
-| F7 | **A regional language** | One of Marathi, Bengali or Tamil across the app, recipes and voice | Generated translations of safety notes are checked against a fixed translated safety glossary | 3 PRs |
+| F7 | **A regional language** | Kannada across the app, recipes and voice | Generated translations of safety notes are checked against a fixed translated safety glossary | 3 PRs |
 | F8 | **WhatsApp voice notes** | "Dal khatam" by WhatsApp updates the kitchen; tonight's pick arrives there | Needs a Meta WhatsApp Business account (your action); the same per-household AI limits apply | 3 PRs |
 | F9 | **Shopping list to grocery apps** | Open the list in Blinkit, Zepto or BigBasket, and order only after you approve | Most of these apps have no public cart API, so this starts with a share link and a copy as a search list | 1–2 PRs |
 | F10 | **Home-screen widget** | Tonight's pick and the running timer without opening the app | Needs the EAS development build | 2 PRs |
@@ -236,12 +236,12 @@ written as blueprints from the start. M3 and M4 come next, in place of today's "
 2. **Sprint 15: the cook's mind.** M1 (ingredient jobs) and M2 (blueprints and technique cards), then M3 (make it from my kitchen), M4 (ideas from what you have), M5 (the cook's tricks) and M6; library batches 1–2, written as blueprints.
 3. **Sprint 16:** batches 3–5, F3 (festival and fasting), F1 (house-cook handoff), F2 (family recipes), F4 (cook once, eat twice).
 4. **Sprint 17:** batches 6–8, F5 (photo check), F6 (meal cost).
-5. **Sprint 18:** batches 9–12, F7 (regional language).
+5. **Sprint 18:** batches 9–12, F7 (Kannada).
 6. **After the beta build:** F8 (WhatsApp), F9 (grocery apps), F10 (widget).
 
-## Decisions needed from you
+## Decisions (13 Nov 2026)
 
-1. **Library approvals:** you approve each batch of 25 (recommended), or recipes that pass every check go in without a person reading them.
-2. **Live AI recipes:** private to the family only (recommended), or shareable into cooking circles after they're reviewed.
-3. **Where the library generator runs:** as a GitHub workflow with an `ANTHROPIC_API_KEY` GitHub secret used only by that workflow (recommended, and the simplest), or through a Supabase function that holds the key, called by the workflow with a secret.
-4. **The regional language for F7:** Marathi, Bengali or Tamil.
+1. **Library approvals:** Gaurav approves each batch of 25 before it ships.
+2. **Live AI recipes:** every user can ask the AI for recipes in the app. They are private to the family that asked; sharing into circles can come later, after review.
+3. **Where the library generator runs:** a manually started GitHub workflow with an `ANTHROPIC_API_KEY` secret used only by that workflow. It is needed only from Phase 1, not Phase 0.
+4. **Regional language (F7):** Kannada (ಕನ್ನಡ).

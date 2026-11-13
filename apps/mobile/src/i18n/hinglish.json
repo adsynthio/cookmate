@@ -1350,5 +1350,19 @@
   "family.unavailable": "Parivaar ki recipe likhna abhi available nahi hai.",
   "family.invalid": "Thoda aur bataiye: saamaan aur steps.",
   "family.unsafe": "Ise safe tareeke se nahi likh paaya. Steps kram se dobaara bataiye.",
-  "safety.familyLabel": "Aapke parivaar ki recipe, Cookmate ne likhi. Pakaate samay maatra dekh lein."
+  "safety.familyLabel": "Aapke parivaar ki recipe, Cookmate ne likhi. Pakaate samay maatra dekh lein.",
+  "handoff.open": "Khaana banaane wale ko bhejein",
+  "handoff.which": "Kis bhaasha mein?",
+  "handoff.lang.hi": "हिंदी",
+  "handoff.lang.hinglish": "Hinglish",
+  "handoff.lang.en": "English",
+  "handoff.heading": "Aaj ka khaana: {dish}, {n} logon ke liye",
+  "handoff.avoid": "Allergy / kabhi na daalein",
+  "handoff.notes": "Humein aise pasand hai",
+  "handoff.ingredients": "Saamaan",
+  "handoff.steps": "Kaise banaayein",
+  "handoff.safety": "Dhyaan dein",
+  "handoff.footer": "Cookmate se bheja gaya",
+  "handoff.more": "{item} thoda zyada",
+  "handoff.less": "{item} thoda kam"
 }

@@ -1380,5 +1380,19 @@
   "family.unavailable": "परिवार की रेसिपी लिखना अभी उपलब्ध नहीं है।",
   "family.invalid": "थोड़ा और बताइए: सामान और स्टेप।",
   "family.unsafe": "इसे सुरक्षित तरीक़े से नहीं लिख पाया। स्टेप क्रम से दोबारा बताइए।",
-  "safety.familyLabel": "आपके परिवार की रेसिपी, Cookmate ने लिखी। पकाते समय मात्रा देख लें।"
+  "safety.familyLabel": "आपके परिवार की रेसिपी, Cookmate ने लिखी। पकाते समय मात्रा देख लें।",
+  "handoff.open": "खाना बनाने वाले को भेजें",
+  "handoff.which": "किस भाषा में?",
+  "handoff.lang.hi": "हिंदी",
+  "handoff.lang.hinglish": "Hinglish",
+  "handoff.lang.en": "English",
+  "handoff.heading": "आज का खाना: {dish}, {n} लोगों के लिए",
+  "handoff.avoid": "एलर्जी / कभी न डालें",
+  "handoff.notes": "हमें ऐसे पसंद है",
+  "handoff.ingredients": "सामान",
+  "handoff.steps": "कैसे बनाएँ",
+  "handoff.safety": "ध्यान दें",
+  "handoff.footer": "Cookmate से भेजा गया",
+  "handoff.more": "{item} थोड़ा ज़्यादा",
+  "handoff.less": "{item} थोड़ा कम"
 }

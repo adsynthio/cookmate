@@ -1384,5 +1384,19 @@
   "family.unavailable": "Writing down family recipes isn't available just now.",
   "family.invalid": "Tell me a little more: the ingredients and the steps.",
   "family.unsafe": "I couldn't write this one safely. Try telling it again with the steps in order.",
-  "safety.familyLabel": "Your family's recipe, written down by Cookmate. Check the amounts as you cook."
+  "safety.familyLabel": "Your family's recipe, written down by Cookmate. Check the amounts as you cook.",
+  "handoff.open": "Send to the cook",
+  "handoff.which": "In which language?",
+  "handoff.lang.hi": "हिंदी",
+  "handoff.lang.hinglish": "Hinglish",
+  "handoff.lang.en": "English",
+  "handoff.heading": "Today's food: {dish}, for {n}",
+  "handoff.avoid": "Allergy / never use",
+  "handoff.notes": "How we like it",
+  "handoff.ingredients": "You'll need",
+  "handoff.steps": "How to make it",
+  "handoff.safety": "Careful",
+  "handoff.footer": "Sent from Cookmate",
+  "handoff.more": "A little more {item}",
+  "handoff.less": "A little less {item}"
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Share, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
+import { BuyFewCard } from "@/components/list/BuyFewCard";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { illustrations, ingredientImage } from "@/design-system/media";
@@ -102,6 +103,9 @@ export default function ListScreen() {
           {note}
         </Text>
       ) : null}
+
+      {/* S8: the smallest shop that opens up the most dishes. */}
+      {list.data ? <BuyFewCard householdId={householdId} onList={list.data.flatMap((l) => (l.ingredientKey ? [l.ingredientKey] : []))} /> : null}
 
       {list.isPending ? (
         <StateView state="loading" title={t("list.title")} />

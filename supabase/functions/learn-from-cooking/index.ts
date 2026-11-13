@@ -29,8 +29,9 @@ const json = (body: unknown, status = 200) =>
 
 const Out = z.object({
   items: z.array(z.object({
-    kind: z.enum(["amount", "avoid", "like", "note"]),
+    kind: z.enum(["amount", "avoid", "like", "note", "trick"]),
     ingredient: z.string().nullable(),
+    instead_of: z.string().nullable(),
     amount: z.enum(["more", "less"]).nullable(),
     member: z.string().nullable(),
     statement: z.string(),
@@ -43,6 +44,8 @@ remembering for next time:
 - kind "amount": they used more or less of one ingredient (amount "more" or "less"). About this dish.
 - kind "avoid" or "like": a family member (member = their name exactly as given) doesn't eat or loves an ingredient.
   Only when the change says so about that person; leaving something out once is not a dislike.
+- kind "trick": they used one ingredient instead of another and it worked ("Eno instead of soda, came out great"):
+  ingredient = what they used, instead_of = what it replaced. Only when it worked or they didn't say it failed.
 - kind "note": anything else worth repeating next time (added peas, used curd instead of cream, cooked longer).
 ingredient: a plain lowercase English ingredient name ("green chilli", "onion", "garlic"), else null.
 statement: one short line (at most 100 characters) in the language given, saying what to remember, naming the dish
@@ -86,7 +89,7 @@ Deno.serve(async (req) => {
 
   try {
     const client = new Anthropic();
-    const r = await timedAiCall({ householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@1` }, () => client.messages.parse(
+    const r = await timedAiCall({ householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@2` }, () => client.messages.parse(
       {
         model: MODEL,
         max_tokens: 600,

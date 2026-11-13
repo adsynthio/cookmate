@@ -1366,5 +1366,6 @@
   "ideas.title": "Your kitchen can make these right now",
   "ideas.titleFestive": "Festival this week: your kitchen can make these",
   "ideas.ready": "Everything's here · {n} simple parts",
-  "ideas.oneSwap": "One swap: {use} instead of {instead} ({job})"
+  "ideas.oneSwap": "One swap: {use} instead of {instead} ({job})",
+  "mind.yourTrick": "Your trick: {use} instead of {instead}."
 }

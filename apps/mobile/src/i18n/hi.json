@@ -1362,5 +1362,6 @@
   "ideas.title": "आपकी रसोई में अभी ये बन सकते हैं",
   "ideas.titleFestive": "इस हफ़्ते त्योहार: आपकी रसोई में ये बन सकते हैं",
   "ideas.ready": "सब कुछ है · {n} आसान हिस्से",
-  "ideas.oneSwap": "एक बदलाव: {instead} की जगह {use} ({job})"
+  "ideas.oneSwap": "एक बदलाव: {instead} की जगह {use} ({job})",
+  "mind.yourTrick": "आपकी तरकीब: {instead} की जगह {use}।"
 }

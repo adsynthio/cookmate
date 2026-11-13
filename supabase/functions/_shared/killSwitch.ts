@@ -4,7 +4,7 @@
 // recipe. Server-only, written by hand.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.119.0";
 
-export type AiTaskSwitch = "invent" | "named_dish" | "adapt";
+export type AiTaskSwitch = "invent" | "named_dish" | "adapt" | "family_recipe";
 
 /** Pure: is this task switched off, given the flag rows read? */
 export function switchedOff(rows: { key: string; enabled: boolean }[], task: AiTaskSwitch): boolean {

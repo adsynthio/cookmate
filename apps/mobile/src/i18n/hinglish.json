@@ -1335,5 +1335,20 @@
   "ideas.oneSwap": "Ek badlaav: {instead} ki jagah {use} ({job})",
   "mind.yourTrick": "Aapki trick: {instead} ki jagah {use}.",
   "mind.simpler.on": "Aasaan tareeka: {items} chhod dein",
-  "mind.simpler.full": "Poori recipe par wapas"
+  "mind.simpler.full": "Poori recipe par wapas",
+  "family.open": "Parivaar ki recipe save karein",
+  "family.title": "Parivaar ki recipe",
+  "family.body": "Jaise rasoi mein kisi ko bataate, waise bataiye, kisi bhi bhaasha mein. Likhiye, ya keyboard ka mic use kijiye. Main aapke tareeke se likh dunga.",
+  "family.owner": "Kiski recipe?",
+  "family.ownerPlaceholder": "Kiski recipe? (Nani, Mummy…)",
+  "family.placeholder": "Nani ka rajma: raat bhar bhigo do, cooker mein 6 seeti, phir pyaaz-tamatar bhuno…",
+  "family.save": "Likh do",
+  "family.loading": "Aapke tareeke se likh raha hoon…",
+  "family.saved": "Sirf aapke parivaar ke liye save hua. Ise kisi bhi recipe ki tarah pakaaiye.",
+  "family.safetyAdded": "Aapka tareeka wahi rakha, aur safety ke liye joda:",
+  "family.questions": "Kuch baatein dekh lijiye:",
+  "family.unavailable": "Parivaar ki recipe likhna abhi available nahi hai.",
+  "family.invalid": "Thoda aur bataiye: saamaan aur steps.",
+  "family.unsafe": "Ise safe tareeke se nahi likh paaya. Steps kram se dobaara bataiye.",
+  "safety.familyLabel": "Aapke parivaar ki recipe, Cookmate ne likhi. Pakaate samay maatra dekh lein."
 }

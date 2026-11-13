@@ -111,6 +111,7 @@ function RootNavigator() {
           <Stack.Screen name="ask" options={{ presentation: "modal" }} />
           <Stack.Screen name="adapt/[id]" options={{ presentation: "modal" }} />
           <Stack.Screen name="invent" options={{ presentation: "modal" }} />
+          <Stack.Screen name="family-recipe" options={{ presentation: "modal" }} />
           <Stack.Screen name="cook/[id]" options={{ gestureEnabled: false }} />
           <Stack.Screen name="timers/[id]" options={{ presentation: "modal" }} />
           <Stack.Screen name="rescue/[id]" options={{ presentation: "modal" }} />

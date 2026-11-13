@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { addSetupItem, removeSetupItem, type SetupItem } from "@/domain/kitchenSetup";
 import type { AgeGroup, ConsentPurpose, Cuisine, Diet, DraftAvoid, DraftMember, Pace, Spice } from "@/domain/onboarding";
 import { MAX_MEMBERS } from "@/domain/onboarding";
+import { DEFAULT_TOOLS, type Tool } from "@/domain/tools";
 
 let nextKey = 2;
 
@@ -17,6 +18,9 @@ type OnboardingState = {
   cuisines: Cuisine[];
   pace: Pace | null;
   avoid: DraftAvoid[];
+  /** Cooking tools at home; the usual ones start ticked. */
+  tools: Tool[];
+  setTools: (tools: Tool[]) => void;
   addKitchenItem: (item: SetupItem) => void;
   removeKitchenItem: (name: string) => void;
   toggleCuisine: (c: Cuisine) => void;
@@ -41,6 +45,8 @@ export const useOnboarding = create<OnboardingState>((set) => ({
   cuisines: [],
   pace: null,
   avoid: [],
+  tools: DEFAULT_TOOLS.map((type) => ({ type })),
+  setTools: (tools) => set({ tools }),
   addKitchenItem: (item) => set((s) => ({ kitchen: addSetupItem(s.kitchen, item) })),
   removeKitchenItem: (name) => set((s) => ({ kitchen: removeSetupItem(s.kitchen, name) })),
   toggleCuisine: (c) => set((s) => ({ cuisines: s.cuisines.includes(c) ? s.cuisines.filter((x) => x !== c) : [...s.cuisines, c] })),

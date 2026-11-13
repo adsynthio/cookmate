@@ -37,7 +37,7 @@ export default function ConsentScreen() {
   useLocale();
   const router = useRouter();
   const { colors } = useTheme();
-  const { members, spice, diet, consents, setConsent, kitchen, cuisines, pace, avoid } = useOnboarding();
+  const { members, spice, diet, consents, setConsent, kitchen, cuisines, pace, avoid, tools } = useOnboarding();
   const setHousehold = useSession((s) => s.setHousehold);
   // If the household was created but a later call failed, a retry must not create a second household.
   const created = useRef<{ householdId: string; memberId: string } | null>(null);
@@ -80,6 +80,7 @@ export default function ConsentScreen() {
               })),
             });
           }
+          if (tools.length) await services.kitchen.setTools(householdId, tools);
           for (const a of avoid) {
             await services.preference.saveMemory({
               householdId,

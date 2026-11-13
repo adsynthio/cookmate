@@ -33,6 +33,7 @@ import type {
   Services,
 } from "./types";
 import { CommunityError } from "./types";
+import { ALL_TOOLS, isToolKey, type Tool, type ToolKey } from "@/domain/tools";
 
 type UseSoonRow = {
   id: string;
@@ -349,6 +350,28 @@ export const liveServices: Services = {
   },
 
   kitchen: {
+    async getTools(householdId) {
+      const { data, error } = await requireSupabase().from("kitchen_equipment").select("equipment_type, details").eq("household_id", householdId);
+      if (error) throw error;
+      const rows = (data ?? []).filter((r) => isToolKey(r.equipment_type));
+      return rows.length ? rows.map((r) => ({ type: r.equipment_type as ToolKey, details: (r.details ?? {}) as Tool["details"] })) : null;
+    },
+    async setTools(householdId, tools) {
+      const sb = requireSupabase();
+      const keep = tools.map((t) => t.type);
+      // Only the tools this screen manages are replaced; fridge and freezer rows (if any) stay.
+      const drop = ALL_TOOLS.filter((k) => !keep.includes(k));
+      if (drop.length) {
+        const { error } = await sb.from("kitchen_equipment").delete().eq("household_id", householdId).in("equipment_type", drop);
+        if (error) throw error;
+      }
+      if (tools.length) {
+        const { error } = await sb
+          .from("kitchen_equipment")
+          .upsert(tools.map((t) => ({ household_id: householdId, equipment_type: t.type, details: t.details ?? {} })), { onConflict: "household_id,equipment_type" });
+        if (error) throw error;
+      }
+    },
     async getKitchen(householdId) {
       const sb = requireSupabase();
       const { data, error } = await sb

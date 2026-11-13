@@ -1369,5 +1369,7 @@
   "twice.keep": "Doosra hissa {hours} ghante ke andar fridge mein rakhein, {days} din mein kha lein, aur ek hi baar bhaap nikalne tak garam karein.",
   "twice.tomorrow": "Kal ke liye: {ideas}",
   "twice.double": "Doguna banaayein ({n} log)",
-  "twice.doubled": "Doguna ban raha hai: {n} log"
+  "twice.doubled": "Doguna ban raha hai: {n} log",
+  "cost.perPlate": "Lagbhag ₹{n} per thaali (andaazan, shehar ke aam daam)",
+  "cost.saves": "Lagbhag ₹{n} bachte hain."
 }

@@ -1,6 +1,7 @@
 // Sprint 13 S6: "Make it different with what you have" on recipe detail. Restaurant-style twists (shahi, kofta, tikka,
 // dum) the dish can take from what's in the kitchen, and cheaper swaps for costly things it uses. Only shown when
 // there is something to offer; nothing here changes the recipe until the cook chooses to.
+import { swapSaving } from "@/domain/cost";
 import { StyleSheet, View } from "react-native";
 
 import { Icon } from "@/design-system/icons";
@@ -51,6 +52,8 @@ export function MakeItDifferent({ doc, has, avoid, nameOf }: Props) {
           {cheaper.map((x) => (
             <Text key={x.id}>
               {t("swaps.saveLine", { to: nameOf(x.to), from: nameOf(x.from), taste: t(`swaps.taste.${x.taste}`) })}
+              {/* F6: what the swap saves, at the recipe's own servings. */}
+              {swapSaving(doc, doc.base_servings, x) > 0 ? ` ${t("cost.saves", { n: swapSaving(doc, doc.base_servings, x) })}` : ""}
             </Text>
           ))}
         </View>

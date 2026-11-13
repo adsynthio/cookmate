@@ -52,6 +52,7 @@ import { simplerLeaveOut } from "@/domain/simpler";
 import { minutesSaved, readyBases, shortcuts } from "@/domain/bases";
 import { tiffinFrom } from "@/domain/guests";
 import { cookTwicePlan } from "@/domain/cookTwice";
+import { mealCost } from "@/domain/cost";
 import { yourTotalMinutes } from "@/domain/stepTimes";
 
 export default function RecipeScreen() {
@@ -321,6 +322,10 @@ function RecipeBody({
           <Stat icon="skillet" value={t(`recipe.level.${level}` as StringKey)} label={t("recipe.difficulty")} highlight />
           <Stat icon="chilli" value={`${doc.spice_level}/5`} label={t("recipe.spiceLabel")} />
         </View>
+        {/* F6: a rough cost per plate from typical city prices. */}
+        <Text variant="caption" muted style={{ marginTop: space.xs }}>
+          {t("cost.perPlate", { n: mealCost(doc, servings, catalogEntry).perPlate })}
+        </Text>
       </Enter>
 
       {/* The olive card: can I cook this now, and what Cookmate changed for this kitchen. */}

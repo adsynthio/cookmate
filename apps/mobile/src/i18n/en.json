@@ -1403,5 +1403,7 @@
   "twice.keep": "Put the second half in the fridge within {hours} hour(s), eat it within {days} day(s), and reheat it once until steaming hot.",
   "twice.tomorrow": "Tomorrow: {ideas}",
   "twice.double": "Make double ({n} servings)",
-  "twice.doubled": "Making double: {n} servings"
+  "twice.doubled": "Making double: {n} servings",
+  "cost.perPlate": "About ₹{n} a plate (rough, typical city prices)",
+  "cost.saves": "Saves about ₹{n}."
 }

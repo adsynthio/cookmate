@@ -1117,5 +1117,14 @@
   "tools.youBody": "Sujhav mein woh dish nahi aayengi jo aap nahi bana sakte, aur har step aapke chulhe ki setting batayega.",
   "tools.saved": "Save ho gaya",
   "cook.stove.gas": "Gas",
-  "cook.stove.induction": "Induction"
+  "cook.stove.induction": "Induction",
+  "air.title": "Air fryer",
+  "air.use": "Is step mein use karein",
+  "air.on": "Air fryer chalu",
+  "air.setting": "{temp}°C · {min} minute · {pre} minute pehle garam karein",
+  "air.general": "Aam tareeka: ek minute pehle dekh lein",
+  "air.timer": "{min} minute ka air fryer timer",
+  "air.timerLabel": "Air fryer",
+  "air.instead": "Upar wali kadhai ki jagah:",
+  "air.safety": "Basket aur nikalti bhaap bahut garam hoti hai: handle se nikaalein aur bachchon ko door rakhein."
 }

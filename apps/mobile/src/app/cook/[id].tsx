@@ -38,6 +38,8 @@ import { stoveSetting, type Stove } from "@/domain/stoveGuide";
 import { DEFAULT_POWER, has } from "@/domain/tools";
 import { useStove } from "@/state/stove";
 import { StoveCard } from "@/components/cook/StoveCard";
+import { AirFryerCard } from "@/components/cook/AirFryerCard";
+import { airFryFor } from "@/domain/airFryer";
 import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, localDoc, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
@@ -190,6 +192,10 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const setStove = useStove((s) => s.setStove);
   const stove: Stove | null = hasGas && hasInduction ? (chosenStove ?? "gas") : hasInduction ? "induction" : hasGas ? "gas" : null;
   const power = tools.data?.find((x) => x.type === "induction")?.details?.power ?? DEFAULT_POWER;
+  // Air fryer mode for frying steps, chosen step by step.
+  const [airSteps, setAirSteps] = useState<Set<number>>(new Set());
+  const airPlan = has(tools.data, "air_fryer") ? airFryFor(doc.slug, stepNo, doc.steps[stepNo - 1] ?? {}, locale) : null;
+  const airOn = !!airPlan && airSteps.has(stepNo);
   /** Pan notes ("use a flat-bottom kadai") are shown once per cook. */
   const notesSeen = useRef<Set<string>>(new Set());
   const settingFor = (n: number) => {
@@ -494,11 +500,30 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
 
           <DirectionCard step={step} />
 
-          {setting && stove ? (
+          {airPlan ? (
+            <AirFryerCard
+              plan={airPlan}
+              on={airOn}
+              onToggle={() =>
+                setAirSteps((a) => {
+                  const n = new Set(a);
+                  if (n.has(stepNo)) n.delete(stepNo);
+                  else n.add(stepNo);
+                  return n;
+                })
+              }
+              onTimer={() => {
+                tick();
+                void startTimer({ sessionId: session.id, stepNo, label: t("air.timerLabel"), durationSec: airPlan.minutes * 60, cue: undefined });
+              }}
+            />
+          ) : null}
+
+          {setting && stove && !airOn ? (
             <StoveCard stove={stove} line={setting.line} note={setting.note} both={hasGas && hasInduction} onStove={setStove} />
           ) : null}
 
-          {step.safety ? (
+          {step.safety || airOn ? (
             <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
               <View style={styles.noteHead}>
                 <Icon name="shield" size={18} color={colors.alert} />
@@ -506,7 +531,8 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
                   {t("recipe.safety")}
                 </Text>
               </View>
-              <Text color={colors.alert}>{step.safety}</Text>
+              {/* In the air fryer the hot-oil warning no longer applies; the hot basket does. */}
+              <Text color={colors.alert}>{airOn ? t("air.safety") : step.safety}</Text>
             </View>
           ) : null}
 

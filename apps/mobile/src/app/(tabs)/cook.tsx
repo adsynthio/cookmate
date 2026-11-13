@@ -16,6 +16,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { Image, StyleSheet } from "react-native";
 import { recipeDocs } from "@/data/recipes";
+import { GuestsCard } from "@/components/cook/GuestsCard";
 import { recipeTitle, totalTime } from "@/domain/recipes";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
@@ -145,6 +146,8 @@ export default function CookTab() {
               ))}
             </>
           ) : null}
+          {/* S10: guests tonight, one menu and one timeline. */}
+          <GuestsCard householdId={householdId} />
           {basics.length ? (
             <>
               <SectionHeader title={t("cook.basicsTitle")} dot={undefined} />

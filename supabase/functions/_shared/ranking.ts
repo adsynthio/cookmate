@@ -201,7 +201,9 @@ function usable(e: PantryEntry | undefined): boolean {
   return !!e && !e.out && e.confidence >= CONFIDENT;
 }
 
-export function pantryMatch(r: RankRecipe, pantry: PantryEntry[], staples: string[]): PantryMatch {
+/** `avoid`: never use a substitute the household leaves out (dislikes, allergies, fasts). */
+export function pantryMatch(r: RankRecipe, pantry: PantryEntry[], staples: string[], avoid: string[] = []): PantryMatch {
+  const no = new Set(avoid);
   const byKey = new Map<string, PantryEntry>();
   for (const e of pantry) {
     const prev = byKey.get(e.key);
@@ -214,10 +216,10 @@ export function pantryMatch(r: RankRecipe, pantry: PantryEntry[], staples: strin
     .map((i) => {
       const e = byKey.get(i.key);
       if (e && usable(e)) return { key: i.key, status: "have", entry: e };
-      const sub = i.substitutes.find((s) => usable(byKey.get(s)));
+      const sub = i.substitutes.find((s) => !no.has(s) && usable(byKey.get(s)));
       if (sub) return { key: i.key, status: "substitute", entry: byKey.get(sub), substitute: sub };
       if (stapleSet.has(i.key) && !e?.out) return { key: i.key, status: "assumed" };
-      return { key: i.key, status: "missing", substitute: i.substitutes[0] };
+      return { key: i.key, status: "missing", substitute: i.substitutes.find((s) => !no.has(s)) };
     });
   const have = items.filter((m) => m.status === "have" || m.status === "assumed").length;
   return { total: items.length, have, items };
@@ -323,7 +325,7 @@ export type Ranked = {
 };
 
 export function scoreRecipe(r: RankRecipe, ctx: RankContext): Ranked {
-  const match = pantryMatch(r, ctx.pantry, ctx.staples);
+  const match = pantryMatch(r, ctx.pantry, ctx.staples, ctx.avoid);
   const breakdown: Breakdown = {
     coverage: coverageFactor(match),
     useSoon: useSoonFactor(match),

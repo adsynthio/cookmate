@@ -12,6 +12,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { catalogEntry } from "@/data/catalog";
 import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
 import { BalanceTip } from "@/components/recipe/BalanceTip";
+import { MakeItDifferent } from "@/components/recipe/MakeItDifferent";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -21,7 +22,8 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { CUISINES, LANGUAGE_CODES } from "@/domain/onboarding";
-import { pantryMatch, type IngredientMatch } from "@/domain/ranking";
+import { CONFIDENT, pantryMatch, type IngredientMatch } from "@/domain/ranking";
+import { swapBetween } from "@/domain/swaps";
 import {
   cueSenses,
   familyBranches,
@@ -152,7 +154,19 @@ function RecipeBody({
     setTab(next);
   };
 
-  const match = useMemo(() => pantryMatch(toRankRecipe(doc), pantryEntries(items), STAPLES), [doc, items]);
+  // What was said about this dish last time (KIT-104): shown before cooking, so it is acted on.
+  const memories = useQuery({ queryKey: ["memories", householdId], queryFn: () => services.preference.listMemories(householdId) });
+  // Plain dislikes (and allergies) are never used as a swap.
+  const avoid = useMemo(
+    () => (memories.data ?? []).filter((m) => m.ingredientKey && m.recipeId === null && m.polarity < 0).map((m) => m.ingredientKey!),
+    [memories.data],
+  );
+  const entries = useMemo(() => pantryEntries(items), [items]);
+  const match = useMemo(() => pantryMatch(toRankRecipe(doc), entries, STAPLES, avoid), [doc, entries, avoid]);
+  const inKitchen = useMemo(
+    () => new Set([...entries.filter((e) => !e.out && e.confidence >= CONFIDENT).map((e) => e.key), ...STAPLES]),
+    [entries],
+  );
   const byKey = new Map(match.items.map((m) => [m.key, m]));
   const missing = match.items.filter((m) => m.status === "missing" && !listed.includes(m.key));
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
@@ -161,8 +175,6 @@ function RecipeBody({
     mutationFn: (keys: string[]) => services.kitchen.addToList(householdId, keys.map((k) => ({ name: k, reason: "manual" as const }))),
     onSuccess: (_, keys) => setListed((l) => [...l, ...keys]),
   });
-  // What was said about this dish last time (KIT-104): shown before cooking, so it is acted on.
-  const memories = useQuery({ queryKey: ["memories", householdId], queryFn: () => services.preference.listMemories(householdId) });
   const dishIds = [doc.id, doc.parent_id, doc.slug].filter(Boolean);
   const remembered = (memories.data ?? []).filter((m) => m.recipeId !== null && dishIds.includes(m.recipeId));
   const changes = useAmountChanges(householdId, doc);
@@ -281,6 +293,7 @@ function RecipeBody({
           {subs.map((m) => (
             <Text key={m.key} color={colors.onPrimary}>
               {t("recipe.subLine", { item: nameOf(m.substitute!), instead: nameOf(m.key) })}
+              {swapBetween(m.key, m.substitute!) ? ` ${t(`swaps.taste.${swapBetween(m.key, m.substitute!)!.taste}`)}.` : ""}
             </Text>
           ))}
           <View style={[styles.track, { backgroundColor: "rgba(255,255,255,0.25)" }]} accessible={false}>
@@ -297,6 +310,8 @@ function RecipeBody({
           ) : null}
         </Card>
       </Enter>
+
+      <MakeItDifferent doc={doc} has={(k) => inKitchen.has(k)} avoid={avoid} nameOf={nameOf} />
 
       <BalanceTip slug={doc.slug} groups={doc.food_groups} course={doc.course} diet={doc.diet} />
 

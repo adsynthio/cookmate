@@ -18,7 +18,16 @@ export type ToolKey =
 /** How an induction shows its power: numbered levels (1 to 8, or 1 to 10) or watts. */
 export type InductionPower = { style: "levels"; max: 8 | 10 } | { style: "watts" };
 
-export type Tool = { type: ToolKey; details?: { power?: InductionPower } };
+export type Tool = {
+  type: ToolKey;
+  details?: {
+    power?: InductionPower;
+    /** Gas stove: how many burners. */
+    burners?: number;
+    /** Machines this one can't run at the same time as (see kitchenLimits). */
+    notWith?: ToolKey[];
+  };
+};
 
 export const TOOL_GROUPS: { key: "stove" | "pots" | "machines"; tools: { key: ToolKey; icon: IconName }[] }[] = [
   { key: "stove", tools: [{ key: "gas_stove", icon: "flame" }, { key: "induction", icon: "bulb" }] },
@@ -44,7 +53,17 @@ export const DEFAULT_TOOLS: ToolKey[] = ["gas_stove", "pressure_cooker", "kadai"
 export const DEFAULT_POWER: InductionPower = { style: "levels", max: 8 };
 
 export function toggleTool(tools: Tool[], key: ToolKey): Tool[] {
-  if (tools.some((t) => t.type === key)) return tools.filter((t) => t.type !== key);
+  if (tools.some((t) => t.type === key)) {
+    // Removing a machine also forgets "can't run with it" on the others.
+    return tools
+      .filter((t) => t.type !== key)
+      .map((t) => {
+        if (!t.details?.notWith?.includes(key)) return t;
+        const notWith = t.details.notWith.filter((k) => k !== key);
+        const { notWith: _drop, ...details } = t.details;
+        return { ...t, details: notWith.length ? { ...details, notWith } : details };
+      });
+  }
   return [...tools, key === "induction" ? { type: key, details: { power: DEFAULT_POWER } } : { type: key }];
 }
 

@@ -1130,5 +1130,11 @@
   "tools.seen": "Mujhe yeh bhi dikha: {names}. Rasoi ke tools mein jodein?",
   "tools.seenAdd": "Jodein",
   "tools.seenNo": "Nahi, rehne dein",
-  "tools.seenAdded": "Rasoi ke tools mein jud gaya."
+  "tools.seenAdded": "Rasoi ke tools mein jud gaya.",
+  "tools.burnersQ": "Gas mein kitne burner hain?",
+  "tools.togetherQ": "Kya yeh ek saath chal sakte hain?",
+  "tools.togetherHint": "Agar ek hi socket hai ya switch trip ho jaata hai, to 'ek baar mein ek' chunein. Main steps usi hisaab se bataunga.",
+  "tools.pair": "{a} + {b}",
+  "tools.together": "Ek saath chal jaate hain",
+  "tools.oneAtATime": "Ek baar mein ek"
 }

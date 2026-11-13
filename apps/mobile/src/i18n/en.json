@@ -1215,5 +1215,17 @@
   "cook.heat.notedSlow": "Turn it up a level for now. If it happens again, I'll set your {stove} higher for good.",
   "recipe.yourTime": "Your usual time",
   "you.learned.stepTimes": "Step times learned from {n} dishes you've cooked",
-  "you.learned.stepTimesReset": "Forget my step times"
+  "you.learned.stepTimesReset": "Forget my step times",
+  "plan.title": "Dinner at {dinner}?",
+  "plan.startBy": "Start by {time}. Tap for the plan.",
+  "plan.withRotis": "With {n} rotis",
+  "plan.step": "Step {n}: {text}",
+  "plan.meanwhileNext": "While it cooks: get step {n} ready.",
+  "plan.meanwhileDough": "While it cooks: knead the roti dough and let it rest.",
+  "plan.meanwhileTidy": "While it cooks: wash up and set the table.",
+  "plan.dough": "Knead the roti dough and let it rest.",
+  "plan.rotisAlongside": "Make {n} rotis on the other stove.",
+  "plan.rotisAfter": "Make {n} rotis while the dish rests covered.",
+  "plan.serve": "Dinner is ready.",
+  "plan.ahead": "Ahead of time: {text}"
 }

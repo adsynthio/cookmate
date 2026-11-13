@@ -1098,5 +1098,6 @@
   "finish.react.notFor": "पसंद नहीं आया",
   "finish.react.lovedStatement": "{name} को {dish} बहुत पसंद आया",
   "finish.react.notForStatement": "{name} को {dish} पसंद नहीं आया",
-  "recap.overline": "आपकी रसोई का हफ़्ता"
+  "recap.overline": "आपकी रसोई का हफ़्ता",
+  "cook.tip": "शेफ़ की सलाह"
 }

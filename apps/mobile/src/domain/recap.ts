@@ -3,14 +3,16 @@
 // streak to lose. No React, no network.
 import type { Locale } from "../i18n/locale";
 
+type Titles = { hi?: string; "hi-Latn"?: string; en?: string } | null;
+
 export type WeekRecap = {
   meals: number;
-  dishes: { id: string; title: string; titles?: { hi?: string; "hi-Latn"?: string; en?: string } | null; times: number; new: boolean }[];
+  dishes: { id: string; title: string; titles?: Titles; times: number; new: boolean }[];
   /** Things used in cooking within two days of their use-by. */
   saved: number;
   /** Weeks in a row (rolling seven-day blocks) with at least three home-cooked meals. */
   weeksCooking: number;
-  loved: { name: string; dish: string }[];
+  loved: { name: string; dish: string; titles?: Titles }[];
 };
 
 const DAY = 86_400_000;
@@ -20,7 +22,8 @@ export function recapFrom(
   meals: { slug?: string; completedAt: string | Date }[],
   now: number,
   titleOf: (slug: string) => string | null,
-  loved: { name: string; dish: string }[] = [],
+  loved: WeekRecap["loved"] = [],
+  titlesOf: (slug: string) => Titles = () => null,
 ): WeekRecap {
   const at = (m: { completedAt: string | Date }) => new Date(m.completedAt).getTime();
   const week = meals.filter((m) => now - at(m) < 7 * DAY);
@@ -28,7 +31,7 @@ export function recapFrom(
   const counts = new Map<string, number>();
   for (const m of week) if (m.slug) counts.set(m.slug, (counts.get(m.slug) ?? 0) + 1);
   const dishes = [...counts.entries()]
-    .map(([slug, times]) => ({ id: slug, title: titleOf(slug) ?? slug, times, new: !before.has(slug) }))
+    .map(([slug, times]) => ({ id: slug, title: titleOf(slug) ?? slug, titles: titlesOf(slug), times, new: !before.has(slug) }))
     .sort((a, b) => b.times - a.times || a.title.localeCompare(b.title));
   let weeksCooking = 0;
   for (let k = 0; k < 52; k++) {
@@ -53,7 +56,7 @@ const T: Record<string, L> = {
 const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(v[k] ?? ""));
 
 /** Headline and up to four warm lines, or null for a week with no cooking (the card stays away). */
-export function recapLines(r: WeekRecap, locale: Locale, title: (d: WeekRecap["dishes"][number]) => string = (d) => d.title): { headline: string; lines: string[] } | null {
+export function recapLines(r: WeekRecap, locale: Locale, title: (d: { title: string; titles?: Titles }) => string = (d) => d.title): { headline: string; lines: string[] } | null {
   if (r.meals === 0) return null;
   const L = (k: string, v: Record<string, string | number> = {}) => fill(T[k]![locale], v);
   const headline = r.meals >= 5 ? L("great") : r.meals === 1 ? L("one") : L("some", { n: r.meals });
@@ -63,7 +66,7 @@ export function recapLines(r: WeekRecap, locale: Locale, title: (d: WeekRecap["d
   const fresh = r.dishes.filter((d) => d.new).map(title);
   if (fresh.length) lines.push(L("newOne", { dishes: fresh.slice(0, 2).join(", ") }));
   if (r.saved > 0) lines.push(L("saved", { n: r.saved }));
-  if (r.loved[0]) lines.push(L("loved", { name: r.loved[0].name, dish: r.loved[0].dish }));
+  if (r.loved[0]) lines.push(L("loved", { name: r.loved[0].name, dish: title({ title: r.loved[0].dish, titles: r.loved[0].titles }) }));
   if (r.weeksCooking >= 2) lines.push(L("weeks", { n: r.weeksCooking }));
   return { headline, lines: lines.slice(0, 4) };
 }

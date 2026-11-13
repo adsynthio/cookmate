@@ -811,9 +811,9 @@ const mocks: Services = {
       const names = new Map(readMembers().map((m) => [m.id, m.displayName]));
       const loved = memories
         .filter((m) => m.about === "reaction" && m.polarity > 0 && m.memberId && m.recipeId)
-        .map((m) => ({ name: names.get(m.memberId!) ?? "", dish: recipeBySlug(m.recipeId!)?.title ?? m.recipeId! }))
+        .map((m) => ({ name: names.get(m.memberId!) ?? "", dish: recipeBySlug(m.recipeId!)?.title ?? m.recipeId!, titles: recipeBySlug(m.recipeId!)?.titles ?? null }))
         .filter((x) => x.name);
-      return recapFrom(loadMeals(), Date.now(), (slug) => recipeBySlug(slug)?.title ?? null, loved);
+      return recapFrom(loadMeals(), Date.now(), (slug) => recipeBySlug(slug)?.title ?? null, loved, (slug) => recipeBySlug(slug)?.titles ?? null);
     },
     async weeklyPlate(_householdId, weeks = 4) {
       await delay(200);

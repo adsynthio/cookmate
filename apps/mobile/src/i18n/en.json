@@ -1398,5 +1398,10 @@
   "handoff.safety": "Careful",
   "handoff.footer": "Sent from Cookmate",
   "handoff.more": "A little more {item}",
-  "handoff.less": "A little less {item}"
+  "handoff.less": "A little less {item}",
+  "twice.title": "Cook once, eat twice",
+  "twice.keep": "Put the second half in the fridge within {hours} hour(s), eat it within {days} day(s), and reheat it once until steaming hot.",
+  "twice.tomorrow": "Tomorrow: {ideas}",
+  "twice.double": "Make double ({n} servings)",
+  "twice.doubled": "Making double: {n} servings"
 }

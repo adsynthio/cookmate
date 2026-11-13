@@ -51,6 +51,7 @@ import { keepIngredient, setSimple, usualSkips } from "@/domain/habits";
 import { simplerLeaveOut } from "@/domain/simpler";
 import { minutesSaved, readyBases, shortcuts } from "@/domain/bases";
 import { tiffinFrom } from "@/domain/guests";
+import { cookTwicePlan } from "@/domain/cookTwice";
 import { yourTotalMinutes } from "@/domain/stepTimes";
 
 export default function RecipeScreen() {
@@ -395,6 +396,35 @@ function RecipeBody({
             </Text>
             <View style={{ alignSelf: "flex-start" }}>
               <Button kind="secondary" size="small" icon="plus" label={t("tiffin.cookExtra", { n: servings + 1 })} onPress={() => setServings((s) => Math.min(20, s + 1))} />
+            </View>
+          </Card>
+        );
+      })()}
+
+      {/* F4: cook once, eat twice. Make double, keep half safely, and tomorrow's idea from it. */}
+      {(() => {
+        const plan = cookTwicePlan(doc);
+        if (!plan) return null;
+        const doubled = servings >= 2 * Math.max(1, eaters.length || doc.base_servings);
+        return (
+          <Card style={{ gap: space.xs }}>
+            <Text variant="subheading">{t("twice.title")}</Text>
+            <Text>{t("twice.keep", { hours: plan.keep.fridgeWithinHours, days: plan.keep.eatWithinDays })}</Text>
+            {plan.riceCare ? <Text variant="caption" muted>{t("left.riceCare")}</Text> : null}
+            {plan.ideas.length ? (
+              <Text variant="caption" muted>
+                {t("twice.tomorrow", { ideas: plan.ideas.map((i) => t(`left.idea.${i}.t` as StringKey)).join(" · ") })}
+              </Text>
+            ) : null}
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button
+                kind="secondary"
+                size="small"
+                icon={doubled ? "check" : "plus"}
+                disabled={doubled}
+                label={doubled ? t("twice.doubled", { n: servings }) : t("twice.double", { n: Math.min(20, servings * 2) })}
+                onPress={() => setServings((s) => Math.min(20, s * 2))}
+              />
             </View>
           </Card>
         );

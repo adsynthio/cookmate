@@ -34,8 +34,9 @@ One PR per part. Each one is merged only when CI passes.
 
 ### G1. One recipe safety checker for everything
 
-`supabase/functions/_shared/recipeSafety.ts`, with its rules in `content/safety/rules.yaml` so the content build
-(Python) and the Edge Functions (Deno) read the same rules. It is used by invent-dish, named dish, adapt-recipe,
+**Built:** `apps/mobile/src/domain/recipeSafety.ts`, copied to `supabase/functions/_shared/recipeSafety.ts` by
+`scripts/sync-shared.py`, so the app and the Edge Functions run the same rules. A test checks every library recipe
+against it, so a new library recipe can't merge unless it passes. It is used by invent-dish, named dish, adapt-recipe,
 family recipes, house-cook handoff and the library build. It returns a list of problems; an empty list means the
 recipe can be shown.
 

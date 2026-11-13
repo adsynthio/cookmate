@@ -24,6 +24,7 @@ SHARED = {
     "apps/mobile/src/domain/assist.ts": "supabase/functions/_shared/assist.ts",
     "apps/mobile/src/domain/calendar.ts": "supabase/functions/_shared/calendar.ts",
     "apps/mobile/src/domain/invent.ts": "supabase/functions/_shared/invent.ts",
+    "apps/mobile/src/domain/recipeSafety.ts": "supabase/functions/_shared/recipeSafety.ts",
     # Generated catalog (diet flags, allergens, measures) so functions validate exactly like the app.
     "apps/mobile/src/data/catalog.json": "supabase/functions/_shared/catalog.json",
 }

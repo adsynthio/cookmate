@@ -2,7 +2,8 @@
 // rules and the recipe's own substitutes go first (../_shared/adapt.ts, same code as the app). Claude Sonnet is only
 // asked about essentials nothing replaces, and only to swap an ingredient or reword an existing step. Every result
 // passes validateAdaptation() (safety notes unchanged, no removed steps, no shorter cooking on safety steps, catalog
-// ingredients that fit the diet, no unsafe shortcuts) before it is saved as the household's variant.
+// ingredients that fit the diet, no unsafe shortcuts) and the shared safety gate (_shared/recipeSafety.ts) before it
+// is saved as the household's variant.
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
@@ -20,7 +21,7 @@ import {
 } from "../_shared/adapt.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
-import { catalogNames, DIETS, missingEquipment, validationContext, variantRows } from "./logic.ts";
+import { catalogNames, DIETS, missingEquipment, safetyProblems, validationContext, variantRows } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
 
@@ -146,7 +147,7 @@ Deno.serve(async (req) => {
       const { plan, usage, ms, refused } = await askModel(base, adaptation, catalogNames());
       if (plan) {
         const candidate = applyModelPlan(adaptation, plan);
-        const problems = validateAdaptation(base, candidate, ctx);
+        const problems = [...validateAdaptation(base, candidate, ctx), ...safetyProblems(candidate.doc, diet)];
         await logRequest(householdId, problems.length ? "invalid_output" : "ok", ms, usage, problems.join("; ") || undefined);
         if (!problems.length) {
           adaptation = candidate;
@@ -161,7 +162,7 @@ Deno.serve(async (req) => {
     }
   }
 
-  const problems = validateAdaptation(base, adaptation, ctx);
+  const problems = [...validateAdaptation(base, adaptation, ctx), ...safetyProblems(adaptation.doc, diet)];
   const summary = summarise(adaptation);
   if (problems.length) {
     // Nothing safe to save: tell the app what couldn't be done (e.g. buy the potatoes).

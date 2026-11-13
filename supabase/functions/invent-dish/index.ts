@@ -15,6 +15,7 @@ import { z } from "npm:zod@4.6.5";
 
 import { logAiRequest } from "../_shared/aiLog.ts";
 import { avoids, type InventPlan, planInvention, validateInvention } from "../_shared/invent.ts";
+import { checkRecipe, problemLines, SAFETY_RULES_PROMPT } from "../_shared/recipeSafety.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { swapsPrompt } from "../_shared/swaps.ts";
@@ -67,7 +68,8 @@ safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set)
 no shortcuts (no skipping soaking or boiling, no reheating more than once, no half-cooked anything).
 Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 7 short steps in plain English a home cook
 follows easily; minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari)
-and Hinglish (Latin script). No health or nutrition claims.`;
+and Hinglish (Latin script). No health or nutrition claims.
+${SAFETY_RULES_PROMPT}`;
 
 async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, avoid: string[], staples: string[], problems: string[]) {
   const started = Date.now();
@@ -104,7 +106,8 @@ Food safety, always: leftovers and cooked food are reheated until steaming hot a
 safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;
 no shortcuts. Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 8 short steps in plain English;
 minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari) and Hinglish
-(Latin script). No health or nutrition claims.`;
+(Latin script). No health or nutrition claims.
+${SAFETY_RULES_PROMPT}`;
 
 async function askNamed(client: Anthropic, dish: string, have: string[], diet: Diet, avoid: string[], staples: string[], problems: string[]) {
   const started = Date.now();
@@ -155,7 +158,7 @@ Deno.serve(async (req) => {
 
   const [{ data: hh }, { data: members }, { data: rows, error }, { data: memories, error: memError }] = await Promise.all([
     sb.from("households").select("timezone").eq("id", householdId).maybeSingle(),
-    sb.from("household_members").select("diet").eq("household_id", householdId).eq("status", "active"),
+    sb.from("household_members").select("diet, age_group").eq("household_id", householdId).eq("status", "active"),
     sb.from("inventory_items").select("id, custom_name, state, flavor_roles, confidence, expiry_date, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
     // Allergies and dislikes, as suggest-meals reads them. Everyone's count: a new dish is for the whole table.
@@ -171,7 +174,9 @@ Deno.serve(async (req) => {
   if (avoidedInName.length) return json({ recipe_id: null, reason: "avoided", avoided: avoidedInName });
   const today = localDate(new Date(), (hh?.timezone as string | undefined) ?? "Asia/Kolkata");
   const items = inventItems((rows ?? []) as unknown as ItemRow[], today);
-  const diet = tableDiet(((members ?? []) as { diet: Diet | null }[]).map((m) => m.diet));
+  const memberRows = (members ?? []) as { diet: Diet | null; age_group: string | null }[];
+  const diet = tableDiet(memberRows.map((m) => m.diet));
+  const children = memberRows.some((m) => m.age_group === "child");
   const plan = named ? null : planInvention(items, CATALOG, diet, avoid);
   if (!named && !plan) return json({ recipe_id: null, reason: "too_little" });
 
@@ -197,6 +202,11 @@ Deno.serve(async (req) => {
         problems.push(...validateInvention(candidate, namedPlan(candidate, items), { catalog: CATALOG, diet, have: new Set([...have, ...toBuy]), avoid }));
       } else {
         problems = validateInvention(candidate, plan!, { catalog: CATALOG, diet, have, avoid });
+      }
+      // G1: the shared safety gate, the same one every library recipe passes.
+      if (candidate) {
+        const ownFood = (plan?.use ?? []).filter((u) => !CATALOG.has(u.key)).map((u) => u.key);
+        problems = [...new Set([...problems, ...problemLines(checkRecipe(candidate, { catalog: CATALOG, diet, avoid, children, ownFood }))])];
       }
       await logAiRequest({
         householdId, task, model: MODEL, promptVersion: version, latencyMs: r.ms, usage: r.usage,

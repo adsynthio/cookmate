@@ -9,7 +9,7 @@ import { Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
-import { LOCALES, getLocale, t, type Locale, type StringKey } from "@/i18n";
+import { APP_LOCALES, getLocale, t, type AppLocale, type Locale, type StringKey } from "@/i18n";
 import type { Member, Memory } from "@/services";
 
 function initials(name: string): string {
@@ -145,9 +145,9 @@ export function TasteCard({ members, prefs }: { members: Member[]; prefs: Memory
 }
 
 /** App language, changeable any time; the choice is saved on the account. */
-export function LanguageCard({ value, onChange }: { value: Locale; onChange: (l: Locale) => void }) {
+export function LanguageCard({ value, onChange }: { value: AppLocale; onChange: (l: AppLocale) => void }) {
   const { colors } = useTheme();
-  const order: Locale[] = (["en", "hi", "hinglish"] as Locale[]).filter((l) => (LOCALES as readonly string[]).includes(l));
+  const order: AppLocale[] = (["en", "hi", "hinglish", "kn"] as AppLocale[]).filter((l) => (APP_LOCALES as readonly string[]).includes(l));
   return (
     <View style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
       <View style={styles.row}>

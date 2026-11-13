@@ -16,7 +16,7 @@ import { TimerAlarm } from "@/components/cook/TimerAlarm";
 import { StateView } from "@/design-system/primitives";
 import { useReducedMotion } from "@/design-system/motion";
 import { ThemeProvider, useTheme } from "@/design-system/theme";
-import { localeFromLanguageCode } from "@/domain/onboarding";
+import { appLocaleFromLanguageCode } from "@/domain/onboarding";
 import { setLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
 import { track } from "@/services/analytics";
@@ -37,7 +37,7 @@ function useBootstrap() {
     try {
       const ref = await services.auth.getCurrentHousehold();
       if (ref) {
-        const locale = localeFromLanguageCode(ref.languageCode);
+        const locale = appLocaleFromLanguageCode(ref.languageCode);
         if (locale) setLocale(locale);
         setHousehold(ref.householdId, ref.memberId);
       }

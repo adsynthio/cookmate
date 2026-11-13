@@ -26,8 +26,8 @@ import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
 import { hush, say } from "@/services/feedback";
 import { useTimers } from "@/state/timers";
 import { recipeTitle } from "@/domain/recipes";
-import { getLocale, setLocale, t, useLocale, type Locale, type StringKey } from "@/i18n";
-import { LANGUAGE_CODES } from "@/domain/onboarding";
+import { getLocale, setLocale, t, useAppLocale, useLocale, type AppLocale, type Locale, type StringKey } from "@/i18n";
+import { languageCodeFor } from "@/domain/onboarding";
 import { clearBundles } from "@/offline/bundles";
 import { clearCopies } from "@/offline/kitchenCopy";
 import { useOutbox } from "@/offline/outbox";
@@ -84,11 +84,12 @@ export default function YouScreen() {
   const locale = useLocale();
   const me = (members.data ?? []).find((m) => m.id === memberId);
   const prefs = (memories.data ?? []).filter(isPreference);
-  const changeLanguage = (l: Locale) => {
-    if (l === locale) return;
+  const appLocale = useAppLocale();
+  const changeLanguage = (l: AppLocale) => {
+    if (l === appLocale) return;
     setLocale(l);
     // Kept on the account so the next launch, the picks and the voice agent use it too.
-    void services.auth.setLanguage(LANGUAGE_CODES[l]).catch(() => {});
+    void services.auth.setLanguage(languageCodeFor(l)).catch(() => {});
     void qc.invalidateQueries({ queryKey: ["picks"] });
   };
 
@@ -107,7 +108,7 @@ export default function YouScreen() {
       {householdId ? <WeekCard householdId={householdId} /> : null}
       {householdId ? <PlateCard householdId={householdId} /> : null}
       {householdId ? <ToolsCard householdId={householdId} /> : null}
-      <LanguageCard value={locale} onChange={changeLanguage} />
+      <LanguageCard value={appLocale} onChange={changeLanguage} />
       <DrinksToggle />
 
       {householdId ? <TellMe members={members.data ?? []} selfId={memberId} onSave={save} onSaved={refresh} /> : null}

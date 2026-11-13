@@ -14,7 +14,7 @@ import { Enter, PressableScale, useReducedMotion } from "@/design-system/motion"
 import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
-import { LOCALES, setLocale, t, useLocale, type Locale, type StringKey } from "@/i18n";
+import { APP_LOCALES, setLocale, t, useAppLocale, useLocale, type AppLocale, type StringKey } from "@/i18n";
 import { services } from "@/services";
 import { startErrorKind, type StartErrorKind } from "@/domain/startError";
 
@@ -33,6 +33,7 @@ const START_ERROR: Record<StartErrorKind, StringKey> = {
 
 export default function WelcomeScreen() {
   const locale = useLocale();
+  const appLocale = useAppLocale();
   const router = useRouter();
   const { colors } = useTheme();
   const reduceMotion = useReducedMotion();
@@ -54,7 +55,7 @@ export default function WelcomeScreen() {
               Cookmate
             </Text>
           </View>
-          <LanguageSwitch value={locale} onChange={setLocale} />
+          <LanguageSwitch value={appLocale} onChange={setLocale} />
         </View>
 
         <Enter>
@@ -131,9 +132,9 @@ export default function WelcomeScreen() {
 }
 
 /** English · हिन्दी · Hinglish, as one pill with the chosen language filled in olive. */
-function LanguageSwitch({ value, onChange }: { value: Locale; onChange: (l: Locale) => void }) {
+function LanguageSwitch({ value, onChange }: { value: AppLocale; onChange: (l: AppLocale) => void }) {
   const { colors } = useTheme();
-  const order: Locale[] = ["en", "hi", "hinglish"].filter((l) => (LOCALES as readonly string[]).includes(l)) as Locale[];
+  const order: AppLocale[] = ["en", "hi", "hinglish", "kn"].filter((l) => (APP_LOCALES as readonly string[]).includes(l)) as AppLocale[];
   return (
     <View style={[styles.lang, { backgroundColor: colors.surfaceMuted }]} accessibilityRole="radiogroup">
       {order.map((l) => {

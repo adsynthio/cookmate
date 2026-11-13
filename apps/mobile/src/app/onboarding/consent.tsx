@@ -20,12 +20,12 @@ import {
   buildMembers,
   consentRows,
   householdName,
-  LANGUAGE_CODES,
+  languageCodeFor,
   ONBOARDING_PURPOSES,
   POLICY_VERSION,
   type ConsentPurpose,
 } from "@/domain/onboarding";
-import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { getAppLocale, getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services } from "@/services";
 import { track } from "@/services/analytics";
 import { useOnboarding } from "@/state/onboarding";
@@ -48,7 +48,7 @@ export default function ConsentScreen() {
       if (!created.current) {
         created.current = await services.preference.createHousehold({
           name: householdName(members, t("onb.householdName")),
-          language: LANGUAGE_CODES[getLocale()],
+          language: languageCodeFor(getAppLocale()),
           members: buildMembers(members, spice, diet, { cuisines, pace }),
         });
       }
@@ -99,7 +99,7 @@ export default function ConsentScreen() {
     },
     onSuccess: ({ householdId, memberId }) => {
       setHousehold(householdId, memberId);
-      track("onboarding_completed", { members_count: members.length, language: LANGUAGE_CODES[getLocale()], voice_consent: !!consents.voice_processing });
+      track("onboarding_completed", { members_count: members.length, language: languageCodeFor(getAppLocale()), voice_consent: !!consents.voice_processing });
       router.replace("/");
     },
   });

@@ -1178,7 +1178,7 @@
   "swaps.taste.earthier": "thoda desi, gehra swaad",
   "swaps.taste.sweeter": "thoda meetha",
   "cook.basicsTitle": "Basics seekhein",
-  "cook.basicsBody": "Roti, paratha, puri, bhatura aur kulche ka aata, saath mein chaawal aur dal. Kitne log kha rahe hain chunein: 1 katori aate se lagbhag 4 roti banti hain.",
+  "cook.basicsBody": "Roti, paratha, puri, bhatura aur kulche ka aata, chaawal aur dal, aur Sunday ki taiyaari (pyaz-tamatar masala, ubale chole) jisse hafte mein khaana jaldi bane. 1 katori aate se lagbhag 4 roti banti hain.",
   "cook.heat.hot": "Bahut tez",
   "cook.heat.slow": "Bahut dheema",
   "cook.heat.lower": "Samajh gaya: aapka {stove} tez chalta hai, ab se ek level kam bataunga.",
@@ -1215,5 +1215,14 @@
   "buyFew.titleTwo": "{a} aur {b} le aayein, {n} aur dishes bana sakenge",
   "buyFew.more": "aur {n}",
   "buyFew.addOne": "List mein jodein",
-  "buyFew.addBoth": "Dono list mein jodein"
+  "buyFew.addBoth": "Dono list mein jodein",
+  "bases.title": "Aapki Sunday ki taiyaari se {min} bachenge",
+  "bases.overnight": "raat bhar bhigona",
+  "bases.line.masala": "Taiyaar pyaz-tamatar masala step {steps} ki jagah kaam aayega.",
+  "bases.line.boiled_pulse": "Kitchen mein ubale {pulse} hain: step {steps} chhod dein.",
+  "bases.line.gg_paste": "Step {steps} mein kaddukas ki jagah adrak-lehsun paste.",
+  "bases.ready": "Aapki Sunday ki taiyaari se",
+  "bases.cook.masala": "Yahaan taiyaar masala lein: tel mein lagbhag {n} chammach 2–3 minute garam karein jab tak chhanchhanaaye nahi, phir agle step par jaayein.",
+  "bases.cook.boiled_pulse": "Aapke {pulse} pehle se ubale hain: yeh step chhodein aur dibbe se seedhe istemaal karein.",
+  "bases.cook.gg_paste": "Adrak-lehsun kaddukas karne ki jagah ek chammach adrak-lehsun paste lein."
 }

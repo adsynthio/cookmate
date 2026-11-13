@@ -22,7 +22,7 @@ import { services } from "@/services";
 import { useSession } from "@/state/session";
 import { useTimers } from "@/state/timers";
 
-const BASICS_ORDER = ["roti", "paratha", "puri", "bhatura", "kulcha", "jeera-rice", "plain-dal"];
+const BASICS_ORDER = ["roti", "paratha", "puri", "bhatura", "kulcha", "jeera-rice", "plain-dal", "onion-tomato-masala", "boiled-chana"];
 
 export default function CookTab() {
   useLocale();

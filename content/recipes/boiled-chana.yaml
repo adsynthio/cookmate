@@ -1,0 +1,72 @@
+slug: boiled-chana
+title: Boiled Chana
+titles: {hi: उबले छोले, hi-Latn: Ubale Chole}
+description: >-
+  Soak and pressure-cook a big batch on Sunday. Kept in the fridge (three days) or frozen in portions, it turns a
+  weekday chole, rajma or chaat into a half-hour job.
+descriptions:
+  hi: "रविवार को एक बड़ा बैच भिगोकर कुकर में उबाल लें। फ़्रिज में (तीन दिन) या हिस्सों में जमाकर रखें, तो हफ़्ते में छोले, राजमा या चाट आधे घंटे का काम है।"
+  hi-Latn: "Ravivaar ko ek bada batch bhigo kar cooker mein ubaal lein. Fridge mein (teen din) ya hisson mein jama kar rakhein, to hafte mein chole, rajma ya chaat aadhe ghante ka kaam hai."
+cuisine_region: generic_north
+course: component
+diet: vegan
+base_servings: 8
+prep_time_min: 480
+cook_time_min: 35
+difficulty: 1
+spice_level: 1
+equipment: [pressure_cooker]
+tags: [basics, high_protein]
+flavor_profile: {rich: 0.3, heat: 0, acid: 0, crunch: 0, starch: 0.6, sweet: 0}
+food_groups: [dal, protein]
+review_status: draft
+ingredients:
+  - {ingredient: chickpeas, qty: 500, unit: g, local: 4 katori chana, role: protein, substitutes: [{ingredient: kidney beans, ratio: 1, note: rajma needs a few more whistles}]}
+  - {ingredient: salt, qty: 6, unit: g, local: 1 chhota chammach, role: spice}
+steps:
+  - text: Rinse the chana and soak in plenty of water overnight.
+    technique: soak
+    minutes: 480
+    cues:
+      look: "They double in size and the skins look smooth and tight."
+    say:
+      hi:
+        text: "चने धोकर रात भर ढेर सारे पानी में भिगो दें।"
+        look: "दुगने हो जाएँ और छिलका चिकना और कसा दिखे।"
+      hi-Latn:
+        text: "Chane dho kar raat bhar dher saare paani mein bhigo dein."
+        look: "Dugne ho jaayein aur chhilka chikna aur kasa dikhe."
+  - text: Drain, add fresh water to cover by two fingers and the salt, and pressure-cook for 6 whistles (rajma 8), then let the pressure drop by itself.
+    technique: pressure_cook
+    whistles: 6
+    minutes: 35
+    heat: medium
+    cues:
+      sound: "Count the whistles, then wait for the pressure to drop."
+      touch: "One pressed between two fingers mashes easily."
+    safety: Rajma must be fully soft; undercooked kidney beans are unsafe to eat. Open the cooker only when the pressure has dropped.
+    say:
+      hi:
+        text: "पानी निकालें, दो उँगली ऊपर तक ताज़ा पानी और नमक डालें, और 6 सीटी (राजमा 8) लगाएँ, फिर प्रेशर अपने आप उतरने दें।"
+        sound: "सीटियाँ गिनें, फिर प्रेशर उतरने तक रुकें।"
+        touch: "दो उँगलियों के बीच दबाने पर आसानी से मसल जाए।"
+        safety: "राजमा पूरी तरह नरम होना चाहिए; कच्चा राजमा खाना सुरक्षित नहीं। प्रेशर उतरने पर ही कुकर खोलें।"
+      hi-Latn:
+        text: "Paani nikaalein, do ungli upar tak taaza paani aur namak daalein, aur 6 seeti (rajma 8) lagaayein, phir pressure apne aap utarne dein."
+        sound: "Seetiyaan ginein, phir pressure utarne tak rukein."
+        touch: "Do ungliyon ke beech dabaane par aasaani se masal jaaye."
+        safety: "Rajma poori tarah naram hona chahiye; kachcha rajma khaana surakshit nahi. Pressure utarne par hi cooker kholein."
+  - text: Cool, then keep with a little of the cooking water in closed boxes in the fridge, or freeze in portions.
+    minutes: 15
+    safety: Keeps 3 days in the fridge or a month frozen.
+    cues:
+      touch: "Cool before the boxes go in the fridge."
+    say:
+      hi:
+        text: "ठंडा करें, फिर थोड़े पकने वाले पानी के साथ बंद डिब्बों में फ़्रिज में रखें, या हिस्सों में जमा दें।"
+        touch: "फ़्रिज में रखने से पहले ठंडा हो।"
+        safety: "फ़्रिज में 3 दिन, फ़्रीज़र में एक महीना चलता है।"
+      hi-Latn:
+        text: "Thanda karein, phir thode pakne waale paani ke saath band dibbon mein fridge mein rakhein, ya hisson mein jama dein."
+        touch: "Fridge mein rakhne se pehle thanda ho."
+        safety: "Fridge mein 3 din, freezer mein ek mahina chalta hai."

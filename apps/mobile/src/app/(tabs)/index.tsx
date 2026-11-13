@@ -12,6 +12,7 @@ import { WantDish } from "@/components/home/WantDish";
 import { HomeHero } from "@/components/home/HomeHero";
 import { ReadyCard } from "@/components/home/ReadyCard";
 import { PlanCard } from "@/components/home/PlanCard";
+import { DinnerCard } from "@/components/home/DinnerCard";
 import { WeekCard } from "@/components/you/WeekCard";
 import { InventCard, NewDishCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
 
@@ -346,6 +347,14 @@ export default function HomeScreen() {
         </Text>
       ) : null}
 
+      {!focus && !craving && !chips.length && mealSlot === "dinner" && householdId && picks.data ? (
+        <DinnerCard
+          householdId={householdId}
+          picks={[picks.data.hero, ...picks.data.alternates].filter((p): p is NonNullable<typeof p> => !!p)}
+          onOpen={(id) => router.push(`/recipe/${id}`)}
+          onQuick={() => toggleChip("under_20")}
+        />
+      ) : null}
       {!focus ? <ReadyCard items={kitchen.data ?? []} /> : null}
       {/* D3: on Sundays, a look back at the week. */}
       {!focus && !craving && householdId && new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "Asia/Kolkata" }).format(new Date()) === "Sun" ? (

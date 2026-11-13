@@ -3316,6 +3316,10 @@ export type Database = {
         Args: { p_household: string };
         Returns: Json;
       };
+      notification_opened: {
+        Args: { p_batch: string };
+        Returns: undefined;
+      };
       set_notification_settings: {
         Args: { p_household: string; p_settings: Json; p_policy_version?: string };
         Returns: Json;

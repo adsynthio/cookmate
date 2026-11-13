@@ -332,13 +332,18 @@ export const liveServices: Services = {
     async setNotificationSettings(householdId, changes) {
       const settings = {
         ...(changes.dailyPick !== undefined ? { daily_pick: changes.dailyPick } : {}),
-        ...(changes.pickTime ? { pick_time: changes.pickTime } : {}),
+        ...(changes.dinnerTime ? { dinner_time: changes.dinnerTime } : {}),
+        ...(changes.leadMinutes ? { lead_minutes: changes.leadMinutes } : {}),
         ...(changes.quietStart ? { quiet_start: changes.quietStart } : {}),
         ...(changes.quietEnd ? { quiet_end: changes.quietEnd } : {}),
       };
       const { data, error } = await requireSupabase().rpc("set_notification_settings", { p_household: householdId, p_settings: settings });
       if (error) throw error;
       return fromSettings((data ?? {}) as Record<string, unknown>);
+    },
+    async notificationOpened(batchId) {
+      const { error } = await requireSupabase().rpc("notification_opened", { p_batch: batchId });
+      if (error) throw error;
     },
     async registerDevice({ householdId, memberId, pushToken, platform, appVersion, locale }) {
       const { error } = await requireSupabase().from("devices").upsert(
@@ -1111,7 +1116,9 @@ type BatchRow = {
 
 const fromSettings = (x: Record<string, unknown>): NotificationSettings => ({
   dailyPick: !!x.daily_pick,
-  pickTime: String(x.pick_time ?? "16:00"),
+  pickTime: String(x.pick_time ?? "19:00"),
+  dinnerTime: String(x.dinner_time ?? "20:00"),
+  leadMinutes: Number(x.lead_minutes ?? 60),
   quietStart: String(x.quiet_start ?? "22:00"),
   quietEnd: String(x.quiet_end ?? "07:00"),
 });

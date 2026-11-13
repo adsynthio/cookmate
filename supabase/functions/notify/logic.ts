@@ -46,3 +46,46 @@ export function readTickets(tokens: string[], tickets: ExpoTicket[]): { delivere
   });
   return { delivered, dead };
 }
+
+/** S3: how long each suggestion may take, up to the time left before dinner (20, 30, then up to an hour). */
+export function timeBuckets(leadMinutes: number): number[] {
+  return [...new Set([20, 30, Math.min(60, leadMinutes)])].filter((b) => b <= leadMinutes).sort((a, b) => a - b);
+}
+
+/** One dish for each time bucket, best-ranked first, never the same dish twice. `ranked` is in rank order. */
+export function pickByTime<T>(ranked: T[], minutesOf: (p: T) => number | null, leadMinutes: number): { bucket: number; pick: T }[] {
+  const out: { bucket: number; pick: T }[] = [];
+  const used = new Set<T>();
+  for (const bucket of timeBuckets(leadMinutes)) {
+    const pick = ranked.find((p) => !used.has(p) && (minutesOf(p) ?? Infinity) <= bucket);
+    if (pick === undefined) continue;
+    used.add(pick);
+    out.push({ bucket, pick });
+  }
+  return out;
+}
+
+const DINNER_TITLE: Record<Locale, string> = {
+  en: "Dinner at {time}: what to cook",
+  hinglish: "Dinner {time} baje: kya banayein?",
+  hi: "रात का खाना {time} बजे: क्या बनाएँ?",
+};
+const MIN: Record<Locale, string> = { en: "{n} min", hinglish: "{n} min", hi: "{n} मिनट" };
+const HOUR: Record<Locale, string> = { en: "1 hr", hinglish: "1 ghanta", hi: "1 घंटा" };
+
+/** "20:30" → "8:30" (dinner is always in the evening, so no am/pm needed). */
+export function clock(hhmm: string): string {
+  const [h, m] = hhmm.split(":").map(Number);
+  const h12 = ((h! + 11) % 12) + 1;
+  return m ? `${h12}:${String(m).padStart(2, "0")}` : String(h12);
+}
+
+/** "Dinner at 8: what to cook" / "20 min: Jeera Aloo · 30 min: Poha · 1 hr: Rajma". */
+export function dinnerMessage(choices: { bucket: number; dish: string }[], dinnerTime: string, locale: Locale): { title: string; body: string } {
+  if (!choices.length) return pickMessage(null, null, locale);
+  const label = (b: number) => (b === 60 ? HOUR[locale] : MIN[locale].replace("{n}", String(b)));
+  return {
+    title: DINNER_TITLE[locale].replace("{time}", clock(dinnerTime)).slice(0, 60),
+    body: choices.map((c) => `${label(c.bucket)}: ${c.dish}`).join(" · ").slice(0, 160),
+  };
+}

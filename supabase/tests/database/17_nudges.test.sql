@@ -1,7 +1,7 @@
 -- Nudges: decay by state (KIT-035), one pantry check a day (KIT-035), notification settings and who is due for the
 -- daily pick (KIT-045), festivals seeded (KIT-144), old exports found for the sweep.
 begin;
-select plan(23);
+select plan(29);
 
 create function pg_temp.login(p_user uuid) returns void language plpgsql as $$
 begin
@@ -60,14 +60,19 @@ reset role;
 -- --- notification settings ----------------------------------------------------------------------------------
 select pg_temp.login('00000000-0000-0000-0000-0000000000f1');
 select is(public.get_notification_settings(current_setting('t.hh')::uuid),
-  '{"daily_pick": false, "pick_time": "16:00", "quiet_start": "22:00", "quiet_end": "07:00"}'::jsonb,
-  'off by default, 16:00 when turned on');
-select throws_ok($$select public.set_notification_settings(current_setting('t.hh')::uuid, '{"daily_pick": true, "pick_time": "23:00"}')$$,
-  '22023', null, 'the pick time cannot be inside quiet hours');
-select throws_ok($$select public.set_notification_settings(current_setting('t.hh')::uuid, '{"pick_time": "teatime"}')$$,
+  '{"daily_pick": false, "pick_time": "19:00", "dinner_time": "20:00", "lead_minutes": 60, "quiet_start": "22:00", "quiet_end": "07:00"}'::jsonb,
+  'off by default; dinner at 8, told an hour before');
+select throws_ok($$select public.set_notification_settings(current_setting('t.hh')::uuid, '{"daily_pick": true, "dinner_time": "23:30"}')$$,
+  '22023', null, 'the nudge time cannot be inside quiet hours');
+select throws_ok($$select public.set_notification_settings(current_setting('t.hh')::uuid, '{"dinner_time": "teatime"}')$$,
   '22023', null, 'nonsense times are refused');
-select is(public.set_notification_settings(current_setting('t.hh')::uuid, '{"daily_pick": true, "pick_time": "17:30"}') ->> 'pick_time', '17:30',
-  'opting in at a chosen time');
+select throws_ok($$select public.set_notification_settings(current_setting('t.hh')::uuid, '{"lead_minutes": 5}')$$,
+  '22023', null, 'the lead is 20 minutes to 2 hours');
+select is(public.set_notification_settings(current_setting('t.hh')::uuid, '{"daily_pick": true, "dinner_time": "18:30"}') ->> 'pick_time', '17:30',
+  'opting in: dinner at 6:30 means the nudge at 5:30');
+select is(public.set_notification_settings(current_setting('t.hh')::uuid, '{"lead_minutes": 30}') ->> 'pick_time', '18:00',
+  'half an hour before');
+select public.set_notification_settings(current_setting('t.hh')::uuid, '{"lead_minutes": 60}');
 select is((select granted from public.consents where consent_type = 'notifications' and household_id = current_setting('t.hh')::uuid
             order by created_at desc limit 1), true, 'opting in records the notifications consent');
 insert into public.devices (household_id, member_id, platform, push_token)
@@ -94,6 +99,22 @@ select is((select count(*)::int from public.notify_due('2027-02-03 12:30:00+00')
   'at most one proactive notification a day');
 select is((select count(*)::int from public.notify_due('2027-02-04 12:15:00+00') where household_id = current_setting('t.hh')::uuid), 1,
   'and due again the next day');
+select is((select dinner_time from public.notify_due('2027-02-04 12:15:00+00') where household_id = current_setting('t.hh')::uuid), '18:30',
+  'the function is told when dinner is');
+-- Three nudges in a row left unopened: it backs off to one every third day.
+insert into public.notifications (household_id, member_id, type, scheduled_for, status, payload)
+select current_setting('t.hh')::uuid, m.id, 'daily_pick', d, 'sent', jsonb_build_object('data', jsonb_build_object('batch_id', '00000000-0000-0000-0000-00000000b0' || to_char(d, 'DD')))
+  from public.household_members m, (values ('2027-02-04 12:00:00+00'::timestamptz), ('2027-02-05 12:00:00+00')) v(d)
+ where m.household_id = current_setting('t.hh')::uuid;
+select is((select count(*)::int from public.notify_due('2027-02-06 12:15:00+00') where household_id = current_setting('t.hh')::uuid), 0,
+  'three ignored in a row: skipped the next day');
+select is((select count(*)::int from public.notify_due('2027-02-08 12:15:00+00') where household_id = current_setting('t.hh')::uuid), 1,
+  'but sent again on the third day');
+select pg_temp.login('00000000-0000-0000-0000-0000000000f1');
+select public.notification_opened('00000000-0000-0000-0000-00000000b005');
+reset role;
+select is((select count(*)::int from public.notify_due('2027-02-06 12:15:00+00') where household_id = current_setting('t.hh')::uuid), 1,
+  'once one is opened, it is daily again');
 
 -- --- calendar and exports -----------------------------------------------------------------------------------
 select ok((select count(*) from public.calendar_events where household_id is null and kind = 'fast' and name = 'Ekadashi') >= 20,

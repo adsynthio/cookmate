@@ -119,7 +119,16 @@ export type CalendarToday = {
 };
 
 /** KIT-045: the daily pick notification. Times are HH:MM in the household's timezone. */
-export type NotificationSettings = { dailyPick: boolean; pickTime: string; quietStart: string; quietEnd: string };
+export type NotificationSettings = {
+  dailyPick: boolean;
+  /** When the nudge goes: dinner time minus the lead (worked out by the server). */
+  pickTime: string;
+  /** S3: when dinner is, and how many minutes before it to be told (20 to 120). */
+  dinnerTime: string;
+  leadMinutes: number;
+  quietStart: string;
+  quietEnd: string;
+};
 
 /** KIT-056: a dish invented from the odds and ends in the kitchen, saved as the household's own "new creation". */
 export type InventResult =
@@ -279,6 +288,8 @@ export interface PreferenceService {
   getNotificationSettings(householdId: string): Promise<NotificationSettings>;
   /** Turning the daily pick on or off records the notifications consent. Rejects a pick time inside quiet hours. */
   setNotificationSettings(householdId: string, changes: Partial<NotificationSettings>): Promise<NotificationSettings>;
+  /** S3: the cook tapped the dinner nudge for this batch (so it isn't counted as ignored). */
+  notificationOpened(batchId: string): Promise<void>;
   /** This phone's push token, so the daily pick can reach it. */
   registerDevice(input: { householdId: string; memberId: string; pushToken: string; platform: "android" | "ios"; appVersion?: string; locale?: string }): Promise<void>;
 }

@@ -1189,5 +1189,8 @@
   "tools.heat.higher": "{stove} dheema hai: setting {n} level zyada",
   "tools.heat.reset": "Reset",
   "cook.heat.notedHot": "Abhi ek level kam kar dein. Phir aisa hua to aapke {stove} ki setting hamesha ke liye kam kar dunga.",
-  "cook.heat.notedSlow": "Abhi ek level badha dein. Phir aisa hua to aapke {stove} ki setting hamesha ke liye badha dunga."
+  "cook.heat.notedSlow": "Abhi ek level badha dein. Phir aisa hua to aapke {stove} ki setting hamesha ke liye badha dunga.",
+  "recipe.yourTime": "Aapka usual time",
+  "you.learned.stepTimes": "Aapke banaye {n} dishes se seekha steps ka time",
+  "you.learned.stepTimesReset": "Mera steps ka time bhool jaayein"
 }

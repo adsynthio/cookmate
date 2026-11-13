@@ -38,6 +38,7 @@ import { preparePush } from "@/state/push";
 import { findIngredients } from "@/services/picks";
 import { useSession } from "@/state/session";
 import { ToolsCard } from "@/components/tools/ToolsCard";
+import { useStepTimes } from "@/state/stepTimes";
 
 /** A plain like or dislike of an ingredient, shown under Likes and dislikes rather than in the general list. */
 export function isPreference(m: Memory): boolean {
@@ -46,6 +47,8 @@ export function isPreference(m: Memory): boolean {
 
 export default function YouScreen() {
   useLocale();
+  const stepDishes = useStepTimes((s) => new Set(Object.keys(s.times).map((k) => k.split(":")[0])).size);
+  const clearStepTimes = useStepTimes((s) => s.clear);
   const householdId = useSession((s) => s.householdId);
   const memberId = useSession((s) => s.memberId);
   const qc = useQueryClient();
@@ -125,6 +128,15 @@ export default function YouScreen() {
           {t("you.learnedBody")}
         </Text>
       </View>
+      {/* S2: step times learned on this phone, with a way to forget them. */}
+      {stepDishes > 0 ? (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: space.sm }}>
+          <Text variant="caption" style={{ flex: 1 }}>
+            {t("you.learned.stepTimes", { n: stepDishes })}
+          </Text>
+          <Button kind="quiet" size="small" label={t("you.learned.stepTimesReset")} onPress={clearStepTimes} />
+        </View>
+      ) : null}
       {memories.isPending ? (
         <StateView state="loading" title={t("you.learned")} />
       ) : memories.isError ? (

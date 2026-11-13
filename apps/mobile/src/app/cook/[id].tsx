@@ -38,6 +38,8 @@ import { calibrate, planFor, stoveSetting, type HeatVote, type Stove } from "@/d
 import { clash, kitchenCheck, type Busy, type Device } from "@/domain/kitchenLimits";
 import { DEFAULT_POWER, has, heatOf, setHeat, type Tool } from "@/domain/tools";
 import { useStove } from "@/state/stove";
+import { useStepTimes } from "@/state/stepTimes";
+import { recordStep, yourSeconds } from "@/domain/stepTimes";
 import { StoveCard } from "@/components/cook/StoveCard";
 import { AirFryerCard } from "@/components/cook/AirFryerCard";
 import { checkWords, KitchenCheckCard } from "@/components/cook/KitchenCheckCard";
@@ -186,6 +188,19 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const now = useNow(timers.length > 0);
 
   const eaters = session.whoEating.length ? members.filter((m) => session.whoEating.includes(m.id)) : members;
+  // S2: how long this cook really takes over hands-on steps (time between Next taps), kept on this phone.
+  const stepTimes = useStepTimes((s) => s.times);
+  const setStepTimes = useStepTimes((s) => s.set);
+  const enteredAt = useRef(Date.now());
+  const secondsFor = (n: number) => {
+    const s = doc.steps[n - 1];
+    return s ? yourSeconds(stepTimes, doc.slug, n, s) : null;
+  };
+  /** The step just finished with Next: one more measure of the cook's pace (skips and walk-aways are ignored). */
+  const measure = (n: number) => {
+    const s = doc.steps[n - 1];
+    if (s) setStepTimes(recordStep(useStepTimes.getState().times, doc.slug, n, s, (Date.now() - enteredAt.current) / 1000, Date.now()));
+  };
   // The setting for this step on the stove in use (gas or induction, from the household's kitchen tools).
   const tools = useQuery({ queryKey: ["tools", householdId], queryFn: () => services.kitchen.getTools(householdId) });
   const hasGas = has(tools.data, "gas_stove");
@@ -260,6 +275,8 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
     hush();
     setReading(false);
     tick();
+    if (next === stepNo + 1) measure(stepNo);
+    enteredAt.current = Date.now();
     setDir(next > stepNo ? 1 : -1);
     setStepNo(next);
     scroll.current?.scrollTo({ y: 0, animated: false });
@@ -273,6 +290,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
 
   const complete = useMutation({
     mutationFn: () => services.cooking.completeSession(session.id),
+    onMutate: () => measure(stepNo),
     onSuccess: () => {
       hush();
       buzz();
@@ -355,7 +373,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
     );
   }
 
-  const secs = stepSeconds(step);
+  const secs = secondsFor(stepNo) ?? stepSeconds(step);
   const stepTimer = timers.find((x) => x.stepNo === stepNo);
   // The step's own timer lives in the timer card; finished ones get a "Time's up" card; the rest stay as chips.
   const finished = timers.filter((x) => remaining(x, now) === 0);
@@ -374,7 +392,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const count = whistles[stepNo] ?? 0;
   const startStepTimer = (n: number) => {
     const s = doc.steps[n - 1];
-    const sec = s ? stepSeconds(s) : null;
+    const sec = s ? (secondsFor(n) ?? stepSeconds(s)) : null;
     if (!s || !sec) return;
     tick();
     void startTimer({ sessionId: session.id, stepNo: n, label: t("cook.timer.label", { n }), durationSec: sec, cue: timerCue(s) });

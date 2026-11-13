@@ -1223,5 +1223,8 @@
   "tools.heat.higher": "{stove} is slow: settings {n} level higher",
   "tools.heat.reset": "Reset",
   "cook.heat.notedHot": "Turn it down a level for now. If it happens again, I'll set your {stove} lower for good.",
-  "cook.heat.notedSlow": "Turn it up a level for now. If it happens again, I'll set your {stove} higher for good."
+  "cook.heat.notedSlow": "Turn it up a level for now. If it happens again, I'll set your {stove} higher for good.",
+  "recipe.yourTime": "Your usual time",
+  "you.learned.stepTimes": "Step times learned from {n} dishes you've cooked",
+  "you.learned.stepTimesReset": "Forget my step times"
 }

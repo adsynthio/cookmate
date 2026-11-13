@@ -1233,5 +1233,10 @@
   "cook.fullSteps": "Show full steps",
   "cook.mildShare": "Set aside a mild share before the chilli goes in.",
   "you.learned.habits": "Noticed while you cooked {n} dishes: what you leave out, and dishes you know by heart",
-  "you.learned.habitsReset": "Forget these"
+  "you.learned.habitsReset": "Forget these",
+  "buyFew.titleOne": "Buy {a}, cook {n} more dishes",
+  "buyFew.titleTwo": "Buy {a} and {b}, cook {n} more dishes",
+  "buyFew.more": "and {n} more",
+  "buyFew.addOne": "Add to the list",
+  "buyFew.addBoth": "Add both to the list"
 }

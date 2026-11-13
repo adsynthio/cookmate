@@ -1199,5 +1199,10 @@
   "cook.fullSteps": "Poore steps dikhaayein",
   "cook.mildShare": "Mirch daalne se pehle thoda kam teekha hissa alag nikaal lein.",
   "you.learned.habits": "Aapke banaye {n} dishes se dekha: aap kya chhodte hain, aur kaun si dishes aapko yaad hain",
-  "you.learned.habitsReset": "Ye bhool jaayein"
+  "you.learned.habitsReset": "Ye bhool jaayein",
+  "buyFew.titleOne": "{a} le aayein, {n} aur dishes bana sakenge",
+  "buyFew.titleTwo": "{a} aur {b} le aayein, {n} aur dishes bana sakenge",
+  "buyFew.more": "aur {n}",
+  "buyFew.addOne": "List mein jodein",
+  "buyFew.addBoth": "Dono list mein jodein"
 }

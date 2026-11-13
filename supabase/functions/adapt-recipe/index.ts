@@ -23,6 +23,7 @@ import type { Diet } from "../_shared/ranking.ts";
 import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
 import { catalogNames, DIETS, missingEquipment, safetyProblems, validationContext, variantRows } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { serverError } from "../_shared/errors.ts";
 
 const TASK = "adapt_recipe";
@@ -147,8 +148,10 @@ Deno.serve(async (req) => {
       const { plan, usage, ms, refused } = await askModel(base, adaptation, catalogNames());
       if (plan) {
         const candidate = applyModelPlan(adaptation, plan);
-        const problems = [...validateAdaptation(base, candidate, ctx), ...safetyProblems(candidate.doc, diet)];
+        let problems = [...validateAdaptation(base, candidate, ctx), ...safetyProblems(candidate.doc, diet)];
         await logRequest(householdId, problems.length ? "invalid_output" : "ok", ms, usage, problems.join("; ") || undefined);
+        // G2: a model-made change that passed the rules gets the independent review too; it can only block.
+        if (!problems.length) problems = await reviewRecipe(new Anthropic(), candidate.doc, { householdId });
         if (!problems.length) {
           adaptation = candidate;
           usedModel = true;

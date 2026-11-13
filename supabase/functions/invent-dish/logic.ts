@@ -3,6 +3,7 @@ import catalogJson from "../_shared/catalog.json" with { type: "json" };
 import type { CatalogEntry, InventItem } from "../_shared/invent.ts";
 import type { Diet, FlavorKey } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
+import { looksLikeInstructions } from "../_shared/recipeSafety.ts";
 
 export const CATALOG = new Map((catalogJson as CatalogEntry[]).map((c) => [c.name, c]));
 const ROLES: FlavorKey[] = ["rich", "heat", "acid", "crunch", "starch", "sweet"];
@@ -99,6 +100,7 @@ export function cleanDishName(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
   const name = raw.trim().replace(/\s+/g, " ");
   if (name.length < 3 || name.length > MAX_DISH_CHARS || !/^[\p{L}\p{M} '&()-]+$/u.test(name)) return null;
+  if (looksLikeInstructions(name)) return null; // G3: a dish name, not instructions for the model
   return name;
 }
 

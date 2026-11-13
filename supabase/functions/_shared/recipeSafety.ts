@@ -134,6 +134,16 @@ const INJECTION = /\b(ignore (all |any |the )?(previous|prior|above|earlier) (in
 const DEVANAGARI = /[ऀ-ॿ]/;
 const LATIN = /[A-Za-z]/;
 
+/**
+ * True when text a person typed (a dish name, a family recipe, a note) reads as instructions to an AI rather than
+ * food (G3). Such text is refused before any model sees it. English, Hindi and Hinglish.
+ */
+export function looksLikeInstructions(text: string): boolean {
+  const t = text.toLowerCase();
+  return INJECTION.test(t) || INJECTION_HI.test(t);
+}
+const INJECTION_HI = /(नियम (भूल|छोड़|अनदेखा)|निर्देश (भूल|छोड़|अनदेखा)|pichhle (niyam|instructions?) (bhool|chhod|ignore)|niyam (bhool|bhul|chhod) (jao|do)|rules? (bhool|bhul|chhod) (jao|do))/;
+
 // --- The checker ------------------------------------------------------------------------------------------------
 
 /** Problems with a recipe; an empty list means a family can see it. */

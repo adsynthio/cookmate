@@ -45,6 +45,7 @@ import { useStepTimes } from "@/state/stepTimes";
 import { useHabits } from "@/state/habits";
 import { keepIngredient, usualSkips } from "@/domain/habits";
 import { minutesSaved, readyBases, shortcuts } from "@/domain/bases";
+import { tiffinFrom } from "@/domain/guests";
 import { yourTotalMinutes } from "@/domain/stepTimes";
 
 export default function RecipeScreen() {
@@ -344,6 +345,24 @@ function RecipeBody({
       <MakeItDifferent doc={doc} has={(k) => inKitchen.has(k)} avoid={avoid} nameOf={nameOf} />
 
       {householdId ? <PlanToDinner doc={doc} householdId={householdId} servings={servings} /> : null}
+
+      {/* S10: a little extra tonight is tomorrow's tiffin. */}
+      {(() => {
+        const tiffin = tiffinFrom(doc.parent_id ? doc.slug.replace(/-v\d+$/, "") : doc.slug, 1);
+        if (!tiffin) return null;
+        return (
+          <Card style={{ gap: space.xs }}>
+            <Text variant="subheading">{t("tiffin.title")}</Text>
+            <Text>{t(`tiffin.idea.${tiffin.idea}`)}</Text>
+            <Text variant="caption" muted>
+              {t("tiffin.fridge")}
+            </Text>
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button kind="secondary" size="small" icon="plus" label={t("tiffin.cookExtra", { n: servings + 1 })} onPress={() => setServings((s) => Math.min(20, s + 1))} />
+            </View>
+          </Card>
+        );
+      })()}
 
       <BalanceTip slug={doc.slug} groups={doc.food_groups} course={doc.course} diet={doc.diet} />
 

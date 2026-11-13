@@ -176,9 +176,29 @@ export default function HomeScreen() {
     setWhoEating(null);
   };
   const open = (p: Pick) => router.push(`/recipe/${p.recipeId}?rec=${encodeURIComponent(p.recommendationId)}`);
+  // D5: one tap from the hero pick straight into cooking, for everyone eating (same defaults as the recipe screen).
+  const cookNow = useMutation({
+    mutationFn: (p: Pick) => {
+      const all = (members.data ?? []).map((m) => m.id);
+      const eating = whoEating?.length ? whoEating : all;
+      return services.cooking.startSession({
+        householdId: householdId!,
+        recipeId: p.recipeId,
+        servings: Math.max(1, eating.length || 2),
+        whoEating: eating,
+        recommendationId: p.recommendationId,
+        languageCode: LANGUAGE_CODES[getLocale()],
+      });
+    },
+    onSuccess: (sessionId) => router.push(`/cook/${sessionId}`),
+    // If it can't start (offline, recipe gone), fall back to the recipe page.
+    onError: (_e, p) => {
+      accept.mutate(p);
+      open(p);
+    },
+  });
   const cook = (p: Pick) => {
-    accept.mutate(p);
-    open(p);
+    if (!cookNow.isPending) cookNow.mutate(p);
   };
   const me = (members.data ?? []).find((m) => m.id === memberId);
   const hero = picks.data?.hero ?? null;

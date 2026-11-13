@@ -1,0 +1,80 @@
+slug: paratha
+title: Plain Paratha
+titles: {hi: सादा पराठा, hi-Latn: Saada Paratha}
+description: >-
+  Flaky layered parathas from the same atta dough as roti, folded with ghee and cooked crisp on the tawa. One katori
+  of atta makes about three parathas.
+descriptions:
+  hi: "रोटी वाले आटे से बने परतदार पराठे, घी लगाकर मोड़े और तवे पर कुरकुरे सेके। एक कटोरी आटे से लगभग तीन पराठे।"
+  hi-Latn: "Roti waale aate se bane paratdaar parathe, ghee lagaakar mode aur tawe par kurkure seke. Ek katori aate se lagbhag teen parathe."
+cuisine_region: generic_north
+course: component
+diet: veg
+base_servings: 2
+prep_time_min: 30
+cook_time_min: 20
+difficulty: 2
+spice_level: 1
+equipment: [tawa]
+tags: [basics, tiffin]
+flavor_profile: {rich: 0.5, heat: 0, acid: 0, crunch: 0.4, starch: 1, sweet: 0}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: whole wheat flour, qty: 150, unit: g, local: 2 katori atta (6 parathas), role: starch}
+  - {ingredient: salt, qty: 1.5, unit: g, local: 1 chutki, role: spice}
+  - {ingredient: ghee, qty: 30, unit: g, local: 2 chammach, role: fat, substitutes: [{ingredient: refined oil, ratio: 1}]}
+steps:
+  - text: Mix the atta, salt and one spoon of ghee. Add about half a katori of water a little at a time and knead a soft dough, then cover and rest.
+    technique: knead
+    minutes: 20
+    timer: true
+    cues:
+      touch: "Soft, smooth and not sticky; a finger dent springs back slowly."
+    say:
+      hi:
+        text: "आटा, नमक और एक चम्मच घी मिलाएँ। लगभग आधी कटोरी पानी थोड़ा-थोड़ा डालकर नरम आटा गूँधें, फिर ढककर आराम दें।"
+        touch: "नरम, चिकना और चिपचिपा नहीं; उँगली का गड्ढा धीरे से वापस भरे।"
+      hi-Latn:
+        text: "Aata, namak aur ek chammach ghee milaayein. Lagbhag aadhi katori paani thoda-thoda daal kar naram aata goondhein, phir dhak kar aaraam dein."
+        touch: "Naram, chikna aur chipchipa nahi; ungli ka gaddha dheere se waapas bhare."
+  - text: Roll a ball into a small circle, spread a little ghee, fold in half and in half again into a triangle, and roll it out again.
+    minutes: 2
+    cues:
+      look: "You can see the ghee layers at the edges."
+      avoid: "Roll gently so the layers don't stick together."
+    say:
+      hi:
+        text: "लोई को छोटा गोल बेलें, थोड़ा घी लगाएँ, आधा मोड़ें और फिर आधा मोड़कर तिकोना बनाएँ, और दोबारा बेलें।"
+        look: "किनारों पर घी की परतें दिखें।"
+        avoid: "हल्के हाथ से बेलें ताकि परतें आपस में न चिपकें।"
+      hi-Latn:
+        text: "Loi ko chhota gol belein, thoda ghee lagaayein, aadha modein aur phir aadha mod kar tikona banaayein, aur dobaara belein."
+        look: "Kinaaron par ghee ki partein dikhein."
+        avoid: "Halke haath se belein taaki partein aapas mein na chipkein."
+  - text: Cook on a hot tawa, flipping once the base has spots. Spread ghee on both sides and press the edges with a spatula until crisp and golden.
+    technique: tawa_cook
+    minutes: 3
+    heat: medium
+    cues:
+      look: "Golden brown patches on both sides and puffed layers."
+      sound: "The ghee sizzles as you press."
+    say:
+      hi:
+        text: "गरम तवे पर सेकें, नीचे धब्बे आएँ तो पलटें। दोनों तरफ़ घी लगाएँ और कलछी से किनारे दबाते हुए सुनहरा और कुरकुरा करें।"
+        look: "दोनों तरफ़ सुनहरे भूरे धब्बे और फूली हुई परतें।"
+        sound: "दबाते समय घी छनछनाए।"
+      hi-Latn:
+        text: "Garam tawe par sekein, neeche dhabbe aayein to paltein. Dono taraf ghee lagaayein aur kalchhi se kinaare dabaate hue sunehra aur kurkura karein."
+        look: "Dono taraf sunehre bhoore dhabbe aur phooli hui partein."
+        sound: "Dabaate samay ghee chhanchhanaaye."
+  - text: Serve hot with curd, pickle or any sabzi. Leftover dough keeps two days in a closed box in the fridge.
+    cues:
+      touch: "Crisp outside and soft inside when torn."
+    say:
+      hi:
+        text: "दही, अचार या किसी भी सब्ज़ी के साथ गरम परोसें। बचा आटा बंद डिब्बे में फ़्रिज में दो दिन चलता है।"
+        touch: "तोड़ने पर बाहर से कुरकुरा और अंदर से नरम।"
+      hi-Latn:
+        text: "Dahi, achaar ya kisi bhi sabzi ke saath garam parosein. Bacha aata band dibbe mein fridge mein do din chalta hai."
+        touch: "Todne par baahar se kurkura aur andar se naram."

@@ -15,11 +15,14 @@ import { Icon } from "@/design-system/icons";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { Image, StyleSheet } from "react-native";
-import { recipeTitle } from "@/domain/recipes";
+import { recipeDocs } from "@/data/recipes";
+import { recipeTitle, totalTime } from "@/domain/recipes";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
 import { useSession } from "@/state/session";
 import { useTimers } from "@/state/timers";
+
+const BASICS_ORDER = ["roti", "paratha", "puri", "bhatura", "kulcha", "jeera-rice", "plain-dal"];
 
 export default function CookTab() {
   useLocale();
@@ -27,6 +30,10 @@ export default function CookTab() {
   const queryClient = useQueryClient();
   const householdId = useSession((s) => s.householdId)!;
   const { colors } = useTheme();
+  // S5: the basics anyone can learn, living alone or not (roti, paratha, puri, bhatura, kulcha, rice, dal).
+  const basics = recipeDocs
+    .filter((d) => d.tags?.includes("basics"))
+    .sort((a, b) => BASICS_ORDER.indexOf(a.slug) - BASICS_ORDER.indexOf(b.slug));
   // With nothing on the stove: the household's saved dishes, one tap from cooking.
   const saved = useQuery({ queryKey: ["favourites", householdId], queryFn: () => services.recipe.listFavourites(householdId) });
 
@@ -131,6 +138,31 @@ export default function CookTab() {
                           {t("home.minutes", { min: d.totalTimeMin })}
                         </Text>
                       ) : null}
+                    </View>
+                    <Icon name="forward" size={20} color={colors.inkSecondary} />
+                  </PressableScale>
+                </Enter>
+              ))}
+            </>
+          ) : null}
+          {basics.length ? (
+            <>
+              <SectionHeader title={t("cook.basicsTitle")} dot={undefined} />
+              <Text muted>{t("cook.basicsBody")}</Text>
+              {basics.map((d, i) => (
+                <Enter key={d.slug} index={i}>
+                  <PressableScale
+                    accessibilityRole="button"
+                    accessibilityLabel={recipeTitle(d, getLocale())}
+                    onPress={() => router.push(`/recipe/${d.slug}`)}
+                    style={[styles.row, shadow.card, { backgroundColor: colors.surface }]}
+                  >
+                    <Photo source={dishImage(d.slug)} size={56} round />
+                    <View style={{ flex: 1, gap: 2 }}>
+                      <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
+                      <Text variant="caption" muted>
+                        {t("home.minutes", { min: totalTime(d) })}
+                      </Text>
                     </View>
                     <Icon name="forward" size={20} color={colors.inkSecondary} />
                   </PressableScale>

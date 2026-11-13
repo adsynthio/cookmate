@@ -1,0 +1,90 @@
+slug: plain-dal
+title: Plain Dal
+titles: {hi: सादी दाल, hi-Latn: Saadi Dal}
+description: >-
+  Everyday arhar dal with haldi and salt and a small jeera tadka. The first dal anyone should learn: one katori feeds
+  two, with rice or roti.
+descriptions:
+  hi: "रोज़ की अरहर दाल, हल्दी-नमक और छोटे से जीरे के तड़के के साथ। सबसे पहले सीखने वाली दाल: एक कटोरी दो लोगों के लिए, चावल या रोटी के साथ।"
+  hi-Latn: "Roz ki arhar dal, haldi-namak aur chhote se jeere ke tadke ke saath. Sabse pehle seekhne waali dal: ek katori do logon ke liye, chaawal ya roti ke saath."
+cuisine_region: generic_north
+course: component
+diet: veg
+base_servings: 2
+prep_time_min: 5
+cook_time_min: 20
+difficulty: 1
+spice_level: 1
+equipment: [pressure_cooker]
+tags: [basics, comforting, kids_friendly, one_pot]
+flavor_profile: {rich: 0.4, heat: 0.1, acid: 0, crunch: 0, starch: 0.4, sweet: 0}
+food_groups: [dal]
+review_status: draft
+ingredients:
+  - {ingredient: toor dal, qty: 125, unit: g, local: 1 katori, role: protein, substitutes: [{ingredient: masoor dal, ratio: 1}, {ingredient: yellow moong dal, ratio: 1}]}
+  - {ingredient: turmeric powder, qty: 1.5, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: salt, qty: 4, unit: g, local: aadha chhota chammach, role: spice}
+  - {ingredient: ghee, qty: 9, unit: g, local: 2 chhota chammach, role: fat, substitutes: [{ingredient: refined oil, ratio: 1}]}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: asafoetida, qty: 0.2, unit: g, local: 1 chutki, role: aromatic, optional: true}
+steps:
+  - text: Rinse the dal two or three times. Put it in the cooker with turmeric, salt and three katori of water.
+    minutes: 2
+    cues:
+      look: "The rinse water runs almost clear."
+    say:
+      hi:
+        text: "दाल को दो-तीन बार धोएँ। कुकर में हल्दी, नमक और तीन कटोरी पानी के साथ डालें।"
+        look: "धोने का पानी लगभग साफ़ हो जाए।"
+      hi-Latn:
+        text: "Dal ko do-teen baar dhoyein. Cooker mein haldi, namak aur teen katori paani ke saath daalein."
+        look: "Dhone ka paani lagbhag saaf ho jaaye."
+  - text: Close the cooker and cook for three whistles, then let the pressure drop by itself.
+    technique: pressure_cook
+    whistles: 3
+    minutes: 12
+    heat: medium
+    cues:
+      sound: "Count three whistles."
+      look: "When opened, the dal is soft and mashes easily with a spoon."
+    safety: Open the cooker only when the pressure has fully dropped.
+    say:
+      hi:
+        text: "कुकर बंद करके तीन सीटी लगाएँ, फिर प्रेशर अपने आप उतरने दें।"
+        sound: "तीन सीटी गिनें।"
+        look: "खोलने पर दाल नरम हो और चम्मच से आसानी से घुटे।"
+        safety: "कुकर तभी खोलें जब प्रेशर पूरी तरह उतर जाए।"
+      hi-Latn:
+        text: "Cooker band karke teen seeti lagaayein, phir pressure apne aap utarne dein."
+        sound: "Teen seeti ginein."
+        look: "Kholne par dal naram ho aur chammach se aasaani se ghute."
+        safety: "Cooker tabhi kholein jab pressure poori tarah utar jaaye."
+  - text: Whisk the dal smooth and add hot water if it's too thick. Simmer for two minutes.
+    technique: simmer
+    minutes: 2
+    heat: low
+    cues:
+      look: "It pours like thick soup."
+    say:
+      hi:
+        text: "दाल को घोंटकर एकसार करें और ज़्यादा गाढ़ी हो तो गरम पानी डालें। दो मिनट उबालें।"
+        look: "गाढ़े सूप की तरह बहे।"
+      hi-Latn:
+        text: "Dal ko ghont kar eksaar karein aur zyada gaadhi ho to garam paani daalein. Do minute ubaalein."
+        look: "Gaadhe soup ki tarah bahe."
+  - text: Heat ghee in a small pan, add cumin and hing, and pour it over the dal.
+    technique: tadka
+    seconds: 30
+    heat: medium
+    cues:
+      sound: "The cumin crackles and the dal sizzles as the tadka goes in."
+      avoid: "If the cumin turns black, start the tadka again."
+    say:
+      hi:
+        text: "छोटी कड़ाही में घी गरम करें, जीरा और हींग डालें और दाल पर डाल दें।"
+        sound: "जीरा चटके और तड़का डालते ही दाल छनछनाए।"
+        avoid: "अगर जीरा काला हो जाए तो तड़का दोबारा करें।"
+      hi-Latn:
+        text: "Chhoti kadaahi mein ghee garam karein, jeera aur hing daalein aur dal par daal dein."
+        sound: "Jeera chatke aur tadka daalte hi dal chhanchhanaaye."
+        avoid: "Agar jeera kaala ho jaaye to tadka dobaara karein."

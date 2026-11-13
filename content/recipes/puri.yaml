@@ -1,0 +1,82 @@
+slug: puri
+title: Puri
+titles: {hi: पूरी, hi-Latn: Puri}
+description: >-
+  Puffed fried wheat puris. The dough is stiffer than roti dough, so they puff and don't soak up oil. A spoon of
+  suji makes them crisp.
+descriptions:
+  hi: "फूली हुई तली गेहूँ की पूरियाँ। आटा रोटी से सख़्त गूँधा जाता है, ताकि पूरी फूले और तेल न सोखे। एक चम्मच सूजी से कुरकुरी बनती हैं।"
+  hi-Latn: "Phooli hui tali gehun ki puriyaan. Aata roti se sakht goondha jaata hai, taaki puri phoole aur tel na sokhe. Ek chammach suji se kurkuri banti hain."
+cuisine_region: generic_north
+course: component
+diet: vegan
+base_servings: 2
+prep_time_min: 20
+cook_time_min: 15
+difficulty: 2
+spice_level: 1
+equipment: [kadai]
+tags: [basics, festive]
+flavor_profile: {rich: 0.6, heat: 0, acid: 0, crunch: 0.5, starch: 1, sweet: 0}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: whole wheat flour, qty: 150, unit: g, local: 2 katori atta (10 puris), role: starch}
+  - {ingredient: semolina, qty: 10, unit: g, local: 1 chammach suji, role: starch, optional: true}
+  - {ingredient: salt, qty: 1.5, unit: g, local: 1 chutki, role: spice}
+  - {ingredient: refined oil, qty: 250, unit: ml, local: frying oil (most is left over), role: fat}
+steps:
+  - text: Mix atta, suji, salt and one spoon of oil. Add water a little at a time, about a third of a katori, and knead a stiff dough. Rest it covered.
+    technique: knead
+    minutes: 15
+    timer: true
+    cues:
+      touch: "Firmer than roti dough: a finger dent stays put."
+      avoid: "Soft dough drinks oil; add a spoon of atta if it feels soft."
+    say:
+      hi:
+        text: "आटा, सूजी, नमक और एक चम्मच तेल मिलाएँ। लगभग एक तिहाई कटोरी पानी थोड़ा-थोड़ा डालकर सख़्त आटा गूँधें। ढककर रखें।"
+        touch: "रोटी के आटे से सख़्त: उँगली का गड्ढा वैसा ही रहे।"
+        avoid: "नरम आटा तेल पीता है; नरम लगे तो एक चम्मच आटा मिलाएँ।"
+      hi-Latn:
+        text: "Aata, suji, namak aur ek chammach tel milaayein. Lagbhag ek tihaai katori paani thoda-thoda daal kar sakht aata goondhein. Dhak kar rakhein."
+        touch: "Roti ke aate se sakht: ungli ka gaddha waisa hi rahe."
+        avoid: "Naram aata tel peeta hai; naram lage to ek chammach aata milaayein."
+  - text: Heat the oil in a kadai. Roll small balls into thick palm-sized circles, using a drop of oil instead of dry atta.
+    technique: deep_fry
+    minutes: 5
+    heat: medium
+    cues:
+      look: "A pinch of dough rises to the top straight away: the oil is ready."
+      avoid: "Dry atta burns in the oil and darkens it."
+    safety: Keep children away from the kadai and never leave hot oil alone.
+    say:
+      hi:
+        text: "कड़ाही में तेल गरम करें। छोटी लोइयों को हथेली जितना मोटा गोल बेलें, सूखे आटे की जगह एक बूँद तेल लगाकर।"
+        look: "आटे का छोटा टुकड़ा डालते ही ऊपर आ जाए: तेल तैयार है।"
+        avoid: "सूखा आटा तेल में जलकर उसे काला करता है।"
+        safety: "बच्चों को कड़ाही से दूर रखें और गरम तेल को कभी अकेला न छोड़ें।"
+      hi-Latn:
+        text: "Kadaahi mein tel garam karein. Chhoti loiyon ko hatheli jitna mota gol belein, sookhe aate ki jagah ek boond tel lagaakar."
+        look: "Aate ka chhota tukda daalte hi upar aa jaaye: tel taiyaar hai."
+        avoid: "Sookha aata tel mein jal kar use kaala karta hai."
+        safety: "Bachchon ko kadaahi se door rakhein aur garam tel ko kabhi akela na chhodein."
+  - text: Slide in one puri, press it gently with the back of a slotted spoon until it puffs, flip and fry until light golden. Drain on paper.
+    technique: deep_fry
+    seconds: 40
+    heat: medium
+    cues:
+      look: "It balloons up within seconds and turns light golden."
+      sound: "A lively sizzle, not a roar."
+    safety: Slide puris in close to the oil so it doesn't splash.
+    say:
+      hi:
+        text: "एक पूरी धीरे से डालें, झारे के पिछले हिस्से से हल्का दबाएँ जब तक फूल न जाए, पलटें और हल्की सुनहरी होने तक तलें। काग़ज़ पर निकालें।"
+        look: "कुछ ही सेकंड में गुब्बारे जैसी फूले और हल्की सुनहरी हो जाए।"
+        sound: "तेज़ लेकिन हल्की छनछनाहट, ज़ोर का शोर नहीं।"
+        safety: "पूरी तेल के पास से धीरे डालें ताकि छींटे न उड़ें।"
+      hi-Latn:
+        text: "Ek puri dheere se daalein, jhaare ke pichhle hisse se halka dabaayein jab tak phool na jaaye, paltein aur halki sunehri hone tak talein. Kaagaz par nikaalein."
+        look: "Kuch hi second mein gubbaare jaisi phoole aur halki sunehri ho jaaye."
+        sound: "Tez lekin halki chhanchhanaahat, zor ka shor nahi."
+        safety: "Puri tel ke paas se dheere daalein taaki chheente na udein."

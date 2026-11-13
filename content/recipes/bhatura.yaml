@@ -1,0 +1,93 @@
+slug: bhatura
+title: Bhatura
+titles: {hi: भटूरा, hi-Latn: Bhatura}
+description: >-
+  Big puffy bhaturas for chole. A soft maida dough with curd and a pinch of soda that rests for two hours, so plan
+  ahead.
+descriptions:
+  hi: "छोले के साथ बड़े फूले भटूरे। दही और चुटकी भर सोडा वाला नरम मैदे का आटा जो दो घंटे रखा जाता है, इसलिए पहले से तैयारी करें।"
+  hi-Latn: "Chhole ke saath bade phoole bhature. Dahi aur chutki bhar soda waala naram maide ka aata jo do ghante rakha jaata hai, isliye pehle se taiyaari karein."
+cuisine_region: generic_north
+course: component
+diet: veg
+base_servings: 2
+prep_time_min: 135
+cook_time_min: 15
+difficulty: 3
+spice_level: 1
+equipment: [kadai]
+tags: [basics, festive]
+flavor_profile: {rich: 0.6, heat: 0, acid: 0.2, crunch: 0.3, starch: 1, sweet: 0.1}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: refined flour, qty: 160, unit: g, local: 2 katori maida (4 bhaturas), role: starch, substitutes: [{ingredient: whole wheat flour, ratio: 1, note: half atta is fine; they puff a little less}]}
+  - {ingredient: curd, qty: 60, unit: g, local: 4 chammach dahi, role: acid}
+  - {ingredient: semolina, qty: 10, unit: g, local: 1 chammach suji, role: starch, optional: true}
+  - {ingredient: baking soda, qty: 0.6, unit: g, local: 2 chutki, role: binder}
+  - {ingredient: sugar, qty: 4, unit: g, local: 1 chhota chammach, role: sweet}
+  - {ingredient: salt, qty: 2, unit: g, local: 1 chutki, role: spice}
+  - {ingredient: refined oil, qty: 300, unit: ml, local: frying oil (most is left over), role: fat}
+steps:
+  - text: Mix maida, suji, soda, sugar and salt. Add the curd and one spoon of oil, then lukewarm water a little at a time, and knead a soft dough.
+    technique: knead
+    minutes: 8
+    cues:
+      touch: "Soft and smooth, a little softer than roti dough, and not sticky."
+    say:
+      hi:
+        text: "मैदा, सूजी, सोडा, चीनी और नमक मिलाएँ। दही और एक चम्मच तेल डालें, फिर गुनगुना पानी थोड़ा-थोड़ा डालकर नरम आटा गूँधें।"
+        touch: "नरम और चिकना, रोटी के आटे से थोड़ा नरम, चिपचिपा नहीं।"
+      hi-Latn:
+        text: "Maida, suji, soda, cheeni aur namak milaayein. Dahi aur ek chammach tel daalein, phir gunguna paani thoda-thoda daal kar naram aata goondhein."
+        touch: "Naram aur chikna, roti ke aate se thoda naram, chipchipa nahi."
+  - text: Coat with a little oil, cover and leave in a warm place to rest.
+    minutes: 120
+    timer: true
+    cues:
+      look: "The dough looks slightly puffed."
+      smell: "A light sour smell from the curd."
+    say:
+      hi:
+        text: "थोड़ा तेल लगाएँ, ढकें और गरम जगह पर रखें।"
+        look: "आटा थोड़ा फूला हुआ दिखे।"
+        smell: "दही की हल्की खट्टी ख़ुशबू।"
+      hi-Latn:
+        text: "Thoda tel lagaayein, dhakein aur garam jagah par rakhein."
+        look: "Aata thoda phoola hua dikhe."
+        smell: "Dahi ki halki khatti khushboo."
+  - text: Heat the oil well. Roll a ball into an oval a little thicker than a roti, using oil instead of dry flour.
+    technique: deep_fry
+    minutes: 5
+    heat: high
+    cues:
+      look: "A pinch of dough rises to the top at once: the oil is ready."
+    safety: Keep children away from the kadai and never leave hot oil alone.
+    say:
+      hi:
+        text: "तेल अच्छी तरह गरम करें। लोई को रोटी से थोड़ा मोटा लंबा गोल बेलें, सूखे आटे की जगह तेल लगाकर।"
+        look: "आटे का टुकड़ा डालते ही ऊपर आ जाए: तेल तैयार है।"
+        safety: "बच्चों को कड़ाही से दूर रखें और गरम तेल को कभी अकेला न छोड़ें।"
+      hi-Latn:
+        text: "Tel achchhi tarah garam karein. Loi ko roti se thoda mota lamba gol belein, sookhe aate ki jagah tel lagaakar."
+        look: "Aate ka tukda daalte hi upar aa jaaye: tel taiyaar hai."
+        safety: "Bachchon ko kadaahi se door rakhein aur garam tel ko kabhi akela na chhodein."
+  - text: Slide one in, keep pressing gently and spooning oil over it until it puffs fully, flip once and fry until light golden.
+    technique: deep_fry
+    minutes: 1
+    heat: high
+    cues:
+      look: "It puffs into a big balloon and turns pale golden with darker spots."
+      avoid: "If it doesn't puff, the dough needs more rest or the oil isn't hot enough."
+    safety: Slide it in close to the oil so it doesn't splash.
+    say:
+      hi:
+        text: "एक भटूरा डालें, हल्के से दबाते रहें और ऊपर तेल डालते रहें जब तक पूरा न फूल जाए, एक बार पलटें और हल्का सुनहरा तलें।"
+        look: "बड़े गुब्बारे की तरह फूले और हल्का सुनहरा हो, कहीं-कहीं गहरे धब्बे।"
+        avoid: "अगर न फूले तो आटे को और आराम चाहिए या तेल कम गरम है।"
+        safety: "तेल के पास से धीरे डालें ताकि छींटे न उड़ें।"
+      hi-Latn:
+        text: "Ek bhatura daalein, halke se dabaate rahein aur upar tel daalte rahein jab tak poora na phool jaaye, ek baar paltein aur halka sunehra talein."
+        look: "Bade gubbaare ki tarah phoole aur halka sunehra ho, kahin-kahin gehre dhabbe."
+        avoid: "Agar na phoole to aate ko aur aaraam chaahiye ya tel kam garam hai."
+        safety: "Tel ke paas se dheere daalein taaki chheente na udein."

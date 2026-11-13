@@ -91,7 +91,7 @@ const RAW_BATTER_TASTE = /\b(taste|lick|eat) (the )?(raw )?(batter|dough)\b/;
 const SHORTCUTS: [RegExp, string][] = [
   [/\braw egg\b/, "raw egg"],
   [/\b(half[- ]cooked|undercook(ed)?|slightly pink|still pink|pink (in the|inside)|rare\b)/, "undercooked food"],
-  [/\brunny (yolk|egg)/, "a runny egg"],
+  [/\brunny (yolk|egg)|\b(yolk|egg)s? (is |are )?(still )?(runny|soft in the middle)|\bsoft[- ]boiled\b/, "a runny egg"],
   [/\bskip (the )?(soak|soaking|boil|boiling)\b|\bno need to (soak|boil|cook|reheat)\b/, "skipping soaking or boiling"],
   [/\breuse (the )?(frying )?oil\b|\bsame oil again\b/, "reusing frying oil"],
   [/\b(room temperature|out) overnight\b|\bleave (it )?out overnight\b/, "food left out overnight"],

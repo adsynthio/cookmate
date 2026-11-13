@@ -13,6 +13,7 @@ import { catalogEntry } from "@/data/catalog";
 import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
 import { BalanceTip } from "@/components/recipe/BalanceTip";
 import { MakeItDifferent } from "@/components/recipe/MakeItDifferent";
+import { PlanToDinner } from "@/components/recipe/PlanToDinner";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -321,6 +322,8 @@ function RecipeBody({
       </Enter>
 
       <MakeItDifferent doc={doc} has={(k) => inKitchen.has(k)} avoid={avoid} nameOf={nameOf} />
+
+      {householdId ? <PlanToDinner doc={doc} householdId={householdId} servings={servings} /> : null}
 
       <BalanceTip slug={doc.slug} groups={doc.food_groups} course={doc.course} diet={doc.diet} />
 

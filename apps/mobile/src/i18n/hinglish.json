@@ -1192,5 +1192,17 @@
   "cook.heat.notedSlow": "Abhi ek level badha dein. Phir aisa hua to aapke {stove} ki setting hamesha ke liye badha dunga.",
   "recipe.yourTime": "Aapka usual time",
   "you.learned.stepTimes": "Aapke banaye {n} dishes se seekha steps ka time",
-  "you.learned.stepTimesReset": "Mera steps ka time bhool jaayein"
+  "you.learned.stepTimesReset": "Mera steps ka time bhool jaayein",
+  "plan.title": "Dinner {dinner} baje?",
+  "plan.startBy": "{time} tak shuru karein. Plan ke liye dabaayein.",
+  "plan.withRotis": "{n} roti ke saath",
+  "plan.step": "Step {n}: {text}",
+  "plan.meanwhileNext": "Jab tak pak raha hai: step {n} ki taiyaari kar lein.",
+  "plan.meanwhileDough": "Jab tak pak raha hai: roti ka aata goondh lein aur rakh dein.",
+  "plan.meanwhileTidy": "Jab tak pak raha hai: bartan dho lein aur khaane ki taiyaari kar lein.",
+  "plan.dough": "Roti ka aata goondhein aur rakh dein.",
+  "plan.rotisAlongside": "Doosre chulhe par {n} roti banaayein.",
+  "plan.rotisAfter": "Sabzi dhak kar rakhein aur {n} roti banaayein.",
+  "plan.serve": "Khaana taiyaar hai.",
+  "plan.ahead": "Pehle se: {text}"
 }

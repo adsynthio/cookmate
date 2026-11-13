@@ -1222,5 +1222,17 @@
   "cook.heat.notedSlow": "अभी एक लेवल बढ़ा दें। फिर ऐसा हुआ तो आपके {stove} की सेटिंग हमेशा के लिए बढ़ा दूँगा।",
   "recipe.yourTime": "आपका आम समय",
   "you.learned.stepTimes": "आपके बनाए {n} व्यंजनों से सीखा कदमों का समय",
-  "you.learned.stepTimesReset": "मेरा कदमों का समय भूल जाएँ"
+  "you.learned.stepTimesReset": "मेरा कदमों का समय भूल जाएँ",
+  "plan.title": "डिनर {dinner} बजे?",
+  "plan.startBy": "{time} तक शुरू करें। प्लान के लिए दबाएँ।",
+  "plan.withRotis": "{n} रोटी के साथ",
+  "plan.step": "कदम {n}: {text}",
+  "plan.meanwhileNext": "जब तक पक रहा है: कदम {n} की तैयारी कर लें।",
+  "plan.meanwhileDough": "जब तक पक रहा है: रोटी का आटा गूँध लें और रख दें।",
+  "plan.meanwhileTidy": "जब तक पक रहा है: बर्तन धो लें और खाने की तैयारी कर लें।",
+  "plan.dough": "रोटी का आटा गूँधें और रख दें।",
+  "plan.rotisAlongside": "दूसरे चूल्हे पर {n} रोटी बनाएँ।",
+  "plan.rotisAfter": "सब्ज़ी ढककर रखें और {n} रोटी बनाएँ।",
+  "plan.serve": "खाना तैयार है।",
+  "plan.ahead": "पहले से: {text}"
 }

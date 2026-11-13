@@ -1367,5 +1367,7 @@
   "ideas.titleFestive": "Festival this week: your kitchen can make these",
   "ideas.ready": "Everything's here · {n} simple parts",
   "ideas.oneSwap": "One swap: {use} instead of {instead} ({job})",
-  "mind.yourTrick": "Your trick: {use} instead of {instead}."
+  "mind.yourTrick": "Your trick: {use} instead of {instead}.",
+  "mind.simpler.on": "Simpler version: leave out {items}",
+  "mind.simpler.full": "Back to the full recipe"
 }

@@ -46,7 +46,8 @@ import { pantryEntries, STAPLES } from "@/services/picks";
 import { useSession } from "@/state/session";
 import { useStepTimes } from "@/state/stepTimes";
 import { useHabits } from "@/state/habits";
-import { keepIngredient, usualSkips } from "@/domain/habits";
+import { keepIngredient, setSimple, usualSkips } from "@/domain/habits";
+import { simplerLeaveOut } from "@/domain/simpler";
 import { minutesSaved, readyBases, shortcuts } from "@/domain/bases";
 import { tiffinFrom } from "@/domain/guests";
 import { yourTotalMinutes } from "@/domain/stepTimes";
@@ -158,6 +159,8 @@ function RecipeBody({
   const habits = useHabits((s) => s.times);
   const setHabits = useHabits((s) => s.set);
   const skips = usualSkips(habits, doc.slug);
+  const spare = simplerLeaveOut(doc);
+  const simpleOn = !!habits[doc.slug]?.simple?.length;
   const eaters = whoEating ? members.filter((m) => whoEating.includes(m.id)) : members;
   const [servings, setServings] = useState(Math.max(1, eaters.length || doc.base_servings));
   const [listed, setListed] = useState<string[]>([]);
@@ -442,6 +445,18 @@ function RecipeBody({
                 <Icon name="plus" />
               </IconButton>
             </View>
+            {/* M6: never overwhelming. One tap leaves out the extras the dish is fine without. */}
+            {spare.length ? (
+              <View style={{ alignSelf: "flex-start" }}>
+                <Button
+                  kind="quiet"
+                  size="small"
+                  icon={simpleOn ? "undo" : "leaf"}
+                  label={simpleOn ? t("mind.simpler.full") : t("mind.simpler.on", { items: spare.map(nameOf).join(", ") })}
+                  onPress={() => setHabits(setSimple(useHabits.getState().times, doc.slug, simpleOn ? null : spare))}
+                />
+              </View>
+            ) : null}
             {doc.ingredients.map((ing, i) => (
               <IngredientRow
                 key={`${ing.ingredient}-${i}`}

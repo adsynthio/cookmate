@@ -1363,5 +1363,7 @@
   "ideas.titleFestive": "इस हफ़्ते त्योहार: आपकी रसोई में ये बन सकते हैं",
   "ideas.ready": "सब कुछ है · {n} आसान हिस्से",
   "ideas.oneSwap": "एक बदलाव: {instead} की जगह {use} ({job})",
-  "mind.yourTrick": "आपकी तरकीब: {instead} की जगह {use}।"
+  "mind.yourTrick": "आपकी तरकीब: {instead} की जगह {use}।",
+  "mind.simpler.on": "आसान तरीक़ा: {items} छोड़ दें",
+  "mind.simpler.full": "पूरी रेसिपी पर वापस"
 }

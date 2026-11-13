@@ -12,6 +12,8 @@ export type DishHabit = {
   keep?: string[];
   /** The cook asked for full steps on this dish. */
   full?: boolean;
+  /** M6: the cook chose the simpler version: these extras are left out until put back. */
+  simple?: string[];
 };
 export type Habits = Record<string, DishHabit>;
 
@@ -28,9 +30,18 @@ export function recordCook(h: Habits, dish: string, skipped: string[]): Habits {
 /** Ingredients this cook leaves out of this dish: skipped in each of the last two cooks, and not put back. */
 export function usualSkips(h: Habits, dish: string): string[] {
   const d = h[dish];
-  if (!d || d.skipped.length < SKIP_RUN) return [];
+  if (!d) return [];
+  const simple = (d.simple ?? []).filter((k) => !d.keep?.includes(k));
+  if (d.skipped.length < SKIP_RUN) return simple;
   const last = d.skipped.slice(-SKIP_RUN);
-  return last[0]!.filter((k) => last.every((s) => s.includes(k)) && !d.keep?.includes(k));
+  return [...new Set([...simple, ...last[0]!.filter((k) => last.every((s) => s.includes(k)) && !d.keep?.includes(k))])];
+}
+
+/** M6: choose the simpler version (these extras left out), or go back to the full recipe (null). */
+export function setSimple(h: Habits, dish: string, keys: string[] | null): Habits {
+  const d = h[dish] ?? { cooks: 0, skipped: [] };
+  const keep = keys ? (d.keep ?? []).filter((k) => !keys.includes(k)) : d.keep;
+  return { ...h, [dish]: { ...d, simple: keys ?? undefined, keep } };
 }
 
 /** Put one back: it stays in this dish from now on. */

@@ -10,7 +10,7 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 |---|---|
 | Every public table has row-level security; anon can read nothing; only `ai_requests` has no policies | `supabase/tests/database/00_rls_guardrails.test.sql` (CI) |
 | Every foreign key has a covering index | same file |
-| The only `SECURITY DEFINER` functions a signed-in user can call are the reviewed ones (findings 2, 12, 13, 16, 18); nothing in `public` is callable without signing in (21) | same file |
+| The only `SECURITY DEFINER` functions a signed-in user can call are the reviewed ones (findings 2, 12, 13, 16, 18, 28); nothing in `public` is callable without signing in (21) | same file |
 | Household isolation per feature (pantry, recipes, cooking, voice context, memories, shopping, privacy) | `supabase/tests/database/01`–`15` (CI) |
 | Member roles can't be taken over; at most 5 households per account (findings 19, 20) | `supabase/tests/database/25_security_hardening.test.sql` (CI) |
 | No service-role key or Anthropic key in the app bundle | `ci.yml`, "No secrets in the app" step |
@@ -47,6 +47,7 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 25 | GitHub workflows ran with the repository's default token permissions | Low | **Fixed (Nov 2026 review)**: every workflow now asks for `contents: read` only; none writes to the repository |
 | 26 | The sign-in session is kept on the phone in the app's private storage, unencrypted, and Android's automatic backup could copy it off the device | Low | **Fixed (Nov 2026 review)**: `android.allowBackup` is off, and on the phone the session now lives in SecureStore (the encrypted keychain / keystore), split into chunks; a session an older build kept in plain storage is moved over on first launch, so nobody is signed out. The web preview has no SecureStore and keeps localStorage |
 | 27 | `apply-migration.yml` lets anyone with write access apply a migration file to ChefMate | Low | **Mostly fixed (Nov 2026 review)**: the workflow runs only on `main`, so a migration reaches ChefMate only after its PR was reviewed and CI passed. Still worth doing (you): a GitHub environment "production" with you as required reviewer, so each run also waits for your approval |
+| 28 | Sprint 14 adds `report_recipe(household, recipe, reason, note)`, a SECURITY DEFINER function signed-in users can call | Low | **Accepted (needs your sign-off)**: it first checks the caller is a member of the household, only accepts that household's own AI recipes (generated, adapted or family), writes one report and hides that recipe for the household. Reports are readable only by the household and can't be written directly. Covered by `26_ai_recipe_controls.test.sql`; the guard-rail test lists it by name |
 
 ## Privacy rights (DPDP)
 

@@ -14,6 +14,7 @@ import { rememberedAmount, useAmountChanges } from "@/components/recipe/amount";
 import { BalanceTip } from "@/components/recipe/BalanceTip";
 import { MakeItDifferent } from "@/components/recipe/MakeItDifferent";
 import { PlanToDinner } from "@/components/recipe/PlanToDinner";
+import { SafetyNotes } from "@/components/recipe/SafetyNotes";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -282,6 +283,9 @@ function RecipeBody({
         </Text>
         {doc.parent_id ? null : <Text muted>{recipeDescription(doc, locale)}</Text>}
       </Enter>
+
+      {/* G6: allergens on every recipe; on an AI recipe, a plain label and "Something's off". */}
+      <SafetyNotes doc={doc} householdId={householdId} onReported={() => router.back()} />
 
       <Enter index={2}>
         <View style={[styles.stats, { backgroundColor: colors.surfaceMuted }]}>

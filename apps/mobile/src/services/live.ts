@@ -773,6 +773,12 @@ export const liveServices: Services = {
       });
       if (e2) throw e2;
     },
+    async reportRecipe(householdId, recipeId, reason, note) {
+      const { error } = await requireSupabase().rpc("report_recipe", {
+        p_household_id: householdId, p_recipe_id: recipeId, p_reason: reason, p_note: note?.trim() || null,
+      });
+      if (error) throw error;
+    },
     async inventDish(householdId, dish) {
       const { data, error } = await requireSupabase().functions.invoke<{
         recipe_id: string | null;

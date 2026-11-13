@@ -24,6 +24,7 @@ import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from 
 import { catalogNames, DIETS, missingEquipment, safetyProblems, validationContext, variantRows } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
+import { aiSwitchedOff } from "../_shared/killSwitch.ts";
 import { serverError } from "../_shared/errors.ts";
 
 const TASK = "adapt_recipe";
@@ -143,7 +144,8 @@ Deno.serve(async (req) => {
 
   let adaptation = applyRules(base, request);
   let usedModel = false;
-  if (adaptation.unresolved.length && Deno.env.get("ANTHROPIC_API_KEY")) {
+  // G5: with the model switched off, the reviewed rules still adapt; what they can't is left for the cook.
+  if (adaptation.unresolved.length && Deno.env.get("ANTHROPIC_API_KEY") && !(await aiSwitchedOff(sb, "adapt"))) {
     try {
       const { plan, usage, ms, refused } = await askModel(base, adaptation, catalogNames());
       if (plan) {

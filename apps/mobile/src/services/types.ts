@@ -360,7 +360,11 @@ export interface RecipeService {
    * dish the home way from this kitchen instead (at most three things to buy, returned in toBuy).
    */
   inventDish(householdId: string, dish?: string): Promise<InventResult>;
+  /** G5: "Something's off" on this household's own AI recipe. It is hidden for the household and kept for review. */
+  reportRecipe(householdId: string, recipeId: string, reason: RecipeReportReason, note?: string): Promise<void>;
 }
+
+export type RecipeReportReason = "unsafe" | "wrong" | "didnt_work" | "other";
 
 export type CookSession = {
   id: string;

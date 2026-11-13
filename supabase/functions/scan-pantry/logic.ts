@@ -5,7 +5,7 @@ import { type CatalogIndex, type ParsedItem, parsePantryText } from "../_shared/
 export const MAX_IMAGE_CHARS = 4_000_000;
 
 export type ScanBody =
-  | { kind: "fridge" | "bill"; householdId: string; image: string; mediaType: "image/jpeg" | "image/png" }
+  | { kind: "fridge" | "bill" | "photo"; householdId: string; image: string; mediaType: "image/jpeg" | "image/png" }
   | { kind: "barcode"; householdId: string; code: string };
 
 /** Checks the request body; returns the problem as a short message, or the cleaned body. */
@@ -18,7 +18,7 @@ export function readBody(raw: unknown): { ok: true; body: ScanBody } | { ok: fal
     if (code.length < 8 || code.length > 14) return { ok: false, status: 400, error: "a barcode has 8 to 14 digits" };
     return { ok: true, body: { kind: "barcode", householdId, code } };
   }
-  if (b.kind !== "fridge" && b.kind !== "bill") return { ok: false, status: 400, error: "kind must be fridge, bill or barcode" };
+  if (b.kind !== "fridge" && b.kind !== "bill" && b.kind !== "photo") return { ok: false, status: 400, error: "kind must be photo, fridge, bill or barcode" };
   const image = typeof b.image === "string" ? b.image.replace(/^data:image\/\w+;base64,/, "") : "";
   if (!image) return { ok: false, status: 400, error: "image is required" };
   if (image.length > MAX_IMAGE_CHARS) return { ok: false, status: 413, error: "the photo is too large" };

@@ -54,3 +54,10 @@ Deno.test("barcodes: a packet's name maps to the catalog and its size becomes th
   assertEquals([odd?.ingredientKey, odd?.confidence], [null, 0.5]);
   assertEquals(fromOpenFoodFacts({ quantity: "500 g" }, index), null);
 });
+
+Deno.test("one photo mode: any picture, no need to say what it is", () => {
+  assertEquals(readBody({ kind: "photo", household_id: "h", image: "AAAA" }), {
+    ok: true,
+    body: { kind: "photo", householdId: "h", image: "AAAA", mediaType: "image/jpeg" },
+  });
+});

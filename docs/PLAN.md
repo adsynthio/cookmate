@@ -489,7 +489,7 @@ Rules for everything below: learn from what the cook does, not from questions; c
 - [x] **S7 Quiet learning with Undo:** usual skips dropped by default ("you usually skip methi"), shorter steps once a dish is familiar, a mild share set aside automatically for whoever finds it too spicy
 - [x] **S8 Buy 2, unlock 6:** the smallest shopping list that opens up the most new dishes
 - [x] **S9 Masala base prep:** Sunday batch (onion-tomato masala, ginger-garlic paste, boiled chana/rajma) tracked in the kitchen; weekday recipes shortened when a base is ready
-- [ ] **S10 Guests and tiffin:** "4 guests at 8" scales and plans a simple menu with one timeline; tonight's dinner suggests tomorrow's tiffin (extra dal → dal paratha)
+- [x] **S10 Guests and tiffin:** "4 guests at 8" scales and plans a simple menu with one timeline; tonight's dinner suggests tomorrow's tiffin (extra dal → dal paratha)
 
 ---
 

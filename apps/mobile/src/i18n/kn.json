@@ -1415,5 +1415,11 @@
   "community.shareFromFinishBody": "ನೀವು ಮಾಡಿದ್ದನ್ನು ಕುಟುಂಬ ಮತ್ತು ಸ್ನೇಹಿತರು ನೋಡಿ ತಾವೂ ಮಾಡಲಿ.",
   "community.shareRecipe": "ಈ ಖಾದ್ಯ ಹಂಚಿಕೊಳ್ಳಿ",
   "community.moreOf": "{item} ಹೆಚ್ಚು",
-  "community.lessOf": "{item} ಕಡಿಮೆ"
+  "community.lessOf": "{item} ಕಡಿಮೆ",
+  "grocery.pick": "ಗ್ರೋಸರಿ ಆ್ಯಪ್‌ನಲ್ಲಿ ವಸ್ತುಗಳನ್ನು ಹುಡುಕಿ (ಆರ್ಡರ್ ನೀವೇ ಅಲ್ಲಿ ಮಾಡಿ; Cookmate ಎಂದಿಗೂ ಏನನ್ನೂ ಖರೀದಿಸುವುದಿಲ್ಲ):",
+  "grocery.note": "ವಸ್ತುವಿನ ಹುಡುಕು ಚಿಹ್ನೆ ಒತ್ತಿ ಅಲ್ಲಿ ತೆರೆಯಿರಿ.",
+  "grocery.find": "{store} ನಲ್ಲಿ {item} ಹುಡುಕಿ",
+  "grocery.store.blinkit": "Blinkit",
+  "grocery.store.zepto": "Zepto",
+  "grocery.store.bigbasket": "BigBasket"
 }

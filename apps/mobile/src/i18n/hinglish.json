@@ -1381,5 +1381,11 @@
   "cost.perPlate": "Lagbhag ₹{n} per thaali (andaazan, shehar ke aam daam)",
   "cost.saves": "Lagbhag ₹{n} bachte hain.",
   "lang.kn": "ಕನ್ನಡ",
-  "handoff.lang.kn": "ಕನ್ನಡ"
+  "handoff.lang.kn": "ಕನ್ನಡ",
+  "grocery.pick": "Kisi grocery app mein saamaan dhoondhein (order aap wahin karein; Cookmate kabhi kuch nahi khareedta):",
+  "grocery.note": "Kisi cheez ke search icon ko chhookar use wahan kholein.",
+  "grocery.find": "{store} mein {item} dhoondhein",
+  "grocery.store.blinkit": "Blinkit",
+  "grocery.store.zepto": "Zepto",
+  "grocery.store.bigbasket": "BigBasket"
 }

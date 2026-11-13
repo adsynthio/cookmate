@@ -2,7 +2,7 @@
 // everything") moves it into the kitchen with an estimated expiry; the list can be shared as plain text.
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Share, StyleSheet, View } from "react-native";
+import { Linking, Share, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
 import { BuyFewCard } from "@/components/list/BuyFewCard";
@@ -15,6 +15,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { capitalise, displayName } from "@/domain/kitchen";
 import { groupBySection, lineAmount, shareText, type ListLine } from "@/domain/shopping";
+import { STORES, storeSearchUrl, type Store } from "@/domain/grocery";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services } from "@/services";
 import { useSession } from "@/state/session";
@@ -53,6 +54,7 @@ export default function ListScreen() {
   const nameOf = (l: ListLine) => (l.ingredientKey ? displayName(catalogEntry(l.ingredientKey), l.ingredientKey, locale) : capitalise(l.name));
   const groups = groupBySection(list.data ?? [], (k) => catalogEntry(k)?.category, nameOf);
 
+  const [store, setStore] = useState<Store | null>(null);
   const share = async () => {
     const message = shareText(groups, (s) => t(`list.section.${s}` as StringKey), nameOf, locale);
     try {
@@ -134,6 +136,25 @@ export default function ListScreen() {
             </Card>
           </Enter>
 
+          {/* F9: find each item in a grocery app. Cookmate never orders; the cook does, in the app. */}
+          <View style={{ gap: space.xs }}>
+            <Text variant="caption" muted>
+              {t("grocery.pick")}
+            </Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space.xs }}>
+              {STORES.map((st) => (
+                <Button
+                  key={st}
+                  kind={store === st ? "primary" : "secondary"}
+                  size="small"
+                  label={t(`grocery.store.${st}` as StringKey)}
+                  onPress={() => setStore(store === st ? null : st)}
+                />
+              ))}
+            </View>
+            {store ? <Text variant="caption" muted>{t("grocery.note")}</Text> : null}
+          </View>
+
           {groups.map((g, gi) => (
             <View key={g.section} style={{ gap: space.sm }}>
               <View style={styles.sectionRow}>
@@ -172,6 +193,16 @@ export default function ListScreen() {
                             </Text>
                           ) : null}
                         </View>
+                        {store ? (
+                          <IconButton
+                            label={t("grocery.find", { item: name, store: t(`grocery.store.${store}` as StringKey) })}
+                            muted
+                            size={32}
+                            onPress={() => void Linking.openURL(storeSearchUrl(store, l.ingredientKey ?? l.name))}
+                          >
+                            <Icon name="search" size={16} />
+                          </IconButton>
+                        ) : null}
                         <IconButton label={t("list.remove", { name })} muted size={32} onPress={() => remove.mutate(l.id)}>
                           <Icon name="close" size={16} />
                         </IconButton>

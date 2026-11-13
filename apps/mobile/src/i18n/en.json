@@ -1415,5 +1415,11 @@
   "cost.perPlate": "About ₹{n} a plate (rough, typical city prices)",
   "cost.saves": "Saves about ₹{n}.",
   "lang.kn": "ಕನ್ನಡ",
-  "handoff.lang.kn": "ಕನ್ನಡ"
+  "handoff.lang.kn": "ಕನ್ನಡ",
+  "grocery.pick": "Find items in a grocery app (you order there; Cookmate never buys anything):",
+  "grocery.note": "Tap the search icon on an item to open it there.",
+  "grocery.find": "Find {item} in {store}",
+  "grocery.store.blinkit": "Blinkit",
+  "grocery.store.zepto": "Zepto",
+  "grocery.store.bigbasket": "BigBasket"
 }

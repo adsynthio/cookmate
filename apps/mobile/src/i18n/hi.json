@@ -1411,5 +1411,11 @@
   "cost.perPlate": "लगभग ₹{n} प्रति थाली (अंदाज़न, शहर के आम दाम)",
   "cost.saves": "लगभग ₹{n} बचते हैं।",
   "lang.kn": "ಕನ್ನಡ",
-  "handoff.lang.kn": "ಕನ್ನಡ"
+  "handoff.lang.kn": "ಕನ್ನಡ",
+  "grocery.pick": "किसी ग्रोसरी ऐप में सामान ढूँढें (ऑर्डर आप वहीं करें; Cookmate कभी कुछ नहीं ख़रीदता):",
+  "grocery.note": "किसी चीज़ के सर्च आइकन को छूकर उसे वहाँ खोलें।",
+  "grocery.find": "{store} में {item} ढूँढें",
+  "grocery.store.blinkit": "Blinkit",
+  "grocery.store.zepto": "Zepto",
+  "grocery.store.bigbasket": "BigBasket"
 }

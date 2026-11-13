@@ -38,7 +38,8 @@ export type SafetyCode =
   | "health_claim"
   | "contact"
   | "injection"
-  | "script";
+  | "script"
+  | "fasting";
 
 export type SafetyProblem = { code: SafetyCode; message: string; step?: number };
 
@@ -99,6 +100,21 @@ const SHORTCUTS: [RegExp, string][] = [
   [/\blukewarm\b.*\b(leftover|reheat)|\b(leftover|reheat)\b.*\blukewarm\b/, "lukewarm leftovers"],
   [/\b(alcohol|wine|beer|rum|vodka|brandy|whisky)\b/, "alcohol"],
 ];
+
+// --- Fasting (vrat) food, F3 -------------------------------------------------------------------------------------
+// A recipe tagged "fasting" is offered on vrat days, so it must be vrat food in the common North Indian way
+// (Navratri, Ekadashi): no grains, ordinary flours or dals, no onion, garlic or hing, and rock salt, not ordinary salt.
+// The vrat flours and starches are allowed. A family's own fast rules (from the calendar) come in as "avoid".
+const VRAT_OK = new Set(["sabudana", "buckwheat flour", "water chestnut flour", "fox nuts", "rock salt", "sweet potato", "potato", "colocasia", "raw banana"]);
+const VRAT_NEVER = new Set(["onion", "spring onion", "garlic", "ginger garlic paste", "asafoetida", "salt", "black salt"]);
+
+/** Why an ingredient isn't vrat food, or null. */
+export function notVrat(name: string, entry: { category: string } | undefined): string | null {
+  if (VRAT_OK.has(name)) return null;
+  if (VRAT_NEVER.has(name)) return name === "salt" ? "use rock salt (sendha namak) on a fast" : `${name} isn't eaten on a fast`;
+  if (entry && ["grain", "flour", "pulse"].includes(entry.category)) return `${name} isn't vrat food; use kuttu, singhara, samak or sabudana`;
+  return null;
+}
 
 // --- Amount ranges per serving ----------------------------------------------------------------------------------
 
@@ -187,6 +203,14 @@ export function checkRecipe(doc: RecipeDoc, ctx: SafetyContext): SafetyProblem[]
     const madeSafe = doc.steps.some((s) => s.text.toLowerCase().includes(nut) && /\b(ground|grind|paste|powder|crush|crushed)\b/.test(s.text.toLowerCase()));
     if (ctx.children && cat.category === "nut_seed" && !madeSafe && !/\b(powder|paste|ground|crushed)\b/.test(`${name} ${i.local ?? ""}`)) {
       add("children", `whole ${name} can choke a small child; grind, crush or leave them out`);
+    }
+  }
+
+  // F3: a fasting recipe is vrat food.
+  if (doc.tags?.includes("fasting")) {
+    for (const i of doc.ingredients) {
+      const why = notVrat(i.ingredient.trim().toLowerCase(), ctx.catalog.get(i.ingredient.trim().toLowerCase()));
+      if (why) add("fasting", why);
     }
   }
 

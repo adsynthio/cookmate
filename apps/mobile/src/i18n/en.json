@@ -1201,5 +1201,16 @@
   "swaps.taste.earthier": "a deeper, earthier taste",
   "swaps.taste.sweeter": "a little sweeter",
   "cook.basicsTitle": "Learn the basics",
-  "cook.basicsBody": "Dough for roti, paratha, puri, bhatura and kulcha, plus rice and dal. Set how many are eating: 1 katori atta makes about 4 rotis."
+  "cook.basicsBody": "Dough for roti, paratha, puri, bhatura and kulcha, plus rice and dal. Set how many are eating: 1 katori atta makes about 4 rotis.",
+  "cook.heat.hot": "Too hot",
+  "cook.heat.slow": "Too slow",
+  "cook.heat.lower": "Got it: your {stove} runs hot, so I'll say one level lower from now on.",
+  "cook.heat.higher": "Got it: your {stove} is slow, so I'll say one level higher from now on.",
+  "cook.heat.undo": "Undo",
+  "cook.heat.undone": "Okay, back to the usual settings.",
+  "tools.heat.lower": "{stove} runs hot: settings {n} level lower",
+  "tools.heat.higher": "{stove} is slow: settings {n} level higher",
+  "tools.heat.reset": "Reset",
+  "cook.heat.notedHot": "Turn it down a level for now. If it happens again, I'll set your {stove} lower for good.",
+  "cook.heat.notedSlow": "Turn it up a level for now. If it happens again, I'll set your {stove} higher for good."
 }

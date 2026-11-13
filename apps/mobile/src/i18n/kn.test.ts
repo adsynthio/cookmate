@@ -21,3 +21,8 @@ test("the safety words are in Kannada", () => {
     assert.ok(/[ಀ-೿]/.test(k[key] ?? ""), key);
   }
 });
+
+test("every app string has a Kannada translation", () => {
+  const missing = Object.keys(en).filter((k) => !(k in (kn as Record<string, string>)));
+  assert.deepEqual(missing, []);
+});

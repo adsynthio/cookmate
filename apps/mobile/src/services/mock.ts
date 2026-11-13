@@ -226,9 +226,10 @@ const mocks: Services = {
         question,
         locale,
         items: pantry.map((p) => ({ name: displayName(catalogEntry(p.ingredientKey), p.name, locale), key: p.ingredientKey, daysLeft: p.expiryDate ? daysLeftOf(p.expiryDate) : null, state: p.state, out: p.stapleLevel === "out" })),
-        recipes: recipeDocs.map((d) => ({ slug: d.slug, title: recipeTitle(d, locale), minutes: (d.prep_time_min ?? 0) + (d.cook_time_min ?? 0), ingredients: d.ingredients.map((i) => ({ key: i.ingredient, optional: i.optional })) })),
+        recipes: recipeDocs.map((d) => ({ slug: d.slug, title: recipeTitle(d, locale), minutes: (d.prep_time_min ?? 0) + (d.cook_time_min ?? 0), ingredients: d.ingredients.map((i) => ({ key: i.ingredient, optional: i.optional })), spice: d.spice_level })),
         staples: new Set(catalog.filter((c) => c.staple).map((c) => c.name)),
         nameOf: (k) => displayName(catalogEntry(k), k, locale),
+        named: findIngredients(question),
       });
       return { ...reply, source: "local" as const };
     },

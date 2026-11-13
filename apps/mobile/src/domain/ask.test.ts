@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { intentOf, localAnswer, type AskItem, type AskRecipe } from "./ask.ts";
+import { intentOf, localAnswer, wantsMild, type AskItem, type AskRecipe } from "./ask.ts";
 
 test("everyday questions are recognised in English, Hinglish and Hindi", () => {
   assert.deepEqual(intentOf("What can I make in 20 minutes?"), { kind: "make", minutes: 20 });
@@ -50,4 +50,29 @@ test("nothing that quick: the quickest dish instead, and the question isn't offe
   assert.equal(r.answer, "Nothing is quite that quick. The quickest you can make is Jeera Aloo, in about 25 minutes.");
   assert.deepEqual(r.recipes, [{ slug: "jeera-aloo", title: "Jeera Aloo" }]);
   assert.ok(!r.followUps.includes("What can I make in 20 minutes?"));
+});
+
+test("named ingredients and 'not spicy' shape the answer", () => {
+  for (const q of ["My son doesnt like spicy food", "I dont eat spicy too much", "kam teekha chahiye", "तीखा नहीं", "something mild"]) assert.ok(wantsMild(q), q);
+  assert.ok(!wantsMild("make it spicy"));
+  const kitchen: AskItem[] = [
+    { name: "Paneer", key: "paneer", daysLeft: 3, state: "raw", out: false },
+    { name: "Spinach", key: "spinach", daysLeft: 2, state: "raw", out: false },
+    { name: "Chicken", key: "chicken", daysLeft: 2, state: "raw", out: false },
+    { name: "Onion", key: "onion", daysLeft: 9, state: "raw", out: false },
+  ];
+  const dishes: AskRecipe[] = [
+    { slug: "chicken-curry", title: "Chicken Curry", minutes: 40, spice: 3, ingredients: [{ key: "chicken" }, { key: "onion" }] },
+    { slug: "palak-paneer", title: "Palak Paneer", minutes: 30, spice: 2, ingredients: [{ key: "paneer" }, { key: "spinach" }, { key: "onion" }] },
+    { slug: "paneer-tikka", title: "Paneer Tikka", minutes: 25, spice: 4, ingredients: [{ key: "paneer" }, { key: "onion" }] },
+  ];
+  const r = localAnswer({
+    question: "My son doesnt like spicy food what can i make with paneer and spinach",
+    items: kitchen, recipes: dishes, staples: new Set(), locale: "en", nameOf: (k) => k, named: ["paneer", "spinach"],
+  });
+  assert.deepEqual(r.recipes.map((x) => x.slug), ["palak-paneer"]);
+  assert.equal(r.answer, "With paneer and spinach, Palak Paneer would work well. It's mild.");
+  // Naming an ingredient alone is enough to ask what to make with it.
+  const corn = localAnswer({ question: "paneer, not spicy", items: kitchen, recipes: dishes, staples: new Set(), locale: "hinglish", nameOf: (k) => k, named: ["paneer"] });
+  assert.deepEqual(corn.recipes.map((x) => x.slug), ["palak-paneer"]);
 });

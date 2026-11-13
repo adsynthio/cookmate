@@ -70,7 +70,7 @@ export type AddedVia = "manual" | "voice" | "text" | "camera" | "barcode" | "rec
 
 /** KIT-160/161/162: what to read: a photo of a fridge or shelf, a photo of a shop bill, or one barcode. */
 export type ScanInput =
-  | { householdId: string; kind: "fridge" | "bill"; image: string; mediaType?: "image/jpeg" | "image/png" }
+  | { householdId: string; kind: "photo" | "fridge" | "bill"; image: string; mediaType?: "image/jpeg" | "image/png" }
   | { householdId: string; kind: "barcode"; code: string };
 
 export type Pick = {

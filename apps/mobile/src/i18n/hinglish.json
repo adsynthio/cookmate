@@ -1072,5 +1072,18 @@
   "cook.tip": "Chef ki salah",
   "onb.welcome.error.closed": "Abhi naye sign-up ruke hue hain. Thodi der baad phir koshish karein.",
   "onb.welcome.error.busy": "Abhi bahut baar koshish hui. Ek minute rukkar phir koshish karein.",
-  "onb.welcome.error.other": "Shuru karte samay kuch gadbad hui. Phir koshish karein."
+  "onb.welcome.error.other": "Shuru karte samay kuch gadbad hui. Phir koshish karein.",
+  "scan.mode.photo": "Photo",
+  "scan.title.photo": "Apna saamaan dikhaiye",
+  "scan.body.photo": "Fridge, almaari ya bill: jitni chahein photo lein. Ya online order ke screenshot chunein.",
+  "scan.gallery": "Photos se",
+  "scan.trayTitle": "Ab tak {n} cheezein",
+  "scan.trayTitleOne": "Ab tak 1 cheez",
+  "scan.trayFrom": "{n} photo se. Ek aur lein, ya ho jaaye to jaanch lein.",
+  "scan.trayFromOne": "1 photo se. Ek aur lein, ya ho jaaye to jaanch lein.",
+  "scan.readingN": "{n} photo padh rahe hain…",
+  "scan.readingOne": "1 photo padh rahe hain…",
+  "scan.waitReading": "Bas ho gaya…",
+  "scan.shotFailed": "Ek photo padhi nahi gayi. Thoda paas se phir lein.",
+  "scan.shotEmpty": "Us photo mein khaane ki cheez nahi mili. Paas se, achhi roshni mein lein."
 }

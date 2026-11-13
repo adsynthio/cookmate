@@ -1106,5 +1106,18 @@
   "cook.tip": "Chef's tip",
   "onb.welcome.error.closed": "New sign-ups are paused right now. Please try again a little later.",
   "onb.welcome.error.busy": "Too many tries just now. Wait a minute and try again.",
-  "onb.welcome.error.other": "Something went wrong while starting. Please try again."
+  "onb.welcome.error.other": "Something went wrong while starting. Please try again.",
+  "scan.mode.photo": "Photo",
+  "scan.title.photo": "Show me your food",
+  "scan.body.photo": "Fridge, shelves or a bill: take as many photos as you like. Or pick screenshots of an online order.",
+  "scan.gallery": "From photos",
+  "scan.trayTitle": "{n} items so far",
+  "scan.trayTitleOne": "1 item so far",
+  "scan.trayFrom": "From {n} photos. Take another, or check them when you're done.",
+  "scan.trayFromOne": "From 1 photo. Take another, or check them when you're done.",
+  "scan.readingN": "Reading {n} photos…",
+  "scan.readingOne": "Reading 1 photo…",
+  "scan.waitReading": "Finishing up…",
+  "scan.shotFailed": "One photo couldn't be read. Try it again a little closer.",
+  "scan.shotEmpty": "No food found in that photo. Try closer, in better light."
 }

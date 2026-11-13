@@ -36,6 +36,7 @@ import { services, type Member, type Memory, type NewMemory, type NotificationSe
 import { preparePush } from "@/state/push";
 import { findIngredients } from "@/services/picks";
 import { useSession } from "@/state/session";
+import { ToolsCard } from "@/components/tools/ToolsCard";
 
 /** A plain like or dislike of an ingredient, shown under Likes and dislikes rather than in the general list. */
 export function isPreference(m: Memory): boolean {
@@ -98,6 +99,7 @@ export default function YouScreen() {
       {members.data ? <TasteCard members={members.data} prefs={prefs} /> : null}
       {householdId ? <WeekCard householdId={householdId} /> : null}
       {householdId ? <PlateCard householdId={householdId} /> : null}
+      {householdId ? <ToolsCard householdId={householdId} /> : null}
       <LanguageCard value={locale} onChange={changeLanguage} />
       <DrinksToggle />
 

@@ -16,6 +16,7 @@ export type StapleLevel = NonNullable<Row<"inventory_items">["staple_level"]>;
 export type MemorySource = Row<"memories">["source"];
 export type { WeekRecap } from "@/domain/recap";
 import type { WeekRecap } from "@/domain/recap";
+import type { Tool } from "@/domain/tools";
 export type { LearnedCandidate } from "@/domain/learning";
 import type { LearnedCandidate } from "@/domain/learning";
 export type ItemState = Row<"inventory_items">["state"];
@@ -284,6 +285,10 @@ export interface PreferenceService {
 
 export interface KitchenService {
   getKitchen(householdId: string): Promise<PantryItem[]>;
+  /** Cooking tools the household has; null when never told (then nothing is left out of picks). */
+  getTools(householdId: string): Promise<Tool[] | null>;
+  /** Replaces the list of tools. */
+  setTools(householdId: string, tools: Tool[]): Promise<void>;
   /** HOME-04 */
   getUseSoon(householdId: string, days?: number): Promise<PantryItem[]>;
   /** KIT-031: free text -> items to read back. Never writes. */

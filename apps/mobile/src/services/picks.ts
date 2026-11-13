@@ -104,6 +104,8 @@ export function buildPicks(args: {
   reactions?: RankContext["reactions"];
   /** Calendar preferences for today (KIT-144). */
   prefer?: string[];
+  /** The household's cooking tools, or null when not told. */
+  equipment?: string[] | null;
   weights?: Weights;
   batchId: string;
   today?: Date;
@@ -117,7 +119,7 @@ export function buildPicks(args: {
     pantry: pantryEntries(args.items, args.today),
     alreadyCooked: cookedNames(args.items, args.today),
     staples: STAPLES,
-    equipment: null,
+    equipment: args.equipment ?? null,
     avoid: args.avoid ?? [],
     like: args.like ?? [],
     reactions: args.reactions ?? [],

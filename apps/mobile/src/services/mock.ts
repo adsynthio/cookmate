@@ -35,6 +35,7 @@ import { daysLeft as daysLeftOf } from "@/domain/pantry";
 
 import type { Circle, CommunityPost, CookSession, HouseholdRef, ListLine, Member, Memory, NotificationSettings, PantryItem, PickBatch, Services } from "./types";
 import { CommunityError } from "./types";
+import { equipmentList, type Tool } from "@/domain/tools";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
@@ -153,6 +154,15 @@ let checkAsked: { day: string; itemId: string | null } | null = null;
 let notificationSettings: NotificationSettings = { dailyPick: false, pickTime: "16:00", quietStart: "22:00", quietEnd: "07:00" };
 const inQuiet = (t: string, a: string, b: string) => (a === b ? false : a < b ? t >= a && t < b : t >= a || t < b);
 let batchNo = 1;
+/** Kitchen tools chosen in this preview (null until chosen). */
+const TOOLS_KEY = "cookmate.mock.tools";
+export function loadTools(): Tool[] | null {
+  try {
+    const raw = globalThis.localStorage?.getItem(TOOLS_KEY);
+    if (raw) return JSON.parse(raw) as Tool[];
+  } catch {}
+  return null;
+}
 /** KIT-171: meals finished on this device, for the weekly plate; starts with a sample week so the preview has one. */
 const MEALS_KEY = "cookmate.mock.meals";
 function loadMeals(): CookedMeal[] {
@@ -371,6 +381,16 @@ const mocks: Services = {
     },
   },
   kitchen: {
+    async getTools() {
+      await delay(100);
+      return loadTools();
+    },
+    async setTools(_householdId, tools) {
+      await delay(150);
+      try {
+        globalThis.localStorage?.setItem(TOOLS_KEY, JSON.stringify(tools));
+      } catch {}
+    },
     async getKitchen() {
       await delay(250);
       return [...pantry];
@@ -575,6 +595,7 @@ const mocks: Services = {
         (m) => m.ingredientKey && m.recipeId === null && (m.about ?? "preference") === "preference" && (!eating || !m.memberId || eating.includes(m.memberId)),
       );
       const batch = buildPicks({
+        equipment: equipmentList(loadTools()),
         avoid: [
           ...prefs.filter((m) => m.polarity < 0).map((m) => m.ingredientKey!),
           ...calendarPrefs(eventsOn([...globalEvents, ...keptEvents], mockToday(), null)).avoid,

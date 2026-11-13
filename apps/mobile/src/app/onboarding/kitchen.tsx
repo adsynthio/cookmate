@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { StepScreen } from "@/components/onboarding/StepScreen";
+import { ToolsPicker } from "@/components/tools/ToolsPicker";
 import { catalogEntry } from "@/data/catalog";
 import { recipeDocs } from "@/data/recipes";
 import { Icon, type IconName } from "@/design-system/icons";
@@ -37,7 +38,7 @@ export default function KitchenSetupScreen() {
   useLocale();
   const router = useRouter();
   const { colors } = useTheme();
-  const { kitchen, diet, addKitchenItem, removeKitchenItem } = useOnboarding();
+  const { kitchen, diet, addKitchenItem, removeKitchenItem, tools, setTools } = useOnboarding();
   const [place, setPlace] = useState<SetupPlace>("fridge");
   const [own, setOwn] = useState("");
 
@@ -197,6 +198,14 @@ export default function KitchenSetupScreen() {
           {tip}
         </Text>
       </View>
+
+      <Card>
+        <Text variant="subheading">{t("tools.title")}</Text>
+        <Text variant="caption" muted>
+          {t("tools.body")}
+        </Text>
+        <ToolsPicker tools={tools} onChange={setTools} />
+      </Card>
     </StepScreen>
   );
 }

@@ -790,6 +790,8 @@ export const liveServices: Services = {
         uses?: string[];
         to_buy?: string[];
         named?: boolean;
+        swaps?: { insteadOf: string; use: string; job: string; how: string }[];
+        closeness?: number | null;
       }>("invent-dish", { body: { household_id: householdId, ...(dish ? { dish } : {}) } });
       if (error) {
         // 503: no model configured; the option is hidden (11_ai_tasks_and_models.csv).
@@ -802,6 +804,7 @@ export const liveServices: Services = {
       return {
         recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? null, description: data.description ?? "",
         uses: data.uses ?? [], toBuy: data.to_buy ?? [], named: !!data.named,
+        swaps: data.swaps ?? [], closeness: data.closeness ?? null,
       };
     },
     async searchRecipes(query) {

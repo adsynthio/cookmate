@@ -23,7 +23,10 @@ import type { RecipeDoc } from "../_shared/recipes.ts";
 import { swapsPrompt } from "../_shared/swaps.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
 import { localDate, type MemoryRow, prefsFromMemories } from "../suggest-meals/logic.ts";
-import { CATALOG, cleanDishName, docFromModel, inventItems, type ItemRow, MAX_TO_BUY, type ModelDish, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
+import {
+  CATALOG, cleanDishName, closeness, docFromModel, inventItems, type ItemRow, jobSwapsPrompt, kitchenSwaps, MAX_TO_BUY, type ModelDish,
+  namedPlan, tableDiet, toBuyFor,
+} from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
 
@@ -31,7 +34,7 @@ const TASK = "invent_combination";
 const MODEL = "claude-sonnet-5-5";
 const PROMPT_VERSION = "invent_combination@1";
 const NAMED_TASK = "write_named_dish";
-const NAMED_VERSION = "write_named_dish@1";
+const NAMED_VERSION = "write_named_dish@2";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -52,6 +55,13 @@ const Dish = z.object({
   spice_level: z.number(),
   ingredients: z.array(z.object({ ingredient: z.string(), qty: z.number(), unit: z.string(), local: z.string().nullable() })),
   steps: z.array(z.object({ text: z.string(), minutes: z.number().nullable(), cue: z.string().nullable(), safety: z.string().nullable() })),
+});
+
+// M3, "make it from my kitchen": the dish plus what stands in for what, and how close it comes.
+const NamedDish = Dish.extend({
+  swaps: z.array(z.object({ instead_of: z.string(), use: z.string(), job: z.string(), how: z.string() })),
+  closeness: z.number(),
+  closeness_note: z.string(),
 });
 
 // S6: costly extras a model reaches for, and the cheap kitchen swaps it should make instead.
@@ -98,10 +108,20 @@ async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, avoid: 
   return { dish: r.stop_reason === "refusal" ? null : (r.parsed_output as ModelDish | null), usage: r.usage, ms: Date.now() - started, refused: r.stop_reason === "refusal" };
 }
 
-const NAMED_SYSTEM = (staples: string[]) => `You write one home recipe for an Indian family: the dish they asked for,
-the way it is usually made at home, cooked from what is in their kitchen ("have"). Use the usual ingredients of the
-dish; prefer what they have; besides "have" you may use these staples: ${staples.join(", ")}, and at most ${MAX_TO_BUY}
-other things they would buy. Before adding a costly thing to buy, use a cheap swap from "have": ${CHEAP_SWAPS}. Ingredient names must be plain lowercase English names from Indian kitchens (e.g.
+const NAMED_SYSTEM = (staples: string[], jobSwaps: string) => `You are a home cook who can make almost any dish from what is already
+in the kitchen, the way a good Indian home cook does: on Diwali, with no boondi in the shops, they make it from
+besan, sugar and ghee, with Eno instead of baking soda. Write one home recipe for the dish they asked for (Indian or
+not, from a shop or a restaurant), cooked from what is in their kitchen ("have") and these staples:
+${staples.join(", ")}.
+Think by JOB, not by name: for each usual ingredient they don't have, ask what it does in the dish (makes it rise,
+holds it together, sourness, richness, sweetness, thickens, crunch, sets, colour, smell, fat, heat) and use
+something from "have" or the staples that does the same job. Known kitchen swaps: ${jobSwaps}. List every swap in
+"swaps" (instead_of, use, job, how), using plain lowercase ingredient names and one of those job words.
+Leave out what is only decoration. Buy NOTHING unless the dish truly can't be made without it; then buy the fewest
+things, at most ${MAX_TO_BUY}. Before adding a costly thing to buy, use a cheap swap from "have": ${CHEAP_SWAPS}.
+Keep it simple: the fewest parts and steps that make it taste right; a fancy dish is a few simple parts.
+Say honestly how close it comes to the usual dish: "closeness" 50 to 100, and "closeness_note" in one short
+plain sentence ("A little less crisp than the shop's, just as sweet"). Ingredient names must be plain lowercase English names from Indian kitchens (e.g.
 "potato", "fenugreek leaves", "toor dal"). If the dish can't suit the given diet, write the closest version that does. Never use, suggest or mention anything in
 "avoid" (allergies and dislikes), not even as a garnish or an option; make the dish without it.
 Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
@@ -119,8 +139,8 @@ async function askNamed(client: Anthropic, dish: string, have: string[], diet: D
       model: MODEL,
       max_tokens: 3000,
       thinking: { type: "disabled" },
-      output_config: { effort: "low", format: zodOutputFormat(Dish) },
-      system: [{ type: "text", cache_control: { type: "ephemeral" }, text: NAMED_SYSTEM(staples) }],
+      output_config: { effort: "low", format: zodOutputFormat(NamedDish) },
+      system: [{ type: "text", cache_control: { type: "ephemeral" }, text: NAMED_SYSTEM(staples, jobSwapsPrompt((k) => have.includes(k) || staples.includes(k))) }],
       messages: [{
         role: "user",
         content: JSON.stringify({ dish, diet, avoid, have, ...(problems.length ? { fix_these_problems_from_your_last_answer: problems } : {}) }),
@@ -192,6 +212,7 @@ Deno.serve(async (req) => {
   const version = named ? NAMED_VERSION : PROMPT_VERSION;
   let doc: RecipeDoc | null = null;
   let toBuy: string[] = [];
+  let modelDish: ModelDish | null = null;
   let problems: string[] = [];
   for (let attempt = 0; attempt < 2 && !doc; attempt++) {
     try {
@@ -199,6 +220,10 @@ Deno.serve(async (req) => {
         ? await askNamed(client, named, [...have].filter((h) => !avoids(avoid, h)).sort(), diet, avoid, staples.filter((st) => !avoids(avoid, st)), problems)
         : await askModel(client, plan!, diet, avoid, staples.filter((st) => !avoids(avoid, st)), problems);
       const candidate = r.dish ? docFromModel(r.dish, diet) : null;
+      modelDish = r.dish;
+      // M3: the honest "how close" note becomes part of the description, so the safety gate reads it too.
+      const note = named ? (r.dish?.closeness_note ?? "").trim().slice(0, 160) : "";
+      if (candidate && note) candidate.description = `${candidate.description} ${note}`.trim().slice(0, 460);
       if (!candidate) problems = ["no dish"];
       else if (named) {
         // A named dish may need a few things from the shop; the validator treats those as bought.
@@ -250,6 +275,10 @@ Deno.serve(async (req) => {
     description: doc.description,
     uses: plan ? plan.use.map((u) => u.key) : doc.ingredients.map((i) => i.ingredient).filter((k) => have.has(k)),
     to_buy: toBuy,
+    // M3: what stood in for what (only swaps that make sense for this kitchen), and how close it comes.
+    swaps: named && modelDish ? kitchenSwaps(modelDish, doc, (k) => have.has(k) || staples.includes(k), avoid) : [],
+    closeness: named && modelDish ? closeness(modelDish) : null,
+    closeness_note: named && modelDish ? (modelDish.closeness_note ?? "").trim().slice(0, 160) || null : null,
     named: !!named,
     new_creation: true,
   });

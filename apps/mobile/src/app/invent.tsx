@@ -90,6 +90,29 @@ export default function InventScreen() {
                 {t("invent.uses", { items: result.uses.map((k) => displayName(catalogEntry(k), k, l)).join(", ") })}
               </Text>
             ) : null}
+            {/* M3: what stands in for what, the job it keeps, and how close it comes. */}
+            {result.swaps?.length ? (
+              <View style={{ gap: space.xs }}>
+                <Text variant="label" weight={600}>
+                  {t("mind.swapsTitle")}
+                </Text>
+                {result.swaps.map((x) => (
+                  <Text key={x.insteadOf}>
+                    {t("mind.swapLine", {
+                      use: displayName(catalogEntry(x.use), x.use, l),
+                      instead: displayName(catalogEntry(x.insteadOf), x.insteadOf, l),
+                      job: t(`job.${x.job}` as StringKey),
+                    })}
+                    {x.how ? <Text muted>{` ${x.how}`}</Text> : null}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+            {result.named && result.closeness ? (
+              <Text variant="label" muted>
+                {t("mind.closeness", { n: result.closeness })}
+              </Text>
+            ) : null}
             {result.toBuy?.length ? (
               <View style={{ gap: space.sm }}>
                 <Text variant="label" weight={600} color={colors.accentText}>

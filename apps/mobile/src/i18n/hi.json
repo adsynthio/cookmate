@@ -1056,9 +1056,9 @@
   "ask.added": "लिस्ट में जुड़ गया",
   "home.newDish.overline": "आज कुछ नया",
   "home.newDish.action": "{dish} की रेसिपी लिखवाएँ",
-  "home.want.make": "{dish} की रेसिपी लिखवाएँ",
+  "home.want.make": "{dish} मेरी रसोई से बनाओ",
   "invent.named.title": "{dish}",
-  "invent.named.loading": "आपकी रसोई के लिए {dish} की रेसिपी लिखी जा रही है…",
+  "invent.named.loading": "आपकी रसोई में जो है, उससे {dish} सोच रहा हूँ…",
   "invent.named.toBuy": "खरीदना है: {items}",
   "invent.named.note": "यह रेसिपी Cookmate ने आपकी रसोई के लिए लिखी है; यह जाँची-परखी नहीं है। यह हमारी खाद्य सुरक्षा जाँच में पास है, चखते हुए बनाइए।",
   "invent.named.fail.title": "अभी {dish} की रेसिपी नहीं लिखी जा सकी",
@@ -1355,5 +1355,8 @@
   "technique.shape": "आकार देना",
   "technique.shape.how": "हथेली पर घी लगाकर गरम रहते ही बनाएँ; ठंडा होने पर नहीं बँधेगा।",
   "technique.set_chill": "जमाना",
-  "technique.set_chill.how": "घी लगी थाली में डालकर फ़्रिज में जमने तक रखें।"
+  "technique.set_chill.how": "घी लगी थाली में डालकर फ़्रिज में जमने तक रखें।",
+  "mind.swapsTitle": "आपकी रसोई से, इसकी जगह",
+  "mind.swapLine": "{instead} की जगह {use}: काम वही, {job}।",
+  "mind.closeness": "आम वाली जैसी लगभग {n}%।"
 }

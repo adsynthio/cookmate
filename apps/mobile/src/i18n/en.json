@@ -1164,5 +1164,11 @@
   "tools.seen": "I also saw: {names}. Add to your kitchen tools?",
   "tools.seenAdd": "Add",
   "tools.seenNo": "No thanks",
-  "tools.seenAdded": "Added to your kitchen tools."
+  "tools.seenAdded": "Added to your kitchen tools.",
+  "tools.burnersQ": "How many gas burners?",
+  "tools.togetherQ": "Can these run at the same time?",
+  "tools.togetherHint": "Choose one at a time if they share a socket or the switch trips. I'll plan the steps around it.",
+  "tools.pair": "{a} + {b}",
+  "tools.together": "Together is fine",
+  "tools.oneAtATime": "One at a time"
 }

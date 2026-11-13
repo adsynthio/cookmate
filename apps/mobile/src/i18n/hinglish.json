@@ -1264,5 +1264,19 @@
   "allergen.sesame": "Til",
   "allergen.egg": "Anda",
   "allergen.fish": "Machhli",
-  "allergen.shellfish": "Jhinga aur seepi"
+  "allergen.shellfish": "Jhinga aur seepi",
+  "swaps.sameJob": "Kaam wahi: {job}.",
+  "job.rise": "phulaata hai",
+  "job.bind": "baandh ke rakhta hai",
+  "job.sour": "khatas deta hai",
+  "job.rich": "gaadhapan aur swaad",
+  "job.sweet": "mithaas",
+  "job.thick": "gaadha karta hai",
+  "job.crunch": "kurkurapan",
+  "job.set": "jamaata hai",
+  "job.colour": "rang",
+  "job.aroma": "khushboo",
+  "job.fat": "pakaane ka tel-ghee",
+  "job.heat": "teekhapan",
+  "job.base": "dish khud"
 }

@@ -1294,5 +1294,19 @@
   "allergen.sesame": "तिल",
   "allergen.egg": "अंडा",
   "allergen.fish": "मछली",
-  "allergen.shellfish": "झींगा व सीपी"
+  "allergen.shellfish": "झींगा व सीपी",
+  "swaps.sameJob": "काम वही: {job}।",
+  "job.rise": "फुलाता है",
+  "job.bind": "बाँधकर रखता है",
+  "job.sour": "खटास देता है",
+  "job.rich": "गाढ़ापन और स्वाद",
+  "job.sweet": "मिठास",
+  "job.thick": "गाढ़ा करता है",
+  "job.crunch": "कुरकुरापन",
+  "job.set": "जमाता है",
+  "job.colour": "रंग",
+  "job.aroma": "ख़ुशबू",
+  "job.fat": "पकाने का तेल-घी",
+  "job.heat": "तीखापन",
+  "job.base": "डिश ख़ुद"
 }

@@ -25,7 +25,7 @@ import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { CUISINES, LANGUAGE_CODES } from "@/domain/onboarding";
 import { CONFIDENT, pantryMatch, type IngredientMatch } from "@/domain/ranking";
-import { swapBetween } from "@/domain/swaps";
+import { jobOf, swapBetween } from "@/domain/swaps";
 import {
   cueSenses,
   familyBranches,
@@ -318,6 +318,10 @@ function RecipeBody({
             <Text key={m.key} color={colors.onPrimary}>
               {t("recipe.subLine", { item: nameOf(m.substitute!), instead: nameOf(m.key) })}
               {swapBetween(m.key, m.substitute!) ? ` ${t(`swaps.taste.${swapBetween(m.key, m.substitute!)!.taste}`)}.` : ""}
+              {/* M1: the job the swap keeps ("Same job: makes it rise"). */}
+              {swapBetween(m.key, m.substitute!) && jobOf(swapBetween(m.key, m.substitute!)!)
+                ? ` ${t("swaps.sameJob", { job: t(`job.${jobOf(swapBetween(m.key, m.substitute!)!)}` as StringKey) })}`
+                : ""}
             </Text>
           ))}
           <View style={[styles.track, { backgroundColor: "rgba(255,255,255,0.25)" }]} accessible={false}>

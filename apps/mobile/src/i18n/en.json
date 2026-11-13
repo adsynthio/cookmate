@@ -1298,5 +1298,19 @@
   "allergen.sesame": "Sesame",
   "allergen.egg": "Egg",
   "allergen.fish": "Fish",
-  "allergen.shellfish": "Shellfish"
+  "allergen.shellfish": "Shellfish",
+  "swaps.sameJob": "Same job: {job}.",
+  "job.rise": "makes it rise",
+  "job.bind": "holds it together",
+  "job.sour": "the sourness",
+  "job.rich": "the richness",
+  "job.sweet": "the sweetness",
+  "job.thick": "thickens it",
+  "job.crunch": "the crunch",
+  "job.set": "sets it",
+  "job.colour": "the colour",
+  "job.aroma": "the smell",
+  "job.fat": "the fat to cook in",
+  "job.heat": "the heat",
+  "job.base": "the dish itself"
 }

@@ -145,6 +145,8 @@ ingredients:
   - {name: khoya, hi: खोया, latn: khoya, aliases: [mawa, khoa], category: dairy, location: fridge, life: {fridge: 3, freezer: 60}, measures: {katori: 130}, groups: [dairy], allergens: [milk]}
   - {name: buttermilk, hi: छाछ, latn: chaas, aliases: [chhachh, mattha, taak, majjige], category: dairy, unit: ml, location: fridge, life: {fridge: 2}, measures: {katori: 150, cup: 240}, groups: [dairy], allergens: [milk]}
   - {name: cheese, hi: चीज़, latn: cheese, aliases: [processed cheese, cheese slice], category: dairy, location: fridge, life: {fridge: 30}, measures: {piece: 20}, groups: [dairy], allergens: [milk]}
+  - {name: milk powder, hi: मिल्क पाउडर, latn: milk powder, aliases: [dairy whitener, doodh powder, dry milk], category: dairy, location: pantry, life: {pantry: 180}, measures: {chammach: 8, chhota_chammach: 3, katori: 70}, groups: [dairy], allergens: [milk]}
+  - {name: condensed milk, hi: कंडेंस्ड मिल्क, latn: condensed milk, aliases: [milkmaid, mithai mate], category: dairy, location: pantry, life: {pantry: 365, fridge: 14}, measures: {chammach: 20, katori: 200}, groups: [dairy], allergens: [milk]}
 
   # --- Egg, meat, seafood ---------------------------------------------------------------------
   - {name: egg, hi: अंडा, latn: anda, aliases: [ande, anday, eggs, motte], category: egg, unit: piece, location: fridge, life: {counter: 10, fridge: 21}, measures: {piece: 50}, groups: [protein], allergens: [egg], flags: [safety]}
@@ -213,6 +215,9 @@ ingredients:
   - {name: bhujia, hi: भुजिया, latn: bhujia, aliases: [sev, namkeen, bikaneri bhujia], category: packaged, location: ready_made, life: {ready_made: 90}, measures: {katori: 50, mutthi: 20}, groups: []}
   - {name: baking soda, hi: खाने का सोडा, latn: khane ka soda, aliases: [meetha soda, soda, cooking soda], category: other, location: pantry, life: {pantry: 365}, measures: {chutki: 0.3, chhota_chammach: 4.6}, groups: []}
   - {name: baking powder, hi: बेकिंग पाउडर, latn: baking powder, aliases: [], category: other, location: pantry, life: {pantry: 365}, measures: {chhota_chammach: 4}, groups: []}
+  - {name: eno, hi: ईनो, latn: eno, aliases: [fruit salt, eno fruit salt, fruit salt eno], category: other, location: pantry, life: {pantry: 365}, measures: {chhota_chammach: 5, piece: 5}, groups: []}
+  - {name: rose water, hi: गुलाब जल, latn: gulab jal, aliases: [gulab jal, gulabjal, rosewater], category: condiment, unit: ml, location: pantry, life: {pantry: 365}, measures: {chhota_chammach: 5, chammach: 15}, groups: []}
+  - {name: agar agar, hi: अगर अगर, latn: agar agar, aliases: [china grass, agar], category: other, location: pantry, life: {pantry: 730}, measures: {chhota_chammach: 2}, groups: []}
 
   # --- Nuts and seeds -------------------------------------------------------------------------
   - {name: peanuts, hi: मूंगफली, latn: moongphali, aliases: [mungfali, shengdana, singdana, groundnut, kadalai], category: nut_seed, location: pantry, life: {pantry: 120, fridge: 240}, measures: {katori: 110, chammach: 9, mutthi: 25}, groups: [protein], allergens: [peanut]}

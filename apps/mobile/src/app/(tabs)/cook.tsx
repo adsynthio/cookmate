@@ -1,4 +1,5 @@
 // Cook tab: pick up a dish you were in the middle of (KIT-079), with its timers still running, or go and choose one.
+import { KitchenIdeas } from "@/components/cook/KitchenIdeas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback } from "react";
@@ -146,6 +147,8 @@ export default function CookTab() {
               ))}
             </>
           ) : null}
+          {/* M4: what this kitchen can make right now, and what's one swap away. */}
+          <KitchenIdeas householdId={householdId} />
           {/* S10: guests tonight, one menu and one timeline. */}
           <GuestsCard householdId={householdId} />
           {basics.length ? (

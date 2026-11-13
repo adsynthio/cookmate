@@ -1328,5 +1328,9 @@
   "technique.set_chill.how": "Ghee lagi thaali mein daal kar fridge mein jamne tak rakhein.",
   "mind.swapsTitle": "Aapki rasoi se, iski jagah",
   "mind.swapLine": "{instead} ki jagah {use}: kaam wahi, {job}.",
-  "mind.closeness": "Aam wali jaisi lagbhag {n}%."
+  "mind.closeness": "Aam wali jaisi lagbhag {n}%.",
+  "ideas.title": "Aapki rasoi mein abhi ye ban sakte hain",
+  "ideas.titleFestive": "Is hafte tyohaar: aapki rasoi mein ye ban sakte hain",
+  "ideas.ready": "Sab kuch hai · {n} aasaan hisse",
+  "ideas.oneSwap": "Ek badlaav: {instead} ki jagah {use} ({job})"
 }

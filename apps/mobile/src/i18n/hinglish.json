@@ -1087,5 +1087,11 @@
   "scan.shotFailed": "Ek photo padhi nahi gayi. Thoda paas se phir lein.",
   "scan.shotEmpty": "Us photo mein khaane ki cheez nahi mili. Paas se, achhi roshni mein lein.",
   "kitchen.editItem": "Badalne ke liye tap karein",
-  "kitchen.doneItem": "Ho gaya"
+  "kitchen.doneItem": "Ho gaya",
+  "kitchen.scanFirst.title": "Ek minute mein rasoi bharein",
+  "kitchen.scanFirst.body": "Fridge aur almaari ki, ya bill ya online order ki kuch photo lein. Cookmate cheezein dhoondh lega, aap bas jaanch lein.",
+  "kitchen.scanFirst.go": "Meri rasoi scan karein",
+  "kitchen.scanFirst.type": "Likhkar batayein",
+  "kitchen.scanFirst.more": "Baaki cheezein kuch photo se jodein",
+  "kitchen.scanFirst.moreBody": "Fridge, almaari, bill ya order ka screenshot."
 }

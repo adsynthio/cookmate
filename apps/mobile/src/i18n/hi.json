@@ -1117,5 +1117,11 @@
   "scan.shotFailed": "एक फ़ोटो पढ़ी नहीं गई। थोड़ा पास से फिर लें।",
   "scan.shotEmpty": "उस फ़ोटो में खाने की चीज़ नहीं मिली। पास से, अच्छी रोशनी में लें।",
   "kitchen.editItem": "बदलने के लिए टैप करें",
-  "kitchen.doneItem": "हो गया"
+  "kitchen.doneItem": "हो गया",
+  "kitchen.scanFirst.title": "एक मिनट में रसोई भरें",
+  "kitchen.scanFirst.body": "फ़्रिज और अलमारी की, या बिल या ऑनलाइन ऑर्डर की कुछ फ़ोटो लें। Cookmate चीज़ें ढूँढ लेगा, आप बस जाँच लें।",
+  "kitchen.scanFirst.go": "मेरी रसोई स्कैन करें",
+  "kitchen.scanFirst.type": "लिखकर बताएँ",
+  "kitchen.scanFirst.more": "बाकी चीज़ें कुछ फ़ोटो से जोड़ें",
+  "kitchen.scanFirst.moreBody": "फ़्रिज, अलमारी, बिल या ऑर्डर का स्क्रीनशॉट।"
 }

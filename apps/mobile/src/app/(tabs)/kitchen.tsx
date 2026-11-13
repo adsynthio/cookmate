@@ -2,6 +2,7 @@
 // the terracotta "Use soon" card, place filters, "Needs care" (going off, or not sure it's still there) above
 // "Fresh and stocked", staples as Full / Low / Out, and a dish this kitchen can make right now. Live across phones.
 import { RestockCard } from "@/components/kitchen/RestockCard";
+import { ScanFirst } from "@/components/kitchen/ScanFirst";
 import { amountChoices, needsAmount } from "@/domain/amounts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -14,7 +15,7 @@ import { UndoBar } from "@/components/UndoBar";
 import { catalogEntry } from "@/data/catalog";
 import { recipeDocs } from "@/data/recipes";
 import { Icon, type IconName } from "@/design-system/icons";
-import { dishImage, illustrations, ingredientImage } from "@/design-system/media";
+import { dishImage, ingredientImage } from "@/design-system/media";
 import { Enter, Layout, PressableScale, Pulse } from "@/design-system/motion";
 import { Badge, Button, Card, Chip, IconButton, Photo, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
@@ -145,6 +146,8 @@ export default function KitchenScreen() {
           <QuickAction index={1} icon="camera" tone="accent" label={t("kitchen.action.scan")} onPress={() => router.push("/pantry/scan")} />
           <QuickAction index={2} icon="mic" tone="peach" label={t("kitchen.action.voice")} onPress={() => router.push("/voice")} />
         </View>
+        {/* Only a handful of things in: a few photos fill the rest fastest. */}
+        {kitchen.isSuccess && all.length > 0 && all.length < 15 ? <ScanFirst empty={false} /> : null}
 
         {householdId ? <RestockCard householdId={householdId} /> : null}
 
@@ -202,14 +205,7 @@ export default function KitchenScreen() {
             onAction={() => kitchen.refetch()}
           />
         ) : all.length === 0 ? (
-          <StateView
-            state="empty"
-            illustration={illustrations.emptyKitchen}
-            title={t("state.empty.kitchen.title")}
-            body={t("state.empty.kitchen.body")}
-            actionLabel={t("state.empty.kitchen.action")}
-            onAction={() => router.push("/pantry/add")}
-          />
+          <ScanFirst empty />
         ) : (
           <>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters} accessibilityRole="tablist">

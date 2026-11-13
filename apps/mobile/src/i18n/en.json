@@ -1121,5 +1121,11 @@
   "scan.shotFailed": "One photo couldn't be read. Try it again a little closer.",
   "scan.shotEmpty": "No food found in that photo. Try closer, in better light.",
   "kitchen.editItem": "Tap to change",
-  "kitchen.doneItem": "Done"
+  "kitchen.doneItem": "Done",
+  "kitchen.scanFirst.title": "Fill your kitchen in a minute",
+  "kitchen.scanFirst.body": "Take a few photos of your fridge and shelves, or of a bill or an online order. Cookmate finds the food; you just check it.",
+  "kitchen.scanFirst.go": "Scan my kitchen",
+  "kitchen.scanFirst.type": "Type it instead",
+  "kitchen.scanFirst.more": "Add the rest with a few photos",
+  "kitchen.scanFirst.moreBody": "Fridge, shelves, a bill or an order screenshot."
 }

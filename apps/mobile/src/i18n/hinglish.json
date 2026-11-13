@@ -1067,5 +1067,6 @@
   "finish.react.okay": "Theek tha",
   "finish.react.notFor": "Pasand nahi aaya",
   "finish.react.lovedStatement": "{name} ko {dish} bahut pasand aaya",
-  "finish.react.notForStatement": "{name} ko {dish} pasand nahi aaya"
+  "finish.react.notForStatement": "{name} ko {dish} pasand nahi aaya",
+  "recap.overline": "Aapki rasoi ka hafta"
 }

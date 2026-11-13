@@ -11,6 +11,7 @@ import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { AppHeader } from "@/components/AppHeader";
 import { DrinksToggle } from "@/components/drinks/DrinksToggle";
 import { PlateCard } from "@/components/you/PlateCard";
+import { WeekCard } from "@/components/you/WeekCard";
 import { LanguageCard, ProfileCard, StatGrid, TasteCard } from "@/components/you/YouParts";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
@@ -95,6 +96,7 @@ export default function YouScreen() {
         ]}
       />
       {members.data ? <TasteCard members={members.data} prefs={prefs} /> : null}
+      {householdId ? <WeekCard householdId={householdId} /> : null}
       {householdId ? <PlateCard householdId={householdId} /> : null}
       <LanguageCard value={locale} onChange={changeLanguage} />
       <DrinksToggle />

@@ -8,7 +8,7 @@ export type FoodGroup = (typeof FOOD_GROUPS)[number];
 
 export type PlateCounts = Record<FoodGroup, number>;
 export type PlateWeek = { weekStart: string; meals: number; counts: PlateCounts };
-export type CookedMeal = { completedAt: string | Date; groups: readonly string[] };
+export type CookedMeal = { completedAt: string | Date; groups: readonly string[]; /** The dish, when known (the week recap). */ slug?: string };
 
 /** How many meals in a week of about 10 home-cooked meals should bring each group; grain comes with nearly every meal. */
 export const WEEKLY_AIM: Partial<Record<FoodGroup, number>> = { dal: 4, sabzi: 5, greens: 2, dairy: 3, fruit: 2 };

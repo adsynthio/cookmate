@@ -100,6 +100,7 @@ FUNCTIONS: dict[str, tuple[str, str]] = {
     "set_notification_settings": ("{ p_household: string; p_settings: Json; p_policy_version?: string }", "Json"),
     "restock_due": ("{ p_household: string; p_days?: number }", "{ ingredient_id: string; name: string; every_days: number; last_bought: string; due_in_days: number }[]"),
     "weekly_plate": ("{ p_household: string; p_weeks?: number }", "{ week_start: string; meals: number; food_groups: Json }[]"),
+    "week_recap": ("{ p_household: string }", "Json"),
     "community_circles": ("{ p_household: string }", "{ id: string; name: string; role: string; members: Json }[]"),
     "community_create_circle": ("{ p_household: string; p_name: string; p_display_name: string }", "string"),
     "community_create_invite": ("{ p_circle: string; p_household: string }", "string"),

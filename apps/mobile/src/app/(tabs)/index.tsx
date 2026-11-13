@@ -12,6 +12,7 @@ import { WantDish } from "@/components/home/WantDish";
 import { HomeHero } from "@/components/home/HomeHero";
 import { ReadyCard } from "@/components/home/ReadyCard";
 import { PlanCard } from "@/components/home/PlanCard";
+import { WeekCard } from "@/components/you/WeekCard";
 import { InventCard, NewDishCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
 
 import { itemName } from "@/components/kitchen/names";
@@ -326,6 +327,10 @@ export default function HomeScreen() {
       ) : null}
 
       {!focus ? <ReadyCard items={kitchen.data ?? []} /> : null}
+      {/* D3: on Sundays, a look back at the week. */}
+      {!focus && !craving && householdId && new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "Asia/Kolkata" }).format(new Date()) === "Sun" ? (
+        <WeekCard householdId={householdId} />
+      ) : null}
       {!focus && !craving && picks.data ? (
         <PlanCard picks={[picks.data.hero, ...picks.data.alternates].filter((p): p is NonNullable<typeof p> => !!p)} kitchen={kitchen.data ?? []} onOpen={(id) => router.push(`/recipe/${id}`)} />
       ) : null}

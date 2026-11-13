@@ -15,6 +15,7 @@ import { recipeTitle, searchRecipes, toSummary, type RecipeDoc } from "@/domain/
 
 import { deductionPreview } from "@/domain/cooking";
 import { plateWeeks, type CookedMeal } from "@/domain/plate";
+import { recapFrom } from "@/domain/recap";
 import { localAnswer } from "@/domain/ask";
 import { changeCandidates } from "@/domain/learning";
 import { displayName } from "@/domain/kitchen";
@@ -163,7 +164,7 @@ function loadMeals(): CookedMeal[] {
     ["dal-tadka", 1], ["jeera-aloo", 1], ["kanda-poha", 2], ["matar-paneer", 3], ["rajma", 4], ["besan-chilla", 5],
     ["moong-dal-khichdi", 6], ["chicken-curry", 8], ["kadhi-pakora", 9], ["egg-bhurji", 10], ["dal-tadka", 11], ["kanda-poha", 12],
   ];
-  return sample.map(([slug, ago]) => ({ completedAt: new Date(Date.now() - ago * day).toISOString(), groups: recipeBySlug(slug)?.food_groups ?? [] }));
+  return sample.map(([slug, ago]) => ({ slug, completedAt: new Date(Date.now() - ago * day).toISOString(), groups: recipeBySlug(slug)?.food_groups ?? [] }));
 }
 function rememberMeal(meal: CookedMeal) {
   const meals = [...loadMeals(), meal].slice(-200);
@@ -765,7 +766,7 @@ const mocks: Services = {
       const s = sessions.get(sessionId);
       if (!s) throw new Error("session not found");
       const doc = adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId)!;
-      if (s.status !== "completed") rememberMeal({ completedAt: new Date().toISOString(), groups: doc.food_groups ?? [] });
+      if (s.status !== "completed") rememberMeal({ slug: doc.slug, completedAt: new Date().toISOString(), groups: doc.food_groups ?? [] });
       s.status = "completed";
       return deductionPreview(
         doc,
@@ -804,6 +805,15 @@ const mocks: Services = {
     },
     async submitFeedback() {
       await delay(200);
+    },
+    async weekRecap() {
+      await delay(200);
+      const names = new Map(readMembers().map((m) => [m.id, m.displayName]));
+      const loved = memories
+        .filter((m) => m.about === "reaction" && m.polarity > 0 && m.memberId && m.recipeId)
+        .map((m) => ({ name: names.get(m.memberId!) ?? "", dish: recipeBySlug(m.recipeId!)?.title ?? m.recipeId! }))
+        .filter((x) => x.name);
+      return recapFrom(loadMeals(), Date.now(), (slug) => recipeBySlug(slug)?.title ?? null, loved);
     },
     async weeklyPlate(_householdId, weeks = 4) {
       await delay(200);

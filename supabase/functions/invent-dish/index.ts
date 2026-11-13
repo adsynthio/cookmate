@@ -16,6 +16,7 @@ import { logAiRequest } from "../_shared/aiLog.ts";
 import { type InventPlan, planInvention, validateInvention } from "../_shared/invent.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
+import { swapsPrompt } from "../_shared/swaps.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
 import { localDate } from "../suggest-meals/logic.ts";
 import { CATALOG, cleanDishName, docFromModel, inventItems, type ItemRow, MAX_TO_BUY, type ModelDish, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
@@ -47,9 +48,13 @@ const Dish = z.object({
   steps: z.array(z.object({ text: z.string(), minutes: z.number().nullable(), cue: z.string().nullable(), safety: z.string().nullable() })),
 });
 
+// S6: costly extras a model reaches for, and the cheap kitchen swaps it should make instead.
+const CHEAP_SWAPS = swapsPrompt(["fresh cream", "cashews", "paneer", "butter", "khoya", "cheese", "basmati rice"]);
+
 const SYSTEM = (staples: string[]) => `You invent one simple home dish for an Indian family from what is already in their kitchen,
 so that nothing goes to waste. Use EVERY item in "use" (they are leftovers, homemade components or about to spoil).
 Besides those, use only these staples: ${staples.join(", ")}. Never ask the cook to buy anything.
+Only use what's here, with cheap swaps for anything richer: ${CHEAP_SWAPS}.
 Flavour logic: a good plate has a starch to carry it, something rich, some heat, something sour (acid) and some crunch;
 the "gaps" list says what the items lack, fill gaps from the staples where it makes sense.
 Diet: every ingredient must suit the given diet.
@@ -87,7 +92,7 @@ async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, staples
 const NAMED_SYSTEM = (staples: string[]) => `You write one home recipe for an Indian family: the dish they asked for,
 the way it is usually made at home, cooked from what is in their kitchen ("have"). Use the usual ingredients of the
 dish; prefer what they have; besides "have" you may use these staples: ${staples.join(", ")}, and at most ${MAX_TO_BUY}
-other things they would buy. Ingredient names must be plain lowercase English names from Indian kitchens (e.g.
+other things they would buy. Before adding a costly thing to buy, use a cheap swap from "have": ${CHEAP_SWAPS}. Ingredient names must be plain lowercase English names from Indian kitchens (e.g.
 "potato", "fenugreek leaves", "toor dal"). If the dish can't suit the given diet, write the closest version that does.
 Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
 safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;

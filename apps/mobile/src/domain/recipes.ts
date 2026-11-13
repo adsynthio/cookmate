@@ -1,7 +1,8 @@
 // Curated recipe documents (content/recipes/*.yaml, bundled as src/data/recipes.json) and pure helpers on them:
 // ranking input, servings scaling, local measures, family-plate branches and multilingual search (REC-08).
-// Pure TypeScript, imports types only, so it is shared with the Edge Functions by scripts/sync-shared.py.
+// Pure TypeScript (imports only types and swaps.ts), so it is shared with the Edge Functions by scripts/sync-shared.py.
 import type { AgeGroup, Course, Diet, FlavorKey, Locale, RankRecipe } from "./ranking.ts";
+import { SKIPPABLE, withKitchenSwaps } from "./swaps.ts";
 
 
 export type RecipeIngredientDoc = {
@@ -108,9 +109,10 @@ export function toRankRecipe(doc: RecipeDoc): RankRecipe {
     flavor: doc.flavor_profile ?? {},
     ingredients: doc.ingredients.map((i) => ({
       key: i.ingredient,
-      optional: !!i.optional,
+      // S6: garnishes like kasuri methi never hold a dish back; kitchen swaps follow the recipe's own substitutes.
+      optional: !!i.optional || SKIPPABLE.has(i.ingredient),
       role: i.role,
-      substitutes: (i.substitutes ?? []).map((s) => s.ingredient),
+      substitutes: withKitchenSwaps(i.ingredient, (i.substitutes ?? []).map((s) => s.ingredient)),
     })),
     equipmentFallbacks: fallbacks,
   };

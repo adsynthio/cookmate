@@ -11,6 +11,30 @@ type Heat = "low" | "medium" | "high";
 type Level = "low" | "medLow" | "medium" | "medHigh" | "high";
 
 const SHARE: Record<Level, number> = { low: 0.4, medLow: 0.5, medium: 0.6, medHigh: 0.8, high: 0.9 };
+const LEVELS: Level[] = ["low", "medLow", "medium", "medHigh", "high"];
+
+/** S1: this household's stove runs hot (negative) or slow (positive), in levels; the guide moves by that much. */
+export const MAX_SHIFT = 2;
+function shifted(level: Level, shift: number): Level {
+  const i = LEVELS.indexOf(level) + Math.max(-MAX_SHIFT, Math.min(MAX_SHIFT, Math.round(shift)));
+  return LEVELS[Math.max(0, Math.min(LEVELS.length - 1, i))]!;
+}
+
+export type HeatVote = "hot" | "slow";
+/** What the cook has told us about a stove: the settled shift, and the last tap waiting for a second one. */
+export type Calibration = { shift: number; pending?: { vote: HeatVote; n: number } };
+
+/**
+ * One "Too hot" / "Too slow" tap. Two taps the same way (in a row, across cooks) move the stove's settings one level
+ * for good; a tap the other way starts again. `changed` says when the shift moved, so the app says so once.
+ */
+export function calibrate(c: Calibration | undefined, vote: HeatVote): { next: Calibration; changed: boolean } {
+  const shift = c?.shift ?? 0;
+  const n = c?.pending?.vote === vote ? c.pending.n + 1 : 1;
+  if (n < 2) return { next: { shift, pending: { vote, n } }, changed: false };
+  const moved = Math.max(-MAX_SHIFT, Math.min(MAX_SHIFT, shift + (vote === "hot" ? -1 : 1)));
+  return { next: { shift: moved }, changed: moved !== shift };
+}
 const FULL_WATTS = 2000;
 
 type Plan = { level: Level; then?: Level; tempC?: string; note?: NoteKey };
@@ -123,9 +147,12 @@ export function stoveSetting(
   locale: Locale,
   /** Notes about pans are said once per cook, not at every step. */
   seenNotes: ReadonlySet<string> = new Set(),
+  /** S1: levels to move for this household's stove (negative when it runs hot). */
+  shift = 0,
 ): { line: string; note: string | null; noteKey: string | null } | null {
-  const plan = planFor(step);
-  if (!plan) return null;
+  const raw = planFor(step);
+  if (!raw) return null;
+  const plan: Plan = shift ? { ...raw, level: shifted(raw.level, shift), ...(raw.then ? { then: shifted(raw.then, shift) } : {}) } : raw;
   const words = (lv: Level, short = false) => (stove === "gas" ? GAS[lv][locale].toLowerCase() : inductionWords(lv, power, locale, short));
   let line: string;
   if (plan.then) {

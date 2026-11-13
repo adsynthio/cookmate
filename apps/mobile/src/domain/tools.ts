@@ -26,6 +26,8 @@ export type Tool = {
     burners?: number;
     /** Machines this one can't run at the same time as (see kitchenLimits). */
     notWith?: ToolKey[];
+    /** Gas stove or induction: runs hot or slow, learned from "Too hot" / "Too slow" (see stoveGuide.calibrate). */
+    heat?: { shift: number; pending?: { vote: "hot" | "slow"; n: number } };
   };
 };
 
@@ -69,6 +71,22 @@ export function toggleTool(tools: Tool[], key: ToolKey): Tool[] {
 
 export function setPower(tools: Tool[], power: InductionPower): Tool[] {
   return tools.map((t) => (t.type === "induction" ? { ...t, details: { ...t.details, power } } : t));
+}
+
+const STOVE_TOOL = { gas: "gas_stove", induction: "induction" } as const;
+
+/** The learned heat shift for a stove (0 when nothing learned). */
+export function heatOf(tools: Tool[] | null | undefined, stove: "gas" | "induction"): NonNullable<NonNullable<Tool["details"]>["heat"]> | undefined {
+  return tools?.find((t) => t.type === STOVE_TOOL[stove])?.details?.heat;
+}
+
+/** Store what was learned about a stove's heat (undefined forgets it). */
+export function setHeat(tools: Tool[], stove: "gas" | "induction", heat: NonNullable<Tool["details"]>["heat"] | undefined): Tool[] {
+  return tools.map((t) => {
+    if (t.type !== STOVE_TOOL[stove]) return t;
+    const { heat: _old, ...rest } = t.details ?? {};
+    return { ...t, details: heat ? { ...rest, heat } : rest };
+  });
 }
 
 export const has = (tools: Tool[] | null | undefined, key: ToolKey) => !!tools?.some((t) => t.type === key);

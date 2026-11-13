@@ -477,6 +477,20 @@ What the family ate, by food group, never calories (KIT-170, KIT-171).
 - [x] Drinks tab, off by default (switch in setup and on You): 8 everyday drinks and mocktails (nimbu pani, aam panna, jaljeera, lassi, chaas, cold coffee, adrak chai, virgin mojito) and 4 cocktails shown only after a one-time legal-drinking-age confirmation; each shows what the kitchen has and adds the rest to the list; English, Hindi, Hinglish
 - [ ] AI: ask Cookmate anything; AI picks and new dishes; understands anything typed; learns the family
 
+### Sprint 13 — Cooks with you, quietly (one PR per part)
+Rules for everything below: learn from what the cook does, not from questions; change a default only after 2–3 matching signals, say so once with Undo; at most one question per cook (at the end, and only if it changes something); every suggestion can be ignored or turned off ("don't suggest this again"); at most one notification a day, fewer when they're ignored; the voice speaks only at step changes and when timers ring; everything learned is visible and editable on You → What I've learned.
+
+- [ ] **S1 Your stove, calibrated:** "Too hot" / "Too slow" on the stove card; two taps the same way shift that household's gas or induction setting by one level for good
+- [ ] **S2 Your real step times:** time between Next taps per step and dish; timers and total time move toward how long you actually take
+- [ ] **S3 Dinner-time nudge:** set dinner time (default 8 pm) on You. An hour before (30–90 min, adjustable) one notification with three picks from the kitchen: ready in about 60, 30 and 20 minutes; a tap opens the dish ready to cook. The same card shows on Home for people without notifications. Backs off after three ignored days. Push needs a real phone build (EAS), not Expo Go
+- [ ] **S4 Plan to dinner time:** "Dinner at 8:30" works backwards (soak, start the cooker, what to do while it cooks) using burners and one-at-a-time machines; "meanwhile" ideas during long waits
+- [ ] **S5 Basics for anyone, including people living alone:** dough guides as short cook-along recipes: roti/phulka, paratha, puri, bhatura, kulcha, plus jeera rice and plain dal. Amounts for 1, 2 or 4 (1 katori atta ≈ 4 rotis), water a little at a time, rest time, the softness test, how to store leftover dough
+- [ ] **S6 Make it different with what you have:** a swap table (costly or missing → what's in the kitchen: cream → malai or cashew-milk paste, paneer → tofu or soya chunks, butter → ghee, fresh tomato → puree, kasuri methi optional …) with how it changes taste, used by picks to unlock dishes and to offer "a fancier version" (restaurant-style shahi, dum, kofta, tikka from basics). AI invent mode gets "only use what's here, cheap swaps"
+- [ ] **S7 Quiet learning with Undo:** usual skips dropped by default ("you usually skip methi"), shorter steps once a dish is familiar, a mild share set aside automatically for whoever finds it too spicy
+- [ ] **S8 Buy 2, unlock 6:** the smallest shopping list that opens up the most new dishes
+- [ ] **S9 Masala base prep:** Sunday batch (onion-tomato masala, ginger-garlic paste, boiled chana/rajma) tracked in the kitchen; weekday recipes shortened when a base is ready
+- [ ] **S10 Guests and tiffin:** "4 guests at 8" scales and plans a simple menu with one timeline; tonight's dinner suggests tomorrow's tiffin (extra dal → dal paratha)
+
 ---
 
 ## 10. Build sequence

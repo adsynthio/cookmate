@@ -1178,5 +1178,16 @@
   "swaps.taste.earthier": "thoda desi, gehra swaad",
   "swaps.taste.sweeter": "thoda meetha",
   "cook.basicsTitle": "Basics seekhein",
-  "cook.basicsBody": "Roti, paratha, puri, bhatura aur kulche ka aata, saath mein chaawal aur dal. Kitne log kha rahe hain chunein: 1 katori aate se lagbhag 4 roti banti hain."
+  "cook.basicsBody": "Roti, paratha, puri, bhatura aur kulche ka aata, saath mein chaawal aur dal. Kitne log kha rahe hain chunein: 1 katori aate se lagbhag 4 roti banti hain.",
+  "cook.heat.hot": "Bahut tez",
+  "cook.heat.slow": "Bahut dheema",
+  "cook.heat.lower": "Samajh gaya: aapka {stove} tez chalta hai, ab se ek level kam bataunga.",
+  "cook.heat.higher": "Samajh gaya: aapka {stove} dheema hai, ab se ek level zyada bataunga.",
+  "cook.heat.undo": "Undo",
+  "cook.heat.undone": "Theek hai, pehle jaisi setting.",
+  "tools.heat.lower": "{stove} tez chalta hai: setting {n} level kam",
+  "tools.heat.higher": "{stove} dheema hai: setting {n} level zyada",
+  "tools.heat.reset": "Reset",
+  "cook.heat.notedHot": "Abhi ek level kam kar dein. Phir aisa hua to aapke {stove} ki setting hamesha ke liye kam kar dunga.",
+  "cook.heat.notedSlow": "Abhi ek level badha dein. Phir aisa hua to aapke {stove} ki setting hamesha ke liye badha dunga."
 }

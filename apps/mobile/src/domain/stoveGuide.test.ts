@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { planFor, stoveSetting } from "./stoveGuide.ts";
+import { calibrate, planFor, stoveSetting } from "./stoveGuide.ts";
+import { heatOf, setHeat, type Tool } from "./tools.ts";
 
 const L8 = { style: "levels", max: 8 } as const;
 
@@ -40,4 +41,33 @@ test("no stove for soaking or batter; pan notes only once", () => {
   const first = stoveSetting({ technique: "saute_onion" }, "induction", L8, "en")!;
   assert.equal(first.noteKey, "kadaiFlat");
   assert.equal(stoveSetting({ technique: "bhuna" }, "induction", L8, "en", new Set(["kadaiFlat"]))!.note, null);
+});
+
+test("S1: a stove that runs hot gets a level lower, a slow one a level higher", () => {
+  assert.equal(stoveSetting({ heat: "medium" }, "gas", L8, "en", new Set(), -1)?.line, "Low to medium flame");
+  assert.equal(stoveSetting({ heat: "medium" }, "induction", L8, "en", new Set(), 1)?.line, "Level 6 of 8 (about 1600 W)");
+  // Clamped at the ends.
+  assert.equal(stoveSetting({ heat: "low" }, "gas", L8, "en", new Set(), -2)?.line, "Low flame");
+  // The cooker's "then" moves too.
+  assert.equal(stoveSetting({ technique: "pressure_cook" }, "gas", L8, "en", new Set(), -1)?.line, "Medium-high flame until the first whistle, then low flame");
+});
+
+test("S1: two taps the same way move the stove one level; the other way starts again", () => {
+  const one = calibrate(undefined, "hot");
+  assert.deepEqual(one, { next: { shift: 0, pending: { vote: "hot", n: 1 } }, changed: false });
+  const two = calibrate(one.next, "hot");
+  assert.deepEqual(two, { next: { shift: -1 }, changed: true });
+  const other = calibrate({ shift: -1, pending: { vote: "hot", n: 1 } }, "slow");
+  assert.deepEqual(other, { next: { shift: -1, pending: { vote: "slow", n: 1 } }, changed: false });
+  // Never past two levels.
+  assert.deepEqual(calibrate({ shift: -2, pending: { vote: "hot", n: 1 } }, "hot"), { next: { shift: -2 }, changed: false });
+});
+
+test("S1: what was learned lives on the household's stove", () => {
+  const tools: Tool[] = [{ type: "gas_stove", details: { burners: 3 } }, { type: "induction" }];
+  const next = setHeat(tools, "gas", { shift: -1 });
+  assert.deepEqual(heatOf(next, "gas"), { shift: -1 });
+  assert.equal(next[0]?.details?.burners, 3);
+  assert.equal(heatOf(next, "induction"), undefined);
+  assert.equal(heatOf(setHeat(next, "gas", undefined), "gas"), undefined);
 });

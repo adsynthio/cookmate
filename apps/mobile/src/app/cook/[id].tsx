@@ -34,9 +34,9 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
 import { stepIngredients, tipFor } from "@/domain/tips";
-import { planFor, stoveSetting, type Stove } from "@/domain/stoveGuide";
+import { calibrate, planFor, stoveSetting, type HeatVote, type Stove } from "@/domain/stoveGuide";
 import { clash, kitchenCheck, type Busy, type Device } from "@/domain/kitchenLimits";
-import { DEFAULT_POWER, has } from "@/domain/tools";
+import { DEFAULT_POWER, has, heatOf, setHeat, type Tool } from "@/domain/tools";
 import { useStove } from "@/state/stove";
 import { StoveCard } from "@/components/cook/StoveCard";
 import { AirFryerCard } from "@/components/cook/AirFryerCard";
@@ -214,9 +214,29 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const settingFor = (n: number) => {
     const s = doc.steps[n - 1];
     const on = stoveFor(n);
-    return s && on ? stoveSetting(s, on, power, locale, notesSeen.current) : null;
+    return s && on ? stoveSetting(s, on, power, locale, notesSeen.current, heatOf(tools.data, on)?.shift ?? 0) : null;
   };
-  const setting = useMemo(() => settingFor(stepNo), [stepNo, stepStoveNow, power, locale, doc]); // eslint-disable-line react-hooks/exhaustive-deps
+  const setting = useMemo(() => settingFor(stepNo), [stepNo, stepStoveNow, power, locale, doc, tools.data]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // S1: "Too hot" / "Too slow". Saved on the household's stove, so every phone in the house learns it.
+  const [heard, setHeard] = useState<{ text: string; undo: boolean; before?: Tool[] } | null>(null);
+  useEffect(() => setHeard(null), [stepNo]);
+  const saveTools = useMutation({
+    mutationFn: (next: Tool[]) => services.kitchen.setTools(householdId, next),
+    onMutate: (next) => queryClient.setQueryData(["tools", householdId], next),
+  });
+  const vote = (v: HeatVote) => {
+    if (!stepStoveNow || !tools.data) return;
+    const before = tools.data;
+    const { next, changed } = calibrate(heatOf(before, stepStoveNow), v);
+    saveTools.mutate(setHeat(before, stepStoveNow, next.shift || next.pending ? next : undefined));
+    const where = locale === "en" ? t(`cook.stove.${stepStoveNow}`).toLowerCase() : t(`cook.stove.${stepStoveNow}`);
+    setHeard(
+      changed
+        ? { text: t(v === "hot" ? "cook.heat.lower" : "cook.heat.higher", { stove: where }), undo: true, before }
+        : { text: t(v === "hot" ? "cook.heat.notedHot" : "cook.heat.notedSlow", { stove: where }), undo: false },
+    );
+  };
   useEffect(() => {
     if (setting?.noteKey) notesSeen.current.add(setting.noteKey);
   }, [setting]);
@@ -568,6 +588,12 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
                 // A step moved because of a clash keeps its own stove; the switch otherwise sets the usual one.
                 if (stepStove[stepNo]) setStepStove((m) => ({ ...m, [stepNo]: s }));
                 else setStove(s);
+              }}
+              onVote={tools.data ? vote : undefined}
+              heard={heard}
+              onUndo={() => {
+                if (heard?.before) saveTools.mutate(heard.before);
+                setHeard({ text: t("cook.heat.undone"), undo: false });
               }}
             />
           ) : null}

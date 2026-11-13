@@ -149,6 +149,16 @@ def load_ingredients(v: Validator) -> dict[str, dict]:
             if owner != name:
                 v.err(where, f"'{term}' is also a name or alias of '{owner}' (ambiguous for parsing)")
         out[name] = ing
+    # F7: Kannada names, kept in their own file and keyed by the English name.
+    kn_path = CONTENT / "catalog" / "ingredients_kn.yaml"
+    if kn_path.exists():
+        for name, kn in (read_yaml(kn_path).get("kn") or {}).items():
+            if name not in out:
+                v.err("catalog/ingredients_kn.yaml", f"'{name}' is not a catalog name")
+            elif not isinstance(kn, str) or not re.search("[\u0C80-\u0CFF]", kn):
+                v.err("catalog/ingredients_kn.yaml", f"'{name}' needs a name in Kannada script")
+            else:
+                out[name]["kn"] = kn
     return out
 
 
@@ -571,6 +581,8 @@ def render_catalog(catalog: dict[str, dict]) -> str:
     for name, ing in catalog.items():
         row = {"name": name, "hi": ing["hi"], "latn": ing["latn"], "category": ing["category"],
                "location": ing["location"], "unit": ing.get("unit", "g"), "life": ing["life"]}
+        if ing.get("kn"):
+            row["kn"] = ing["kn"]
         if ing.get("aliases"):
             row["aliases"] = ing["aliases"]
         if ing.get("staple"):

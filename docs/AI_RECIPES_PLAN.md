@@ -250,3 +250,42 @@ written as blueprints from the start. M3 and M4 come next, in place of today's "
 2. **Live AI recipes:** every user can ask the AI for recipes in the app. They are private to the family that asked; sharing into circles can come later, after review.
 3. **Where the library generator runs:** a manually started GitHub workflow with an `ANTHROPIC_API_KEY` secret used only by that workflow. It is needed only from Phase 1, not Phase 0.
 4. **Regional language (F7):** Kannada (ಕನ್ನಡ).
+
+---
+
+## Status, 13 Nov 2026 (end of the automated run)
+
+| Part | State | PRs |
+|---|---|---|
+| G1a allergies and dislikes in AI dishes | Done | #82 |
+| G1 shared safety gate | Done | #83 |
+| G2 independent model review, G3 typed-instruction refusal | Done | #84 |
+| G4 safety test set (156 cases) | Done | #85, #94 |
+| G5 reports and off switches, G6 label and allergen chips | Done, migration applied | #86 |
+| M1 ingredient jobs and job swaps (Eno, milk powder…) | Done | #87 |
+| M2 dishes as parts, technique cards | Done | #88 |
+| M3 make any dish from my kitchen | Done | #89 |
+| M4 ideas from what you have | Done | #90 |
+| M5 the cook's own tricks | Done | #91 |
+| M6 simpler version | Done | #92 |
+| L1–L3 library generator and batch workflow, dish list (250) | Done; needs your key to run | #93 |
+| F3 festival and fasting (vrat rules, kept fasts) | Done | #94 |
+| F1 house-cook handoff | Done | #95 |
+| F2 family recipes | Done | #96 |
+| F4 cook once, eat twice | Done | #97 |
+| F5 photo check while cooking | Done | #98 |
+| F6 meal cost | Done | #99 |
+| F7 Kannada: app, all 1,417 strings, ingredient names | Done | #100–#102, this PR |
+| F9 grocery apps (search links) | Done | #103 |
+| F8 WhatsApp voice notes | **Blocked on you**: needs a Meta WhatsApp Business account and number |
+| F10 home-screen widget | **Blocked**: needs the EAS development build (native code) |
+
+**Your actions**
+1. Add the repository secret `ANTHROPIC_API_KEY` (GitHub > Settings > Secrets and variables > Actions), then run
+   *Actions > Write a library batch*. Review each batch PR: set `review_status: approved` on recipes you accept and merge.
+2. Sign off the security review findings 28 (report_recipe) and 29 (the batch workflow's write access).
+3. For WhatsApp: create a Meta WhatsApp Business account and send me the phone number ID (never the token in chat).
+4. For the widget and push on real phones: the EAS build.
+
+**Still English when Kannada is chosen:** recipe step text (the library generator can write Kannada next) and the
+voice agent's replies.

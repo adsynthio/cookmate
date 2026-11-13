@@ -1,6 +1,6 @@
 # Security review before beta (KIT-124)
 
-Reviewed 11 Nov 2026, on `main` plus Sprint 6 part 1, and on the hosted ChefMate project (`usuwwzkorhsbaaziaanl`)
+Reviewed 11 Nov 2026 and again on 13 Nov 2026 (findings 19–25), on `main` plus Sprint 6 part 1, and on the hosted ChefMate project (`usuwwzkorhsbaaziaanl`)
 using Supabase's security and performance advisors. Each finding is **fixed**, **accepted** (with the reason), or
 **open** (with who acts on it). Accepted findings need the product owner's sign-off below before the beta.
 
@@ -10,8 +10,9 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 |---|---|
 | Every public table has row-level security; anon can read nothing; only `ai_requests` has no policies | `supabase/tests/database/00_rls_guardrails.test.sql` (CI) |
 | Every foreign key has a covering index | same file |
-| The only `SECURITY DEFINER` functions a signed-in user can call are the reviewed ones (findings 2, 12, 13, 16, 18) | same file |
+| The only `SECURITY DEFINER` functions a signed-in user can call are the reviewed ones (findings 2, 12, 13, 16, 18); nothing in `public` is callable without signing in (21) | same file |
 | Household isolation per feature (pantry, recipes, cooking, voice context, memories, shopping, privacy) | `supabase/tests/database/01`–`15` (CI) |
+| Member roles can't be taken over; at most 5 households per account (findings 19, 20) | `supabase/tests/database/25_security_hardening.test.sql` (CI) |
 | No service-role key or Anthropic key in the app bundle | `ci.yml`, "No secrets in the app" step |
 | Edge Function inputs, model output validation, safety guards | `supabase/functions/*/logic.test.ts` (CI) |
 
@@ -37,6 +38,10 @@ using Supabase's security and performance advisors. Each finding is **fixed**, *
 | 16 | Community (Sprint 8) adds eight SECURITY DEFINER functions signed-in users can call: `community_create_circle`, `community_create_invite`, `community_join`, `community_leave`, `community_share`, `community_remove_post`, `community_report`, `community_feed` | Low | **Accepted (needs your sign-off)**: households in different circles can't see each other through RLS alone, so joining by invite code and posting go through these functions. Each first checks the caller is an active member of the household it acts for (`private.community_require`), then that the household is in the circle. Clients can only read the community tables; anon reads nothing. Limits: 10 circles per household, 30 households per circle, 20 posts a day, invites expire after 7 days, 3 reports remove a post. Covered by `21_community.test.sql`; the guard-rail test lists the functions by name |
 | 17 | Shared dishes are visible to every household in the circle | Info | **By design**: nothing is shared unless the cook taps Share and picks a circle; a post carries the circle display name the household chose, the dish, its changes and an optional note, never members' names, the pantry or memories. Leaving a circle keeps past posts until the author removes them; deleting the account deletes them |
 | 18 | Sprint 13 adds `notification_opened(batch)`, a SECURITY DEFINER function signed-in users can call | Low | **Accepted (needs your sign-off)**: it only sets `opened_at` on the caller's own daily-pick notifications (matched by `auth.uid()` through `household_members`) for the given batch, and never reads anything back. It exists so an ignored dinner nudge can back off. The guard-rail test lists it by name |
+| 19 | **A plain household member could make themselves owner.** The "admin or self" update policy on `household_members` let a member change the `role` on their own row, then (as owner) remove the real owner. Shown on a local copy of the schema before the fix | **High** | **Fixed (Nov 2026 review)**: `20270520000000_security_hardening.sql` adds a trigger that, for app users, refuses moving a member row to another household, and lets only an owner or admin change role, link or status; only an owner makes, unmakes, adds or removes an owner. Definer functions and the service role are unaffected. `25_security_hardening.test.sql` |
+| 20 | One account could create any number of households, which also gets round per-household limits | Medium | **Fixed (Nov 2026 review)**: at most 5 households per account (trigger on `households`), tested |
+| 21 | `clear_pantry_guesses`, `guess_pantry_from_recipe` and `search_recipes` were callable without signing in (through the default `PUBLIC` grant). They ran with the caller's rights, so RLS still applied | Low | **Fixed (Nov 2026 review)**: signed-in users only; the default for new functions in `public` no longer grants `PUBLIC`/anon; a test checks nothing in `public` is callable by anon |
+| 22 | The `household-media` bucket accepted any image type, including SVG, which can carry script | Low | **Fixed (Nov 2026 review)**: JPEG, PNG and WebP only |
 
 ## Privacy rights (DPDP)
 

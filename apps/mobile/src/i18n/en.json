@@ -1362,5 +1362,9 @@
   "technique.set_chill.how": "Pour into a greased plate and leave in the fridge until firm.",
   "mind.swapsTitle": "From your kitchen instead",
   "mind.swapLine": "{use} instead of {instead}: same job, {job}.",
-  "mind.closeness": "About {n}% like the usual one."
+  "mind.closeness": "About {n}% like the usual one.",
+  "ideas.title": "Your kitchen can make these right now",
+  "ideas.titleFestive": "Festival this week: your kitchen can make these",
+  "ideas.ready": "Everything's here · {n} simple parts",
+  "ideas.oneSwap": "One swap: {use} instead of {instead} ({job})"
 }

@@ -1358,5 +1358,9 @@
   "technique.set_chill.how": "घी लगी थाली में डालकर फ़्रिज में जमने तक रखें।",
   "mind.swapsTitle": "आपकी रसोई से, इसकी जगह",
   "mind.swapLine": "{instead} की जगह {use}: काम वही, {job}।",
-  "mind.closeness": "आम वाली जैसी लगभग {n}%।"
+  "mind.closeness": "आम वाली जैसी लगभग {n}%।",
+  "ideas.title": "आपकी रसोई में अभी ये बन सकते हैं",
+  "ideas.titleFestive": "इस हफ़्ते त्योहार: आपकी रसोई में ये बन सकते हैं",
+  "ideas.ready": "सब कुछ है · {n} आसान हिस्से",
+  "ideas.oneSwap": "एक बदलाव: {instead} की जगह {use} ({job})"
 }

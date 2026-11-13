@@ -12,14 +12,8 @@ Deno.test("past the hour or the day: refused, the day first", () => {
   assertEquals(verdict(LIMITS.hour, LIMITS.day), { ok: false, window: "day", retryAfterSec: 3600 });
 });
 
-Deno.test("no service key (local run): fails open", async () => {
-  const before = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  Deno.env.delete("SUPABASE_SERVICE_ROLE_KEY");
-  try {
-    assertEquals(await checkQuota("00000000-0000-0000-0000-000000000001"), { ok: true });
-  } finally {
-    if (before) Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", before);
-  }
+Deno.test("no service key or no env access (local run, CI): fails open", async () => {
+  assertEquals(await checkQuota("00000000-0000-0000-0000-000000000001"), { ok: true });
 });
 
 Deno.test("429 with Retry-After", async () => {

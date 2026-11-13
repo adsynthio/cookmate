@@ -119,6 +119,10 @@ switch works from the database. About 6 PRs.
 ## Phase 1: the library grows to 300, then beyond (written by AI, approved by a person)
 
 ### L1. A batch generator
+
+**Built (Sprint 15):** `tools/content/generate/generate.ts`, `to_yaml.py`, `content/dish_list.yaml` (250 dishes) and the
+`Write a library batch` workflow. **Your action:** add the repository secret `ANTHROPIC_API_KEY` (GitHub > Settings >
+Secrets and variables > Actions), then run the workflow; each batch opens a pull request for your review.
 - `tools/content/generate.py` takes a list of dishes and writes draft YAML in the exact recipe format. Each draft has English, Hindi and Hinglish text, sensory cues, safety notes, gas and induction stove settings, air-fryer steps where they fit, household amounts and times.
 - It runs as a manually started GitHub workflow, which opens a PR with the batch.
 - The dish list is `content/dish_list.yaml`: about 300 dishes grouped into everyday dal and sabzi, roti and rice, breakfast, tiffin, non-veg, South, East, West, festival and fasting, chutneys and raita, sweets, and drinks.

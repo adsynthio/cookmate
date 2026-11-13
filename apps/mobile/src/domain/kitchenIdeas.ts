@@ -47,7 +47,7 @@ export function kitchenIdeas(
   const out: (Idea & { score: number })[] = [];
   for (const doc of docs) {
     if (doc.ingredients.some((i) => no.has(i.ingredient))) continue;
-    if (opts.occasion === "fast" && !doc.tags?.includes("vrat")) continue;
+    if (opts.occasion === "fast" && !doc.tags?.includes("fasting")) continue;
     const m = pantryMatch(toRankRecipe(doc), pantry, staples, avoid);
     const missing = m.items.filter((i) => i.status === "missing");
     let idea: Idea | null = null;

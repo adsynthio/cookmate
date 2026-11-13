@@ -1,0 +1,96 @@
+slug: onion-tomato-masala
+title: Onion-Tomato Masala
+titles: {hi: प्याज़-टमाटर मसाला, hi-Latn: Pyaz-Tamatar Masala}
+description: >-
+  A Sunday batch of the base most North Indian gravies start with. Keep it in the fridge for up to five days (or
+  freeze in portions for a month) and weekday dals, sabzis and curries skip the slowest part.
+descriptions:
+  hi: "रविवार को बना लें, ज़्यादातर उत्तर भारतीय ग्रेवी इसी से शुरू होती हैं। फ़्रिज में पाँच दिन तक रखें (या हिस्सों में एक महीने के लिए जमा दें), और हफ़्ते में दाल, सब्ज़ी और करी का सबसे धीमा काम बच जाता है।"
+  hi-Latn: "Ravivaar ko bana lein, zyadatar North Indian gravy isi se shuru hoti hain. Fridge mein paanch din tak rakhein (ya hisson mein ek mahine ke liye jama dein), aur hafte mein dal, sabzi aur curry ka sabse dheema kaam bach jaata hai."
+cuisine_region: generic_north
+course: component
+diet: vegan
+base_servings: 8
+prep_time_min: 15
+cook_time_min: 35
+difficulty: 2
+spice_level: 2
+equipment: [kadai, mixer_grinder]
+tags: [basics]
+flavor_profile: {rich: 0.5, heat: 0.4, acid: 0.5, crunch: 0, starch: 0.1, sweet: 0.2}
+food_groups: [sabzi]
+review_status: draft
+ingredients:
+  - {ingredient: onion, qty: 600, unit: g, local: 6 medium pyaz, role: base}
+  - {ingredient: tomato, qty: 600, unit: g, local: 8 medium tamatar, role: acid}
+  - {ingredient: ginger, qty: 30, unit: g, local: 2 inch, role: aromatic}
+  - {ingredient: garlic, qty: 30, unit: g, local: 12 kali, role: aromatic}
+  - {ingredient: refined oil, qty: 60, unit: ml, local: 4 chammach, role: fat}
+  - {ingredient: turmeric powder, qty: 3, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: kashmiri chilli powder, qty: 6, unit: g, local: 2 chhota chammach, role: heat}
+  - {ingredient: coriander powder, qty: 8, unit: g, local: 1 chammach, role: spice}
+  - {ingredient: salt, qty: 6, unit: g, local: 1 chhota chammach, role: spice}
+steps:
+  - text: Grind the onions coarsely, and the tomatoes, ginger and garlic smooth, separately.
+    minutes: 10
+    cues:
+      look: "Onions coarse like grated, tomatoes a smooth puree."
+    say:
+      hi:
+        text: "प्याज़ को दरदरा, और टमाटर, अदरक और लहसुन को अलग से बारीक पीस लें।"
+        look: "प्याज़ कद्दूकस जैसा दरदरा, टमाटर एकदम चिकनी प्यूरी।"
+      hi-Latn:
+        text: "Pyaz ko dardara, aur tamatar, adrak aur lehsun ko alag se baareek pees lein."
+        look: "Pyaz kaddukas jaisa dardara, tamatar ekdam chikni puree."
+  - text: Heat the oil in a wide kadai and fry the onion paste, stirring often, until deep golden.
+    technique: saute_onion
+    minutes: 15
+    heat: medium
+    cues:
+      look: "Deep golden brown, and the oil shows at the edges."
+      smell: "Sweet, toasty onion."
+      avoid: "Stir more as it darkens; burnt bits make the whole batch bitter."
+    say:
+      hi:
+        text: "चौड़ी कड़ाही में तेल गरम करें और प्याज़ का पेस्ट बार-बार चलाते हुए गहरा सुनहरा होने तक भूनें।"
+        look: "गहरा सुनहरा भूरा, और किनारों पर तेल दिखे।"
+        smell: "मीठी, भुनी प्याज़ की ख़ुशबू।"
+        avoid: "रंग गहरा हो तो और ज़्यादा चलाएँ; जले टुकड़े पूरे मसाले को कड़वा कर देते हैं।"
+      hi-Latn:
+        text: "Chaudi kadaahi mein tel garam karein aur pyaz ka paste baar-baar chalaate hue gehra sunehra hone tak bhoonein."
+        look: "Gehra sunehra bhoora, aur kinaaron par tel dikhe."
+        smell: "Meethi, bhuni pyaz ki khushboo."
+        avoid: "Rang gehra ho to aur zyada chalaayein; jale tukde poore masale ko kadva kar dete hain."
+  - text: Add the tomato puree, the powders and salt. Cook, stirring, until thick and the oil separates.
+    technique: bhuna
+    minutes: 15
+    heat: medium
+    cues:
+      look: "Thick, dark red, and oil pools on the surface."
+      avoid: "It splutters: keep a lid half on and stand back."
+    safety: Hot masala splutters; keep a lid half on and keep children away.
+    say:
+      hi:
+        text: "टमाटर प्यूरी, मसाले और नमक डालें। चलाते हुए पकाएँ जब तक गाढ़ा न हो जाए और तेल अलग न हो।"
+        look: "गाढ़ा, गहरा लाल, और ऊपर तेल तैरे।"
+        avoid: "यह उछलता है: ढक्कन आधा रखें और थोड़ा दूर रहें।"
+        safety: "गरम मसाला उछलता है; ढक्कन आधा रखें और बच्चों को दूर रखें।"
+      hi-Latn:
+        text: "Tamatar puree, masale aur namak daalein. Chalaate hue pakaayein jab tak gaadha na ho jaaye aur tel alag na ho."
+        look: "Gaadha, gehra laal, aur upar tel taire."
+        avoid: "Yeh uchhalta hai: dhakkan aadha rakhein aur thoda door rahein."
+        safety: "Garam masala uchhalta hai; dhakkan aadha rakhein aur bachchon ko door rakhein."
+  - text: Cool completely, then store in a clean, dry, closed jar in the fridge. Use a clean dry spoon each time.
+    minutes: 20
+    cues:
+      touch: "Cool to the touch before it goes in the jar."
+    safety: Keeps 5 days in the fridge or a month frozen. Use a clean dry spoon so it doesn't spoil.
+    say:
+      hi:
+        text: "पूरी तरह ठंडा करें, फिर साफ़, सूखे, बंद डिब्बे में फ़्रिज में रखें। हर बार साफ़ सूखा चम्मच लें।"
+        touch: "डिब्बे में डालने से पहले छूने पर ठंडा हो।"
+        safety: "फ़्रिज में 5 दिन, फ़्रीज़र में एक महीना चलता है। साफ़ सूखा चम्मच लें ताकि ख़राब न हो।"
+      hi-Latn:
+        text: "Poori tarah thanda karein, phir saaf, sookhe, band dibbe mein fridge mein rakhein. Har baar saaf sookha chammach lein."
+        touch: "Dibbe mein daalne se pehle chhoone par thanda ho."
+        safety: "Fridge mein 5 din, freezer mein ek mahina chalta hai. Saaf sookha chammach lein taaki kharaab na ho."

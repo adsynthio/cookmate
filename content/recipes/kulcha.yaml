@@ -1,0 +1,85 @@
+slug: kulcha
+title: Tawa Kulcha
+titles: {hi: तवा कुलचा, hi-Latn: Tawa Kulcha}
+description: >-
+  Soft, thick kulchas on the tawa, no oven needed. A maida dough with curd and milk that rests an hour, topped with
+  coriander or kalonji and finished with butter.
+descriptions:
+  hi: "तवे पर नरम, मोटे कुलचे, ओवन की ज़रूरत नहीं। दही और दूध वाला मैदे का आटा जो एक घंटा रखा जाता है, ऊपर धनिया या कलौंजी और आख़िर में मक्खन।"
+  hi-Latn: "Tawe par naram, mote kulche, oven ki zaroorat nahi. Dahi aur doodh waala maide ka aata jo ek ghanta rakha jaata hai, upar dhaniya ya kalonji aur aakhir mein makkhan."
+cuisine_region: generic_north
+course: component
+diet: veg
+base_servings: 2
+prep_time_min: 75
+cook_time_min: 15
+difficulty: 3
+spice_level: 1
+equipment: [tawa]
+tags: [basics]
+flavor_profile: {rich: 0.6, heat: 0, acid: 0.1, crunch: 0.2, starch: 1, sweet: 0.1}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: refined flour, qty: 160, unit: g, local: 2 katori maida (4 kulchas), role: starch}
+  - {ingredient: curd, qty: 45, unit: g, local: 3 chammach dahi, role: acid}
+  - {ingredient: milk, qty: 60, unit: ml, local: 4 chammach doodh, role: liquid}
+  - {ingredient: baking powder, qty: 2, unit: g, local: aadha chhota chammach, role: binder}
+  - {ingredient: baking soda, qty: 0.3, unit: g, local: 1 chutki, role: binder}
+  - {ingredient: sugar, qty: 4, unit: g, local: 1 chhota chammach, role: sweet}
+  - {ingredient: salt, qty: 2, unit: g, local: 1 chutki, role: spice}
+  - {ingredient: nigella seeds, qty: 1, unit: g, local: 2 chutki kalonji, role: garnish, optional: true}
+  - {ingredient: coriander leaves, qty: 5, unit: g, local: 1 chammach, role: garnish, optional: true}
+  - {ingredient: butter, qty: 15, unit: g, local: 1 chammach, role: fat, substitutes: [{ingredient: ghee, ratio: 1}]}
+steps:
+  - text: Mix maida, baking powder, soda, sugar and salt. Add curd and milk, then warm water a little at a time, and knead a soft, slightly sticky dough.
+    technique: knead
+    minutes: 8
+    cues:
+      touch: "Softer than roti dough; it sticks a little to your fingers."
+    say:
+      hi:
+        text: "मैदा, बेकिंग पाउडर, सोडा, चीनी और नमक मिलाएँ। दही और दूध डालें, फिर गुनगुना पानी थोड़ा-थोड़ा डालकर नरम, हल्का चिपचिपा आटा गूँधें।"
+        touch: "रोटी के आटे से नरम; उँगलियों पर थोड़ा चिपके।"
+      hi-Latn:
+        text: "Maida, baking powder, soda, cheeni aur namak milaayein. Dahi aur doodh daalein, phir gunguna paani thoda-thoda daal kar naram, halka chipchipa aata goondhein."
+        touch: "Roti ke aate se naram; ungliyon par thoda chipke."
+  - text: Coat with oil, cover and rest in a warm place.
+    minutes: 60
+    timer: true
+    cues:
+      look: "The dough looks a little puffed and feels airy."
+    say:
+      hi:
+        text: "तेल लगाएँ, ढकें और गरम जगह पर रखें।"
+        look: "आटा थोड़ा फूला हुआ और हल्का लगे।"
+      hi-Latn:
+        text: "Tel lagaayein, dhakein aur garam jagah par rakhein."
+        look: "Aata thoda phoola hua aur halka lage."
+  - text: Roll a ball into a thick oval. Press kalonji and coriander on top, then brush the other side with water.
+    minutes: 2
+    cues:
+      look: "About as thick as two rotis, with the topping pressed in."
+    say:
+      hi:
+        text: "लोई को मोटा लंबा गोल बेलें। ऊपर कलौंजी और धनिया दबाएँ, दूसरी तरफ़ पानी लगाएँ।"
+        look: "लगभग दो रोटी जितना मोटा, ऊपर टॉपिंग दबी हुई।"
+      hi-Latn:
+        text: "Loi ko mota lamba gol belein. Upar kalonji aur dhaniya dabaayein, doosri taraf paani lagaayein."
+        look: "Lagbhag do roti jitna mota, upar topping dabi hui."
+  - text: Put it wet side down on a hot tawa. When bubbles rise, flip and cook the top until golden spots appear. Brush with butter and serve hot.
+    technique: tawa_cook
+    minutes: 3
+    heat: medium
+    cues:
+      look: "Puffy bubbles on top, then golden brown patches."
+      smell: "A toasty, buttery smell."
+    say:
+      hi:
+        text: "गीली तरफ़ नीचे करके गरम तवे पर रखें। बुलबुले आएँ तो पलटें और ऊपर की तरफ़ सुनहरे धब्बे आने तक सेकें। मक्खन लगाकर गरम परोसें।"
+        look: "ऊपर फूले बुलबुले, फिर सुनहरे भूरे धब्बे।"
+        smell: "सिकी हुई मक्खन वाली ख़ुशबू।"
+      hi-Latn:
+        text: "Geeli taraf neeche karke garam tawe par rakhein. Bulbule aayein to paltein aur upar ki taraf sunehre dhabbe aane tak sekein. Makkhan laga kar garam parosein."
+        look: "Upar phoole bulbule, phir sunehre bhoore dhabbe."
+        smell: "Siki hui makkhan waali khushboo."

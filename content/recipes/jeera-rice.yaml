@@ -1,0 +1,90 @@
+slug: jeera-rice
+title: Jeera Rice
+titles: {hi: जीरा राइस, hi-Latn: Jeera Rice}
+description: >-
+  Fluffy rice with a ghee and cumin tadka. Rinse, soak, then cook with the right water, so every grain stays
+  separate.
+descriptions:
+  hi: "घी और जीरे के तड़के वाले खिले-खिले चावल। धोएँ, भिगोएँ और सही पानी में पकाएँ, ताकि हर दाना अलग रहे।"
+  hi-Latn: "Ghee aur jeere ke tadke waale khile-khile chaawal. Dhoyein, bhigoyein aur sahi paani mein pakaayein, taaki har daana alag rahe."
+cuisine_region: generic_north
+course: component
+diet: veg
+base_servings: 2
+prep_time_min: 20
+cook_time_min: 15
+difficulty: 1
+spice_level: 1
+equipment: [pressure_cooker]
+tags: [basics, quick, kids_friendly]
+flavor_profile: {rich: 0.3, heat: 0, acid: 0, crunch: 0, starch: 1, sweet: 0}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: basmati rice, qty: 125, unit: g, local: 1 katori chaawal, role: starch, substitutes: [{ingredient: rice, ratio: 1}]}
+  - {ingredient: ghee, qty: 13, unit: g, local: 1 chammach, role: fat, substitutes: [{ingredient: refined oil, ratio: 1}]}
+  - {ingredient: cumin seeds, qty: 2, unit: g, local: 1 chhota chammach, role: spice}
+  - {ingredient: bay leaf, qty: 0.2, unit: g, local: 1 tej patta, role: aromatic, optional: true}
+  - {ingredient: salt, qty: 3, unit: g, local: aadha chhota chammach, role: spice}
+steps:
+  - text: Rinse the rice two or three times and soak it in water.
+    technique: soak
+    minutes: 15
+    timer: true
+    cues:
+      look: "The rinse water runs almost clear."
+    say:
+      hi:
+        text: "चावल को दो-तीन बार धोएँ और पानी में भिगो दें।"
+        look: "धोने का पानी लगभग साफ़ हो जाए।"
+      hi-Latn:
+        text: "Chaawal ko do-teen baar dhoyein aur paani mein bhigo dein."
+        look: "Dhone ka paani lagbhag saaf ho jaaye."
+  - text: Heat ghee in the cooker. Add cumin and the bay leaf.
+    technique: tadka
+    seconds: 30
+    heat: medium
+    cues:
+      sound: "The cumin crackles."
+      smell: "Toasty cumin."
+    say:
+      hi:
+        text: "कुकर में घी गरम करें। जीरा और तेज पत्ता डालें।"
+        sound: "जीरा चटकने लगे।"
+        smell: "भुने जीरे की ख़ुशबू।"
+      hi-Latn:
+        text: "Cooker mein ghee garam karein. Jeera aur tej patta daalein."
+        sound: "Jeera chatakne lage."
+        smell: "Bhune jeere ki khushboo."
+  - text: Drain the rice and stir it gently in the ghee for a minute. Add salt and one and a half katori of water for each katori of rice. Close and cook for one whistle.
+    technique: pressure_cook
+    whistles: 1
+    minutes: 8
+    heat: medium
+    cues:
+      sound: "Turn off at the first whistle."
+      look: "The water should be about one finger joint above the rice before closing."
+    say:
+      hi:
+        text: "चावल का पानी निकालें और घी में एक मिनट धीरे से चलाएँ। नमक और हर कटोरी चावल पर डेढ़ कटोरी पानी डालें। बंद करके एक सीटी लगाएँ।"
+        sound: "पहली सीटी पर आँच बंद करें।"
+        look: "बंद करने से पहले पानी चावल से लगभग एक पोर ऊपर हो।"
+      hi-Latn:
+        text: "Chaawal ka paani nikaalein aur ghee mein ek minute dheere se chalaayein. Namak aur har katori chaawal par dedh katori paani daalein. Band karke ek seeti lagaayein."
+        sound: "Pehli seeti par aanch band karein."
+        look: "Band karne se pehle paani chaawal se lagbhag ek por upar ho."
+  - text: Let the pressure drop by itself, then wait five more minutes and fluff with a fork.
+    minutes: 5
+    timer: true
+    cues:
+      look: "Long, separate grains with no water left at the bottom."
+      avoid: "Stir gently; a spoon breaks the grains."
+    say:
+      hi:
+        text: "प्रेशर अपने आप उतरने दें, फिर पाँच मिनट और रुककर काँटे से हल्के से खिलाएँ।"
+        look: "लंबे, अलग-अलग दाने और नीचे पानी न बचे।"
+        avoid: "धीरे चलाएँ; चम्मच से दाने टूटते हैं।"
+      hi-Latn:
+        text: "Pressure apne aap utarne dein, phir paanch minute aur ruk kar kaante se halke se khilaayein."
+        look: "Lambe, alag-alag daane aur neeche paani na bache."
+        avoid: "Dheere chalaayein; chammach se daane toot-te hain."

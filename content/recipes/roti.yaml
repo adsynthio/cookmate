@@ -1,0 +1,118 @@
+slug: roti
+title: Roti (Phulka)
+titles: {hi: रोटी (फुलका), hi-Latn: Roti (Phulka)}
+description: >-
+  Soft everyday wheat rotis that puff up on the flame. One katori of atta makes about four rotis. The dough is the
+  whole trick: water a little at a time, a good knead and a rest.
+descriptions:
+  hi: "रोज़ की नरम गेहूँ की रोटी जो आँच पर फूल जाए। एक कटोरी आटे से लगभग चार रोटी बनती हैं। असली बात आटे में है: पानी थोड़ा-थोड़ा, अच्छी तरह गूँधना और थोड़ा आराम।"
+  hi-Latn: "Roz ki naram gehun ki roti jo aanch par phool jaaye. Ek katori aate se lagbhag chaar roti banti hain. Asli baat aate mein hai: paani thoda-thoda, achchhi tarah goondhna aur thoda aaraam."
+cuisine_region: generic_north
+course: component
+diet: veg
+base_servings: 2
+prep_time_min: 30
+cook_time_min: 15
+difficulty: 2
+spice_level: 1
+equipment: [tawa]
+tags: [basics]
+flavor_profile: {rich: 0.1, heat: 0, acid: 0, crunch: 0, starch: 1, sweet: 0}
+food_groups: [grain]
+review_status: draft
+ingredients:
+  - {ingredient: whole wheat flour, qty: 150, unit: g, local: 2 katori atta (8 rotis), role: starch}
+  - {ingredient: salt, qty: 1, unit: g, local: 1 chutki, role: spice, optional: true}
+  - {ingredient: ghee, qty: 9, unit: g, local: 2 chhota chammach, role: fat, optional: true, substitutes: [{ingredient: butter, ratio: 1}]}
+steps:
+  - text: Put the atta and salt in a wide bowl. Add about half a katori of water a little at a time, mixing with your fingers, until it comes together.
+    technique: knead
+    minutes: 3
+    cues:
+      touch: "It should feel soft and slightly sticky, not wet. Add a spoon of water or atta to fix it."
+      avoid: "Don't pour all the water at once: atta soaks differently every time."
+    say:
+      hi:
+        text: "चौड़े बर्तन में आटा और नमक लें। लगभग आधी कटोरी पानी थोड़ा-थोड़ा डालते हुए उँगलियों से मिलाएँ जब तक आटा इकट्ठा न हो जाए।"
+        touch: "आटा नरम और हल्का चिपचिपा लगे, गीला नहीं। ज़रूरत हो तो एक चम्मच पानी या आटा डालें।"
+        avoid: "सारा पानी एक साथ न डालें: हर बार आटा अलग पानी सोखता है।"
+      hi-Latn:
+        text: "Chaude bartan mein aata aur namak lein. Lagbhag aadhi katori paani thoda-thoda daalte hue ungliyon se milaayein jab tak aata ikattha na ho jaaye."
+        touch: "Aata naram aur halka chipchipa lage, geela nahi. Zaroorat ho to ek chammach paani ya aata daalein."
+        avoid: "Saara paani ek saath na daalein: har baar aata alag paani sokhta hai."
+  - text: Knead with your knuckles, folding the dough over itself, until smooth.
+    technique: knead
+    minutes: 5
+    timer: true
+    cues:
+      look: "The surface turns smooth with no cracks."
+      touch: "Press a finger in: the dent slowly springs back. That is the softness test."
+    say:
+      hi:
+        text: "मुट्ठी से दबाते हुए और आटे को मोड़ते हुए चिकना होने तक गूँधें।"
+        look: "ऊपर की सतह चिकनी हो जाए, कोई दरार न रहे।"
+        touch: "उँगली से दबाएँ: गड्ढा धीरे-धीरे वापस भरे। यही नरमी की जाँच है।"
+      hi-Latn:
+        text: "Mutthi se dabaate hue aur aate ko modte hue chikna hone tak goondhein."
+        look: "Upar ki satah chikni ho jaaye, koi daraar na rahe."
+        touch: "Ungli se dabaayein: gaddha dheere-dheere waapas bhare. Yahi narmi ki jaanch hai."
+  - text: Cover the dough with a damp cloth or a lid and let it rest.
+    minutes: 20
+    timer: true
+    cues:
+      touch: "After resting it feels softer and rolls without shrinking back."
+    say:
+      hi:
+        text: "आटे को गीले कपड़े या ढक्कन से ढककर आराम करने दें।"
+        touch: "आराम के बाद आटा और नरम लगे और बेलते समय वापस न सिकुड़े।"
+      hi-Latn:
+        text: "Aate ko geele kapde ya dhakkan se dhak kar aaraam karne dein."
+        touch: "Aaraam ke baad aata aur naram lage aur belte samay waapas na sikude."
+  - text: Heat the tawa. Make a lemon-sized ball, dust it in dry atta and roll it thin and round.
+    technique: tawa_cook
+    minutes: 1
+    heat: medium
+    cues:
+      look: "An even circle, thin enough to almost see light through the edges."
+      avoid: "Use just enough dry atta to stop sticking; too much burns on the tawa."
+    say:
+      hi:
+        text: "तवा गरम करें। नींबू जितनी लोई बनाएँ, सूखे आटे में लपेटें और पतली गोल बेलें।"
+        look: "एक बराबर गोला, किनारे इतने पतले कि रोशनी लगभग दिखे।"
+        avoid: "सूखा आटा उतना ही लगाएँ कि चिपके नहीं; ज़्यादा आटा तवे पर जलता है।"
+      hi-Latn:
+        text: "Tawa garam karein. Nimbu jitni loi banaayein, sookhe aate mein lapetein aur patli gol belein."
+        look: "Ek barabar gola, kinaare itne patle ki roshni lagbhag dikhe."
+        avoid: "Sookha aata utna hi lagaayein ki chipke nahi; zyada aata tawe par jalta hai."
+  - text: Put the roti on the hot tawa. Flip when small bubbles appear, cook the other side a little longer, then hold it over the open flame with tongs so it puffs.
+    technique: tawa_cook
+    seconds: 90
+    heat: medium
+    cues:
+      look: "Small bubbles on top, then light brown spots underneath."
+      sound: "A soft hiss as it puffs."
+      avoid: "On induction or without a flame, press the roti gently with a cloth on the tawa instead."
+    safety: Use tongs over the flame, never your fingers.
+    say:
+      hi:
+        text: "रोटी गरम तवे पर डालें। छोटे बुलबुले दिखें तो पलटें, दूसरी तरफ़ थोड़ा ज़्यादा सेकें, फिर चिमटे से सीधी आँच पर रखें ताकि फूल जाए।"
+        look: "ऊपर छोटे बुलबुले, फिर नीचे हल्के भूरे धब्बे।"
+        sound: "फूलते समय हल्की सी सीटी जैसी आवाज़।"
+        avoid: "इंडक्शन पर या बिना आँच के, तवे पर ही कपड़े से हल्का दबाएँ।"
+        safety: "आँच पर चिमटा इस्तेमाल करें, कभी उँगलियाँ नहीं।"
+      hi-Latn:
+        text: "Roti garam tawe par daalein. Chhote bulbule dikhein to paltein, doosri taraf thoda zyada sekein, phir chimte se seedhi aanch par rakhein taaki phool jaaye."
+        look: "Upar chhote bulbule, phir neeche halke bhoore dhabbe."
+        sound: "Phoolte samay halki si seeti jaisi aawaaz."
+        avoid: "Induction par ya bina aanch ke, tawe par hi kapde se halka dabaayein."
+        safety: "Aanch par chimta istemaal karein, kabhi ungliyaan nahi."
+  - text: Brush with ghee if you like and keep in a covered box. Leftover dough goes in a closed box in the fridge for up to two days; let it come to room temperature before rolling.
+    cues:
+      touch: "Rotis stay soft when stacked and covered while warm."
+    say:
+      hi:
+        text: "चाहें तो घी लगाएँ और ढके डिब्बे में रखें। बचा आटा बंद डिब्बे में फ़्रिज में दो दिन तक रखें; बेलने से पहले कमरे के तापमान पर आने दें।"
+        touch: "गरम रोटियाँ ढककर रखने से नरम रहती हैं।"
+      hi-Latn:
+        text: "Chaahein to ghee lagaayein aur dhake dibbe mein rakhein. Bacha aata band dibbe mein fridge mein do din tak rakhein; belne se pehle kamre ke taapmaan par aane dein."
+        touch: "Garam rotiyaan dhak kar rakhne se naram rehti hain."

@@ -18,9 +18,10 @@ export const onboarding: Record<"producePile" | "leafPalak" | "leafMethi" | "lea
   leafCoriander: require("../../assets/media/onboarding/leaf-coriander.png") as ImageSourcePropType,
 };
 
-export const dishes: Record<"besan-chilla" | "bhatura" | "chicken-curry" | "dal-tadka" | "egg-bhurji" | "jeera-aloo" | "jeera-rice" | "kadhi-pakora" | "kanda-poha" | "kulcha" | "matar-paneer" | "moong-dal-khichdi" | "paratha" | "plain-dal" | "puri" | "rajma" | "roti", ImageSourcePropType | null> = {
+export const dishes: Record<"besan-chilla" | "bhatura" | "boiled-chana" | "chicken-curry" | "dal-tadka" | "egg-bhurji" | "jeera-aloo" | "jeera-rice" | "kadhi-pakora" | "kanda-poha" | "kulcha" | "matar-paneer" | "moong-dal-khichdi" | "onion-tomato-masala" | "paratha" | "plain-dal" | "puri" | "rajma" | "roti", ImageSourcePropType | null> = {
   "besan-chilla": require("../../assets/media/dishes/besan-chilla.png") as ImageSourcePropType,
   "bhatura": null,
+  "boiled-chana": null,
   "chicken-curry": require("../../assets/media/dishes/chicken-curry.png") as ImageSourcePropType,
   "dal-tadka": require("../../assets/media/dishes/dal-tadka.png") as ImageSourcePropType,
   "egg-bhurji": require("../../assets/media/dishes/egg-bhurji.png") as ImageSourcePropType,
@@ -31,6 +32,7 @@ export const dishes: Record<"besan-chilla" | "bhatura" | "chicken-curry" | "dal-
   "kulcha": null,
   "matar-paneer": require("../../assets/media/dishes/matar-paneer.png") as ImageSourcePropType,
   "moong-dal-khichdi": require("../../assets/media/dishes/moong-dal-khichdi.png") as ImageSourcePropType,
+  "onion-tomato-masala": null,
   "paratha": null,
   "plain-dal": null,
   "puri": null,
@@ -247,7 +249,7 @@ export const categoryPhotos: Record<"beverage" | "condiment" | "dairy" | "egg" |
   "vegetable": null,
 };
 
-export const stepPhotos: Record<"besan-chilla/3" | "besan-chilla/4" | "bhatura/3" | "bhatura/4" | "chicken-curry/2" | "chicken-curry/3" | "chicken-curry/4" | "chicken-curry/5" | "dal-tadka/3" | "dal-tadka/4" | "egg-bhurji/2" | "egg-bhurji/4" | "jeera-aloo/3" | "jeera-aloo/4" | "jeera-rice/3" | "kadhi-pakora/2" | "kadhi-pakora/3" | "kadhi-pakora/5" | "kadhi-pakora/7" | "kanda-poha/2" | "kanda-poha/3" | "kanda-poha/4" | "kulcha/4" | "matar-paneer/2" | "matar-paneer/3" | "paratha/3" | "plain-dal/2" | "plain-dal/3" | "puri/2" | "puri/3" | "rajma/3" | "rajma/4" | "rajma/5" | "roti/4" | "roti/5", ImageSourcePropType | null> = {
+export const stepPhotos: Record<"besan-chilla/3" | "besan-chilla/4" | "bhatura/3" | "bhatura/4" | "chicken-curry/2" | "chicken-curry/3" | "chicken-curry/4" | "chicken-curry/5" | "dal-tadka/3" | "dal-tadka/4" | "egg-bhurji/2" | "egg-bhurji/4" | "jeera-aloo/3" | "jeera-aloo/4" | "jeera-rice/3" | "kadhi-pakora/2" | "kadhi-pakora/3" | "kadhi-pakora/5" | "kadhi-pakora/7" | "kanda-poha/2" | "kanda-poha/3" | "kanda-poha/4" | "kulcha/4" | "matar-paneer/2" | "matar-paneer/3" | "onion-tomato-masala/2" | "onion-tomato-masala/3" | "paratha/3" | "plain-dal/2" | "plain-dal/3" | "puri/2" | "puri/3" | "rajma/3" | "rajma/4" | "rajma/5" | "roti/4" | "roti/5", ImageSourcePropType | null> = {
   "besan-chilla/3": null,
   "besan-chilla/4": null,
   "bhatura/3": null,
@@ -273,6 +275,8 @@ export const stepPhotos: Record<"besan-chilla/3" | "besan-chilla/4" | "bhatura/3
   "kulcha/4": null,
   "matar-paneer/2": null,
   "matar-paneer/3": null,
+  "onion-tomato-masala/2": null,
+  "onion-tomato-masala/3": null,
   "paratha/3": null,
   "plain-dal/2": null,
   "plain-dal/3": null,

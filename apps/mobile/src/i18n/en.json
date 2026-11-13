@@ -1201,7 +1201,7 @@
   "swaps.taste.earthier": "a deeper, earthier taste",
   "swaps.taste.sweeter": "a little sweeter",
   "cook.basicsTitle": "Learn the basics",
-  "cook.basicsBody": "Dough for roti, paratha, puri, bhatura and kulcha, plus rice and dal. Set how many are eating: 1 katori atta makes about 4 rotis.",
+  "cook.basicsBody": "Dough for roti, paratha, puri, bhatura and kulcha, rice and dal, and Sunday batches (onion-tomato masala, boiled chana) that make weekday cooking quicker. 1 katori atta makes about 4 rotis.",
   "cook.heat.hot": "Too hot",
   "cook.heat.slow": "Too slow",
   "cook.heat.lower": "Got it: your {stove} runs hot, so I'll say one level lower from now on.",
@@ -1238,5 +1238,14 @@
   "buyFew.titleTwo": "Buy {a} and {b}, cook {n} more dishes",
   "buyFew.more": "and {n} more",
   "buyFew.addOne": "Add to the list",
-  "buyFew.addBoth": "Add both to the list"
+  "buyFew.addBoth": "Add both to the list",
+  "bases.title": "Your Sunday batch saves {min}",
+  "bases.overnight": "the overnight soak",
+  "bases.line.masala": "Ready onion-tomato masala stands in for steps {steps}.",
+  "bases.line.boiled_pulse": "Boiled {pulse} in the kitchen: skip steps {steps}.",
+  "bases.line.gg_paste": "Ginger-garlic paste instead of grating in step {steps}.",
+  "bases.ready": "From your Sunday batch",
+  "bases.cook.masala": "Use your ready masala here: warm about {n} spoons in the oil for 2–3 minutes until it sizzles, then go on to the next step.",
+  "bases.cook.boiled_pulse": "Your {pulse} is already boiled: skip this step and use it straight from the box.",
+  "bases.cook.gg_paste": "Use a spoon of ginger-garlic paste instead of grating ginger and garlic."
 }

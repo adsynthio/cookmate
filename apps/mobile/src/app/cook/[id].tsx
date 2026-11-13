@@ -41,6 +41,7 @@ import { useStove } from "@/state/stove";
 import { useStepTimes } from "@/state/stepTimes";
 import { useHabits } from "@/state/habits";
 import { heatStep, isFamiliar, mildShare, setFull } from "@/domain/habits";
+import { readyBases, shortcuts } from "@/domain/bases";
 import { recordStep, yourSeconds } from "@/domain/stepTimes";
 import { StoveCard } from "@/components/cook/StoveCard";
 import { AirFryerCard } from "@/components/cook/AirFryerCard";
@@ -200,6 +201,9 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
     [rawDoc, eaters, spiceMemories.data],
   );
   const mildStep = mildFor.length ? heatStep(rawDoc.steps) : null;
+  // S9: steps a ready Sunday batch replaces.
+  const kitchenItems = useQuery({ queryKey: ["kitchen", householdId], queryFn: () => services.kitchen.getKitchen(householdId) });
+  const baseCuts = useMemo(() => shortcuts(rawDoc, readyBases(kitchenItems.data ?? [])), [rawDoc, kitchenItems.data]);
   // S2: how long this cook really takes over hands-on steps (time between Next taps), kept on this phone.
   const stepTimes = useStepTimes((s) => s.times);
   const setStepTimes = useStepTimes((s) => s.set);
@@ -588,6 +592,19 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           ) : null}
 
           <DirectionCard step={step} brief={brief} onFull={() => setHabits(setFull(useHabits.getState().times, doc.slug, true))} />
+
+          {baseCuts
+            .filter((c) => c.steps.includes(stepNo))
+            .map((c) => (
+              <View key={c.base} style={[styles.note, { backgroundColor: colors.primaryPale }]}>
+                <Text variant="label" muted>
+                  {t("bases.ready")}
+                </Text>
+                <Text variant="bodyStrong">
+                  {t(`bases.cook.${c.base}`, { n: eaters.length || doc.base_servings, pulse: c.pulse ? displayName(catalogEntry(c.pulse), c.pulse, locale) : "" })}
+                </Text>
+              </View>
+            ))}
 
           {mildStep === stepNo ? (
             <View style={[styles.note, { backgroundColor: colors.primaryPale }]} accessibilityRole="alert">

@@ -44,6 +44,7 @@ import { useSession } from "@/state/session";
 import { useStepTimes } from "@/state/stepTimes";
 import { useHabits } from "@/state/habits";
 import { keepIngredient, usualSkips } from "@/domain/habits";
+import { minutesSaved, readyBases, shortcuts } from "@/domain/bases";
 import { yourTotalMinutes } from "@/domain/stepTimes";
 
 export default function RecipeScreen() {
@@ -172,6 +173,8 @@ function RecipeBody({
     [memories.data],
   );
   const entries = useMemo(() => pantryEntries(items), [items]);
+  // S9: a ready Sunday batch (masala, boiled chana, ginger-garlic paste) and the steps it replaces.
+  const baseCuts = useMemo(() => shortcuts(doc, readyBases(items)), [doc, items]);
   const match = useMemo(() => pantryMatch(toRankRecipe(doc), entries, STAPLES, avoid), [doc, entries, avoid]);
   const inKitchen = useMemo(
     () => new Set([...entries.filter((e) => !e.out && e.confidence >= CONFIDENT).map((e) => e.key), ...STAPLES]),
@@ -326,6 +329,17 @@ function RecipeBody({
           ) : null}
         </Card>
       </Enter>
+
+      {baseCuts.length ? (
+        <Card tint={colors.primaryPale} style={{ gap: space.xs }}>
+          <Text variant="subheading">{t("bases.title", { min: minutesSaved(baseCuts) >= 120 ? t("bases.overnight") : t("home.minutes", { min: minutesSaved(baseCuts) }) })}</Text>
+          {baseCuts.map((c) => (
+            <Text key={c.base}>
+              {t(`bases.line.${c.base}`, { steps: c.steps.join(", "), pulse: c.pulse ? nameOf(c.pulse) : "" })}
+            </Text>
+          ))}
+        </Card>
+      ) : null}
 
       <MakeItDifferent doc={doc} has={(k) => inKitchen.has(k)} avoid={avoid} nameOf={nameOf} />
 

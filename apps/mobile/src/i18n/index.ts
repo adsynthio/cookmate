@@ -4,34 +4,41 @@ import { useSyncExternalStore } from "react";
 import en from "./en.json";
 import hi from "./hi.json";
 import hinglish from "./hinglish.json";
-import type { Locale } from "./locale";
+import kn from "./kn.json";
+import { type AppLocale, contentLocale, type Locale } from "./locale";
 
-export type { Locale } from "./locale";
-export { LOCALES } from "./locale";
+export type { AppLocale, Locale } from "./locale";
+export { APP_LOCALES, contentLocale, LOCALES } from "./locale";
 export type StringKey = keyof typeof en;
 
-const catalogues: Record<Locale, Partial<Record<StringKey, string>>> = { en, hi, hinglish };
+const catalogues: Record<AppLocale, Partial<Record<StringKey, string>>> = { en, hi, hinglish, kn };
 
 /** English for everyone until the user picks a language on onboarding (or it is restored from their profile). */
-export const DEFAULT_LOCALE: Locale = "en";
+export const DEFAULT_LOCALE: AppLocale = "en";
 
-let current: Locale = DEFAULT_LOCALE;
+let current: AppLocale = DEFAULT_LOCALE;
 
-const listeners = new Set<(locale: Locale) => void>();
+const listeners = new Set<(locale: AppLocale) => void>();
 
 /** KIT-013: switching language applies immediately; the root layout re-renders on change. */
-export function setLocale(locale: Locale) {
+export function setLocale(locale: AppLocale) {
   if (locale === current) return;
   current = locale;
   listeners.forEach((fn) => fn(locale));
 }
 
-export function onLocaleChange(fn: (locale: Locale) => void): () => void {
+export function onLocaleChange(fn: (locale: AppLocale) => void): () => void {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
 
+/** The language for recipe and domain text (Kannada reads English recipe text for now). */
 export function getLocale(): Locale {
+  return contentLocale(current);
+}
+
+/** The language the app's own words are shown in. */
+export function getAppLocale(): AppLocale {
   return current;
 }
 
@@ -43,7 +50,7 @@ export function t(key: StringKey, params?: Record<string, string | number>): str
 }
 
 /** The same string in a given language, whatever the app is set to (F1: a message for the house cook). */
-export function tIn(locale: Locale, key: StringKey, params?: Record<string, string | number>): string {
+export function tIn(locale: AppLocale, key: StringKey, params?: Record<string, string | number>): string {
   const template = catalogues[locale][key] ?? en[key];
   if (!params) return template;
   return template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`));
@@ -51,5 +58,10 @@ export function tIn(locale: Locale, key: StringKey, params?: Record<string, stri
 
 /** Subscribe a component to language changes so its t() calls re-render without an app restart. */
 export function useLocale(): Locale {
-  return useSyncExternalStore(onLocaleChange, getLocale, getLocale);
+  return contentLocale(useAppLocale());
+}
+
+/** The app language, for language pickers. */
+export function useAppLocale(): AppLocale {
+  return useSyncExternalStore(onLocaleChange, getAppLocale, getAppLocale);
 }

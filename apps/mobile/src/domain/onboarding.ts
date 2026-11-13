@@ -25,6 +25,17 @@ export const LANGUAGE_CODES: Record<Locale, string> = {
   en: "en-IN",
 };
 
+/** F7: the code saved for an app language; Kannada is kn-IN. */
+export function languageCodeFor(l: Locale | "kn"): string {
+  return l === "kn" ? "kn-IN" : LANGUAGE_CODES[l];
+}
+
+/** The app language a saved code means (Kannada included). */
+export function appLocaleFromLanguageCode(code: string | null | undefined): Locale | "kn" | null {
+  if (code?.startsWith("kn")) return "kn";
+  return localeFromLanguageCode(code);
+}
+
 export function localeFromLanguageCode(code: string | null | undefined): Locale | null {
   if (!code) return null;
   if (code.startsWith("hi-Latn")) return "hinglish";

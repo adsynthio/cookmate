@@ -38,6 +38,7 @@ import { CommunityError } from "./types";
 
 // The mock "backend" remembers the onboarded household on the device, so restarts skip onboarding
 // just like the live app. Clear app data (or call resetMockHousehold) to see onboarding again.
+let mockPhotoShots = 0;
 const HOUSEHOLD_KEY = "cookmate.mock.household";
 
 function readHousehold(): HouseholdRef | null {
@@ -390,9 +391,11 @@ const mocks: Services = {
         bill: [["toor dal", 1, "kg", 0.95], ["basmati rice", 5, "kg", 0.9], ["mustard oil", 1, "l", 0.9], ["sugar", 1, "kg", 0.95], ["milk", 2, "l", 0.9], ["onion", 2, "kg", 0.9]],
         barcode: [["toor dal", 1, "kg", 0.9]],
       };
+      // One photo mode: alternate a fridge shelf and a bill, so trying it twice shows the tray filling up.
+      const kind = input.kind === "photo" ? (mockPhotoShots++ % 2 === 0 ? "fridge" : "bill") : input.kind;
       return {
         source: input.kind === "barcode" ? "barcode" : "model",
-        items: sample[input.kind]!.map(([name, quantity, unit, confidence]) =>
+        items: sample[kind]!.map(([name, quantity, unit, confidence]) =>
           toDraft({
             said: input.kind === "barcode" ? "Tata Sampann Toor Dal" : name,
             ingredientKey: name,

@@ -27,6 +27,7 @@ export type IconName =
   | "heart"
   | "checkCircle"
   | "receipt"
+  | "image"
   | "camera"
   | "sparkle"
   | "hourglass"
@@ -158,6 +159,14 @@ function shapes(name: IconName) {
       );
     case "receipt":
       return <Path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4zM9 8h6M9 11.5h6M9 15h3.5" />;
+    case "image":
+      return (
+        <>
+          <Path d="M4.5 6a1.5 1.5 0 0 1 1.5-1.5h12A1.5 1.5 0 0 1 19.5 6v12a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 18z" />
+          <Path d="M4.5 16l4.2-4.2a1 1 0 0 1 1.4 0l3.4 3.4M13 14.5l1.7-1.7a1 1 0 0 1 1.4 0l3.4 3.4" />
+          <Circle cx={15.5} cy={8.7} r={1.4} />
+        </>
+      );
     case "camera":
       return (
         <>

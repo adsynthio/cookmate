@@ -4,6 +4,7 @@
 // pile up as you scan packets. Either way the cook checks the items on the add screen before anything is saved.
 import { CameraView, useCameraPermissions, type BarcodeScanningResult } from "expo-camera";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { ActivityIndicator, Image, Platform, StyleSheet, View } from "react-native";
@@ -17,20 +18,21 @@ import { Button, Photo, Screen, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { catalogEntry } from "@/data/catalog";
+import { mergeTray } from "@/domain/scanTray";
 import { t, useLocale, type StringKey } from "@/i18n";
-import { services, type AddedVia, type DraftItem } from "@/services";
+import { services, type DraftItem } from "@/services";
 import { useScan } from "@/state/scan";
 import { useSession } from "@/state/session";
 
-type Mode = "fridge" | "bill" | "barcode";
+type Mode = "photo" | "barcode";
 const MODES: { key: Mode; icon: IconName }[] = [
-  { key: "fridge", icon: "fridge" },
-  { key: "bill", icon: "receipt" },
+  { key: "photo", icon: "camera" },
   { key: "barcode", icon: "barcode" },
 ];
-const VIA: Record<Mode, AddedVia> = { fridge: "camera", bill: "receipt", barcode: "barcode" };
 /** Long edge of the photo sent for reading: sharp enough for a bill, small enough to send quickly. */
 const SEND_EDGE = 1600;
+/** Photos picked from the gallery at once. */
+const PICK_LIMIT = 6;
 const MOCK = process.env.EXPO_PUBLIC_USE_MOCKS === "1";
 
 export default function ScanScreen() {
@@ -39,67 +41,95 @@ export default function ScanScreen() {
   const { colors } = useTheme();
   const householdId = useSession((s) => s.householdId)!;
   const hand = useScan((s) => s.hand);
-  const [mode, setMode] = useState<Mode>("fridge");
+  const [mode, setMode] = useState<Mode>("photo");
   const [permission, requestPermission] = useCameraPermissions();
   const camera = useRef<CameraView>(null);
-  const [busy, setBusy] = useState(false);
+  // Photos are read in the background so the cook can keep shooting; the tray gathers what they find.
+  const [reading, setReading] = useState(0);
+  const [capturing, setCapturing] = useState(false);
+  const [photos, setPhotos] = useState(0);
+  const [usedBarcode, setUsedBarcode] = useState(false);
   const [note, setNote] = useState<string | null>(null);
-  const [scanned, setScanned] = useState<DraftItem[]>([]);
+  const [tray, setTray] = useState<DraftItem[]>([]);
   const lastCode = useRef<{ code: string; at: number } | null>(null);
+  const looking = useRef(false);
   // The web build has no reliable camera access (and none inside a preview page): it shows a sample scene.
   const noCamera = Platform.OS === "web";
 
-  const finish = (items: DraftItem[], via: AddedVia) => {
-    hand(items, via);
+  const finish = () => {
+    hand(tray, photos > 0 ? "camera" : usedBarcode ? "barcode" : "camera");
     router.replace("/pantry/add");
   };
 
   const read = async (image: string) => {
-    if (mode === "barcode") return;
-    setBusy(true);
+    setReading((n) => n + 1);
     setNote(null);
     try {
-      const r = await services.kitchen.scanItems({ householdId, kind: mode, image, mediaType: "image/jpeg" });
-      if (r.items.length) return finish(r.items, VIA[mode]);
-      setNote(r.source === "not_configured" ? t("scan.notOn") : t("scan.nothing"));
+      const r = await services.kitchen.scanItems({ householdId, kind: "photo", image, mediaType: "image/jpeg" });
+      if (r.items.length) {
+        setTray((t) => mergeTray(t, r.items));
+        setPhotos((n) => n + 1);
+      } else setNote(r.source === "not_configured" ? t("scan.notOn") : t("scan.shotEmpty"));
     } catch {
-      setNote(t("scan.error"));
+      setNote(t("scan.shotFailed"));
     } finally {
-      setBusy(false);
+      setReading((n) => n - 1);
     }
   };
 
+  /** Makes a photo small enough to send quickly, then reads it in the background. */
+  const shrinkAndRead = async (uri: string, width: number, height: number) => {
+    const ctx = ImageManipulator.manipulate(uri);
+    if (Math.max(width, height) > SEND_EDGE) ctx.resize(width >= height ? { width: SEND_EDGE } : { height: SEND_EDGE });
+    const small = await (await ctx.renderAsync()).saveAsync({ compress: 0.6, format: SaveFormat.JPEG, base64: true });
+    void read(small.base64 ?? "");
+  };
+
   const shoot = async () => {
-    if (!camera.current || busy) return;
-    setBusy(true);
+    if (!camera.current || capturing) return;
+    setCapturing(true);
     try {
       const photo = await camera.current.takePictureAsync({ quality: 0.8, skipProcessing: false });
-      const longEdge = Math.max(photo.width, photo.height);
-      const ctx = ImageManipulator.manipulate(photo.uri);
-      if (longEdge > SEND_EDGE) ctx.resize(photo.width >= photo.height ? { width: SEND_EDGE } : { height: SEND_EDGE });
-      const small = await (await ctx.renderAsync()).saveAsync({ compress: 0.6, format: SaveFormat.JPEG, base64: true });
-      await read(small.base64 ?? "");
+      await shrinkAndRead(photo.uri, photo.width, photo.height);
     } catch {
-      setNote(t("scan.error"));
-      setBusy(false);
+      setNote(t("scan.shotFailed"));
+    } finally {
+      setCapturing(false);
+    }
+  };
+
+  /** Photos already on the phone: a bill from earlier, or screenshots of an online order. */
+  const pick = async () => {
+    if (MOCK && noCamera) return void read("sample");
+    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], allowsMultipleSelection: true, selectionLimit: PICK_LIMIT, quality: 1 });
+    if (res.canceled) return;
+    setMode("photo");
+    for (const a of res.assets.slice(0, PICK_LIMIT)) {
+      try {
+        await shrinkAndRead(a.uri, a.width, a.height);
+      } catch {
+        setNote(t("scan.shotFailed"));
+      }
     }
   };
 
   const onBarcode = async (r: BarcodeScanningResult) => {
     const now = Date.now();
     // The camera reports the same code many times a second: one lookup per packet.
-    if (busy || (lastCode.current?.code === r.data && now - lastCode.current.at < 4000)) return;
+    if (looking.current || (lastCode.current?.code === r.data && now - lastCode.current.at < 4000)) return;
     lastCode.current = { code: r.data, at: now };
-    setBusy(true);
+    looking.current = true;
     setNote(null);
     try {
       const found = await services.kitchen.scanItems({ householdId, kind: "barcode", code: r.data });
-      if (found.items.length) setScanned((s) => [...s, ...found.items]);
-      else setNote(t("scan.unknownBarcode"));
+      if (found.items.length) {
+        setTray((t) => mergeTray(t, found.items, "packet"));
+        setUsedBarcode(true);
+      } else setNote(t("scan.unknownBarcode"));
     } catch {
       setNote(t("scan.error"));
     } finally {
-      setBusy(false);
+      looking.current = false;
     }
   };
 
@@ -132,7 +162,7 @@ export default function ScanScreen() {
       </View>
 
       <Enter>
-        <View style={[styles.frame, { backgroundColor: colors.inkSecondary }]}>
+        <View style={[styles.frame, (tray.length > 0 || reading > 0) && styles.frameSmall, { backgroundColor: colors.inkSecondary }]}>
           {showCamera ? (
             <CameraView
               ref={camera}
@@ -153,14 +183,7 @@ export default function ScanScreen() {
             </Text>
           </View>
           {mode === "barcode" ? <View style={[styles.target, { borderColor: colors.surface }]} /> : null}
-          {busy ? (
-            <View style={[styles.reading, { backgroundColor: "rgba(28,28,24,0.55)" }]}>
-              <ActivityIndicator color="#FFFFFF" />
-              <Text color="#FFFFFF" weight={500}>
-                {mode === "barcode" ? "…" : t("scan.reading")}
-              </Text>
-            </View>
-          ) : null}
+          {capturing ? <View style={[styles.reading, { backgroundColor: "rgba(255,255,255,0.35)" }]} /> : null}
         </View>
       </Enter>
 
@@ -179,39 +202,11 @@ export default function ScanScreen() {
                   kind="primary"
                   icon="sparkle"
                   label={t("scan.sample")}
-                  disabled={busy}
                   onPress={() => (mode === "barcode" ? void onBarcode({ data: "8901234567890" } as BarcodeScanningResult) : void read("sample"))}
                 />
               ) : null}
             </>
           )}
-        </View>
-      ) : null}
-
-      {mode === "barcode" && scanned.length ? (
-        <View style={[styles.panel, shadow.card, { backgroundColor: colors.surface }]}>
-          <View style={styles.row}>
-            <Pulse color={colors.primary} />
-            <Text variant="bodyStrong">{t("scan.found", { n: scanned.length })}</Text>
-          </View>
-          <View style={styles.wrap}>
-            {scanned.map((d) => (
-              <Layout key={d.key}>
-                <View style={[styles.found, { backgroundColor: colors.peach }]}>
-                  <Photo source={ingredientImage(d.ingredientKey, catalogEntry(d.ingredientKey)?.category ?? "packaged")} size={24} round />
-                  <Text variant="label">{draftName(d)}</Text>
-                  <Icon name="checkCircle" size={16} color={colors.peachText} />
-                </View>
-              </Layout>
-            ))}
-          </View>
-          <Button
-            kind="primary"
-            stretch
-            iconAfter="forward"
-            label={scanned.length === 1 ? t("scan.reviewOne") : t("scan.review", { n: scanned.length })}
-            onPress={() => finish(scanned, "barcode")}
-          />
         </View>
       ) : null}
 
@@ -227,8 +222,8 @@ export default function ScanScreen() {
           <PressableScale
             accessibilityRole="button"
             accessibilityLabel={t("scan.shutter")}
-            accessibilityState={{ disabled: busy || !showCamera, busy }}
-            disabled={busy || !showCamera}
+            accessibilityState={{ disabled: capturing || !showCamera, busy: capturing }}
+            disabled={capturing || !showCamera}
             onPress={() => void shoot()}
             scaleTo={0.9}
             style={[styles.shutterRing, { borderColor: colors.accentSoft, opacity: showCamera ? 1 : 0.5 }]}
@@ -240,8 +235,53 @@ export default function ScanScreen() {
         ) : (
           <View style={styles.shutterRing} />
         )}
-        <SideAction icon="barcode" label={t("scan.mode.barcode")} onPress={() => setMode("barcode")} />
+        <SideAction icon="image" label={t("scan.gallery")} onPress={() => void pick()} />
       </View>
+
+      {tray.length || reading ? (
+        <View style={[styles.panel, shadow.card, { backgroundColor: colors.surface }]}>
+          <View style={styles.row}>
+            <Pulse color={colors.primary} />
+            <View style={{ flex: 1 }}>
+              <Text variant="bodyStrong">{tray.length === 1 ? t("scan.trayTitleOne") : t("scan.trayTitle", { n: tray.length })}</Text>
+              {photos ? (
+                <Text variant="caption" muted>
+                  {photos === 1 ? t("scan.trayFromOne") : t("scan.trayFrom", { n: photos })}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+          {reading ? (
+            <View style={styles.row} accessibilityLiveRegion="polite">
+              <ActivityIndicator color={colors.primary} />
+              <Text variant="caption" weight={600}>
+                {reading === 1 ? t("scan.readingOne") : t("scan.readingN", { n: reading })}
+              </Text>
+            </View>
+          ) : null}
+          <View style={styles.wrap}>
+            {tray.map((d) => (
+              <Layout key={d.key}>
+                <View style={[styles.found, { backgroundColor: colors.peach }]}>
+                  <Photo source={ingredientImage(d.ingredientKey, catalogEntry(d.ingredientKey)?.category ?? "packaged")} size={24} round />
+                  <Text variant="label">{draftName(d)}</Text>
+                  <Icon name="checkCircle" size={16} color={colors.peachText} />
+                </View>
+              </Layout>
+            ))}
+          </View>
+          {tray.length ? (
+            <Button
+              kind="primary"
+              stretch
+              iconAfter="forward"
+              disabled={reading > 0}
+              label={reading > 0 ? t("scan.waitReading") : tray.length === 1 ? t("scan.reviewOne") : t("scan.review", { n: tray.length })}
+              onPress={finish}
+            />
+          ) : null}
+        </View>
+      ) : null}
 
       <View style={styles.privacy}>
         <Icon name="shield" size={16} color={colors.inkTertiary} />
@@ -271,6 +311,8 @@ const styles = StyleSheet.create({
   modes: { flexDirection: "row", borderRadius: radius.pill, padding: 4 },
   mode: { flex: 1, flexDirection: "row", gap: 4, alignItems: "center", justifyContent: "center", borderRadius: radius.pill, minHeight: 40, paddingHorizontal: 6 },
   frame: { height: 420, borderRadius: radius.cardLg, overflow: "hidden", justifyContent: "flex-start" },
+  // Smaller once items arrive, so the shutter and the tray both stay in view.
+  frameSmall: { height: 300 },
   caption: { margin: space.lg, borderRadius: radius.item, padding: space.md, gap: 2 },
   center: { textAlign: "center" },
   target: { position: "absolute", left: "15%", right: "15%", top: "40%", height: 110, borderWidth: 3, borderRadius: radius.item },

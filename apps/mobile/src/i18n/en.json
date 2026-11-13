@@ -1403,5 +1403,13 @@
   "twice.keep": "Put the second half in the fridge within {hours} hour(s), eat it within {days} day(s), and reheat it once until steaming hot.",
   "twice.tomorrow": "Tomorrow: {ideas}",
   "twice.double": "Make double ({n} servings)",
-  "twice.doubled": "Making double: {n} servings"
+  "twice.doubled": "Making double: {n} servings",
+  "photo.open": "Check with a photo",
+  "photo.checking": "Looking…",
+  "photo.unavailable": "Photo checks aren't available just now.",
+  "photo.verdict.carry_on": "Looks right for this step. Carry on.",
+  "photo.verdict.a_little_more": "A little more. Give it another minute or two.",
+  "photo.verdict.cant_tell": "I can't tell from this photo. Go by the cue in the step.",
+  "photo.cutCheck": "Cut the biggest piece: no pink inside, juices clear.",
+  "photo.disclaimer": "A photo can't tell you food is safe to eat. Trust the cues and the safety notes."
 }

@@ -882,6 +882,17 @@ export const liveServices: Services = {
       const r = data as { current_step: number; total: number };
       return { currentStep: r.current_step, total: r.total };
     },
+    async photoCheck({ householdId, sessionId, image }) {
+      const { data, error } = await requireSupabase().functions.invoke<{
+        verdict: "carry_on" | "a_little_more" | "cant_tell"; note: string; safety_note: string | null; cut_check: boolean;
+      }>("photo-check", { body: { household_id: householdId, session_id: sessionId, image, media_type: "image/jpeg" } });
+      if (error) {
+        const status = (error as { context?: { status?: number } }).context?.status;
+        if (status === 503) return { verdict: "unavailable" };
+        throw error;
+      }
+      return { verdict: data!.verdict, note: data!.note, safetyNote: data!.safety_note, cutCheck: data!.cut_check };
+    },
     async ask(input) {
       const sb = requireSupabase();
       const { data, error } = await sb.functions.invoke<{ answer: string; safety_note: string | null; source: "rules" | "model" }>("cook-assist", {

@@ -797,6 +797,20 @@ const mocks: Services = {
       s.currentStep = Math.max(1, Math.min(doc.steps.length, s.currentStep + delta));
       return { currentStep: s.currentStep, total: doc.steps.length };
     },
+    async photoCheck({ sessionId }) {
+      await delay(900);
+      // The preview has no model: it answers as a careful cook would, from the step's own words.
+      const s = sessions.get(sessionId);
+      const doc = s ? (adapted.get(s.recipeId) ?? recipeBySlug(s.recipeId) ?? null) : null;
+      const step = doc?.steps[(s?.currentStep ?? 1) - 1];
+      const look = step?.cues?.look ?? step?.cue ?? "";
+      return {
+        verdict: look ? "carry_on" : "cant_tell",
+        note: look ? `Looks like it matches: ${look}` : "",
+        safetyNote: step?.safety ?? null,
+        cutCheck: !!step && /chicken|mutton|fish|egg|prawn/i.test(step.text),
+      };
+    },
     async ask({ sessionId, question, languageCode }) {
       await delay(400);
       const s = sessions.get(sessionId);

@@ -1369,5 +1369,13 @@
   "twice.keep": "Doosra hissa {hours} ghante ke andar fridge mein rakhein, {days} din mein kha lein, aur ek hi baar bhaap nikalne tak garam karein.",
   "twice.tomorrow": "Kal ke liye: {ideas}",
   "twice.double": "Doguna banaayein ({n} log)",
-  "twice.doubled": "Doguna ban raha hai: {n} log"
+  "twice.doubled": "Doguna ban raha hai: {n} log",
+  "photo.open": "Photo se jaanchein",
+  "photo.checking": "Dekh raha hoon…",
+  "photo.unavailable": "Photo se jaanch abhi available nahi hai.",
+  "photo.verdict.carry_on": "Is step ke liye sahi lag raha hai. Aage badhiye.",
+  "photo.verdict.a_little_more": "Thoda aur. Ek-do minute aur dijiye.",
+  "photo.verdict.cant_tell": "Is photo se pata nahi chal raha. Step mein bataaye sanket se dekhiye.",
+  "photo.cutCheck": "Sabse bada tukda kaatein: andar gulaabi na ho, ras saaf ho.",
+  "photo.disclaimer": "Photo se yeh pata nahi chalta ki khaana khaane ke liye safe hai. Sanketon aur safety note par bharosa karein."
 }

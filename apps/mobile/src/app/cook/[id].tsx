@@ -4,6 +4,7 @@
 // session row is updated behind it and catches up if a save fails.
 // Offline (KIT-076/084): when cooking starts the phone keeps the recipe and downloads this cook's step recordings,
 // so with no network the dish can still be finished, read aloud, and driven hands-free; writes wait in the outbox.
+import { PhotoCheck } from "@/components/cook/PhotoCheck";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -732,6 +733,9 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           onAsk={() => router.push(`/assist/${session.id}?mode=ask`)}
           onChanged={() => router.push(`/assist/${session.id}?mode=changed`)}
         />
+
+        {/* F5: snap the pan and compare it with this step's cues. */}
+        <PhotoCheck householdId={householdId} sessionId={session.id} stepNo={stepNo} />
 
         <Button
           kind="quiet"

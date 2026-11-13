@@ -7,11 +7,15 @@ import { z } from "npm:zod@4.6.5";
 
 export const TASK = "scan_pantry_image";
 export const MODEL = "claude-opus-5-5";
-export const PROMPT_VERSION = "scan_pantry_image@2";
+export const PROMPT_VERSION = "scan_pantry_image@3";
 
 export type ScanKind = "fridge" | "bill" | "photo";
 
+/** Kitchen machines and pans the cook may want on their kitchen tools list (database equipment_type keys). */
+export const APPLIANCES = ["gas_stove", "induction", "pressure_cooker", "kadai", "tawa", "mixer_grinder", "air_fryer", "otg", "microwave", "blender"] as const;
+
 export const ScanItems = z.object({
+  appliances: z.array(z.enum(APPLIANCES)),
   items: z.array(
     z.object({
       said: z.string(),
@@ -31,7 +35,10 @@ const COMMON = `Rules for every item:
 - ingredient_key: the canonical name from the catalog below when it is clearly one of those; otherwise null.
 - quantity and unit only when you can read or count them. Units: kg, g, l, ml, piece, packet, bunch, bottle, box.
 - confidence: 0.9+ when certain, lower when the item or amount is a guess.
-- Ignore people, hands, utensils, appliances, cleaning products, toiletries and anything that is not food.
+- Ignore people, hands, cleaning products, toiletries and anything that is not food.
+- appliances (separate from items): cooking equipment clearly visible in a photo of the kitchen: gas stove, induction
+  cooktop, pressure cooker, kadai, tawa, mixer grinder, air fryer, OTG oven, microwave, hand blender. Only what you can
+  plainly see; never guess from food. Always empty for a bill, receipt or order screenshot.
 
 Catalog (canonical | hinglish | hindi | aliases):
 `;

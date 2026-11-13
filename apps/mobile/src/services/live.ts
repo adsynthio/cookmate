@@ -438,9 +438,10 @@ export const liveServices: Services = {
         // Offline or the function is down: the on-device parser still gets most pantry sentences right.
         return { items: parsePantryText(text, catalogIndex).map(toDraft), source: "device" };
       }
-      const result = data as { items: ParseInventoryItem[]; source: string };
+      const result = data as { items: ParseInventoryItem[]; source: string; appliances?: string[] };
       return {
         source: result.source,
+        appliances: (result.appliances ?? []).filter(isToolKey),
         items: result.items.map((i) =>
           toDraft({
             said: i.name,

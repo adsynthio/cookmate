@@ -7,7 +7,7 @@ import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.1
 import { logAiRequest } from "../_shared/aiLog.ts";
 import { buildIndex, type CatalogIndex, type ParsedItem } from "../_shared/pantryParse.ts";
 import { type CatalogRow, catalogHints, toCatalog, toResponseItem } from "../parse-inventory/logic.ts";
-import { fromModel, fromOpenFoodFacts, type OffProduct, readBody } from "./logic.ts";
+import { cleanAppliances, fromModel, fromOpenFoodFacts, type OffProduct, readBody } from "./logic.ts";
 import { callModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
 
 const CORS = {
@@ -78,7 +78,8 @@ Deno.serve(async (req) => {
   if (!member) return json({ error: "not a member of this household" }, 403);
 
   const catalog = await loadCatalog(sb);
-  const reply = (items: ParsedItem[], source: string) => json({ items: items.map((i) => toResponseItem(i, catalog.ids)), source });
+  const reply = (items: ParsedItem[], source: string, appliances: string[] = []) =>
+    json({ items: items.map((i) => toResponseItem(i, catalog.ids)), source, appliances });
 
   if (body.kind === "barcode") {
     const item = fromOpenFoodFacts(await lookUpBarcode(body.code), catalog.index);
@@ -97,7 +98,11 @@ Deno.serve(async (req) => {
       return json({ items: [], source: "unreadable" });
     }
     await log("ok", latencyMs, response.usage);
-    return reply(fromModel(response.parsed_output.items, new Set(catalog.rows.map((r) => r.canonical_name))), "model");
+    return reply(
+      fromModel(response.parsed_output.items, new Set(catalog.rows.map((r) => r.canonical_name))),
+      "model",
+      cleanAppliances(response.parsed_output.appliances),
+    );
   } catch (err) {
     const status = err instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "error";
     await log(status, Date.now() - started, undefined, err instanceof Error ? err.message : String(err));

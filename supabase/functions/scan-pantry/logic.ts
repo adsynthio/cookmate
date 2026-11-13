@@ -100,3 +100,10 @@ export function fromOpenFoodFacts(p: OffProduct | null | undefined, index: Catal
     confidence: matched?.ingredientKey ? 0.9 : 0.5,
   };
 }
+
+const APPLIANCE_KEYS = new Set(["gas_stove", "induction", "pressure_cooker", "kadai", "tawa", "mixer_grinder", "air_fryer", "otg", "microwave", "blender"]);
+
+/** Appliances the model saw: known keys only, each once, at most 6. They are only ever offered, never added silently. */
+export function cleanAppliances(seen: string[] | null | undefined): string[] {
+  return [...new Set((seen ?? []).filter((k) => APPLIANCE_KEYS.has(k)))].slice(0, 6);
+}

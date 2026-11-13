@@ -415,6 +415,7 @@ const mocks: Services = {
       const kind = input.kind === "photo" ? (mockPhotoShots++ % 2 === 0 ? "fridge" : "bill") : input.kind;
       return {
         source: input.kind === "barcode" ? "barcode" : "model",
+        appliances: kind === "fridge" ? (["microwave", "air_fryer"] as const).slice() : [],
         items: sample[kind]!.map(([name, quantity, unit, confidence]) =>
           toDraft({
             said: input.kind === "barcode" ? "Tata Sampann Toor Dal" : name,

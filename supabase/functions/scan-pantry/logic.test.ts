@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { buildIndex } from "../_shared/pantryParse.ts";
-import { fromModel, fromOpenFoodFacts, MAX_IMAGE_CHARS, readBody } from "./logic.ts";
+import { cleanAppliances, fromModel, fromOpenFoodFacts, MAX_IMAGE_CHARS, readBody } from "./logic.ts";
 
 const index = buildIndex([
   { name: "toor dal", aliases: ["arhar dal", "tuvar dal"], latn: "toor dal", hi: "तूर दाल" },
@@ -60,4 +60,9 @@ Deno.test("one photo mode: any picture, no need to say what it is", () => {
     ok: true,
     body: { kind: "photo", householdId: "h", image: "AAAA", mediaType: "image/jpeg" },
   });
+});
+
+Deno.test("appliances: only known kinds, once each", () => {
+  assertEquals(cleanAppliances(["microwave", "air_fryer", "microwave", "spaceship"]), ["microwave", "air_fryer"]);
+  assertEquals(cleanAppliances(undefined), []);
 });

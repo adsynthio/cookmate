@@ -24,6 +24,8 @@ import { useScan } from "@/state/scan";
 import { toDraft } from "@/services/drafts";
 import { useSession } from "@/state/session";
 import { KeyboardSafe } from "@/design-system/KeyboardSafe";
+import { SeenTools } from "@/components/tools/SeenTools";
+import type { ToolKey } from "@/domain/tools";
 
 const PLACES: LocationKind[] = ["fridge", "pantry", "freezer", "staples", "ready_made"];
 const FLAVORS: FlavorRole[] = ["rich", "heat", "acid", "crunch", "starch", "sweet"];
@@ -40,6 +42,7 @@ export default function AddItemsScreen() {
   const [text, setText] = useState("");
   const [drafts, setDrafts] = useState<DraftItem[] | null>(null);
   const [via, setVia] = useState<AddedVia>("text");
+  const [seenTools, setSeenTools] = useState<ToolKey[]>([]);
   // Sure items show as one short row; the ones Cookmate isn't sure about start open so they get a look first.
   const [open, setOpen] = useState<Set<string>>(new Set());
   const showItems = (items: DraftItem[]) => {
@@ -59,6 +62,7 @@ export default function AddItemsScreen() {
     if (scanned) {
       showItems(scanned.items);
       setVia(scanned.via);
+      setSeenTools(scanned.appliances);
     }
   }, []);
   // Leaving the screen stops the read-back.
@@ -186,6 +190,7 @@ export default function AddItemsScreen() {
               </Text>
               <Text muted>{drafts.length ? t("kitchen.confirmBody") : t("kitchen.parseEmpty")}</Text>
             </Enter>
+            {seenTools.length ? <SeenTools householdId={householdId} seen={seenTools} /> : null}
             {/* A long scan: add everything without scrolling to the bottom. */}
             {drafts.length > 4 ? confirm : null}
             {drafts.map((d, i) => (

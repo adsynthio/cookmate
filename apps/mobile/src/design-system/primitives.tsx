@@ -74,7 +74,7 @@ export function Screen({
   top,
   scrollRef,
 }: {
-  /** To scroll the page from code (Home's "See tonight's picks"). */
+  /** To scroll the page from code (Home's "See today's picks"). */
   scrollRef?: RefObject<Scroller | null>;
   children: ReactNode;
   /** Full-width block at the very top that scrolls with the page and runs under the status bar (Home's hero). */

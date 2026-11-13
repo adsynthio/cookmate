@@ -17,6 +17,7 @@ import { logAiRequest } from "../_shared/aiLog.ts";
 import { avoids, type InventPlan, planInvention, validateInvention } from "../_shared/invent.ts";
 import { checkRecipe, problemLines, SAFETY_RULES_PROMPT } from "../_shared/recipeSafety.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
+import { aiSwitchedOff } from "../_shared/killSwitch.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { swapsPrompt } from "../_shared/swaps.ts";
@@ -157,6 +158,8 @@ Deno.serve(async (req) => {
   const quota = await checkQuota(householdId);
   if (!quota.ok) return quotaResponse(quota, CORS);
   if (!Deno.env.get("ANTHROPIC_API_KEY")) return json({ error: "invent_unavailable" }, 503);
+  // G5: switched off from the database (feature_flags ai_off_*): the app hides the option, as with no model.
+  if (await aiSwitchedOff(sb, named ? "named_dish" : "invent")) return json({ error: "invent_unavailable" }, 503);
 
   const [{ data: hh }, { data: members }, { data: rows, error }, { data: memories, error: memError }] = await Promise.all([
     sb.from("households").select("timezone").eq("id", householdId).maybeSingle(),

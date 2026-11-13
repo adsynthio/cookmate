@@ -695,6 +695,10 @@ const mocks: Services = {
       const e = globalEvents.find((x) => x.id === eventId);
       if (e) keptEvents.push({ ...keepFastRow(e, householdId), id: `kept-${keptEvents.length}` });
     },
+    async reportRecipe(_householdId, recipeId) {
+      await delay(300);
+      adapted.delete(recipeId); // hidden for this household, as in the live app
+    },
     async inventDish(_householdId, dish) {
       await delay(900);
       // Allergies and dislikes, as in the live function: never planned around, never in the dish.

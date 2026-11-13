@@ -50,7 +50,7 @@ select is(
     where n.nspname = 'public' and p.prosecdef and has_function_privilege('authenticated', p.oid, 'execute')),
   array['community_create_circle', 'community_create_invite', 'community_feed', 'community_join', 'community_leave',
         'community_remove_post', 'community_report', 'community_share', 'create_household', 'get_notification_settings',
-        'notification_opened', 'pantry_check_today', 'record_voice_session', 'set_notification_settings'],
+        'notification_opened', 'pantry_check_today', 'record_voice_session', 'report_recipe', 'set_notification_settings'],
   'the only SECURITY DEFINER functions signed-in users can call are the reviewed ones (SECURITY_REVIEW.md)'
 );
 

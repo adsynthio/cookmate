@@ -30,6 +30,7 @@ import { localRescue } from "./rescue";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import calendarJson from "@/data/calendar.json";
 import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type CalendarEvent } from "@/domain/calendar";
+import { jobOf, swapsFor } from "@/domain/swaps";
 import { avoids, planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
 import { daysLeft as daysLeftOf } from "@/domain/pantry";
 
@@ -714,10 +715,18 @@ const mocks: Services = {
         adapted.set(id, { ...doc, id, slug: id });
         const have = new Set(pantry.filter((p) => p.ingredientKey).map((p) => p.ingredientKey!));
         const staples = new Set(STAPLES);
+        // M3 in the preview: each missing ingredient a kitchen swap can stand in for, with the job it keeps.
+        const swaps = doc.ingredients.flatMap((i) => {
+          if (have.has(i.ingredient) || staples.has(i.ingredient)) return [];
+          const x = swapsFor(i.ingredient).find((w) => (have.has(w.to) || staples.has(w.to)) && jobOf(w) && !avoids(avoid, w.to));
+          return x ? [{ insteadOf: x.from, use: x.to, job: jobOf(x)!, how: x.how }] : [];
+        });
+        const swapped = new Set(swaps.map((x) => x.insteadOf));
         return {
           recipeId: id, title: doc.title, titles: doc.titles ?? null, description: doc.description, named: true,
+          swaps, closeness: swaps.length ? Math.max(70, 95 - 5 * swaps.length) : 95,
           uses: doc.ingredients.map((i) => i.ingredient).filter((k) => have.has(k)),
-          toBuy: doc.ingredients.map((i) => i.ingredient).filter((k) => !have.has(k) && !staples.has(k)),
+          toBuy: doc.ingredients.map((i) => i.ingredient).filter((k) => !have.has(k) && !staples.has(k) && !swapped.has(k)),
         };
       }
       const cat = new Map((catalog as CatalogEntry[]).map((c) => [c.name, c]));

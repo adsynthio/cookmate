@@ -1060,9 +1060,9 @@
   "ask.added": "Added to your list",
   "home.newDish.overline": "Something new today",
   "home.newDish.action": "Write the recipe for {dish}",
-  "home.want.make": "Write a recipe for {dish}",
+  "home.want.make": "Make {dish} from my kitchen",
   "invent.named.title": "{dish}",
-  "invent.named.loading": "Writing {dish} for your kitchen…",
+  "invent.named.loading": "Working out {dish} from what's in your kitchen…",
   "invent.named.toBuy": "To buy: {items}",
   "invent.named.note": "Written by Cookmate for your kitchen, not a tested recipe. It passed our food-safety checks; taste as you go.",
   "invent.named.fail.title": "Couldn't write {dish} just now",
@@ -1359,5 +1359,8 @@
   "technique.shape": "Shape",
   "technique.shape.how": "Grease your palms and roll while still warm; it won't hold once cold.",
   "technique.set_chill": "Set and chill",
-  "technique.set_chill.how": "Pour into a greased plate and leave in the fridge until firm."
+  "technique.set_chill.how": "Pour into a greased plate and leave in the fridge until firm.",
+  "mind.swapsTitle": "From your kitchen instead",
+  "mind.swapLine": "{use} instead of {instead}: same job, {job}.",
+  "mind.closeness": "About {n}% like the usual one."
 }

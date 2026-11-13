@@ -1,5 +1,5 @@
 // Home's hero, full width and under the status bar: which meal and how full the kitchen is, the search bar with the
-// mic on top, then a big greeting with food gently floating around it and a button down to tonight's picks.
+// mic on top, then a big greeting with food gently floating around it and a button down to today's picks.
 // Floating stops when the phone asks for less motion.
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";

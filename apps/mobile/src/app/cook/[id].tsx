@@ -33,7 +33,7 @@ import { Button, Card, IconButton, StateView, Text } from "@/design-system/primi
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
-import { tipFor } from "@/domain/tips";
+import { stepIngredients, tipFor } from "@/domain/tips";
 import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, localDoc, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
@@ -178,7 +178,12 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const now = useNow(timers.length > 0);
 
   const eaters = session.whoEating.length ? members.filter((m) => session.whoEating.includes(m.id)) : members;
-  const tip = useMemo(() => tipFor(rawDoc, Math.floor(Date.now() / 86_400_000), locale), [rawDoc, locale]);
+  const tip = useMemo(() => {
+    // Prefer a tip about what the first step actually uses (besan batter, not onions, when step 1 is the batter).
+    const names = (k: string) => { const c = catalogEntry(k); return c ? [c.latn ?? "", c.hi ?? "", ...(c.aliases ?? [])] : []; };
+    const focus = stepIngredients(rawDoc.steps[0]?.text ?? "", rawDoc.ingredients.map((i) => i.ingredient), names);
+    return tipFor(rawDoc, Math.floor(Date.now() / 86_400_000), locale, focus);
+  }, [rawDoc, locale]);
   const branch = useMemo(
     () => familyBranches(doc, eaters.map((e) => ({ name: e.displayName, ageGroup: e.ageGroup }))).find((b) => b.step === stepNo),
     [doc, eaters, stepNo],

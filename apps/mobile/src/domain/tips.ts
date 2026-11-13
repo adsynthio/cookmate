@@ -4,7 +4,8 @@
 import type { Locale } from "../i18n/locale";
 
 type L = Record<Locale, string>;
-type Tip = { id: string; ingredients?: string[]; tags?: string[]; text: L };
+/** `ingredients` match when the dish uses any of them, or all of them with `needsAll` (kadhi needs curd and besan). */
+type Tip = { id: string; ingredients?: string[]; needsAll?: boolean; tags?: string[]; text: L };
 
 export const TIPS: Tip[] = [
   { id: "rajma-salt", ingredients: ["kidney beans"], text: {
@@ -35,7 +36,7 @@ export const TIPS: Tip[] = [
     en: "Rest besan batter for ten minutes; it spreads thinner and cooks without raw taste.",
     hi: "बेसन का घोल दस मिनट रख दें; पतला फैलता है और कच्चा स्वाद नहीं रहता।",
     hinglish: "Besan ka ghol das minute rakh dein; patla failta hai aur kachcha swaad nahi rehta." } },
-  { id: "kadhi-stir", ingredients: ["curd", "gram flour"], text: {
+  { id: "kadhi-stir", ingredients: ["curd", "gram flour"], needsAll: true, text: {
     en: "Keep stirring kadhi until it boils once; curd that isn't stirred splits.",
     hi: "कढ़ी एक उबाल आने तक चलाते रहें; बिना चलाए दही फट जाता है।",
     hinglish: "Kadhi ek ubaal aane tak chalate rahein; bina chalaye dahi fat jaata hai." } },
@@ -93,14 +94,29 @@ export const TIPS: Tip[] = [
     hinglish: "Aakhri tadke ya sajavat se pehle ek baar chakhein: namak aur khatas theek karne ka yahi samay hai." } },
 ];
 
-/** Today's tip for a dish: ingredient matches first, then tag matches, then a general tip; rotates by day. */
-export function tipFor(doc: { ingredients: { ingredient: string }[]; tags?: string[] }, day: number, locale: Locale): { id: string; text: string } {
+/** The dish's ingredients that a step's text mentions, by name or any of its other names ("besan" is gram flour). */
+export function stepIngredients(text: string, ingredients: string[], namesOf: (ingredient: string) => string[] = () => []): string[] {
+  const words = ` ${text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ")} `;
+  return ingredients.filter((k) => [k, ...namesOf(k)].some((n) => n && words.includes(` ${n.toLowerCase()} `)));
+}
+
+/**
+ * Today's tip for a dish: ingredient matches first, then tag matches, then a general tip; rotates by day.
+ * `focus` (ingredients the step on screen uses) narrows the ingredient tips to ones that fit what the cook is doing.
+ */
+export function tipFor(
+  doc: { ingredients: { ingredient: string }[]; tags?: string[] },
+  day: number,
+  locale: Locale,
+  focus: string[] = [],
+): { id: string; text: string } {
   const uses = new Set(doc.ingredients.map((i) => i.ingredient));
   const tags = new Set(doc.tags ?? []);
-  const byIngredient = TIPS.filter((t) => t.ingredients?.some((k) => uses.has(k)));
+  const byIngredient = TIPS.filter((t) => t.ingredients && (t.needsAll ? t.ingredients.every((k) => uses.has(k)) : t.ingredients.some((k) => uses.has(k))));
+  const inStep = byIngredient.filter((t) => t.ingredients!.some((k) => focus.includes(k)));
   const byTag = TIPS.filter((t) => !t.ingredients && t.tags?.some((k) => tags.has(k)));
   const general = TIPS.filter((t) => !t.ingredients && !t.tags);
-  const pool = byIngredient.length ? byIngredient : byTag.length ? byTag : general;
+  const pool = inStep.length ? inStep : byIngredient.length ? byIngredient : byTag.length ? byTag : general;
   const tip = pool[((day % pool.length) + pool.length) % pool.length]!;
   return { id: tip.id, text: tip.text[locale] };
 }

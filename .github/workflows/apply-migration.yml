@@ -1,0 +1,49 @@
+name: Apply a migration to the hosted database
+
+# Applies one file from supabase/migrations to the hosted project, in a single transaction, and records it in
+# supabase_migrations.schema_migrations by name so it is never applied twice. Run by hand (Actions > this workflow >
+# Run workflow), from the branch that has the file. Only people with write access can run it.
+# Needs the repository secret SUPABASE_DB_URL, the same one the seed job uses.
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Migration file, e.g. supabase/migrations/20270515000000_dinner_time.sql"
+        required: true
+        type: string
+
+concurrency:
+  group: hosted-migrations
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          FILE: ${{ inputs.file }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::SUPABASE_DB_URL is not set."
+            exit 1
+          fi
+          # Only a migration file from this repository, by its exact name.
+          if ! [[ "$FILE" =~ ^supabase/migrations/[0-9]{14}_[a-z0-9_]+\.sql$ ]] || [ ! -f "$FILE" ]; then
+            echo "::error::Not a migration file in this repository: $FILE"
+            exit 1
+          fi
+          # Safe to inline: the pattern above allows only [a-z0-9_] here.
+          NAME=$(basename "$FILE" .sql | sed 's/^[0-9]*_//')
+          DONE=$(psql "$SUPABASE_DB_URL" -At -c "select count(*) from supabase_migrations.schema_migrations where name = '$NAME'")
+          if [ "$DONE" != "0" ]; then
+            echo "::notice::$NAME is already applied; nothing to do."
+            exit 0
+          fi
+          { cat "$FILE"; echo; echo "insert into supabase_migrations.schema_migrations (version, name) values (to_char(now() at time zone 'utc', 'YYYYMMDDHH24MISS'), '$NAME');"; } \
+            | psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 --single-transaction -q
+          echo "::notice::Applied $NAME."

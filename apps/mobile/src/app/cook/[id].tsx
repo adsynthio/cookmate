@@ -34,6 +34,10 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { notesForStep } from "@/domain/assist";
 import { stepIngredients, tipFor } from "@/domain/tips";
+import { stoveSetting, type Stove } from "@/domain/stoveGuide";
+import { DEFAULT_POWER, has } from "@/domain/tools";
+import { useStove } from "@/state/stove";
+import { StoveCard } from "@/components/cook/StoveCard";
 import { countWhistle, offersTimer, remaining, stepSeconds, timerCue } from "@/domain/cooking";
 import { displayName } from "@/domain/kitchen";
 import { familyBranches, localDoc, recipeTitle, type RecipeDoc, type RecipeStepDoc } from "@/domain/recipes";
@@ -178,6 +182,25 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const now = useNow(timers.length > 0);
 
   const eaters = session.whoEating.length ? members.filter((m) => session.whoEating.includes(m.id)) : members;
+  // The setting for this step on the stove in use (gas or induction, from the household's kitchen tools).
+  const tools = useQuery({ queryKey: ["tools", householdId], queryFn: () => services.kitchen.getTools(householdId) });
+  const hasGas = has(tools.data, "gas_stove");
+  const hasInduction = has(tools.data, "induction");
+  const chosenStove = useStove((s) => s.stove);
+  const setStove = useStove((s) => s.setStove);
+  const stove: Stove | null = hasGas && hasInduction ? (chosenStove ?? "gas") : hasInduction ? "induction" : hasGas ? "gas" : null;
+  const power = tools.data?.find((x) => x.type === "induction")?.details?.power ?? DEFAULT_POWER;
+  /** Pan notes ("use a flat-bottom kadai") are shown once per cook. */
+  const notesSeen = useRef<Set<string>>(new Set());
+  const settingFor = (n: number) => {
+    const s = doc.steps[n - 1];
+    return s && stove ? stoveSetting(s, stove, power, locale, notesSeen.current) : null;
+  };
+  const setting = useMemo(() => settingFor(stepNo), [stepNo, stove, power, locale, doc]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (setting?.noteKey) notesSeen.current.add(setting.noteKey);
+  }, [setting]);
+
   const tip = useMemo(() => {
     // Prefer a tip about what the first step actually uses (besan batter, not onions, when step 1 is the batter).
     const names = (k: string) => { const c = catalogEntry(k); return c ? [c.latn ?? "", c.hi ?? "", ...(c.aliases ?? [])] : []; };
@@ -318,7 +341,8 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
     if (locale === "en" && playStepAudio(session.id, n, { rate: RECORDING_RATE[p], onEnd: done })) return;
     // Recipe text is written in English for now, so it is read by the English voice.
     // KIT-068: the same words the voice agent would say for this cook (cue for learners, safety always).
-    say(stepWords(s, voice.profile), { language: locale === "hi" ? "hi-IN" : "en-IN", onEnd: done });
+    const setting = settingFor(n);
+    say([stepWords(s, voice.profile), setting?.line].filter(Boolean).join(". "), { language: locale === "hi" ? "hi-IN" : "en-IN", onEnd: done });
   };
 
   /** A short spoken reply; listening pauses until it ends. */
@@ -469,6 +493,10 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           <StepPhoto source={stepImage(doc.slug, stepNo)} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
 
           <DirectionCard step={step} />
+
+          {setting && stove ? (
+            <StoveCard stove={stove} line={setting.line} note={setting.note} both={hasGas && hasInduction} onStove={setStove} />
+          ) : null}
 
           {step.safety ? (
             <View style={[styles.note, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">

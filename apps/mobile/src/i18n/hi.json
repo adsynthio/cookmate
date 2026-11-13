@@ -1145,5 +1145,7 @@
   "tools.power.watts": "वॉट (W)",
   "tools.youTitle": "रसोई के उपकरण",
   "tools.youBody": "सुझाव में वो डिश नहीं आएँगी जो आप नहीं बना सकते, और हर स्टेप आपके चूल्हे की सेटिंग बताएगा।",
-  "tools.saved": "सेव हो गया"
+  "tools.saved": "सेव हो गया",
+  "cook.stove.gas": "गैस",
+  "cook.stove.induction": "इंडक्शन"
 }

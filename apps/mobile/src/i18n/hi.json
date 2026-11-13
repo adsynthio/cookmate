@@ -1394,5 +1394,10 @@
   "handoff.safety": "ध्यान दें",
   "handoff.footer": "Cookmate से भेजा गया",
   "handoff.more": "{item} थोड़ा ज़्यादा",
-  "handoff.less": "{item} थोड़ा कम"
+  "handoff.less": "{item} थोड़ा कम",
+  "twice.title": "एक बार बनाओ, दो बार खाओ",
+  "twice.keep": "दूसरा हिस्सा {hours} घंटे के अंदर फ़्रिज में रखें, {days} दिन में खा लें, और एक ही बार भाप निकलने तक गरम करें।",
+  "twice.tomorrow": "कल के लिए: {ideas}",
+  "twice.double": "दोगुना बनाएँ ({n} लोग)",
+  "twice.doubled": "दोगुना बन रहा है: {n} लोग"
 }

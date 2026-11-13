@@ -8,11 +8,21 @@ export type CatalogItem = CatalogEntry & {
   measures?: Record<string, number>;
   flags?: string[];
   allergens?: string[];
+  /** F7: the name in Kannada, when the app is set to ಕನ್ನಡ. */
+  kn?: string;
 };
 
-/** Name in the user's language: Hindi script for hi, Hinglish for hinglish, English otherwise. */
-export function displayName(entry: Pick<CatalogItem, "name" | "hi" | "latn"> | undefined, fallback: string, locale: Locale): string {
+// F7: when the app's words are in Kannada, ingredient names are too. Set by the language switch (i18n.setLocale), so
+// every caller of displayName gets it without passing the app language around; recipe text stays as it is.
+let kannadaNames = false;
+export function setKannadaNames(on: boolean): void {
+  kannadaNames = on;
+}
+
+/** Name in the user's language: Hindi script for hi, Hinglish for hinglish, Kannada for ಕನ್ನಡ, English otherwise. */
+export function displayName(entry: (Pick<CatalogItem, "name" | "hi" | "latn"> & { kn?: string }) | undefined, fallback: string, locale: Locale): string {
   if (!entry) return capitalise(fallback);
+  if (kannadaNames && entry.kn) return entry.kn;
   if (locale === "hi" && entry.hi) return entry.hi;
   if (locale === "hinglish" && entry.latn) return capitalise(entry.latn);
   return capitalise(entry.name);

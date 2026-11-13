@@ -1,0 +1,185 @@
+# Kannada names for the ingredient catalog (F7), keyed by the catalog's English name. Shown when the app language is
+# ಕನ್ನಡ; anything missing here shows in English. tools/content/build.py checks every key is a catalog name.
+kn:
+  almonds: ಬಾದಾಮಿ
+  amaranth leaves: ದಂಟಿನ ಸೊಪ್ಪು
+  apple: ಸೇಬು
+  asafoetida: ಇಂಗು
+  baking powder: ಬೇಕಿಂಗ್ ಪೌಡರ್
+  baking soda: ಅಡುಗೆ ಸೋಡಾ
+  banana: ಬಾಳೆಹಣ್ಣು
+  basmati rice: ಬಾಸ್ಮತಿ ಅಕ್ಕಿ
+  bathua: ಚಕ್ಕೋತ ಸೊಪ್ಪು
+  bay leaf: ಪಲಾವ್ ಎಲೆ
+  beetroot: ಬೀಟ್‌ರೂಟ್
+  bhujia: ಖಾರ ಸೇವ್
+  bitter gourd: ಹಾಗಲಕಾಯಿ
+  black cardamom: ದೊಡ್ಡ ಏಲಕ್ಕಿ
+  black chickpeas: ಕಪ್ಪು ಕಡಲೆ
+  black eyed peas: ಅಲಸಂದೆ
+  black pepper: ಕಾಳುಮೆಣಸು
+  black salt: ಕಪ್ಪು ಉಪ್ಪು
+  bottle gourd: ಸೋರೆಕಾಯಿ
+  bread: ಬ್ರೆಡ್
+  brinjal: ಬದನೆಕಾಯಿ
+  broken wheat: ಗೋಧಿ ನುಚ್ಚು
+  buckwheat flour: ಕುಟ್ಟು ಹಿಟ್ಟು
+  butter: ಬೆಣ್ಣೆ
+  buttermilk: ಮಜ್ಜಿಗೆ
+  cabbage: ಎಲೆಕೋಸು
+  capsicum: ದೊಣ್ಣೆಮೆಣಸಿನಕಾಯಿ
+  carom seeds: ಓಂಕಾಳು
+  carrot: ಕ್ಯಾರೆಟ್
+  cashews: ಗೋಡಂಬಿ
+  cauliflower: ಹೂಕೋಸು
+  chaat masala: ಚಾಟ್ ಮಸಾಲೆ
+  chana dal: ಕಡಲೆಬೇಳೆ
+  cheese: ಚೀಸ್
+  chicken: ಕೋಳಿ ಮಾಂಸ
+  chickpeas: ಕಡಲೆಕಾಳು
+  chole masala: ಚೋಲೆ ಮಸಾಲೆ
+  cinnamon: ಚಕ್ಕೆ
+  cloves: ಲವಂಗ
+  cluster beans: ಗೋರಿಕಾಯಿ
+  coconut: ತೆಂಗಿನಕಾಯಿ
+  coconut oil: ತೆಂಗಿನ ಎಣ್ಣೆ
+  coffee powder: ಕಾಫಿ ಪುಡಿ
+  colocasia: ಕೆಸುವಿನ ಗೆಡ್ಡೆ
+  condensed milk: ಕಂಡೆನ್ಸ್ಡ್ ಹಾಲು
+  coriander leaves: ಕೊತ್ತಂಬರಿ ಸೊಪ್ಪು
+  coriander powder: ಕೊತ್ತಂಬರಿ ಪುಡಿ
+  cornflour: ಕಾರ್ನ್‌ಫ್ಲೋರ್
+  cucumber: ಸೌತೆಕಾಯಿ
+  cumin seeds: ಜೀರಿಗೆ
+  curd: ಮೊಸರು
+  curry leaves: ಕರಿಬೇವು
+  desiccated coconut: ಒಣ ಕೊಬ್ಬರಿ ತುರಿ
+  dill leaves: ಸಬ್ಬಸಿಗೆ ಸೊಪ್ಪು
+  dried fenugreek leaves: ಕಸೂರಿ ಮೇಥಿ
+  drumstick: ನುಗ್ಗೆಕಾಯಿ
+  dry ginger powder: ಶುಂಠಿ ಪುಡಿ
+  dry mango powder: ಆಮ್‌ಚೂರ್
+  dry red chilli: ಒಣ ಮೆಣಸಿನಕಾಯಿ
+  egg: ಮೊಟ್ಟೆ
+  elephant foot yam: ಸುವರ್ಣಗೆಡ್ಡೆ
+  eno: ಈನೋ
+  fennel seeds: ಸೋಂಪು
+  fenugreek leaves: ಮೆಂತ್ಯ ಸೊಪ್ಪು
+  fenugreek seeds: ಮೆಂತ್ಯ
+  finger millet flour: ರಾಗಿ ಹಿಟ್ಟು
+  fish: ಮೀನು
+  flax seeds: ಅಗಸೆ ಬೀಜ
+  fox nuts: ಮಖಾನ
+  french beans: ಹುರುಳಿಕಾಯಿ
+  fresh cream: ಕೆನೆ
+  garam masala: ಗರಂ ಮಸಾಲೆ
+  garlic: ಬೆಳ್ಳುಳ್ಳಿ
+  ghee: ತುಪ್ಪ
+  ginger: ಶುಂಠಿ
+  ginger garlic paste: ಶುಂಠಿ ಬೆಳ್ಳುಳ್ಳಿ ಪೇಸ್ಟ್
+  gram flour: ಕಡಲೆಹಿಟ್ಟು
+  grapes: ದ್ರಾಕ್ಷಿ
+  green cardamom: ಏಲಕ್ಕಿ
+  green chilli: ಹಸಿಮೆಣಸಿನಕಾಯಿ
+  green peas: ಹಸಿ ಬಟಾಣಿ
+  groundnut oil: ಕಡಲೆಕಾಯಿ ಎಣ್ಣೆ
+  guava: ಸೀಬೆಹಣ್ಣು
+  honey: ಜೇನುತುಪ್ಪ
+  ivy gourd: ತೊಂಡೆಕಾಯಿ
+  jaggery: ಬೆಲ್ಲ
+  kashmiri chilli powder: ಕಾಶ್ಮೀರಿ ಮೆಣಸಿನ ಪುಡಿ
+  ker: ಕೇರ್
+  khoya: ಖೋವಾ
+  kidney beans: ರಾಜ್ಮಾ
+  kokum: ಪುನರ್ಪುಳಿ
+  lemon: ನಿಂಬೆಹಣ್ಣು
+  lotus stem: ತಾವರೆ ದಂಟು
+  maize flour: ಮೆಕ್ಕೆಜೋಳದ ಹಿಟ್ಟು
+  mango: ಮಾವಿನಹಣ್ಣು
+  masoor dal: ಮಸೂರ್ ಬೇಳೆ
+  milk: ಹಾಲು
+  milk powder: ಹಾಲಿನ ಪುಡಿ
+  minced mutton: ಖೀಮಾ
+  mint leaves: ಪುದೀನ
+  moth beans: ಮಡಕೆ ಕಾಳು
+  mushroom: ಅಣಬೆ
+  mustard greens: ಸಾಸಿವೆ ಸೊಪ್ಪು
+  mustard oil: ಸಾಸಿವೆ ಎಣ್ಣೆ
+  mustard seeds: ಸಾಸಿವೆ
+  mutton: ಮಟನ್
+  nigella seeds: ಕಲೋಂಜಿ
+  nutmeg: ಜಾಯಿಕಾಯಿ
+  okra: ಬೆಂಡೆಕಾಯಿ
+  onion: ಈರುಳ್ಳಿ
+  orange: ಕಿತ್ತಳೆ
+  paneer: ಪನೀರ್
+  papad: ಹಪ್ಪಳ
+  papaya: ಪರಂಗಿಹಣ್ಣು
+  pav: ಪಾವ್
+  pav bhaji masala: ಪಾವ್ ಭಾಜಿ ಮಸಾಲೆ
+  peanuts: ಕಡಲೆಕಾಯಿ
+  pearl millet: ಸಜ್ಜೆ
+  pearl millet flour: ಸಜ್ಜೆ ಹಿಟ್ಟು
+  pickle: ಉಪ್ಪಿನಕಾಯಿ
+  pistachios: ಪಿಸ್ತಾ
+  poha: ಅವಲಕ್ಕಿ
+  pointed gourd: ಪರ್ವಲ್
+  pomegranate: ದಾಳಿಂಬೆ
+  poppy seeds: ಗಸಗಸೆ
+  potato: ಆಲೂಗಡ್ಡೆ
+  prawns: ಸೀಗಡಿ
+  puffed rice: ಮಂಡಕ್ಕಿ
+  pumpkin: ಕುಂಬಳಕಾಯಿ
+  radish: ಮೂಲಂಗಿ
+  raisins: ಒಣದ್ರಾಕ್ಷಿ
+  raw banana: ಬಾಳೆಕಾಯಿ
+  raw jackfruit: ಹಲಸಿನಕಾಯಿ
+  raw mango: ಮಾವಿನಕಾಯಿ
+  red chilli powder: ಮೆಣಸಿನ ಪುಡಿ
+  refined flour: ಮೈದಾ
+  refined oil: ಅಡುಗೆ ಎಣ್ಣೆ
+  rice: ಅಕ್ಕಿ
+  rice flour: ಅಕ್ಕಿ ಹಿಟ್ಟು
+  ridge gourd: ಹೀರೆಕಾಯಿ
+  roasted cumin powder: ಹುರಿದ ಜೀರಿಗೆ ಪುಡಿ
+  rock salt: ಸೈಂಧವ ಲವಣ
+  rolled oats: ಓಟ್ಸ್
+  rose water: ಗುಲಾಬಿ ಜಲ
+  round gourd: ಟಿಂಡಾ
+  sabudana: ಸಬ್ಬಕ್ಕಿ
+  saffron: ಕೇಸರಿ
+  salt: ಉಪ್ಪು
+  sambar powder: ಸಾಂಬಾರ್ ಪುಡಿ
+  sangri: ಸಾಂಗ್ರಿ
+  sapota: ಸಪೋಟ
+  semolina: ರವೆ
+  sesame oil: ಎಳ್ಳೆಣ್ಣೆ
+  sesame seeds: ಎಳ್ಳು
+  sorghum: ಜೋಳ
+  sorghum flour: ಜೋಳದ ಹಿಟ್ಟು
+  soy sauce: ಸೋಯಾ ಸಾಸ್
+  soya chunks: ಸೋಯಾ ಚಂಕ್ಸ್
+  spinach: ಪಾಲಕ್ ಸೊಪ್ಪು
+  spring onion: ಈರುಳ್ಳಿ ಹೂವು
+  sugar: ಸಕ್ಕರೆ
+  sweet corn: ಸಿಹಿ ಮೆಕ್ಕೆಜೋಳ
+  sweet potato: ಗೆಣಸು
+  tamarind: ಹುಣಸೆಹಣ್ಣು
+  tea leaves: ಚಹಾ ಪುಡಿ
+  tofu: ಟೋಫು
+  tomato: ಟೊಮೆಟೊ
+  tomato ketchup: ಟೊಮೆಟೊ ಸಾಸ್
+  toor dal: ತೊಗರಿಬೇಳೆ
+  turmeric powder: ಅರಿಶಿನ
+  turnip: ಟರ್ನಿಪ್
+  urad dal: ಉದ್ದಿನಬೇಳೆ
+  vermicelli: ಶಾವಿಗೆ
+  vinegar: ವಿನೆಗರ್
+  walnuts: ಅಕ್ರೋಟ್
+  water chestnut flour: ಸಿಂಗಾಡ ಹಿಟ್ಟು
+  watermelon: ಕಲ್ಲಂಗಡಿ
+  whole black urad: ಉದ್ದಿನ ಕಾಳು
+  whole green moong: ಹೆಸರುಕಾಳು
+  whole wheat flour: ಗೋಧಿ ಹಿಟ್ಟು
+  yellow moong dal: ಹೆಸರುಬೇಳೆ
+  agar agar: ಅಗರ್ ಅಗರ್

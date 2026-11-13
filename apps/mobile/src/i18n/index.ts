@@ -6,6 +6,7 @@ import hi from "./hi.json";
 import hinglish from "./hinglish.json";
 import kn from "./kn.json";
 import { type AppLocale, contentLocale, type Locale } from "./locale";
+import { setKannadaNames } from "../domain/kitchen";
 
 export type { AppLocale, Locale } from "./locale";
 export { APP_LOCALES, contentLocale, LOCALES } from "./locale";
@@ -24,6 +25,7 @@ const listeners = new Set<(locale: AppLocale) => void>();
 export function setLocale(locale: AppLocale) {
   if (locale === current) return;
   current = locale;
+  setKannadaNames(locale === "kn");
   listeners.forEach((fn) => fn(locale));
 }
 

@@ -62,3 +62,14 @@ test("typed quantities", () => {
   assert.equal(parseQuantity("abc"), undefined);
   assert.equal(parseQuantity("0"), undefined);
 });
+
+test("F7: Kannada names when the app is in Kannada, English otherwise", async () => {
+  const { displayName: name, setKannadaNames } = await import("./kitchen.ts");
+  const potato = { name: "potato", hi: "आलू", latn: "aloo", kn: "ಆಲೂಗಡ್ಡೆ" };
+  setKannadaNames(true);
+  assert.equal(name(potato, "potato", "en"), "ಆಲೂಗಡ್ಡೆ");
+  assert.equal(name({ name: "salt", hi: "नमक", latn: "namak" }, "salt", "en"), "Salt", "no Kannada name yet: English");
+  setKannadaNames(false);
+  assert.equal(name(potato, "potato", "en"), "Potato");
+  assert.equal(name(potato, "potato", "hi"), "आलू");
+});

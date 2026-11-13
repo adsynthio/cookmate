@@ -40,6 +40,8 @@ import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type Member } from "@/services";
 import { pantryEntries, STAPLES } from "@/services/picks";
 import { useSession } from "@/state/session";
+import { useStepTimes } from "@/state/stepTimes";
+import { yourTotalMinutes } from "@/domain/stepTimes";
 
 export default function RecipeScreen() {
   useLocale();
@@ -143,6 +145,7 @@ function RecipeBody({
   const locale = getLocale();
   const doc = useMemo(() => localDoc(rawDoc, locale), [rawDoc, locale]);
   const whoEating = useSession((s) => s.whoEating);
+  const stepTimes = useStepTimes((s) => s.times);
   const eaters = whoEating ? members.filter((m) => whoEating.includes(m.id)) : members;
   const [servings, setServings] = useState(Math.max(1, eaters.length || doc.base_servings));
   const [listed, setListed] = useState<string[]>([]);
@@ -200,6 +203,8 @@ function RecipeBody({
   const branches = familyBranches(doc, eaters.map((e) => ({ name: e.displayName, ageGroup: e.ageGroup })));
   const notes = eaters.filter((e) => e.notes);
   const time = totalTime(doc);
+  // S2: once this cook's own pace is known, the time is theirs.
+  const yours = yourTotalMinutes(stepTimes, doc.slug, doc.steps, time);
 
   const share = match.total ? Math.round((match.have / match.total) * 100) : 0;
   const subs = match.items.filter((m) => m.status === "substitute" && m.substitute);
@@ -269,7 +274,11 @@ function RecipeBody({
 
       <Enter index={2}>
         <View style={[styles.stats, { backgroundColor: colors.surfaceMuted }]}>
-          <Stat icon="timer" value={time ? t("home.minutes", { min: time }) : "–"} label={t("recipe.totalTime")} />
+          <Stat
+            icon="timer"
+            value={yours ? t("home.minutes", { min: yours }) : time ? t("home.minutes", { min: time }) : "–"}
+            label={yours ? t("recipe.yourTime") : t("recipe.totalTime")}
+          />
           <Stat icon="skillet" value={t(`recipe.level.${level}` as StringKey)} label={t("recipe.difficulty")} highlight />
           <Stat icon="chilli" value={`${doc.spice_level}/5`} label={t("recipe.spiceLabel")} />
         </View>

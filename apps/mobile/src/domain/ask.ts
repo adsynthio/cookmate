@@ -4,10 +4,13 @@
 
 export type AskLocale = "en" | "hi" | "hinglish";
 export type AskItem = { name: string; key: string | null; daysLeft: number | null; state: string; out: boolean };
-export type AskRecipe = { slug: string; title: string; minutes: number; ingredients: { key: string; optional?: boolean }[] };
+export type AskRecipe = { slug: string; title: string; minutes: number; ingredients: { key: string; optional?: boolean }[]; spice?: number };
 export type AskReply = { answer: string; recipes: { slug: string; title: string }[]; addToList: string[]; followUps: string[] };
 
 const T = {
+  makeWith: { en: "With {items}, {list} would work well.", hi: "{items} से {list} अच्छे बनेंगे।", hinglish: "{items} se {list} achhe banenge." },
+  mild: { en: " All of them are mild.", hi: " सब हल्के तीखे हैं।", hinglish: " Sab halke teekhe hain." },
+  mildOne: { en: " It's mild.", hi: " यह हल्का तीखा है।", hinglish: " Yeh halka teekha hai." },
   make: { en: "With what you have, {list} would work well.", hi: "आपके पास जो है, उससे {list} अच्छे बनेंगे।", hinglish: "Aapke paas jo hai, usse {list} achhe banenge." },
   makeNone: { en: "Nothing from my recipes fits what's in the kitchen right now. Try “Make something new” on Home.", hi: "अभी रसोई की चीज़ों से मेरी कोई रेसिपी पूरी नहीं बनती। Home पर “कुछ नया बनाएँ” आज़माकर देखें।", hinglish: "Abhi rasoi ki cheezon se meri koi recipe poori nahi banti. Home par “Kuch naya banayein” aazmaakar dekhein." },
   quickest: { en: "Nothing is quite that quick. The quickest you can make is {dish}, in about {n} minutes.", hi: "इतनी जल्दी कुछ नहीं बनेगा। सबसे जल्दी {dish} बनेगा, लगभग {n} मिनट में।", hinglish: "Itni jaldi kuch nahi banega. Sabse jaldi {dish} banega, lagbhag {n} minute mein." },
@@ -27,6 +30,11 @@ const T = {
 const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(v[k] ?? ""));
 const list = (xs: string[], locale: AskLocale) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} ${locale === "hi" ? "और" : locale === "hinglish" ? "aur" : "and"} ${xs.at(-1)}`);
 
+/** "Not spicy", "mild", "kam teekha", "तीखा नहीं": the cook wants it gentle. */
+export function wantsMild(q: string): boolean {
+  return /mild|not (?:too )?spicy|no spice|less spicy|(?:doesn.?t|don.?t|do not|does not)(?: \w+){0,2} (?:like |eat )?spic|spicy (?:nahi|nahin|na)|teekha (?:nahi|nahin|na)|kam teekha|kam mirch|तीखा नहीं|कम तीखा|कम मिर्च/i.test(q);
+}
+
 export type Intent = { kind: "make"; minutes: number | null } | { kind: "soon" } | { kind: "leftovers" } | { kind: "have"; item: string } | { kind: "other" };
 
 export function intentOf(q: string): Intent {
@@ -43,32 +51,52 @@ export function intentOf(q: string): Intent {
 }
 
 /** Dishes whose non-optional ingredients the kitchen mostly has, best match first. */
-function makeable(items: AskItem[], recipes: AskRecipe[], staples: ReadonlySet<string>, maxMinutes: number | null) {
+function makeable(items: AskItem[], recipes: AskRecipe[], staples: ReadonlySet<string>, maxMinutes: number | null, want: { named?: string[]; mild?: boolean } = {}) {
   const have = new Set(items.filter((i) => i.key && !i.out).map((i) => i.key!));
+  const named = want.named ?? [];
+  // Named ingredients count as on hand: "what can I make with corn" is about cooking with corn.
+  for (const k of named) have.add(k);
   return recipes
     .filter((r) => maxMinutes === null || r.minutes <= maxMinutes)
+    .filter((r) => !want.mild || (r.spice ?? 0) <= 2)
     .map((r) => {
       const need = r.ingredients.filter((i) => !i.optional);
       const missing = need.filter((i) => !have.has(i.key) && !staples.has(i.key)).map((i) => i.key);
-      return { r, missing, share: need.length ? 1 - missing.length / need.length : 0 };
+      const uses = named.filter((k) => r.ingredients.some((i) => i.key === k)).length;
+      return { r, missing, uses, share: need.length ? 1 - missing.length / need.length : 0 };
     })
-    .filter((x) => x.share >= 0.7)
-    .sort((a, b) => b.share - a.share || a.r.minutes - b.r.minutes);
+    // With named ingredients, a dish must use at least one of them; more of them ranks higher.
+    .filter((x) => x.share >= 0.7 && (!named.length || x.uses > 0))
+    .sort((a, b) => b.uses - a.uses || b.share - a.share || a.r.minutes - b.r.minutes);
 }
 
-export function localAnswer(a: { question: string; items: AskItem[]; recipes: AskRecipe[]; staples: ReadonlySet<string>; locale: AskLocale; nameOf: (key: string) => string }): AskReply {
+export function localAnswer(a: {
+  question: string;
+  items: AskItem[];
+  recipes: AskRecipe[];
+  staples: ReadonlySet<string>;
+  locale: AskLocale;
+  nameOf: (key: string) => string;
+  /** Ingredient keys the question names ("paneer and spinach"). */
+  named?: string[];
+}): AskReply {
   const { locale } = a;
   const L = (k: keyof typeof T) => T[k][locale];
-  const intent = intentOf(a.question);
+  const named = a.named ?? [];
+  const mild = wantsMild(a.question);
+  const want = { named, mild };
+  let intent = intentOf(a.question);
+  // "Paneer and spinach, not spicy" is a what-can-I-make question even without the word "make".
+  if (intent.kind === "other" && named.length) intent = { kind: "make", minutes: null };
   // Never offer the question that was just asked.
   const asked = a.question.trim().toLowerCase();
   const followUps = [L("fuMake"), L("fuSoon"), L("fuLeft")].filter((f) => f.toLowerCase() !== asked);
 
   if (intent.kind === "make") {
-    const top = makeable(a.items, a.recipes, a.staples, intent.minutes).slice(0, 3);
+    const top = makeable(a.items, a.recipes, a.staples, intent.minutes, want).slice(0, 3);
     if (!top.length && intent.minutes !== null) {
       // Nothing that quick: say so, and offer the quickest dish the kitchen can make.
-      const quick = makeable(a.items, a.recipes, a.staples, null).sort((x, y) => x.r.minutes - y.r.minutes)[0];
+      const quick = makeable(a.items, a.recipes, a.staples, null, want).sort((x, y) => x.r.minutes - y.r.minutes)[0];
       if (quick) {
         return {
           answer: fill(L("quickest"), { dish: quick.r.title, n: quick.r.minutes }),
@@ -79,7 +107,11 @@ export function localAnswer(a: { question: string; items: AskItem[]; recipes: As
       }
     }
     if (!top.length) return { answer: L("makeNone"), recipes: [], addToList: [], followUps };
-    const answer = fill(L("make"), { list: list(top.map((x) => x.r.title), locale) }) + (intent.minutes ? fill(L("within"), { n: intent.minutes }) : "");
+    const titles = list(top.map((x) => x.r.title), locale);
+    const answer =
+      (named.length ? fill(L("makeWith"), { items: list(named.map(a.nameOf), locale), list: titles }) : fill(L("make"), { list: titles })) +
+      (intent.minutes ? fill(L("within"), { n: intent.minutes }) : "") +
+      (mild ? L(top.length > 1 ? "mild" : "mildOne") : "");
     return {
       answer,
       recipes: top.map((x) => ({ slug: x.r.slug, title: x.r.title })),

@@ -61,7 +61,7 @@
   "onb.welcome.body": "Tell me what's in your kitchen and who eats here. I'll pick what to cook and guide you step by step, by voice, in your language.",
   "onb.welcome.try": "Try now",
   "onb.welcome.note": "No email, no password.",
-  "onb.welcome.error": "Couldn't start. Check your internet and try again.",
+  "onb.welcome.error": "Couldn't reach Cookmate. Check your internet and try again.",
   "onb.language.title": "Choose your language",
   "onb.language.speak": "Apni bhasha chuniye. Choose your language.",
   "onb.language.listen": "Hear this again",
@@ -1103,5 +1103,8 @@
   "finish.react.lovedStatement": "{name} loved {dish}",
   "finish.react.notForStatement": "{dish} isn't a favourite of {name}",
   "recap.overline": "Your kitchen week",
-  "cook.tip": "Chef's tip"
+  "cook.tip": "Chef's tip",
+  "onb.welcome.error.closed": "New sign-ups are paused right now. Please try again a little later.",
+  "onb.welcome.error.busy": "Too many tries just now. Wait a minute and try again.",
+  "onb.welcome.error.other": "Something went wrong while starting. Please try again."
 }

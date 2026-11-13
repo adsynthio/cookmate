@@ -61,7 +61,7 @@
   "onb.welcome.body": "बताइए रसोई में क्या है और घर में कौन खाता है। Cookmate बताएगा क्या बनाएँ, और आवाज़ से, आपकी भाषा में, कदम-कदम साथ चलेगा।",
   "onb.welcome.try": "अभी शुरू करें",
   "onb.welcome.note": "न ईमेल, न पासवर्ड।",
-  "onb.welcome.error": "शुरू नहीं हो पाया। इंटरनेट देखकर फिर कोशिश करें।",
+  "onb.welcome.error": "Cookmate तक नहीं पहुँच पाए। इंटरनेट देखकर फिर कोशिश करें।",
   "onb.language.title": "अपनी भाषा चुनिए",
   "onb.language.listen": "फिर से सुनें",
   "onb.members.title": "घर में कौन खाता है?",
@@ -1099,5 +1099,8 @@
   "finish.react.lovedStatement": "{name} को {dish} बहुत पसंद आया",
   "finish.react.notForStatement": "{name} को {dish} पसंद नहीं आया",
   "recap.overline": "आपकी रसोई का हफ़्ता",
-  "cook.tip": "शेफ़ की सलाह"
+  "cook.tip": "शेफ़ की सलाह",
+  "onb.welcome.error.closed": "अभी नए साइन-अप रुके हुए हैं। थोड़ी देर बाद फिर कोशिश करें।",
+  "onb.welcome.error.busy": "अभी बहुत बार कोशिश हुई। एक मिनट रुककर फिर कोशिश करें।",
+  "onb.welcome.error.other": "शुरू करते समय कुछ गड़बड़ हुई। फिर कोशिश करें।"
 }

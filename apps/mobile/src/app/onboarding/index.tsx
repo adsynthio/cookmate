@@ -16,12 +16,20 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { LOCALES, setLocale, t, useLocale, type Locale, type StringKey } from "@/i18n";
 import { services } from "@/services";
+import { startErrorKind, type StartErrorKind } from "@/domain/startError";
 
 const FEATURES: { key: "f1" | "f2" | "f3"; icon: IconName; tone: "primary" | "accent" | "peach" }[] = [
   { key: "f1", icon: "fridge", tone: "primary" },
   { key: "f2", icon: "heart", tone: "accent" },
   { key: "f3", icon: "speaker", tone: "peach" },
 ];
+
+const START_ERROR: Record<StartErrorKind, StringKey> = {
+  offline: "onb.welcome.error",
+  closed: "onb.welcome.error.closed",
+  busy: "onb.welcome.error.busy",
+  other: "onb.welcome.error.other",
+};
 
 export default function WelcomeScreen() {
   const locale = useLocale();
@@ -102,7 +110,7 @@ export default function WelcomeScreen() {
       <View style={styles.bottom}>
         {start.isError ? (
           <Text color={colors.alert} accessibilityLiveRegion="assertive" style={styles.center}>
-            {t("onb.welcome.error")}
+            {t(START_ERROR[startErrorKind(start.error)])}
           </Text>
         ) : null}
         <Button

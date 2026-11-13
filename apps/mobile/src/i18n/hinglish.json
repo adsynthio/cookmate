@@ -31,7 +31,7 @@
   "onb.welcome.body": "Batao kitchen mein kya hai aur ghar mein kaun khaata hai. Cookmate batayega kya banana hai, aur voice se, aapki bhasha mein, step by step saath chalega.",
   "onb.welcome.try": "Abhi try karein",
   "onb.welcome.note": "Na email, na password.",
-  "onb.welcome.error": "Start nahi ho paya. Internet check karke dobara try karein.",
+  "onb.welcome.error": "Cookmate tak nahi pahunch paaye. Internet dekhkar phir koshish karein.",
   "onb.language.title": "Apni bhasha chuniye",
   "onb.language.listen": "Phir se suno",
   "onb.members.title": "Ghar mein kaun khaata hai?",
@@ -1069,5 +1069,8 @@
   "finish.react.lovedStatement": "{name} ko {dish} bahut pasand aaya",
   "finish.react.notForStatement": "{name} ko {dish} pasand nahi aaya",
   "recap.overline": "Aapki rasoi ka hafta",
-  "cook.tip": "Chef ki salah"
+  "cook.tip": "Chef ki salah",
+  "onb.welcome.error.closed": "Abhi naye sign-up ruke hue hain. Thodi der baad phir koshish karein.",
+  "onb.welcome.error.busy": "Abhi bahut baar koshish hui. Ek minute rukkar phir koshish karein.",
+  "onb.welcome.error.other": "Shuru karte samay kuch gadbad hui. Phir koshish karein."
 }

@@ -42,6 +42,8 @@ import { services, type Member } from "@/services";
 import { pantryEntries, STAPLES } from "@/services/picks";
 import { useSession } from "@/state/session";
 import { useStepTimes } from "@/state/stepTimes";
+import { useHabits } from "@/state/habits";
+import { keepIngredient, usualSkips } from "@/domain/habits";
 import { yourTotalMinutes } from "@/domain/stepTimes";
 
 export default function RecipeScreen() {
@@ -147,6 +149,10 @@ function RecipeBody({
   const doc = useMemo(() => localDoc(rawDoc, locale), [rawDoc, locale]);
   const whoEating = useSession((s) => s.whoEating);
   const stepTimes = useStepTimes((s) => s.times);
+  // S7: what this cook usually leaves out of this dish, with Add back.
+  const habits = useHabits((s) => s.times);
+  const setHabits = useHabits((s) => s.set);
+  const skips = usualSkips(habits, doc.slug);
   const eaters = whoEating ? members.filter((m) => whoEating.includes(m.id)) : members;
   const [servings, setServings] = useState(Math.max(1, eaters.length || doc.base_servings));
   const [listed, setListed] = useState<string[]>([]);
@@ -172,7 +178,7 @@ function RecipeBody({
     [entries],
   );
   const byKey = new Map(match.items.map((m) => [m.key, m]));
-  const missing = match.items.filter((m) => m.status === "missing" && !listed.includes(m.key));
+  const missing = match.items.filter((m) => m.status === "missing" && !listed.includes(m.key) && !skips.includes(m.key));
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
 
   const addToList = useMutation({
@@ -391,6 +397,8 @@ function RecipeBody({
                 listed={listed.includes(ing.ingredient)}
                 onAdd={() => addToList.mutate([ing.ingredient])}
                 change={changes.get(ing.ingredient)}
+                skipped={skips.includes(ing.ingredient)}
+                onKeep={() => setHabits(keepIngredient(useHabits.getState().times, doc.slug, ing.ingredient))}
               />
             ))}
           </>
@@ -527,8 +535,12 @@ function IngredientRow({
   listed,
   onAdd,
   change,
+  skipped,
+  onKeep,
 }: {
   change?: AmountChange;
+  skipped?: boolean;
+  onKeep?: () => void;
   ing: RecipeIngredientDoc;
   match: IngredientMatch | undefined;
   servings: number;
@@ -540,8 +552,9 @@ function IngredientRow({
   const { colors } = useTheme();
   const { label: amount, note: changeNote } = rememberedAmount(ing, base, servings, change);
   const status = ing.optional ? "optional" : (match?.status ?? "missing");
-  const detail =
-    status === "have"
+  const detail = skipped
+    ? t("recipe.usuallySkip")
+    : status === "have"
       ? t("recipe.have")
       : status === "assumed"
         ? t("recipe.assumed")
@@ -566,10 +579,17 @@ function IngredientRow({
         {icon ? <Icon name={icon} size={16} color={ok ? colors.onPrimary : status === "substitute" ? colors.onAccent : colors.accentText} /> : null}
       </View>
       <View style={{ flex: 1, gap: 2 }}>
-        <Text variant="bodyStrong">{nameOf(ing.ingredient)}</Text>
-        <Text variant="caption" color={status === "missing" ? colors.accentText : colors.inkSecondary}>
+        <Text variant="bodyStrong" style={skipped ? { textDecorationLine: "line-through", opacity: 0.6 } : undefined}>
+          {nameOf(ing.ingredient)}
+        </Text>
+        <Text variant="caption" color={status === "missing" && !skipped ? colors.accentText : colors.inkSecondary}>
           {detail}
         </Text>
+        {skipped && onKeep ? (
+          <View style={{ alignSelf: "flex-start" }}>
+            <Button kind="quiet" size="small" label={t("recipe.addBack")} onPress={onKeep} />
+          </View>
+        ) : null}
       </View>
       {photo ? <Photo source={photo} size={40} round /> : null}
       <View style={styles.amount}>

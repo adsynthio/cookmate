@@ -39,6 +39,7 @@ import { findIngredients } from "@/services/picks";
 import { useSession } from "@/state/session";
 import { ToolsCard } from "@/components/tools/ToolsCard";
 import { useStepTimes } from "@/state/stepTimes";
+import { useHabits } from "@/state/habits";
 
 /** A plain like or dislike of an ingredient, shown under Likes and dislikes rather than in the general list. */
 export function isPreference(m: Memory): boolean {
@@ -49,6 +50,8 @@ export default function YouScreen() {
   useLocale();
   const stepDishes = useStepTimes((s) => new Set(Object.keys(s.times).map((k) => k.split(":")[0])).size);
   const clearStepTimes = useStepTimes((s) => s.clear);
+  const habitDishes = useHabits((s) => Object.keys(s.times).length);
+  const clearHabits = useHabits((s) => s.clear);
   const householdId = useSession((s) => s.householdId);
   const memberId = useSession((s) => s.memberId);
   const qc = useQueryClient();
@@ -135,6 +138,14 @@ export default function YouScreen() {
             {t("you.learned.stepTimes", { n: stepDishes })}
           </Text>
           <Button kind="quiet" size="small" label={t("you.learned.stepTimesReset")} onPress={clearStepTimes} />
+        </View>
+      ) : null}
+      {habitDishes > 0 ? (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: space.sm }}>
+          <Text variant="caption" style={{ flex: 1 }}>
+            {t("you.learned.habits", { n: habitDishes })}
+          </Text>
+          <Button kind="quiet" size="small" label={t("you.learned.habitsReset")} onPress={clearHabits} />
         </View>
       ) : null}
       {memories.isPending ? (

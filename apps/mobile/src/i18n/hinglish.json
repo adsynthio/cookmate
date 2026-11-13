@@ -1204,5 +1204,11 @@
   "plan.rotisAlongside": "Doosre chulhe par {n} roti banaayein.",
   "plan.rotisAfter": "Sabzi dhak kar rakhein aur {n} roti banaayein.",
   "plan.serve": "Khaana taiyaar hai.",
-  "plan.ahead": "Pehle se: {text}"
+  "plan.ahead": "Pehle se: {text}",
+  "recipe.usuallySkip": "Aap aam taur par ise nahi daalte, isliye chhod diya",
+  "recipe.addBack": "Waapas jodein",
+  "cook.fullSteps": "Poore steps dikhaayein",
+  "cook.mildShare": "Mirch daalne se pehle thoda kam teekha hissa alag nikaal lein.",
+  "you.learned.habits": "Aapke banaye {n} dishes se dekha: aap kya chhodte hain, aur kaun si dishes aapko yaad hain",
+  "you.learned.habitsReset": "Ye bhool jaayein"
 }

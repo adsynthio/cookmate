@@ -11,9 +11,9 @@ import { handoffText } from "@/domain/handoff";
 import { displayName } from "@/domain/kitchen";
 import { inLocalUnits, localStep, prettyQty, recipeTitle, scaleQty, type RecipeDoc } from "@/domain/recipes";
 import { t, tIn, type StringKey } from "@/i18n";
-import type { Locale } from "@/i18n/locale";
+import { type AppLocale, contentLocale } from "@/i18n/locale";
 
-const LANGS: Locale[] = ["hi", "hinglish", "en"];
+const LANGS: AppLocale[] = ["hi", "hinglish", "en", "kn"];
 const MEASURES = ["katori", "cup", "chammach", "chhota_chammach", "chutki", "clove", "inch"];
 
 export function HandoffButton({
@@ -22,33 +22,36 @@ export function HandoffButton({
   const [choosing, setChoosing] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const send = async (l: Locale) => {
+  const send = async (app: AppLocale) => {
+    // The app's own words in the chosen language; recipe text and names in the nearest written language (Kannada
+    // recipe text doesn't exist yet, so it reads English).
+    const l = contentLocale(app);
     const name = (k: string) => displayName(catalogEntry(k), k, l);
     const amount = (ing: RecipeDoc["ingredients"][number]) => {
       const entry = catalogEntry(ing.ingredient);
       const sized = entry?.category === "vegetable" || entry?.category === "fruit";
       const local = inLocalUnits(scaleQty(ing.qty, doc.base_servings, servings), ing.unit, entry?.measures, sized);
-      const unit = local.unit === "piece" ? "" : MEASURES.includes(local.unit) ? tIn(l, `measure.${local.unit}` as StringKey) : local.unit;
+      const unit = local.unit === "piece" ? "" : MEASURES.includes(local.unit) ? tIn(app, `measure.${local.unit}` as StringKey) : local.unit;
       return `${prettyQty(local.qty)} ${unit}`.trim();
     };
     const message = handoffText({
       title: recipeTitle(doc, l),
       servings,
       avoid: avoid.map(name),
-      notes: notes.map((n) => tIn(l, n.more ? "handoff.more" : "handoff.less", { item: name(n.key) })),
+      notes: notes.map((n) => tIn(app, n.more ? "handoff.more" : "handoff.less", { item: name(n.key) })),
       ingredients: doc.ingredients.filter((i) => !skips.includes(i.ingredient)).map((i) => ({ name: name(i.ingredient), amount: amount(i) })),
       steps: doc.steps.map((s) => {
         const x = localStep(s, l);
         return { text: x.text, safety: x.safety };
       }),
       words: {
-        heading: tIn(l, "handoff.heading", { dish: recipeTitle(doc, l), n: servings }),
-        avoid: tIn(l, "handoff.avoid"),
-        notes: tIn(l, "handoff.notes"),
-        ingredients: tIn(l, "handoff.ingredients"),
-        steps: tIn(l, "handoff.steps"),
-        safety: tIn(l, "handoff.safety"),
-        footer: tIn(l, "handoff.footer"),
+        heading: tIn(app, "handoff.heading", { dish: recipeTitle(doc, l), n: servings }),
+        avoid: tIn(app, "handoff.avoid"),
+        notes: tIn(app, "handoff.notes"),
+        ingredients: tIn(app, "handoff.ingredients"),
+        steps: tIn(app, "handoff.steps"),
+        safety: tIn(app, "handoff.safety"),
+        footer: tIn(app, "handoff.footer"),
       },
     });
     setChoosing(false);

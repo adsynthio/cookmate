@@ -1377,5 +1377,7 @@
   "photo.verdict.a_little_more": "Thoda aur. Ek-do minute aur dijiye.",
   "photo.verdict.cant_tell": "Is photo se pata nahi chal raha. Step mein bataaye sanket se dekhiye.",
   "photo.cutCheck": "Sabse bada tukda kaatein: andar gulaabi na ho, ras saaf ho.",
-  "photo.disclaimer": "Photo se yeh pata nahi chalta ki khaana khaane ke liye safe hai. Sanketon aur safety note par bharosa karein."
+  "photo.disclaimer": "Photo se yeh pata nahi chalta ki khaana khaane ke liye safe hai. Sanketon aur safety note par bharosa karein.",
+  "cost.perPlate": "Lagbhag ₹{n} per thaali (andaazan, shehar ke aam daam)",
+  "cost.saves": "Lagbhag ₹{n} bachte hain."
 }

@@ -19,6 +19,10 @@ concurrency:
 env:
   SUPABASE_PROJECT_REF: usuwwzkorhsbaaziaanl
 
+# Read-only token: no job here writes to the repository (security review, finding 25).
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-24.04

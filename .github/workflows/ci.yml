@@ -9,6 +9,10 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Read-only token: no job here writes to the repository (security review, finding 25).
+permissions:
+  contents: read
+
 jobs:
   database:
     name: Database (schema + RLS tests)

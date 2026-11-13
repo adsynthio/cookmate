@@ -15,6 +15,10 @@ concurrency:
   group: seed-hosted
   cancel-in-progress: false
 
+# Read-only token: no job here writes to the repository (security review, finding 25).
+permissions:
+  contents: read
+
 jobs:
   seed:
     runs-on: ubuntu-24.04

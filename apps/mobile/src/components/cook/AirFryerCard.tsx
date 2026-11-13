@@ -9,7 +9,20 @@ import { radius, space } from "@/design-system/tokens";
 import type { AirFry } from "@/domain/airFryer";
 import { t } from "@/i18n";
 
-export function AirFryerCard({ plan, on, onToggle, onTimer }: { plan: AirFry; on: boolean; onToggle: () => void; onTimer: () => void }) {
+export function AirFryerCard({
+  plan,
+  on,
+  warn,
+  onToggle,
+  onTimer,
+}: {
+  plan: AirFry;
+  on: boolean;
+  /** Said before starting, e.g. "switch the induction off first" in a kitchen where they can't run together. */
+  warn?: string | null;
+  onToggle: () => void;
+  onTimer: () => void;
+}) {
   const { colors } = useTheme();
   return (
     <View style={[styles.card, { backgroundColor: on ? colors.primaryPale : colors.surfaceMuted }]}>
@@ -28,6 +41,14 @@ export function AirFryerCard({ plan, on, onToggle, onTimer }: { plan: AirFry; on
           <Text variant="subheading" accessibilityLiveRegion="polite">
             {t("air.setting", { temp: plan.tempC, min: plan.minutes, pre: plan.preheat })}
           </Text>
+          {warn ? (
+            <View style={[styles.warn, { backgroundColor: colors.alertSoft }]} accessibilityRole="alert">
+              <Icon name="warning" size={18} color={colors.alert} />
+              <Text color={colors.alert} style={{ flex: 1 }}>
+                {warn}
+              </Text>
+            </View>
+          ) : null}
           {plan.general ? <Badge label={t("air.general")} tone="accent" icon="bulb" /> : null}
           {plan.lines.map((l, i) => (
             <View key={i} style={styles.line}>
@@ -48,4 +69,5 @@ const styles = StyleSheet.create({
   card: { borderRadius: radius.card, padding: space.md, gap: space.sm },
   row: { flexDirection: "row", alignItems: "center", gap: space.sm },
   line: { flexDirection: "row", gap: space.sm },
+  warn: { flexDirection: "row", alignItems: "center", gap: space.sm, borderRadius: radius.item, padding: space.sm },
 });

@@ -1,0 +1,96 @@
+name: Write a library batch
+
+# docs/AI_RECIPES_PLAN.md, Phase 1: Claude writes draft recipes for the next dishes in content/dish_list.yaml.
+# Every draft passes the recipe safety gate and the content build, gets one rewrite if not, and the batch opens
+# as a pull request with review_status in_review. Nothing reaches the app until Gaurav approves and merges it.
+# Started by hand only (Actions > Write a library batch > Run workflow). Needs the repository secret
+# ANTHROPIC_API_KEY, used only by this job; without it the job says so and does nothing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      size:
+        description: How many dishes (at most 25)
+        required: false
+        default: "25"
+
+concurrency:
+  group: library-batch
+  cancel-in-progress: false
+
+# Writes a branch and opens a pull request; nothing else.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the key
+        id: key
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::notice::ANTHROPIC_API_KEY is not set; no batch written."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: denoland/setup-deno@v2
+        if: steps.key.outputs.ok == 'true'
+        with:
+          deno-version: "2.9.6"
+      - uses: actions/setup-python@v5
+        if: steps.key.outputs.ok == 'true'
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        if: steps.key.outputs.ok == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+      - name: Write the drafts
+        if: steps.key.outputs.ok == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SIZE: ${{ github.event.inputs.size }}
+        run: |
+          size=$(( SIZE > 25 ? 25 : (SIZE < 1 ? 1 : SIZE) ))
+          deno run --allow-read --allow-write --allow-env --allow-net tools/content/generate/generate.ts --size "$size" > report.md
+          cat report.md
+      - name: YAML, content build and the safety gate on every recipe
+        if: steps.key.outputs.ok == 'true'
+        run: |
+          python3 -m pip install --quiet pyyaml==6.0.3
+          python3 tools/content/generate/to_yaml.py
+          python3 tools/content/build.py
+          python3 tools/media/sync.py
+          cd apps/mobile && npm ci && node --test --experimental-strip-types src/domain/recipeSafety.test.ts src/domain/recipeSafety.cases.test.ts
+      - name: Open the pull request
+        if: steps.key.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain content/recipes)" ]; then
+            echo "::notice::No drafts passed; see the report above."
+            exit 0
+          fi
+          branch="library/batch-${{ github.run_number }}"
+          git checkout -b "$branch"
+          git -c user.name=Gaurav -c user.email=adsynthio@users.noreply.github.com add content/recipes supabase/seed.sql apps/mobile/src/data apps/mobile/src/design-system/media.ts supabase/functions/_shared/catalog.json
+          git -c user.name=Gaurav -c user.email=adsynthio@users.noreply.github.com commit -q -m "Library batch ${{ github.run_number }}: draft recipes for review"
+          git push -q -u origin "$branch"
+          {
+            echo "Draft recipes written by the library generator (docs/AI_RECIPES_PLAN.md, Phase 1)."
+            echo
+            echo "**Gaurav: please review before merging.** Each recipe passed the content build and the recipe safety gate."
+            echo "To approve a recipe, change its review_status to approved; merge when the batch is ready."
+            echo
+            cat report.md
+          } > body.md
+          gh pr create --base main --head "$branch" --title "Library batch ${{ github.run_number }}: draft recipes for review" --body-file body.md

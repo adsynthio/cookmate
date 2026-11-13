@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppHeader } from "@/components/AppHeader";
@@ -16,6 +16,7 @@ import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services, type AskReply } from "@/services";
 import { useSession } from "@/state/session";
+import { KeyboardSafe } from "@/design-system/KeyboardSafe";
 
 type Message = { id: number; role: "user" | "assistant"; text: string; reply?: AskReply; added?: boolean };
 
@@ -73,7 +74,7 @@ export default function AskScreen() {
   return (
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       <AppHeader title={t("ask.title")} back mic={false} ask={false} />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardSafe>
         <ScrollView ref={scroll as never} contentContainerStyle={styles.list} keyboardShouldPersistTaps="handled">
           {!messages.length ? (
             <Enter style={{ gap: space.lg }}>
@@ -177,7 +178,7 @@ export default function AskScreen() {
             <Icon name="arrowRight" size={20} color={draft.trim() ? colors.onAccent : colors.inkSecondary} />
           </PressableScale>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardSafe>
     </SafeAreaView>
   );
 }

@@ -12,6 +12,8 @@ import { Badge, Button, Card, Chip, Field, Photo, Text } from "@/design-system/p
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { adjustmentFor, readableLine, rememberedQty, type LineReview } from "@/domain/cooking";
+import { recordCook, usualSkips } from "@/domain/habits";
+import { useHabits } from "@/state/habits";
 import { displayName, formatQuantity } from "@/domain/kitchen";
 import { feedbackCandidates, type AmountChange } from "@/domain/learning";
 import { getLocale, t, type StringKey } from "@/i18n";
@@ -31,6 +33,7 @@ export function FinishSheet({
   lines,
   leftoverNote,
   recipeId,
+  slug,
   memberId,
   changes,
   cookChanges = [],
@@ -63,6 +66,8 @@ export function FinishSheet({
   /** The dish (its base recipe) and the cook, for what is remembered about it. */
   recipeId?: string;
   memberId?: string;
+  /** S7: the dish's slug, for what this cook usually leaves out. */
+  slug?: string;
   onClose: (saved: boolean) => void;
 }) {
   const { colors } = useTheme();
@@ -72,13 +77,17 @@ export function FinishSheet({
   const [again, setAgain] = useState(false);
   // Amounts are reviewed in the unit that reads best (55 g, not 0.055 kg) and sent back in the item's own unit.
   const view = useMemo(() => lines.map(readableLine), [lines]);
+  const habits = useHabits((s) => s.times);
+  const setHabits = useHabits((s) => s.set);
+  const skips = slug ? usualSkips(habits, slug) : [];
   const [state, setState] = useState<Record<string, LineReview>>(() =>
     Object.fromEntries(
       view.map(({ line: l }) => {
         // KIT-104: what was remembered for this dish ("more garlic") is what was used, so it starts that way.
         const change = changes?.get(l.ingredient);
         const qty = l.quantity === null ? "" : String(change && !l.staple ? rememberedQty(l.quantity, change.factor) : l.quantity);
-        return [l.itemId, { on: true, qty, level: null }];
+        // S7: what this cook usually leaves out of this dish starts unticked.
+        return [l.itemId, { on: !(slug && !l.staple && skips.includes(l.ingredient)), qty, level: null }];
       }),
     ),
   );
@@ -176,7 +185,14 @@ export function FinishSheet({
         saved.current.leftover = true;
       }
     },
-    onSuccess: () => onClose(true),
+    onSuccess: () => {
+      // S7: what was left out this time, for next time's defaults.
+      if (slug) {
+        const left = view.filter(({ line }) => !line.staple && state[line.itemId] && !state[line.itemId]!.on).map(({ line }) => line.ingredient);
+        setHabits(recordCook(useHabits.getState().times, slug, left));
+      }
+      onClose(true);
+    },
   });
 
   return (

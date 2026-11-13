@@ -139,6 +139,82 @@ switch works from the database. About 6 PRs.
 
 ---
 
+## The cook's mind: think like a cook, not like a recipe book
+
+A real cook doesn't ask "do I have the recipe's ingredients?" They ask **"what job does each thing do, and what in my
+kitchen can do that job?"** And a fancy dish isn't scary to them, because they see it as **a few simple parts they
+already know**.
+
+Example from Diwali: no boondi in the shops, so boondi got made at home from besan, sugar, ghee and oil, with **Eno
+instead of baking soda**. It came out very well. The app should be able to reach that idea on its own, and explain it
+so simply that the dish stops looking hard.
+
+### M1. Ingredients have jobs
+
+Each catalog ingredient gets the **jobs** it can do, and swaps are found by job, not only by name:
+
+| Job | Examples that can do it |
+|---|---|
+| Makes it rise or airy | baking soda, Eno, baking powder, curd with a pinch of soda, fermented batter |
+| Holds it together | besan, cornflour, maida, mashed potato, bread crumbs, rice flour |
+| Sour | lemon, amchur, tamarind, curd, tomato, kokum, vinegar |
+| Rich | ghee, cream, malai, khoya, cashew paste, milk powder, coconut |
+| Sweet | sugar, jaggery, honey (not for babies), dates, condensed milk |
+| Thick | reduced milk, onion-tomato base, cashew or poppy paste, besan, cornflour |
+| Crunch | sev, boondi, roasted peanuts, papad, fried onions |
+| Sets | gelatin or agar, a long chill, milk solids |
+| Colour and smell | kesar, haldi, Kashmiri chilli, rose water, kewra, elaichi |
+
+Each swap has a ratio, **how to use it** ("add Eno last, mix gently and fry at once, or the fizz goes"), and an
+honest note on **what changes** ("a little lighter, just as crisp"). The safety gate checks every swap, so there is
+no raw egg as a binder in something uncooked, and raising agents stay under a set limit.
+
+### M2. Any dish is a few parts you know (the dish blueprint)
+
+Every recipe (library and AI) is stored as **parts** made with **techniques**:
+
+> **Boondi ladoo** = besan batter (*make a batter*) → drop and fry (*deep fry*) → sugar syrup, one string
+> (*sugar syrup*) → bind while warm (*shape*)
+
+- **Technique cards** are short, reusable how-tos with sensory cues: make a batter thick or thin, deep fry, sugar syrup by string, bhuno until the oil separates, tadka, reduce milk, knead dough, dum, set and chill.
+- A fancy dish shows as **"Looks fancy, is easy: 4 parts, you've done 3 of them"**. It names which ones ("you made sugar syrup for gulab jamun in August") instead of showing a long list of ingredients first.
+- Effort comes from the techniques, not the dish's name. Rasmalai is "make chenna + sugar syrup + reduce milk", and the app says so.
+
+### M3. "Make it from my kitchen"
+
+Name **any** dish, Indian or not, shop-bought or restaurant: boondi, rasmalai, pav bhaji, tiramisu, KFC-style
+chicken. Cookmate:
+1. breaks it into parts (M2);
+2. for each ingredient says **have it**, **swap it** (with the job, the ratio and how) or **leave it out** (if it's optional);
+3. says honestly how close it will be ("about 90% like the shop's; a little less crisp");
+4. has **no buying by default**. Only if the dish truly can't be made does it list the fewest things to buy;
+5. goes through the safety gate like every AI recipe.
+
+### M4. Ideas from what you have
+
+- **"Your kitchen can make these right now"**: dishes unlocked by what's in the pantry, grouped by part. For example, besan, sugar and ghee make boondi, besan ladoo, Mysore pak and besan barfi.
+- **It uses the occasion.** Near Diwali these are sweets and namkeen, in Navratri vrat dishes, and on a rainy evening pakode.
+- **"One swap away":** dishes you can make if you accept one swap, with the swap shown.
+
+### M5. It learns the cook's own tricks
+
+- When the cook says (by text or voice, after cooking) "used Eno instead of soda, came out great", Cookmate saves it as **this family's trick** and offers it first next time.
+- Tricks that worked go into the family's memories (Edit · Keep · Forget), like everything else it learns.
+- Later, and only with permission: good tricks from many families are reviewed and become swaps for everyone.
+
+### M6. Never overwhelming
+
+- At most 3 ideas at a time.
+- The parts come first and the full ingredient list after.
+- The honest time is the time to cook it, not how impressive it sounds.
+- The cook can always ask "simpler version" to drop a part (no silver warq, no garnish, a quick syrup instead of chashni by string).
+
+**Where it fits:** M1 and M2 come right after the safety gate (Sprint 15), because the library batches should be
+written as blueprints from the start. M3 and M4 come next, in place of today's "Make Aloo Methi", which becomes
+"Make it from my kitchen". M5 and M6 go with them. About 7 PRs.
+
+---
+
 ## Phase 2: features (each goes through the gate)
 
 | # | Feature | What the family gets | Safety notes | Size |
@@ -157,8 +233,8 @@ switch works from the database. About 6 PRs.
 ## Order
 
 1. **Sprint 14: Phase 0, the safety gate** (G1 to G6). Nothing else uses AI recipes until this is merged.
-2. **Sprint 15:** library batches 1–2, F3 (festival and fasting), F1 (house-cook handoff).
-3. **Sprint 16:** batches 3–5, F2 (family recipes), F4 (cook once, eat twice).
+2. **Sprint 15: the cook's mind.** M1 (ingredient jobs) and M2 (blueprints and technique cards), then M3 (make it from my kitchen), M4 (ideas from what you have), M5 (the cook's tricks) and M6; library batches 1–2, written as blueprints.
+3. **Sprint 16:** batches 3–5, F3 (festival and fasting), F1 (house-cook handoff), F2 (family recipes), F4 (cook once, eat twice).
 4. **Sprint 17:** batches 6–8, F5 (photo check), F6 (meal cost).
 5. **Sprint 18:** batches 9–12, F7 (regional language).
 6. **After the beta build:** F8 (WhatsApp), F9 (grocery apps), F10 (widget).

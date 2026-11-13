@@ -42,6 +42,13 @@ export function t(key: StringKey, params?: Record<string, string | number>): str
   return template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`));
 }
 
+/** The same string in a given language, whatever the app is set to (F1: a message for the house cook). */
+export function tIn(locale: Locale, key: StringKey, params?: Record<string, string | number>): string {
+  const template = catalogues[locale][key] ?? en[key];
+  if (!params) return template;
+  return template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`));
+}
+
 /** Subscribe a component to language changes so its t() calls re-render without an app restart. */
 export function useLocale(): Locale {
   return useSyncExternalStore(onLocaleChange, getLocale, getLocale);

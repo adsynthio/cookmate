@@ -1335,5 +1335,19 @@
   "ideas.oneSwap": "Ek badlaav: {instead} ki jagah {use} ({job})",
   "mind.yourTrick": "Aapki trick: {instead} ki jagah {use}.",
   "mind.simpler.on": "Aasaan tareeka: {items} chhod dein",
-  "mind.simpler.full": "Poori recipe par wapas"
+  "mind.simpler.full": "Poori recipe par wapas",
+  "handoff.open": "Khaana banaane wale ko bhejein",
+  "handoff.which": "Kis bhaasha mein?",
+  "handoff.lang.hi": "हिंदी",
+  "handoff.lang.hinglish": "Hinglish",
+  "handoff.lang.en": "English",
+  "handoff.heading": "Aaj ka khaana: {dish}, {n} logon ke liye",
+  "handoff.avoid": "Allergy / kabhi na daalein",
+  "handoff.notes": "Humein aise pasand hai",
+  "handoff.ingredients": "Saamaan",
+  "handoff.steps": "Kaise banaayein",
+  "handoff.safety": "Dhyaan dein",
+  "handoff.footer": "Cookmate se bheja gaya",
+  "handoff.more": "{item} thoda zyada",
+  "handoff.less": "{item} thoda kam"
 }

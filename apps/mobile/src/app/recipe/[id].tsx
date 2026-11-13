@@ -16,6 +16,7 @@ import { MakeItDifferent } from "@/components/recipe/MakeItDifferent";
 import { PlanToDinner } from "@/components/recipe/PlanToDinner";
 import { SafetyNotes } from "@/components/recipe/SafetyNotes";
 import { EaseCard } from "@/components/recipe/EaseCard";
+import { HandoffButton } from "@/components/recipe/HandoffButton";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -296,6 +297,15 @@ function RecipeBody({
 
       {/* G6: allergens on every recipe; on an AI recipe, a plain label and "Something's off". */}
       <SafetyNotes doc={doc} householdId={householdId} onReported={() => router.back()} />
+
+      {/* F1: send tonight's dish to whoever cooks, in their language, allergies first. */}
+      <HandoffButton
+        doc={doc}
+        servings={servings}
+        avoid={avoid}
+        notes={[...changes.entries()].map(([key, c]) => ({ key, more: c.amount === "more" }))}
+        skips={skips}
+      />
 
       {/* M2: the dish as a few parts you already know. */}
       <EaseCard doc={doc} />

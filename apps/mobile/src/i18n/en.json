@@ -1369,5 +1369,19 @@
   "ideas.oneSwap": "One swap: {use} instead of {instead} ({job})",
   "mind.yourTrick": "Your trick: {use} instead of {instead}.",
   "mind.simpler.on": "Simpler version: leave out {items}",
-  "mind.simpler.full": "Back to the full recipe"
+  "mind.simpler.full": "Back to the full recipe",
+  "handoff.open": "Send to the cook",
+  "handoff.which": "In which language?",
+  "handoff.lang.hi": "हिंदी",
+  "handoff.lang.hinglish": "Hinglish",
+  "handoff.lang.en": "English",
+  "handoff.heading": "Today's food: {dish}, for {n}",
+  "handoff.avoid": "Allergy / never use",
+  "handoff.notes": "How we like it",
+  "handoff.ingredients": "You'll need",
+  "handoff.steps": "How to make it",
+  "handoff.safety": "Careful",
+  "handoff.footer": "Sent from Cookmate",
+  "handoff.more": "A little more {item}",
+  "handoff.less": "A little less {item}"
 }

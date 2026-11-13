@@ -11,6 +11,7 @@ import { useTheme } from "@/design-system/theme";
 import { motion, radius, shadow, space } from "@/design-system/tokens";
 import { clock, remaining } from "@/domain/cooking";
 import { cueSenses, type Heat, type RecipeStepDoc, type Sense } from "@/domain/recipes";
+import { shortStep } from "@/domain/habits";
 import { t } from "@/i18n";
 import type { RunningTimer } from "@/state/timers";
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -98,8 +99,11 @@ function PhotoTag({ icon, label }: { icon: IconName; label: string }) {
 }
 
 /** "What to do": the instruction, then how to tell it's right by sense, then the warning in terracotta. */
-export function DirectionCard({ step }: { step: RecipeStepDoc }) {
+/** `brief`: the cook knows this dish (S7), so just the first sentence, with the full step one tap away. */
+export function DirectionCard({ step, brief, onFull }: { step: RecipeStepDoc; brief?: boolean; onFull?: () => void }) {
   const { colors } = useTheme();
+  const short = brief ? shortStep(step.text) : step.text;
+  const cut = short !== step.text;
   const senses = cueSenses(step);
   const avoid = step.cues?.avoid;
   // Older recipes have only the one-line cue.
@@ -113,8 +117,13 @@ export function DirectionCard({ step }: { step: RecipeStepDoc }) {
         </Text>
       </View>
       <Text variant="cookStep" accessibilityRole="header">
-        {step.text}
+        {short}
       </Text>
+      {cut && onFull ? (
+        <View style={{ alignSelf: "flex-start" }}>
+          <Button kind="quiet" size="small" label={t("cook.fullSteps")} onPress={onFull} />
+        </View>
+      ) : null}
       {senses.length || avoid || fallback ? (
         <View style={[styles.cues, { backgroundColor: colors.surfaceMuted }]}>
           <View style={styles.cueHead}>

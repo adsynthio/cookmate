@@ -1223,5 +1223,11 @@
   "plan.rotisAlongside": "दूसरे चूल्हे पर {n} रोटी बनाएँ।",
   "plan.rotisAfter": "सब्ज़ी ढककर रखें और {n} रोटी बनाएँ।",
   "plan.serve": "खाना तैयार है।",
-  "plan.ahead": "पहले से: {text}"
+  "plan.ahead": "पहले से: {text}",
+  "recipe.usuallySkip": "आप आम तौर पर इसे नहीं डालते, इसलिए छोड़ दिया",
+  "recipe.addBack": "वापस जोड़ें",
+  "cook.fullSteps": "पूरे कदम दिखाएँ",
+  "cook.mildShare": "मिर्च डालने से पहले थोड़ा कम तीखा हिस्सा अलग निकाल लें।",
+  "you.learned.habits": "आपके बनाए {n} व्यंजनों से देखा: आप क्या छोड़ते हैं, और कौन से व्यंजन आपको याद हैं",
+  "you.learned.habitsReset": "ये भूल जाएँ"
 }

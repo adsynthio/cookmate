@@ -1227,5 +1227,11 @@
   "plan.rotisAlongside": "Make {n} rotis on the other stove.",
   "plan.rotisAfter": "Make {n} rotis while the dish rests covered.",
   "plan.serve": "Dinner is ready.",
-  "plan.ahead": "Ahead of time: {text}"
+  "plan.ahead": "Ahead of time: {text}",
+  "recipe.usuallySkip": "You usually leave this out, so it's left out",
+  "recipe.addBack": "Add it back",
+  "cook.fullSteps": "Show full steps",
+  "cook.mildShare": "Set aside a mild share before the chilli goes in.",
+  "you.learned.habits": "Noticed while you cooked {n} dishes: what you leave out, and dishes you know by heart",
+  "you.learned.habitsReset": "Forget these"
 }

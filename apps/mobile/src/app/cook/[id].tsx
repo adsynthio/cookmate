@@ -39,6 +39,8 @@ import { clash, kitchenCheck, type Busy, type Device } from "@/domain/kitchenLim
 import { DEFAULT_POWER, has, heatOf, setHeat, type Tool } from "@/domain/tools";
 import { useStove } from "@/state/stove";
 import { useStepTimes } from "@/state/stepTimes";
+import { useHabits } from "@/state/habits";
+import { heatStep, isFamiliar, mildShare, setFull } from "@/domain/habits";
 import { recordStep, yourSeconds } from "@/domain/stepTimes";
 import { StoveCard } from "@/components/cook/StoveCard";
 import { AirFryerCard } from "@/components/cook/AirFryerCard";
@@ -188,6 +190,16 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const now = useNow(timers.length > 0);
 
   const eaters = session.whoEating.length ? members.filter((m) => session.whoEating.includes(m.id)) : members;
+  // S7: a dish this cook knows gets shorter steps; whoever finds it too spicy gets a mild share set aside.
+  const habits = useHabits((s) => s.times);
+  const setHabits = useHabits((s) => s.set);
+  const brief = isFamiliar(habits, doc.slug);
+  const spiceMemories = useQuery({ queryKey: ["memories", householdId], queryFn: () => services.preference.listMemories(householdId) });
+  const mildFor = useMemo(
+    () => mildShare(rawDoc.spice_level, [rawDoc.id, rawDoc.parent_id, rawDoc.slug].filter((x): x is string => !!x), eaters, spiceMemories.data ?? []),
+    [rawDoc, eaters, spiceMemories.data],
+  );
+  const mildStep = mildFor.length ? heatStep(rawDoc.steps) : null;
   // S2: how long this cook really takes over hands-on steps (time between Next taps), kept on this phone.
   const stepTimes = useStepTimes((s) => s.times);
   const setStepTimes = useStepTimes((s) => s.set);
@@ -339,6 +351,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           dish={dish}
           lines={complete.data}
           recipeId={doc.parent_id ?? doc.id ?? doc.slug}
+          slug={doc.slug}
           memberId={memberId ?? undefined}
           changes={changes}
           cookChanges={session.changes.map((c) => c.change)}
@@ -574,7 +587,16 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
             />
           ) : null}
 
-          <DirectionCard step={step} />
+          <DirectionCard step={step} brief={brief} onFull={() => setHabits(setFull(useHabits.getState().times, doc.slug, true))} />
+
+          {mildStep === stepNo ? (
+            <View style={[styles.note, { backgroundColor: colors.primaryPale }]} accessibilityRole="alert">
+              <Text variant="label" muted>
+                {t("cook.for", { name: mildFor.join(", ") })}
+              </Text>
+              <Text variant="bodyStrong">{t("cook.mildShare")}</Text>
+            </View>
+          ) : null}
 
           {airPlan ? (
             <AirFryerCard

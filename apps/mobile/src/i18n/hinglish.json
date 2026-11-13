@@ -1085,5 +1085,7 @@
   "scan.readingOne": "1 photo padh rahe hain…",
   "scan.waitReading": "Bas ho gaya…",
   "scan.shotFailed": "Ek photo padhi nahi gayi. Thoda paas se phir lein.",
-  "scan.shotEmpty": "Us photo mein khaane ki cheez nahi mili. Paas se, achhi roshni mein lein."
+  "scan.shotEmpty": "Us photo mein khaane ki cheez nahi mili. Paas se, achhi roshni mein lein.",
+  "kitchen.editItem": "Badalne ke liye tap karein",
+  "kitchen.doneItem": "Ho gaya"
 }

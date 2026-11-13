@@ -12,7 +12,7 @@ import { AmountChips } from "@/components/pantry/AmountChips";
 import { AppHeader } from "@/components/AppHeader";
 import { Icon, type IconName } from "@/design-system/icons";
 import { ingredientImage } from "@/design-system/media";
-import { Enter, Layout } from "@/design-system/motion";
+import { Enter, Layout, PressableScale } from "@/design-system/motion";
 import { Badge, Button, Card, Chip, Field, IconButton, Photo, Screen, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
@@ -40,11 +40,24 @@ export default function AddItemsScreen() {
   const [text, setText] = useState("");
   const [drafts, setDrafts] = useState<DraftItem[] | null>(null);
   const [via, setVia] = useState<AddedVia>("text");
+  // Sure items show as one short row; the ones Cookmate isn't sure about start open so they get a look first.
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const showItems = (items: DraftItem[]) => {
+    setDrafts(items);
+    setOpen(new Set(items.length <= 2 ? items.map((d) => d.key) : items.filter(needsCheck).map((d) => d.key)));
+  };
+  const toggle = (key: string) =>
+    setOpen((o) => {
+      const n = new Set(o);
+      if (n.has(key)) n.delete(key);
+      else n.add(key);
+      return n;
+    });
   // Coming from a scan: open straight on the check screen with what was found.
   useEffect(() => {
     const scanned = useScan.getState().take();
     if (scanned) {
-      setDrafts(scanned.items);
+      showItems(scanned.items);
       setVia(scanned.via);
     }
   }, []);
@@ -53,7 +66,7 @@ export default function AddItemsScreen() {
 
   const parse = useMutation({
     mutationFn: () => services.kitchen.parseItems({ householdId, text, languageCode: LANGUAGE_CODES[getLocale()] }),
-    onSuccess: (r) => setDrafts(r.items),
+    onSuccess: (r) => showItems(r.items),
   });
   const kitchen = useQuery({ queryKey: ["kitchen", householdId], queryFn: () => services.kitchen.getKitchen(householdId) });
   const add = useMutation({
@@ -85,11 +98,11 @@ export default function AddItemsScreen() {
   const update = (key: string, patch: Partial<DraftItem>) =>
     setDrafts((ds) => ds?.map((d) => (d.key === key ? { ...d, ...patch } : d)) ?? null);
   const remove = (key: string) => setDrafts((ds) => ds?.filter((d) => d.key !== key) ?? null);
-  const addBlank = () =>
-    setDrafts((ds) => [
-      ...(ds ?? []),
-      toDraft({ said: "", ingredientKey: null, quantity: null, unit: null, locationKind: null, state: null, confidence: 1 }),
-    ]);
+  const addBlank = () => {
+    const blank = toDraft({ said: "", ingredientKey: null, quantity: null, unit: null, locationKind: null, state: null, confidence: 1 });
+    setDrafts((ds) => [...(ds ?? []), blank]);
+    setOpen((o) => new Set(o).add(blank.key));
+  };
 
   const ready = (drafts ?? []).filter((d) => d.said.trim() !== "" || d.ingredientKey);
   const readAloud = () => {
@@ -99,6 +112,19 @@ export default function AddItemsScreen() {
       rate: 0.9,
     });
   };
+
+  const adding = ready.filter((d) => !d.out).length;
+  const confirm = (
+    <Button
+      kind="accent"
+      stretch
+      icon="checkCircle"
+      label={ready.every((d) => d.out) ? t("kitchen.confirmOut") : adding === 1 ? t("kitchen.confirmAddOne") : t("kitchen.confirmAdd", { count: adding })}
+      size="cook"
+      disabled={ready.length === 0 || add.isPending}
+      onPress={() => add.mutate(ready)}
+    />
+  );
 
   return (
     <KeyboardSafe>
@@ -160,13 +186,15 @@ export default function AddItemsScreen() {
               </Text>
               <Text muted>{drafts.length ? t("kitchen.confirmBody") : t("kitchen.parseEmpty")}</Text>
             </Enter>
+            {/* A long scan: add everything without scrolling to the bottom. */}
+            {drafts.length > 4 ? confirm : null}
             {drafts.map((d, i) => (
               <Layout key={d.key}>
                 <Enter index={i}>
                   {d.out ? (
                     <OutCard draft={d} onKeep={() => update(d.key, { out: false })} onRemove={() => remove(d.key)} />
                   ) : (
-                    <DraftCard draft={d} onChange={(p) => update(d.key, p)} onRemove={() => remove(d.key)} />
+                    <DraftCard draft={d} open={open.has(d.key)} onToggle={() => toggle(d.key)} onChange={(p) => update(d.key, p)} onRemove={() => remove(d.key)} />
                   )}
                 </Enter>
               </Layout>
@@ -180,21 +208,7 @@ export default function AddItemsScreen() {
                 {t("kitchen.addError")}
               </Text>
             ) : null}
-            <Button
-              kind="accent"
-              stretch
-              icon="checkCircle"
-              label={
-                ready.every((d) => d.out)
-                  ? t("kitchen.confirmOut")
-                  : ready.filter((d) => !d.out).length === 1
-                    ? t("kitchen.confirmAddOne")
-                    : t("kitchen.confirmAdd", { count: ready.filter((d) => !d.out).length })
-              }
-              size="cook"
-              disabled={ready.length === 0 || add.isPending}
-              onPress={() => add.mutate(ready)}
-            />
+            {confirm}
           </>
         )}
       </Screen>
@@ -228,7 +242,19 @@ function OutCard({ draft, onKeep, onRemove }: { draft: DraftItem; onKeep: () => 
   );
 }
 
-function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: (p: Partial<DraftItem>) => void; onRemove: () => void }) {
+function DraftCard({
+  draft,
+  open,
+  onToggle,
+  onChange,
+  onRemove,
+}: {
+  draft: DraftItem;
+  open: boolean;
+  onToggle: () => void;
+  onChange: (p: Partial<DraftItem>) => void;
+  onRemove: () => void;
+}) {
   const { colors } = useTheme();
   const entry = catalogEntry(draft.ingredientKey);
   const place = draft.locationKind ?? entry?.location ?? "pantry";
@@ -237,6 +263,33 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
   const [name, setName] = useState(unsure && draft.said ? draft.said : draftName(draft));
   const [qty, setQty] = useState(draft.quantity === null ? "" : String(draft.quantity));
   const custom = draft.ingredientKey === null || draft.state === "homemade";
+
+  if (!open) {
+    const amount = draft.quantity !== null ? `${draft.quantity}${draft.unit ? ` ${draft.unit}` : ""}` : null;
+    const summary = [amount, t(`kitchen.location.${place}` as StringKey)].filter(Boolean).join(" · ");
+    return (
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={`${draftName(draft)}, ${summary}. ${t("kitchen.editItem")}`}
+        onPress={onToggle}
+        style={[styles.rowCard, { backgroundColor: colors.surface }, unsure ? { borderWidth: 1.5, borderColor: colors.accent } : null]}
+      >
+        <Photo source={ingredientImage(draft.ingredientKey, entry?.category ?? "homemade")} size={40} radius={radius.tag} />
+        <View style={{ flex: 1 }}>
+          <Text variant="bodyStrong" numberOfLines={1}>
+            {draftName(draft)}
+          </Text>
+          <Text variant="caption" muted numberOfLines={1}>
+            {summary}
+          </Text>
+        </View>
+        <Icon name="edit" size={18} color={colors.inkSecondary} />
+        <IconButton label={t("kitchen.remove")} muted size={36} onPress={onRemove}>
+          <Icon name="trash" size={18} color={colors.inkSecondary} />
+        </IconButton>
+      </PressableScale>
+    );
+  }
 
   return (
     <Card style={unsure ? { borderWidth: 1.5, borderColor: colors.accent } : undefined}>
@@ -325,11 +378,15 @@ function DraftCard({ draft, onChange, onRemove }: { draft: DraftItem; onChange: 
           </View>
         </>
       ) : null}
+      <View style={{ alignSelf: "flex-end" }}>
+        <Button kind="quiet" size="small" icon="check" label={t("kitchen.doneItem")} onPress={onToggle} />
+      </View>
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
+  rowCard: { flexDirection: "row", alignItems: "center", gap: space.md, borderRadius: radius.card, paddingVertical: space.sm, paddingLeft: space.md, paddingRight: space.xs, minHeight: 60 },
   bigField: { minHeight: 160, borderRadius: radius.card, paddingTop: space.lg },
   tip: { flexDirection: "row", gap: space.md, alignItems: "center", borderRadius: radius.card, padding: space.lg },
   upper: { textTransform: "uppercase" },

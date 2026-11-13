@@ -1119,5 +1119,7 @@
   "scan.readingOne": "Reading 1 photo…",
   "scan.waitReading": "Finishing up…",
   "scan.shotFailed": "One photo couldn't be read. Try it again a little closer.",
-  "scan.shotEmpty": "No food found in that photo. Try closer, in better light."
+  "scan.shotEmpty": "No food found in that photo. Try closer, in better light.",
+  "kitchen.editItem": "Tap to change",
+  "kitchen.doneItem": "Done"
 }

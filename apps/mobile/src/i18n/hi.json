@@ -1365,5 +1365,19 @@
   "ideas.oneSwap": "एक बदलाव: {instead} की जगह {use} ({job})",
   "mind.yourTrick": "आपकी तरकीब: {instead} की जगह {use}।",
   "mind.simpler.on": "आसान तरीक़ा: {items} छोड़ दें",
-  "mind.simpler.full": "पूरी रेसिपी पर वापस"
+  "mind.simpler.full": "पूरी रेसिपी पर वापस",
+  "handoff.open": "खाना बनाने वाले को भेजें",
+  "handoff.which": "किस भाषा में?",
+  "handoff.lang.hi": "हिंदी",
+  "handoff.lang.hinglish": "Hinglish",
+  "handoff.lang.en": "English",
+  "handoff.heading": "आज का खाना: {dish}, {n} लोगों के लिए",
+  "handoff.avoid": "एलर्जी / कभी न डालें",
+  "handoff.notes": "हमें ऐसे पसंद है",
+  "handoff.ingredients": "सामान",
+  "handoff.steps": "कैसे बनाएँ",
+  "handoff.safety": "ध्यान दें",
+  "handoff.footer": "Cookmate से भेजा गया",
+  "handoff.more": "{item} थोड़ा ज़्यादा",
+  "handoff.less": "{item} थोड़ा कम"
 }

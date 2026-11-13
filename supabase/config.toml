@@ -415,7 +415,7 @@ enabled = true
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
 
-# tts-cache checks the service-role key itself (it is run by a scheduler, never by a user).
+# tts-cache checks the scheduler's shared secret itself (pg_cron, secret in Vault; it is never run by a user).
 [functions.tts-cache]
 verify_jwt = false
 

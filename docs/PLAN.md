@@ -116,7 +116,7 @@ Status: draft, 10 Nov 2026. Sprint 1 proposed to start 16 Nov 2026.
 - [ ] KIT-081's "≤ 40% in tests" is checked with a simulated session, not real kitchen audio; measuring it needs a device session
 - [ ] KIT-021's Send SMS hook to a DLT-registered provider is not built: Supabase's built-in SMS providers (Textlocal works for India) are enough to start, and a hook is only needed if you pick a provider Supabase doesn't support
 - [ ] **You:** to switch on phone linking: Authentication → Sign In / Providers → Phone (choose an SMS provider with a DLT-registered sender and template), and turn on manual linking
-- [ ] **You:** to record step audio: set `SARVAM_API_KEY` as an Edge Function secret and `SUPABASE_SERVICE_ROLE_KEY` as a repository secret; `.github/workflows/tts-cache.yml` then runs daily (or from the Actions tab). Only published recipes are recorded, and none are published yet
+- [ ] **You:** to record step audio: set `SARVAM_API_KEY` as an Edge Function secret; pg_cron then runs `tts-cache` daily (or by hand: `select private.invoke_tts_cache(100);` in the SQL editor). Only published recipes are recorded, and none are published yet
 - [ ] Memory extraction from free speech (KIT-103's 200-utterance test set) is not built; memories come from feedback tags and what the user confirms
 - [ ] **You:** phone OTP upgrade (KIT-021) needs an SMS provider registered for DLT
 - [x] Migrations `memories` and `shopping` applied to ChefMate (11 Nov)

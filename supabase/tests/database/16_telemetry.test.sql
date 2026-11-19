@@ -39,8 +39,8 @@ select throws_ok($$select public.record_voice_session('00000000-0000-0000-0000-0
 reset role;
 
 select pg_temp.login('00000000-0000-0000-0000-0000000000e1');
--- Haiku: (10000*0.10 + 50000*0.01 + 2000*0.50)/1e6 USD = 0.0025 USD = Rs 0.22; TTS 1000 chars = Rs 1.50; STT 120 s = Rs 1.00.
-select is(public.record_voice_session('00000000-0000-0000-0000-00000000e5e1', current_setting('t.stats')::jsonb), 2.72::numeric,
+-- Haiku: (10000*0.10 + 50000*0.01 + 2000*0.50)/1e6 USD = 0.0025 USD = Rs 0.22; TTS 1000 chars = Rs 3.00 (Bulbul v3, Rs 30 per 10,000); STT 120 s = Rs 1.00.
+select is(public.record_voice_session('00000000-0000-0000-0000-00000000e5e1', current_setting('t.stats')::jsonb), 4.22::numeric,
   'cost is the model, speech-to-text and text-to-speech usage priced in rupees');
 select throws_ok($$select public.record_voice_session('00000000-0000-0000-0000-00000000e5e1', current_setting('t.stats')::jsonb)$$,
   '23505', null, 'a voice session is recorded once');
@@ -57,7 +57,7 @@ reset role;
 select is((select array_agg(task order by task) from public.ai_requests where household_id = current_setting('t.hh')::uuid),
   array['voice_stt', 'voice_tts', 'voice_turns'], 'the session''s model and speech usage go to ai_requests');
 
-select is((select cost_inr from private.ai_cost_report(now() - interval '1 day', now() + interval '1 day') where task = 'voice_tts'), 1.50::numeric,
+select is((select cost_inr from private.ai_cost_report(now() - interval '1 day', now() + interval '1 day') where task = 'voice_tts'), 3.00::numeric,
   'the cost report prices each task');
 select is((select p95_latency_ms from private.voice_report(now() - interval '1 day', now() + interval '1 day')), 1238,
   'the voice report takes p95 over the recorded turns (interpolated)');

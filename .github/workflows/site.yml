@@ -1,0 +1,78 @@
+name: Publish site
+
+# Publishes site/ (home page, privacy policy, account deletion page) to GitHub Pages at
+# https://adsynthio.github.io/cookmate/. Google Play links to the last two.
+# Needs, once: Settings > Pages > Source: GitHub Actions, and two repository variables (Settings > Secrets and
+# variables > Actions > Variables): SUPPORT_EMAIL (the public contact address) and OPERATOR (the name shown as
+# who runs Cookmate). They fill {{SUPPORT_EMAIL}} and {{OPERATOR}} in the pages; without them nothing is published,
+# so a page with a placeholder never goes live.
+
+on:
+  push:
+    branches: [main]
+    paths: [site/**, .github/workflows/site.yml]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    outputs:
+      ready: ${{ steps.fill.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fill in contact details
+        id: fill
+        env:
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
+          OPERATOR: ${{ vars.OPERATOR }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SUPPORT_EMAIL" ] || [ -z "$OPERATOR" ]; then
+            echo "::notice::Set the repository variables SUPPORT_EMAIL and OPERATOR to publish the site."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          effective=$(git log -1 --format=%cs -- site/privacy.html)
+          [ -n "$effective" ] || effective=$(date -u +%F)
+          mkdir -p _site
+          cp site/*.css site/*.png _site/
+          for f in site/*.html; do
+            python3 - "$f" "_site/$(basename "$f")" "$SUPPORT_EMAIL" "$OPERATOR" "$effective" <<'PY'
+          import html, sys
+          src, dst, email, operator, effective = sys.argv[1:]
+          text = open(src, encoding="utf-8").read()
+          text = (text.replace("{{SUPPORT_EMAIL}}", html.escape(email))
+                      .replace("{{OPERATOR}}", html.escape(operator))
+                      .replace("{{EFFECTIVE_DATE}}", effective))
+          assert "{{" not in text, f"unfilled placeholder in {src}"
+          open(dst, "w", encoding="utf-8").write(text)
+          PY
+          done
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.fill.outputs.ready == 'true'
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.ready == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

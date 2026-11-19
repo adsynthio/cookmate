@@ -23,8 +23,14 @@ are in this folder.
    eas login
    ```
 
-3. **Public pages:** GitHub → `adsynthio/cookmate` → Settings → Pages → Source: **GitHub Actions**. The
-   "Publish site" workflow then puts `site/` at `https://adsynthio.github.io/cookmate/`.
+3. **Public pages** (privacy policy and account deletion, which Play requires):
+   - GitHub → `adsynthio/cookmate` → Settings → Pages → Source: **GitHub Actions**.
+   - Settings → Secrets and variables → Actions → **Variables** → add `SUPPORT_EMAIL` (the address people write to;
+     it is shown publicly) and `OPERATOR` (the name shown as who runs Cookmate, your name or a business name).
+   - Actions → "Publish site" → Run workflow. The pages appear at `https://adsynthio.github.io/cookmate/`. Until both
+     variables are set, the workflow publishes nothing, so a page with a blank email never goes live.
+   - The deletion page promises: email requests are verified with a code to the linked phone and done within 30
+     days. Delete those accounts with the `delete-account` function or `private.delete_account_data`.
 
 ## 2. First build
 

@@ -58,9 +58,10 @@ export function WantDish({
           <Text variant="label" muted>
             {t("home.want.noneBody")}
           </Text>
-          <View style={styles.actions}>
-            <Button kind="accent" size="small" icon="sparkle" label={t("home.want.make", { dish: query })} onPress={() => onMake(query)} />
-            <Button kind="quiet" size="small" label={t("home.invent")} onPress={onInvent} />
+          {/* One button per line: the dish name makes the first label long, and side by side the second ran off screen. */}
+          <View style={styles.stack}>
+            <Button kind="accent" size="small" stretch icon="sparkle" label={t("home.want.make", { dish: query })} onPress={() => onMake(query)} />
+            <Button kind="quiet" size="small" stretch label={t("home.invent")} onPress={onInvent} />
           </View>
         </View>
       </Enter>
@@ -131,4 +132,5 @@ const styles = StyleSheet.create({
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   chip: { flexDirection: "row", alignItems: "center", gap: 6, borderWidth: 1, borderStyle: "dashed", borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6 },
   actions: { flexDirection: "row", gap: space.sm },
+  stack: { gap: space.xs },
 });

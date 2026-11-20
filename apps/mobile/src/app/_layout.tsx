@@ -129,7 +129,7 @@ function RootNavigator() {
             <StateView
               state="offline"
               title={t("state.offline.title")}
-              body={t("state.error.body")}
+              body={t("state.offline.bootBody")}
               actionLabel={t("state.retry")}
               onAction={() => void retry()}
             />

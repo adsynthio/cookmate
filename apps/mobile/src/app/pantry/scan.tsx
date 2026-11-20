@@ -137,6 +137,8 @@ export default function ScanScreen() {
   };
 
   const showCamera = !noCamera && permission?.granted && Platform.OS !== "web";
+  // The installed web app (iPhone) has no live camera view, but the photo picker can take a photo, so the shutter opens it.
+  const webPhotos = Platform.OS === "web" && !MOCK;
 
   return (
     <Screen tabBar={false} header={<AppHeader title={t("scan.header")} back mic={false} />}>
@@ -197,6 +199,12 @@ export default function ScanScreen() {
               <Text muted>{t("scan.allowBody")}</Text>
               <Button kind="primary" icon="camera" label={t("scan.allow")} onPress={() => void requestPermission()} />
             </>
+          ) : webPhotos && mode !== "barcode" ? (
+            // The installed web app (iPhone): Safari's picker offers "Take Photo" as well as the photo library.
+            <>
+              <Text muted>{t("scan.webBody")}</Text>
+              <Button kind="primary" icon="camera" label={t("scan.webPick")} onPress={() => void pick()} />
+            </>
           ) : (
             <>
               <Text muted>{t("scan.noCamera")}</Text>
@@ -225,11 +233,11 @@ export default function ScanScreen() {
           <PressableScale
             accessibilityRole="button"
             accessibilityLabel={t("scan.shutter")}
-            accessibilityState={{ disabled: capturing || !showCamera, busy: capturing }}
-            disabled={capturing || !showCamera}
-            onPress={() => void shoot()}
+            accessibilityState={{ disabled: capturing || !(showCamera || webPhotos), busy: capturing }}
+            disabled={capturing || !(showCamera || webPhotos)}
+            onPress={() => void (webPhotos ? pick() : shoot())}
             scaleTo={0.9}
-            style={[styles.shutterRing, { borderColor: colors.accentSoft, opacity: showCamera ? 1 : 0.5 }]}
+            style={[styles.shutterRing, { borderColor: colors.accentSoft, opacity: showCamera || webPhotos ? 1 : 0.5 }]}
           >
             <View style={[styles.shutter, shadow.glow, { backgroundColor: colors.accent }]}>
               <Icon name="camera" size={30} color={colors.onAccent} />

@@ -1,0 +1,17 @@
+{
+  "name": "Cookmate",
+  "short_name": "Cookmate",
+  "description": "What to cook from what's at home, step by step, in Kannada, Hindi or English.",
+  "start_url": "__BASE__/",
+  "scope": "__BASE__/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FDF9F2",
+  "theme_color": "#FDF9F2",
+  "lang": "en-IN",
+  "icons": [
+    { "src": "__BASE__/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "__BASE__/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "__BASE__/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

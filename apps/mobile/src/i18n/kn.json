@@ -1421,5 +1421,8 @@
   "grocery.find": "{store} ನಲ್ಲಿ {item} ಹುಡುಕಿ",
   "grocery.store.blinkit": "Blinkit",
   "grocery.store.zepto": "Zepto",
-  "grocery.store.bigbasket": "BigBasket"
+  "grocery.store.bigbasket": "BigBasket",
+  "state.offline.bootBody": "ನಿಮ್ಮ ಅಡುಗೆಮನೆ ತೆರೆಯಲು Cookmate ಗೆ ಇಂಟರ್ನೆಟ್ ಬೇಕು. ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ, ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "scan.webBody": "ಫ್ರಿಜ್, ಶೆಲ್ಫ್ ಅಥವಾ ಅಂಗಡಿ ಬಿಲ್‌ನ ಫೋಟೋ ತೆಗೆಯಿರಿ, ಅಥವಾ ಈಗಾಗಲೇ ಇರುವ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ.",
+  "scan.webPick": "ಫೋಟೋ ತೆಗೆಯಿರಿ ಅಥವಾ ಆಯ್ಕೆಮಾಡಿ"
 }

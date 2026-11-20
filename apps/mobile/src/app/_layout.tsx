@@ -6,10 +6,10 @@ import { NotoSansDevanagari_500Medium } from "@expo-google-fonts/noto-sans-devan
 import { NotoSansDevanagari_600SemiBold } from "@expo-google-fonts/noto-sans-devanagari/600SemiBold";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
-import { AppState, StyleSheet, View } from "react-native";
+import { AppState, Platform, StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { TimerAlarm } from "@/components/cook/TimerAlarm";
@@ -22,6 +22,7 @@ import { services } from "@/services";
 import { track } from "@/services/analytics";
 import { listenForPickTaps } from "@/state/push";
 import { useSession } from "@/state/session";
+import { statusBandOn, useStatusBand } from "@/state/statusBand";
 
 /**
  * On launch, look for this device's household. With one, the tabs are reachable; without one, only onboarding is
@@ -67,6 +68,20 @@ function useBootstrap() {
   return { failed, retry: boot };
 }
 
+/**
+ * Installed iPhone web app: fade the band behind the status bar in only where the white clock would sit on a light
+ * screen (public/index.html). In dark mode, and on Home while its dark hero is under the status bar, the screen itself
+ * runs under the notch / Dynamic Island, as a native app does.
+ */
+function useWebStatusBand(scheme: "light" | "dark") {
+  const pathname = usePathname();
+  const heroUnder = useStatusBand((s) => s.heroUnder);
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof document === "undefined") return;
+    document.documentElement.dataset.statusBand = statusBandOn(scheme, pathname, heroUnder) ? "on" : "off";
+  }, [scheme, pathname, heroUnder]);
+}
+
 /** Only the weights the type scale uses (fonts in tokens.ts). If loading fails we carry on with system fonts. */
 const FONTS = {
   Inter_400Regular,
@@ -85,6 +100,7 @@ function RootNavigator() {
   const ready = useSession((s) => s.ready) && (fontsLoaded || !!fontError);
   const onboarded = useSession((s) => s.householdId !== null);
   const { failed, retry } = useBootstrap();
+  useWebStatusBand(scheme);
 
   return (
     <>

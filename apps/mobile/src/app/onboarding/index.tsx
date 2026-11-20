@@ -46,7 +46,7 @@ export default function WelcomeScreen() {
   const heroH = Math.min(320, (Math.min(width, 480) - space.gutter * 2) * 0.64);
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={[styles.screen, { backgroundColor: colors.canvas }]}>
+    <SafeAreaView edges={["top", "bottom", "left", "right"]} style={[styles.screen, { backgroundColor: colors.canvas }]}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.top}>
           <View style={[styles.brand, { backgroundColor: colors.surfaceMuted }]}>

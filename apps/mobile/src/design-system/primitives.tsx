@@ -7,6 +7,8 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Text as RNText,
   TextInput,
   View,
@@ -16,9 +18,10 @@ import {
   type TextProps as RNTextProps,
   type ViewStyle,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getLocale } from "@/i18n";
+import { useStatusBand } from "@/state/statusBand";
 
 import { Icon, type IconName } from "./icons";
 import { illustrations } from "./media";
@@ -88,11 +91,25 @@ export function Screen({
   tabBar?: boolean;
 }) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+  const setHeroUnder = useStatusBand((s) => s.setHeroUnder);
+  const [topHeight, setTopHeight] = useState(0);
+  // Installed web app: tell the status band whether the top block (Home's dark hero) is still under the status bar.
+  const trackTop = Platform.OS === "web" && !!top;
+  const onScroll = trackTop
+    ? (e: NativeSyntheticEvent<NativeScrollEvent>) => setHeroUnder(topHeight === 0 || e.nativeEvent.contentOffset.y < topHeight - insets.top)
+    : undefined;
   const bottom = tabBar ? TAB_BAR_SPACE : footer ? space.xl : space.xxxl;
   const body = scroll ? (
     top ? (
-      <ScrollView ref={scrollRef as never} contentContainerStyle={{ paddingBottom: bottom }} showsVerticalScrollIndicator={false}>
-        {top}
+      <ScrollView
+        ref={scrollRef as never}
+        contentContainerStyle={{ paddingBottom: bottom }}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={onScroll ? 32 : undefined}
+      >
+        {trackTop ? <View onLayout={(e) => setTopHeight(e.nativeEvent.layout.height)}>{top}</View> : top}
         <View style={styles.screenContent}>{children}</View>
       </ScrollView>
     ) : (
@@ -104,7 +121,7 @@ export function Screen({
     <View style={[styles.screenContent, { flex: 1, paddingBottom: bottom }]}>{children}</View>
   );
   return (
-    <SafeAreaView edges={top ? (footer ? ["bottom"] : []) : footer ? ["top", "bottom"] : ["top"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
+    <SafeAreaView edges={top ? (footer ? ["bottom", "left", "right"] : ["left", "right"]) : footer ? ["top", "bottom", "left", "right"] : ["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       {header}
       {body}
       {footer}

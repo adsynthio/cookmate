@@ -98,7 +98,7 @@ export function HomeHero({
   const hello = t(`home.hello.${partOfDay()}`);
 
   return (
-    <View style={[styles.wrap, { paddingTop: insets.top + space.sm }]}>
+    <View style={[styles.wrap, { paddingTop: insets.top + space.sm, paddingLeft: space.gutter + insets.left, paddingRight: space.gutter + insets.right }]}>
       <StatusBar style="light" />
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       <Svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">

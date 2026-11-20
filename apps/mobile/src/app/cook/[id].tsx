@@ -111,7 +111,7 @@ export default function CookScreen() {
 
   const framed = session.isSuccess && session.isFetchedAfterMount && recipe.isSuccess && (session.data.status === "active" || session.data.status === "paused");
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
+    <SafeAreaView edges={["top", "bottom", "left", "right"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
       {framed ? (
         body
       ) : (

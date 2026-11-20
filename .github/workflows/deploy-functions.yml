@@ -42,7 +42,8 @@ jobs:
       - uses: supabase/setup-cli@v1
         if: steps.token.outputs.present == 'true'
         with:
-          version: latest
+          # Pinned: resolving "latest" asks the GitHub API, and its rate limit failed a deploy on 20 Nov 2026.
+          version: 3.2.0
       - name: Deploy all functions
         if: steps.token.outputs.present == 'true'
         env:

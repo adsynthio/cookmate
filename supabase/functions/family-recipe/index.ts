@@ -26,7 +26,7 @@ import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "write_family_recipe";
 const MODEL = "claude-sonnet-5-5";
-const VERSION = "write_family_recipe@1";
+const VERSION = "write_family_recipe@2";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -55,7 +55,8 @@ const SYSTEM = `You write down a family's own recipe, told by someone in the fam
 English or a mix), so it can be cooked again exactly their way. Keep THEIR way: their ingredients, their order,
 their amounts. Turn spoken amounts into grams or ml (1 katori about 150 g, 1 chammach about 15 ml or 12 g, 1 chhota
 chammach about 5 g, a pinch about 0.5 g) and keep the spoken amount in "local". Ingredient names must be plain
-lowercase English catalog names (e.g. "kidney beans", "onion", "mustard oil", "ghee"). Steps: short, plain English,
+lowercase English catalog names (e.g. "kidney beans", "onion", "mustard oil", "ghee"). Water is not an ingredient:
+the step that adds it says how much ("add 500 ml water"). Steps: short, plain English,
 in their order, minutes where it takes time, a sensory cue where they gave one.
 If their way breaks a safety rule below, do NOT silently change it and do NOT refuse: keep their way and add the safe
 step or safety note, and say what you added and why in "safety_added" (one plain sentence each). If something is

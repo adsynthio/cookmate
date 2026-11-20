@@ -55,7 +55,7 @@ export function StepScreen({
   const stepLabel = last ? t("onb.lastStep") : t("onb.stepUpper", { n: step, total: TOTAL_STEPS });
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={[styles.screen, { backgroundColor: colors.canvas }]}>
+    <SafeAreaView edges={["top", "bottom", "left", "right"]} style={[styles.screen, { backgroundColor: colors.canvas }]}>
       <View style={styles.top}>
         {router.canGoBack() ? (
           <IconButton label={t("onb.back")} tone="plain" onPress={() => router.back()}>

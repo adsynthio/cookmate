@@ -21,17 +21,23 @@
       body { overflow: hidden; overscroll-behavior: none; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
       #root { display: flex; height: 100%; flex: 1; }
       @media (prefers-color-scheme: dark) { html, body { background: #15140F; } }
-      /* iOS draws the clock and battery in white under black-translucent. On the cream screens that would be
-         unreadable, so the installed app gets a band behind them in the home header's olive (the home screen's own
-         header runs into it seamlessly). It is only as tall as the status bar and never takes taps. */
+      /* iOS draws the clock and battery in white under black-translucent. The screens run under the notch / Dynamic
+         Island like a native app; only where the white clock would sit on a light screen (light mode, except Home
+         while its dark hero is up there) does an olive band fade in behind it. The root layout sets
+         data-status-band. The band is as tall as the status bar and never takes taps. */
       #status-band { display: none; }
       @media (display-mode: standalone) {
         #status-band {
           display: block; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
-          background: #56652B; z-index: 2147483647; pointer-events: none;
+          background: #56652B; z-index: 2147483647; pointer-events: none; opacity: 0; transition: opacity 180ms ease;
         }
+        html[data-status-band="on"] #status-band { opacity: 1; }
+        /* Feels like an app, not a page: no text selection or Copy/Save menus on long press, except in text fields
+           and text the app marks selectable (the circle invite code). */
+        body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        input, textarea, [contenteditable="true"] { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+        img { -webkit-user-drag: none; }
       }
-      @media (display-mode: standalone) and (prefers-color-scheme: dark) { #status-band { background: #15140F; } }
       /* iOS 26 home-screen apps: 100% (and dvh/svh) stop at the bottom of the status bar instead of the bottom of the
          screen, so the app ended one status bar short and the tab bar floated above an empty strip (WebKit bug
          301994). The installed app uses the full screen height instead: --app-height from the script below on

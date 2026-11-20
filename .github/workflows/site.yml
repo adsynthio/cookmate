@@ -1,16 +1,18 @@
-name: Publish site
+name: Publish site and web app
 
-# Publishes site/ (home page, privacy policy, account deletion page) to GitHub Pages at
-# https://adsynthio.github.io/cookmate/. Google Play links to the last two.
-# Needs, once: Settings > Pages > Source: GitHub Actions, and two repository variables (Settings > Secrets and
-# variables > Actions > Variables): SUPPORT_EMAIL (the public contact address) and OPERATOR (the name shown as
-# who runs Cookmate). They fill {{SUPPORT_EMAIL}} and {{OPERATOR}} in the pages; without them nothing is published,
-# so a page with a placeholder never goes live.
+# Publishes to GitHub Pages (https://adsynthio.github.io/cookmate/):
+# - app/: the Cookmate web app, built from apps/mobile against the live Supabase project (the same public settings
+#   as the phone builds in eas.json). On an iPhone, open it in Safari and Add to Home Screen (docs/IPHONE_WEB_APP.md).
+# - the site/ pages (home, privacy policy, account deletion), which Google Play links to. They need two repository
+#   variables (Settings > Secrets and variables > Actions > Variables): SUPPORT_EMAIL (the public contact address) and
+#   OPERATOR (the name shown as who runs Cookmate). Without them the pages are left out, so a page with a placeholder
+#   never goes live; the web app is published either way.
+# Needs, once: Settings > Pages > Source: GitHub Actions.
 
 on:
   push:
     branches: [main]
-    paths: [site/**, .github/workflows/site.yml]
+    paths: [site/**, apps/mobile/**, tools/web/**, .github/workflows/site.yml]
   workflow_dispatch:
 
 concurrency:
@@ -23,12 +25,24 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    outputs:
-      ready: ${{ steps.fill.outputs.ready }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+      - name: Build the web app
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          npm ci
+          # Same public settings as the phone builds: live mode, the project URL and the publishable (anon) key.
+          eval "$(python3 -c 'import json, shlex; env = json.load(open("eas.json"))["build"]["base"]["env"]; print("\n".join(f"export {k}={shlex.quote(v)}" for k, v in env.items()))')"
+          WEB_BASE_URL=/cookmate/app npx expo export --platform web --output-dir ../../_site/app
+          python3 ../../tools/web/finalize.py ../../_site/app /cookmate/app
       - name: Fill in contact details
         id: fill
         env:
@@ -37,8 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "$SUPPORT_EMAIL" ] || [ -z "$OPERATOR" ]; then
-            echo "::notice::Set the repository variables SUPPORT_EMAIL and OPERATOR to publish the site."
-            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Set the repository variables SUPPORT_EMAIL and OPERATOR to publish the privacy and deletion pages. Publishing the web app only."
             exit 0
           fi
           effective=$(git log -1 --format=%cs -- site/privacy.html)
@@ -57,15 +70,12 @@ jobs:
           open(dst, "w", encoding="utf-8").write(text)
           PY
           done
-          echo "ready=true" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-pages-artifact@v3
-        if: steps.fill.outputs.ready == 'true'
         with:
           path: _site
 
   deploy:
     needs: build
-    if: needs.build.outputs.ready == 'true'
     runs-on: ubuntu-24.04
     permissions:
       pages: write

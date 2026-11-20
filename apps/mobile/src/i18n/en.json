@@ -1421,5 +1421,8 @@
   "grocery.find": "Find {item} in {store}",
   "grocery.store.blinkit": "Blinkit",
   "grocery.store.zepto": "Zepto",
-  "grocery.store.bigbasket": "BigBasket"
+  "grocery.store.bigbasket": "BigBasket",
+  "state.offline.bootBody": "Cookmate needs the internet to open your kitchen. Check your connection and try again.",
+  "scan.webBody": "Take a photo of your fridge, a shelf or a shop bill, or choose one you already have.",
+  "scan.webPick": "Take or choose a photo"
 }

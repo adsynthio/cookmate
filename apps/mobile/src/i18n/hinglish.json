@@ -1387,5 +1387,8 @@
   "grocery.find": "{store} mein {item} dhoondhein",
   "grocery.store.blinkit": "Blinkit",
   "grocery.store.zepto": "Zepto",
-  "grocery.store.bigbasket": "BigBasket"
+  "grocery.store.bigbasket": "BigBasket",
+  "state.offline.bootBody": "Aapki kitchen kholne ke liye Cookmate ko internet chahiye. Connection check karein aur phir try karein.",
+  "scan.webBody": "Fridge, shelf ya shop bill ki photo lein, ya pehle se li hui photo chunein.",
+  "scan.webPick": "Photo lein ya chunein"
 }

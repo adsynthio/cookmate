@@ -1417,5 +1417,8 @@
   "grocery.find": "{store} में {item} ढूँढें",
   "grocery.store.blinkit": "Blinkit",
   "grocery.store.zepto": "Zepto",
-  "grocery.store.bigbasket": "BigBasket"
+  "grocery.store.bigbasket": "BigBasket",
+  "state.offline.bootBody": "आपकी रसोई खोलने के लिए Cookmate को इंटरनेट चाहिए। कनेक्शन देखें और फिर से कोशिश करें।",
+  "scan.webBody": "फ्रिज, अलमारी या दुकान के बिल की फ़ोटो लें, या पहले से ली हुई फ़ोटो चुनें।",
+  "scan.webPick": "फ़ोटो लें या चुनें"
 }

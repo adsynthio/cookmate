@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="%LANG_ISO_CODE%">
+  <head>
+    <meta charset="utf-8" />
+    <!-- maximum-scale stops iPhone zooming into a text field on focus; pinch-zoom still works on iOS. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>%WEB_TITLE%</title>
+    <!-- Installable web app: on iPhone, Share > Add to Home Screen opens it full screen like an app. -->
+    <link rel="manifest" href="__BASE__/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="__BASE__/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="__BASE__/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Cookmate" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="format-detection" content="telephone=no" />
+    <style id="expo-reset">
+      html, body { height: 100%; background: #FDF9F2; }
+      body { overflow: hidden; overscroll-behavior: none; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+      #root { display: flex; height: 100%; flex: 1; }
+      @media (prefers-color-scheme: dark) { html, body { background: #15140F; } }
+    </style>
+  </head>
+  <body>
+    <noscript>Cookmate needs JavaScript to run.</noscript>
+    <div id="root"></div>
+    <script>
+      // Offline support for the installed web app (public/sw.js). Skipped on localhost so development stays fresh.
+      if ("serviceWorker" in navigator && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("__BASE__/sw.js", { scope: "__BASE__/" }).catch(function () {});
+        });
+      }
+    </script>
+  </body>
+</html>

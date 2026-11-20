@@ -55,6 +55,7 @@ Deno.test("variant rows link back to the base and keep safety notes", () => {
     ingredientIds: new Map([["potato", "ing-potato"]]),
   }, "Boil covered for 20 minutes.");
   assertEquals(rows.recipe.parent_recipe_id, "base-1");
+  assertEquals(rows.recipe.slug, "new-1", "recipes.slug is not null: a household dish uses its own id");
   assertEquals(rows.recipe.household_id, "hh");
   assertEquals(rows.recipe.source, "adapted");
   assertEquals(rows.recipe.equipment, ["kadai"]);

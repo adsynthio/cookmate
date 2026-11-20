@@ -46,7 +46,10 @@ export function variantRows(
     household_id: ids.householdId,
     parent_recipe_id: base.id,
     created_by_member_id: ids.memberId,
-    slug: null,
+    // recipes.slug is required. A household dish takes its own id: the app opens household dishes by id, slug lookups
+    // only search the shared library (getRecipe), and an id can't clash with a library dish of the same name. Until
+    // this was set, every adapted, new and family recipe failed to save (null slug violates the not-null constraint).
+    slug: ids.recipeId,
     title: adapted.title,
     titles: adapted.titles ?? {},
     description: summary || adapted.description,

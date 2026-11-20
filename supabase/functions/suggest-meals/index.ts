@@ -112,7 +112,7 @@ async function modelChef(client: Anthropic, householdId: string, language: strin
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: CHEF_SYSTEM }],
       messages: [{ role: "user", content: `Language: ${language}\n${JSON.stringify(brief)}` }],
     },
-    { timeout: 4000, maxRetries: 0 },
+    { timeout: 6000, maxRetries: 0 },
   ));
   return r.stop_reason === "refusal" ? null : (r.parsed_output as ChefOut | null);
 }

@@ -4,6 +4,7 @@
 import type Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { z } from "npm:zod@4.6.5";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 export const TASK = "parse_inventory_text";
 export const MODEL = "claude-haiku-5-5";
@@ -49,7 +50,7 @@ export function parseRequest(text: string, language: string, hints: string) {
     model: MODEL,
     max_tokens: 1500,
     // Extraction with a fixed format: no thinking, lowest effort, for the 1.2 s latency budget.
-    thinking: { type: "disabled" as const },
+    ...thinkingOff(MODEL),
     output_config: { effort: "low" as const, format: zodOutputFormat(ModelItems) },
     system: [{ type: "text" as const, text: INSTRUCTIONS + hints, cache_control: { type: "ephemeral" as const } }],
     messages: [{ role: "user" as const, content: `Language: ${language}\nText: ${text}` }],

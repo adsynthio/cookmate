@@ -15,6 +15,7 @@ import { timedAiCall } from "../_shared/aiLog.ts";
 import { LANGUAGE_NAME, localeFor } from "../rescue/logic.ts";
 import { acceptLearned, changesOf, type ModelItem } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 const MODEL = "claude-haiku-5-5";
 const TASK = "learn_from_cooking";
@@ -93,7 +94,7 @@ Deno.serve(async (req) => {
       {
         model: MODEL,
         max_tokens: 600,
-        thinking: { type: "disabled" },
+        ...thinkingOff(MODEL),
         output_config: { effort: "low", format: zodOutputFormat(Out) },
         system: [{ type: "text", cache_control: { type: "ephemeral" }, text: SYSTEM }],
         messages: [{

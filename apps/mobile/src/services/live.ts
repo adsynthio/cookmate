@@ -775,7 +775,7 @@ export const liveServices: Services = {
     },
     async saveFamilyRecipe(householdId, telling, owner) {
       const { data, error } = await requireSupabase().functions.invoke<{
-        recipe_id: string | null; title?: string; titles?: Record<string, string>; safety_added?: string[]; questions?: string[];
+        recipe_id: string | null; reason?: "nothing_safe" | "busy"; title?: string; titles?: Record<string, string>; safety_added?: string[]; questions?: string[];
       }>("family-recipe", { body: { household_id: householdId, telling, ...(owner?.trim() ? { owner: owner.trim() } : {}) } });
       if (error) {
         const status = (error as { context?: { status?: number } }).context?.status;
@@ -783,7 +783,8 @@ export const liveServices: Services = {
         if (status === 400) return { recipeId: null, reason: "invalid" };
         throw error;
       }
-      if (!data?.recipe_id) return { recipeId: null, reason: "nothing_safe" };
+      // "busy": the model couldn't be reached; the cook's words are still on screen to save again.
+      if (!data?.recipe_id) return { recipeId: null, reason: data?.reason === "busy" ? "busy" : "nothing_safe" };
       return { recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? undefined, safetyAdded: data.safety_added ?? [], questions: data.questions ?? [] };
     },
     async reportRecipe(householdId, recipeId, reason, note) {
@@ -795,7 +796,7 @@ export const liveServices: Services = {
     async inventDish(householdId, dish) {
       const { data, error } = await requireSupabase().functions.invoke<{
         recipe_id: string | null;
-        reason?: "too_little" | "nothing_safe" | "avoided";
+        reason?: "too_little" | "nothing_safe" | "avoided" | "busy";
         avoided?: string[];
         title?: string;
         titles?: Record<string, string>;
@@ -813,7 +814,8 @@ export const liveServices: Services = {
         throw error;
       }
       if (!data?.recipe_id && data?.reason === "avoided") return { recipeId: null, reason: "avoided", avoided: data.avoided ?? [] };
-      if (!data?.recipe_id) return { recipeId: null, reason: data?.reason === "too_little" ? "too_little" : "nothing_safe" };
+      // "busy": the model couldn't be reached, which says nothing about the dish or the kitchen.
+      if (!data?.recipe_id) return { recipeId: null, reason: data?.reason === "too_little" || data?.reason === "busy" ? data.reason : "nothing_safe" };
       return {
         recipeId: data.recipe_id, title: data.title ?? "", titles: data.titles ?? null, description: data.description ?? "",
         uses: data.uses ?? [], toBuy: data.to_buy ?? [], named: !!data.named,

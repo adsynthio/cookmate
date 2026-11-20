@@ -18,6 +18,7 @@ import { confidentPantry, LANGUAGE_NAME, localeFor, type PantryRow } from "../re
 import { type Body, parseBody } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 const MODEL = "claude-haiku-5-5";
 
@@ -108,7 +109,7 @@ Deno.serve(async (req) => {
           {
             model: MODEL,
             max_tokens: 300,
-            thinking: { type: "disabled" },
+            ...thinkingOff(MODEL),
             output_config: { effort: "low", format: zodOutputFormat(AnswerOut) },
             system: [{ type: "text", cache_control: { type: "ephemeral" }, text: `${RULES}\n\nAnswer the cook's question in at most three short sentences (under ${MAX_ANSWER_CHARS} characters), for the step they are on.` }],
             messages: [{ role: "user", content: JSON.stringify({ ...situation(doc, stepNo, pantry, locale), question: input.text }) }],
@@ -142,7 +143,7 @@ Deno.serve(async (req) => {
         {
           model: MODEL,
           max_tokens: 400,
-          thinking: { type: "disabled" },
+          ...thinkingOff(MODEL),
           output_config: { effort: "low", format: zodOutputFormat(NotesOut) },
           system: [{ type: "text", cache_control: { type: "ephemeral" }, text: `${RULES}\n\nThe cook did something differently from the recipe. Give at most ${MAX_NOTES} short notes (under ${MAX_NOTE_CHARS} characters each) for steps that are still ahead and are affected by the change, saying what to do differently there. Use the step numbers given. If nothing ahead is affected, return no notes. Never change cooking times for meat, fish, egg or beans.` }],
           messages: [{ role: "user", content: JSON.stringify({ ...situation(doc, stepNo, pantry, locale), cook_changed: input.text }) }],

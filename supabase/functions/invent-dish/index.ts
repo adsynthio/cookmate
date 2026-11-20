@@ -30,12 +30,13 @@ import {
 } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "invent_combination";
 const MODEL = "claude-sonnet-5-5";
 const PROMPT_VERSION = "invent_combination@1";
 const NAMED_TASK = "write_named_dish";
-const NAMED_VERSION = "write_named_dish@2";
+const NAMED_VERSION = "write_named_dish@3";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -90,7 +91,7 @@ async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, avoid: 
     {
       model: MODEL,
       max_tokens: 2500,
-      thinking: { type: "disabled" },
+      ...thinkingOff(MODEL),
       output_config: { effort: "low", format: zodOutputFormat(Dish) },
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: SYSTEM(staples) }],
       messages: [{
@@ -112,7 +113,9 @@ async function askModel(client: Anthropic, plan: InventPlan, diet: Diet, avoid: 
 const NAMED_SYSTEM = (staples: string[], jobSwaps: string) => `You are a home cook who can make almost any dish from what is already
 in the kitchen, the way a good Indian home cook does: on Diwali, with no boondi in the shops, they make it from
 besan, sugar and ghee, with Eno instead of baking soda. Write one home recipe for the dish they asked for (Indian or
-not, from a shop or a restaurant), cooked from what is in their kitchen ("have") and these staples:
+not, from a shop or a restaurant). If they name a cuisine, a region or a kind of food rather than one dish ("Punjabi
+food", "something South Indian", "a quick snack"), choose the one dish of that kind that best fits what they have and
+give it its real name (e.g. "Rajma", "Aloo Gobi"). Cook it from what is in their kitchen ("have") and these staples:
 ${staples.join(", ")}.
 Think by JOB, not by name: for each usual ingredient they don't have, ask what it does in the dish (makes it rise,
 holds it together, sourness, richness, sweetness, thickens, crunch, sets, colour, smell, fat, heat) and use
@@ -139,7 +142,7 @@ async function askNamed(client: Anthropic, dish: string, have: string[], diet: D
     {
       model: MODEL,
       max_tokens: 3000,
-      thinking: { type: "disabled" },
+      ...thinkingOff(MODEL),
       output_config: { effort: "low", format: zodOutputFormat(NamedDish) },
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: NAMED_SYSTEM(staples, jobSwapsPrompt((k) => have.includes(k) || staples.includes(k))) }],
       messages: [{
@@ -227,6 +230,7 @@ Deno.serve(async (req) => {
   const task = named ? NAMED_TASK : TASK;
   const version = named ? NAMED_VERSION : PROMPT_VERSION;
   let doc: RecipeDoc | null = null;
+  let busy = false;
   let toBuy: string[] = [];
   let modelDish: ModelDish | null = null;
   let problems: string[] = [];
@@ -267,10 +271,12 @@ Deno.serve(async (req) => {
     } catch (err) {
       const status = err instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "error";
       await logAiRequest({ householdId, task, model: MODEL, promptVersion: version, latencyMs: 0, status, error: err instanceof Error ? err.message : String(err) });
+      busy = true;
       break;
     }
   }
-  if (!doc) return json({ recipe_id: null, reason: "nothing_safe", problems }, 200);
+  // "busy": the model couldn't be reached or failed, so the app says "try again" instead of blaming the dish.
+  if (!doc) return json({ recipe_id: null, reason: busy ? "busy" : "nothing_safe", problems }, 200);
 
   // Save as the household's own recipe, a new creation (not a variant of anything).
   const names = [...new Set(doc.ingredients.map((i) => i.ingredient))];

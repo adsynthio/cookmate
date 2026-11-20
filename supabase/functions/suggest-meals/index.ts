@@ -17,6 +17,7 @@ import { calendarSummary, checkQuestion, type Kitchen, loadKitchen, rank } from 
 import { localeFor, mergeCraving } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 const MODEL = "claude-haiku-5-5";
 // Choosing tonight's picks is the reasoning step, so it gets the stronger model; it falls back to the rules on timeout.
@@ -56,7 +57,7 @@ async function modelCraving(client: Anthropic, householdId: string, text: string
     {
       model: MODEL,
       max_tokens: 150,
-      thinking: { type: "disabled" },
+      ...thinkingOff(MODEL),
       output_config: { effort: "low", format: zodOutputFormat(CravingOut) },
       system: [{
         type: "text",
@@ -67,7 +68,7 @@ tags: only from ${KNOWN_TAGS.join(", ")}. max_time_min: only if they mention tim
       }],
       messages: [{ role: "user", content: text }],
     },
-    { timeout: 1500 },
+    { timeout: 3000, maxRetries: 0 },
   ));
   if (r.stop_reason === "refusal" || !r.parsed_output) return null;
   const o = r.parsed_output;
@@ -106,12 +107,12 @@ async function modelChef(client: Anthropic, householdId: string, language: strin
     {
       model: CHEF_MODEL,
       max_tokens: 800,
-      thinking: { type: "disabled" },
+      ...thinkingOff(CHEF_MODEL),
       output_config: { effort: "low", format: zodOutputFormat(ChefOutSchema) },
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: CHEF_SYSTEM }],
       messages: [{ role: "user", content: `Language: ${language}\n${JSON.stringify(brief)}` }],
     },
-    { timeout: 4000 },
+    { timeout: 4000, maxRetries: 0 },
   ));
   return r.stop_reason === "refusal" ? null : (r.parsed_output as ChefOut | null);
 }

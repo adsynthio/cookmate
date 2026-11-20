@@ -7,6 +7,7 @@ import { z } from "npm:zod@4.6.5";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { MAX_STEP_CHARS, MAX_STEPS, playbookText, type Problem, type RescueContext, type RescueLocale } from "../_shared/rescue.ts";
 import { LANGUAGE_NAME } from "./logic.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 export const TASK = "rescue_fix";
 export const MODEL = "claude-haiku-5-5";
@@ -18,7 +19,7 @@ export function rescueRequest(doc: RecipeDoc, stepNo: number, problem: Problem, 
   return {
     model: MODEL,
     max_tokens: 400,
-    thinking: { type: "disabled" as const },
+    ...thinkingOff(MODEL),
     output_config: { effort: "low" as const, format: zodOutputFormat(Fix) },
     system: [{
       type: "text" as const,

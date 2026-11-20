@@ -28,7 +28,7 @@ are in this folder.
    - Vercel → the Cookmate project → Settings → Environment Variables → add `SUPPORT_EMAIL` (the address people
      write to; it is shown publicly) and `OPERATOR` (the name shown as who runs Cookmate, your name or a business
      name). Redeploy.
-   - The pages appear at `https://YOUR-APP.vercel.app/legal/privacy` and `/legal/delete-account`. Until both
+   - The pages appear at `https://cookmate-chi.vercel.app/legal/privacy` and `/legal/delete-account`. Until both
      variables are set they are left out, so a page with a blank email never goes live.
    - The deletion page promises: email requests are verified with a code to the linked phone and done within 30
      days. Delete those accounts with the `delete-account` function or `private.delete_account_data`.

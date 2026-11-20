@@ -4,9 +4,9 @@ The Android app is the product. To use Cookmate every day on an iPhone without a
 (US$99 a year), it is also published as a web app that installs on the home screen and opens full screen like an app.
 It talks to the same live database and AI as the phone builds, so whatever you do in it is real data.
 
-**Address:** your Vercel address, e.g. `https://YOUR-APP.vercel.app/`
+**Address:** `https://cookmate-chi.vercel.app/` (Vercel project `cookmate` in the `adsynth` team, linked to this repository)
 
-## Deploy on Vercel (once)
+## Deploy on Vercel (done 20 Nov 2026)
 
 `vercel.json` at the repository root holds every setting, so there is nothing to fill in:
 

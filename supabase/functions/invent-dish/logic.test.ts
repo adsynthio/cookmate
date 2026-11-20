@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { planInvention, validateInvention } from "../_shared/invent.ts";
-import { CATALOG, cleanDishName, closeness, docFromModel, inventItems, kitchenSwaps, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
+import { CATALOG, cleanDishName, closeness, docFromModel, inventItems, isWater, kitchenSwaps, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
 
 Deno.test("the table eats what its strictest member eats", () => {
   assertEquals(tableDiet(["nonveg", "veg"]), "veg");
@@ -101,4 +101,21 @@ Deno.test("M3: swaps kept only when they fit this kitchen; closeness rounded and
   assertEquals(closeness(dish), 90);
   assertEquals(closeness({ closeness: 10 } as never), 50);
   assertEquals(closeness({} as never), null);
+});
+
+Deno.test("water is never an ingredient: the steps say how much, so it can't fail the catalog or reach the list", () => {
+  for (const w of ["water", "Water", "hot water", "warm water", "boiling water", " cold water "]) assertEquals(isWater(w), true, w);
+  for (const w of ["rose water", "coconut water", "watermelon", "water chestnut flour"]) assertEquals(isWater(w), false, w);
+  const doc = docFromModel({
+    title: "Rajma", title_hi: "राजमा", title_hinglish: "Rajma", description: "Kidney beans in onion-tomato gravy.",
+    servings: 2, prep_min: 10, cook_min: 40, spice_level: 2,
+    ingredients: [
+      { ingredient: "kidney beans", qty: 150, unit: "g", local: null },
+      { ingredient: "water", qty: 750, unit: "ml", local: null },
+      { ingredient: "onion", qty: 1, unit: "piece", local: null },
+    ],
+    steps: [{ text: "Pressure-cook the soaked beans with 750 ml water.", minutes: 25, cue: null, safety: null }],
+  }, "veg");
+  assertEquals(doc.ingredients.map((i) => i.ingredient), ["kidney beans", "onion"]);
+  assertEquals(doc.steps[0]!.text.includes("750 ml water"), true);
 });

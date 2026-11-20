@@ -34,9 +34,9 @@ import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "invent_combination";
 const MODEL = "claude-sonnet-5-5";
-const PROMPT_VERSION = "invent_combination@1";
+const PROMPT_VERSION = "invent_combination@2";
 const NAMED_TASK = "write_named_dish";
-const NAMED_VERSION = "write_named_dish@3";
+const NAMED_VERSION = "write_named_dish@4";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -80,7 +80,8 @@ dislikes), not even as a garnish or an option.
 Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
 safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;
 no shortcuts (no skipping soaking or boiling, no reheating more than once, no half-cooked anything).
-Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 7 short steps in plain English a home cook
+Quantities in g or ml (or piece/bunch/packet), for 2 servings; water is not an ingredient, the step that adds it
+says how much ("add 500 ml water"). 3 to 7 short steps in plain English a home cook
 follows easily; minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari)
 and Hinglish (Latin script). No health or nutrition claims.
 ${SAFETY_RULES_PROMPT}`;
@@ -130,7 +131,8 @@ plain sentence ("A little less crisp than the shop's, just as sweet"). Ingredien
 "avoid" (allergies and dislikes), not even as a garnish or an option; make the dish without it.
 Food safety, always: leftovers and cooked food are reheated until steaming hot all the way through, in a step with a
 safety note; raw meat, fish and eggs are cooked through (no pink, egg fully set), said in a step with a safety note;
-no shortcuts. Quantities in g or ml (or piece/bunch/packet), for 2 servings. 3 to 8 short steps in plain English;
+no shortcuts. Quantities in g or ml (or piece/bunch/packet), for 2 servings. Water is not an ingredient: say how
+much in the step that adds it ("add 500 ml water"). 3 to 8 short steps in plain English;
 minutes on steps that take time; a sensory cue where it helps. Titles: English, Hindi (Devanagari) and Hinglish
 (Latin script). No health or nutrition claims.
 ${SAFETY_RULES_PROMPT}

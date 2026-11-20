@@ -98,6 +98,14 @@ export function jobSwapsPrompt(can: (key: string) => boolean): string {
 
 const UNITS = new Set(["g", "ml", "piece", "bunch", "packet"]);
 
+/**
+ * Water is in every kitchen and isn't a catalog ingredient: like the library recipes, the steps say how much
+ * ("add 500 ml water"). The model is told so; any plain water it still lists is dropped here, so it can't fail the
+ * catalog check ("unknown ingredient water") or end up on the shopping list.
+ */
+const WATER = /^(?:(?:plain|hot|warm|cold|boiling|lukewarm|drinking|filtered|tap)\s+)?water$/;
+export const isWater = (name: string) => WATER.test(name.trim().toLowerCase());
+
 /** The model's dish as a recipe document, labelled a new creation. */
 export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
   return {
@@ -114,7 +122,7 @@ export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
     spice_level: Math.max(1, Math.min(5, Math.round(d.spice_level) || 2)),
     tags: ["new_creation"],
     review_status: "draft",
-    ingredients: d.ingredients.map((i) => ({
+    ingredients: d.ingredients.filter((i) => !isWater(i.ingredient)).map((i) => ({
       ingredient: i.ingredient.trim().toLowerCase(),
       qty: Number(i.qty),
       unit: UNITS.has(i.unit) ? i.unit : "g",

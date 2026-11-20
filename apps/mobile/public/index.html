@@ -12,18 +12,32 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Cookmate" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- black-translucent: the app draws under the status bar, edge to edge like a native app. Every screen already
+         pads itself with the safe-area insets (Screen, HomeHero, TabBar), which iOS reports through env(). -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="format-detection" content="telephone=no" />
     <style id="expo-reset">
       html, body { height: 100%; background: #FDF9F2; }
       body { overflow: hidden; overscroll-behavior: none; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
       #root { display: flex; height: 100%; flex: 1; }
       @media (prefers-color-scheme: dark) { html, body { background: #15140F; } }
+      /* iOS draws the clock and battery in white under black-translucent. On the cream screens that would be
+         unreadable, so the installed app gets a band behind them in the home header's olive (the home screen's own
+         header runs into it seamlessly). It is only as tall as the status bar and never takes taps. */
+      #status-band { display: none; }
+      @media (display-mode: standalone) {
+        #status-band {
+          display: block; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
+          background: #56652B; z-index: 2147483647; pointer-events: none;
+        }
+      }
+      @media (display-mode: standalone) and (prefers-color-scheme: dark) { #status-band { background: #15140F; } }
     </style>
   </head>
   <body>
     <noscript>Cookmate needs JavaScript to run.</noscript>
     <div id="root"></div>
+    <div id="status-band" aria-hidden="true"></div>
     <script>
       // Offline support for the installed web app (public/sw.js). Skipped on localhost so development stays fresh.
       if ("serviceWorker" in navigator && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {

@@ -17,6 +17,10 @@ app" → Run workflow. After that, every change merged into `apps/mobile` republ
 2. Tap **Share** (the square with an arrow) → **Add to Home Screen** → keep "Open as Web App" on → **Add**.
 3. Open Cookmate **from the home screen icon** and do the setup there.
 
+Opened from the icon, Cookmate fills the whole screen edge to edge, with no Safari address bar or toolbar: the app runs
+under the status bar (clock and battery sit on an olive band) and down to the home indicator. In a Safari tab you
+always see Safari's own bars; that's Safari, not the app.
+
 Do step 3 in the installed app, not in a Safari tab. The home-screen app keeps its own storage, separate from Safari,
 and your account lives in that storage. Set up in a Safari tab and you'd have to set up again in the app. Safari can
 also clear a tab's data after 7 days without a visit; the home-screen app is exempt.

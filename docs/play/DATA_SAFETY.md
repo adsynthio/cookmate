@@ -13,7 +13,7 @@ because a mismatch gets the app rejected.
 | Is all of the user data collected by your app encrypted in transit? | **Yes** | Every call goes over HTTPS: Supabase, Edge Functions, LiveKit, PostHog |
 | Do you provide a way for users to request that their data is deleted? | **Yes** | In the app: You → Privacy → Delete my account (instant, `delete-account`). On the web: the deletion page in `site/delete-account.html` |
 | Account creation | "My app allows users to create an account": **Yes, username/other** | Accounts start anonymous on first open; linking a phone number is optional |
-| Delete account URL | `https://adsynthio.github.io/cookmate/delete-account.html` | |
+| Delete account URL | `https://YOUR-APP.vercel.app/legal/delete-account` (your Vercel address) | |
 
 **Sharing:** answer **No** for every type. Anthropic (AI), Sarvam (speech), LiveKit (voice relay), Supabase
 (database) and PostHog (analytics) process data on Cookmate's behalf as service providers, and Google's form

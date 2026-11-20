@@ -193,4 +193,4 @@ Cookmate ಅಡುಗೆಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ; ಇದ�
 | Category | Food & Drink | |
 | Tags | Cooking, Recipes, Meal planning | |
 | Contact email | The support address you choose | Shown publicly on the listing |
-| Privacy policy | `https://adsynthio.github.io/cookmate/privacy.html` | Live once GitHub Pages is on (`docs/play/README.md`) |
+| Privacy policy | `https://YOUR-APP.vercel.app/legal/privacy` | Your Vercel address; live once `SUPPORT_EMAIL` and `OPERATOR` are set in Vercel (`docs/play/README.md`) |

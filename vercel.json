@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd apps/mobile && npm ci",
+  "buildCommand": "node tools/web/vercel-build.mjs",
+  "outputDirectory": "apps/mobile/dist",
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/privacy", "destination": "/legal/privacy", "permanent": false },
+    { "source": "/delete-account", "destination": "/legal/delete-account", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/((?!legal/|_expo/|assets/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    },
+    {
+      "source": "/_expo/static/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(self), microphone=(self), geolocation=()" }
+      ]
+    }
+  ]
+}

@@ -4,12 +4,21 @@ The Android app is the product. To use Cookmate every day on an iPhone without a
 (US$99 a year), it is also published as a web app that installs on the home screen and opens full screen like an app.
 It talks to the same live database and AI as the phone builds, so whatever you do in it is real data.
 
-**Address:** `https://adsynthio.github.io/cookmate/app/`
+**Address:** your Vercel address, e.g. `https://YOUR-APP.vercel.app/`
 
-## Turn it on (once)
+## Deploy on Vercel (once)
 
-GitHub → `adsynthio/cookmate` → Settings → Pages → Source: **GitHub Actions**. Then Actions → "Publish site and web
-app" → Run workflow. After that, every change merged into `apps/mobile` republishes it within a few minutes.
+`vercel.json` at the repository root holds every setting, so there is nothing to fill in:
+
+1. vercel.com → **Add New… → Project** → import the GitHub repository `adsynthio/cookmate`.
+2. Leave **Root Directory** as the repository root and **Framework Preset** as "Other"; `vercel.json` sets the install
+   command (`npm ci` in `apps/mobile`), the build (`node tools/web/vercel-build.mjs`) and the output (`apps/mobile/dist`).
+3. Optional, for Google Play: Settings → Environment Variables → `SUPPORT_EMAIL` and `OPERATOR`. With both set, the
+   privacy policy and account deletion pages are added at `/legal/privacy` and `/legal/delete-account`.
+4. **Deploy.** The first build takes a few minutes. After that, every push to `main` redeploys, and every pull request
+   gets its own preview address.
+
+The live Supabase URL and its public (anon) key come from `apps/mobile/eas.json`; no secrets are needed on Vercel.
 
 ## Install on the iPhone
 
@@ -49,8 +58,10 @@ also clear a tab's data after 7 days without a visit; the home-screen app is exe
 
 ## How it's built
 
-- `apps/mobile/public/`: page template with the iPhone home-screen tags, icons, manifest, and `sw.js` (keeps the app
-  files on the phone so it opens on a weak connection).
-- `apps/mobile/app.config.js`: sets the `/cookmate/app` base path when `WEB_BASE_URL` is set; native builds don't set it.
-- `tools/web/finalize.py`: fills in the base path and adds `404.html`, so reloading any screen works on GitHub Pages.
-- `.github/workflows/site.yml`: builds with the public settings from `apps/mobile/eas.json` and publishes.
+- `apps/mobile/public/`: page template with the iPhone home-screen tags (full screen, `viewport-fit=cover`,
+  black-translucent status bar with an olive band behind it), icons, manifest, and `sw.js` (keeps the app files on
+  the phone so it opens on a weak connection).
+- `tools/web/vercel-build.mjs`: exports the app with the public settings from `eas.json`, fills in the template and
+  adds the `/legal` pages when `SUPPORT_EMAIL` and `OPERATOR` are set.
+- `vercel.json`: build settings, the fallback that sends every app route to `index.html` (so reloading any screen
+  works), `/privacy` and `/delete-account` shortcuts, and cache headers (bundles cached for a year, `sw.js` never).

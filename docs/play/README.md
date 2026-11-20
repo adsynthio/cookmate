@@ -23,12 +23,13 @@ are in this folder.
    eas login
    ```
 
-3. **Public pages** (privacy policy and account deletion, which Play requires):
-   - GitHub → `adsynthio/cookmate` → Settings → Pages → Source: **GitHub Actions**.
-   - Settings → Secrets and variables → Actions → **Variables** → add `SUPPORT_EMAIL` (the address people write to;
-     it is shown publicly) and `OPERATOR` (the name shown as who runs Cookmate, your name or a business name).
-   - Actions → "Publish site" → Run workflow. The pages appear at `https://adsynthio.github.io/cookmate/`. Until both
-     variables are set, the workflow publishes nothing, so a page with a blank email never goes live.
+3. **Public pages** (privacy policy and account deletion, which Play requires) are served by the same Vercel project
+   as the web app (`docs/IPHONE_WEB_APP.md`):
+   - Vercel → the Cookmate project → Settings → Environment Variables → add `SUPPORT_EMAIL` (the address people
+     write to; it is shown publicly) and `OPERATOR` (the name shown as who runs Cookmate, your name or a business
+     name). Redeploy.
+   - The pages appear at `https://YOUR-APP.vercel.app/legal/privacy` and `/legal/delete-account`. Until both
+     variables are set they are left out, so a page with a blank email never goes live.
    - The deletion page promises: email requests are verified with a code to the linked phone and done within 30
      days. Delete those accounts with the `delete-account` function or `private.delete_account_data`.
 

@@ -4,7 +4,7 @@ Play Console → Policy → App content. Every form must be done before the firs
 
 | Form | Answer | Notes |
 |---|---|---|
-| **Privacy policy** | `https://adsynthio.github.io/cookmate/privacy.html` | From `site/privacy.html` |
+| **Privacy policy** | `https://YOUR-APP.vercel.app/legal/privacy` (your Vercel address) | From `site/privacy.html` |
 | **App access** | All functionality is available without special access | No login: the app opens on an anonymous account. Voice Cook is switched on per household and isn't shown otherwise, so reviewers see a complete app |
 | **Ads** | No, my app does not contain ads | |
 | **Content rating** | See the questionnaire below | |
@@ -15,7 +15,7 @@ Play Console → Policy → App content. Every form must be done before the firs
 | **Government app** | No | |
 | **Financial features** | My app doesn't provide any financial features | Cost per plate is an estimate, not a payment |
 | **Health apps** | Tick **Nutrition and weight management** only | The weekly plate shows food groups and a balance tip. No medical claims, no tracking of weight or conditions |
-| **Account deletion** | Delete URL `https://adsynthio.github.io/cookmate/delete-account.html` | In-app path: You → Privacy → Delete my account |
+| **Account deletion** | Delete URL `https://YOUR-APP.vercel.app/legal/delete-account` | In-app path: You → Privacy → Delete my account |
 
 ## Content rating questionnaire (IARC)
 

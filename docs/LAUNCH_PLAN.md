@@ -33,7 +33,7 @@ recipes, kill switches, per-household AI limits, crash-safe offline cooking, and
 | 0.1 | Open a Google Play Console personal account and finish identity checks | You | US$25 once | To do (you) |
 | 0.2 | Add `eas.json` and a production Android build (AAB) | Claude | Free: about 15 Android builds a month on Expo's free plan, or unlimited with `eas build --local` | **Done** (#107): `apps/mobile/eas.json`; build steps in `docs/play/README.md` |
 | 0.3 | Check the build targets Android 16 (API 36). Google has required this for new apps since 31 Aug 2026. Expo SDK 58 should meet it. | Claude | — | **Done** (#107): React Native 0.88 targets API 36; storage and overlay permissions removed |
-| 0.4 | Privacy policy and an account-deletion web page. Play requires a working web link where people can ask to delete their account. Host on GitHub Pages. | Claude drafts, you approve | Free (domain optional, about ₹800–1,000 a year) | **Done** (#110): `site/`. You: turn on Pages and set `SUPPORT_EMAIL` and `OPERATOR` |
+| 0.4 | Privacy policy and an account-deletion web page. Play requires a working web link where people can ask to delete their account. Host on Vercel with the web app. | Claude drafts, you approve | Free (domain optional, about ₹800–1,000 a year) | **Done** (#110, moved to Vercel): `site/`, served at `/legal`. You: set `SUPPORT_EMAIL` and `OPERATOR` in Vercel |
 | 0.5 | Play forms: Data safety, content rating, target audience (18+, which keeps the app out of the stricter Families rules), ads (none) | Claude drafts the answers from the code, you submit | — | **Done** (#109): `docs/play/DATA_SAFETY.md`, `APP_CONTENT.md` |
 | 0.6 | Store listing in English, Hindi and Kannada: name, short description, 6–8 captioned screenshots, feature graphic | Claude drafts text and screenshots, you check the Kannada | — | Text **done** (#109): `docs/play/LISTING.md`. Screenshots and feature graphic to do |
 | 0.7 | Clear the open items: `ANTHROPIC_API_KEY` secret and one library batch; sign off security findings 28–29; Turnstile key; delete the unused `SUPABASE_SERVICE_ROLE_KEY` secret | You | — | To do (you) |
@@ -86,7 +86,7 @@ Rates are from late 2026 vendor pages and guides; recheck before paying. US$1 �
 | LiveKit (voice) | Build plan, free: 1,000 agent minutes (~65 fifteen-minute sessions) | Free; keep voice invite-only | Ship US$50 a month for 5,000 minutes |
 | Sarvam speech | ₹1,000 free credit | Speech to text ₹30 an hour; Bulbul v3 ₹30 per 10,000 characters | Grows with voice minutes; cached step audio keeps it down |
 | Claude API | Pennies | See below | Per-household limits already cap it |
-| PostHog, GitHub Actions, GitHub Pages | Free tiers | Free tiers | Check limits when monthly users pass a few thousand |
+| PostHog, GitHub Actions, Vercel (Hobby) | Free tiers | Free tiers | Check limits when monthly users pass a few thousand |
 | **Total fixed** | **≈ ₹2,200 once** | **≈ ₹2,200 a month + usage** | |
 
 **AI usage, worked example.** Haiku 5.5 costs US$0.10 per million input tokens and US$0.50 per million output. A

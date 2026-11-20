@@ -139,7 +139,7 @@ export type InventResult =
       /** M3: how close to the usual dish, 50–100. */
       closeness?: number | null;
     }
-  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" }
+  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" | "busy" }
   /** The dish asked for is built on something the family never eats (an allergy or dislike). */
   | { recipeId: null; reason: "avoided"; avoided: string[] };
 
@@ -374,7 +374,7 @@ export interface RecipeService {
 
 export type FamilyRecipeResult =
   | { recipeId: string; title: string; titles?: EventNames; safetyAdded: string[]; questions: string[] }
-  | { recipeId: null; reason: "nothing_safe" | "unavailable" | "invalid" };
+  | { recipeId: null; reason: "nothing_safe" | "unavailable" | "invalid" | "busy" };
 
 export type RecipeReportReason = "unsafe" | "wrong" | "didnt_work" | "other";
 

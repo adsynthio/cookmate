@@ -22,6 +22,7 @@ import { CATALOG, docFromModel, tableDiet } from "../invent-dish/logic.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { cleanOwner, cleanTelling, shortList } from "./logic.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "write_family_recipe";
 const MODEL = "claude-sonnet-5-5";
@@ -69,7 +70,7 @@ async function ask(client: Anthropic, telling: string, owner: string | null, pro
     {
       model: MODEL,
       max_tokens: 4000,
-      thinking: { type: "disabled" },
+      ...thinkingOff(MODEL),
       output_config: { effort: "low", format: zodOutputFormat(Family) },
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: SYSTEM }],
       messages: [{
@@ -119,6 +120,7 @@ Deno.serve(async (req) => {
   let doc: RecipeDoc | null = null;
   let extra: { safetyAdded: string[]; questions: string[] } = { safetyAdded: [], questions: [] };
   let problems: string[] = [];
+  let busy = false;
   for (let attempt = 0; attempt < 2 && !doc; attempt++) {
     try {
       const r = await ask(client, telling, owner, problems);
@@ -144,10 +146,12 @@ Deno.serve(async (req) => {
     } catch (err) {
       const status = err instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "error";
       await logAiRequest({ householdId, task: TASK, model: MODEL, promptVersion: VERSION, latencyMs: 0, status, error: err instanceof Error ? err.message : String(err) });
+      busy = true;
       break;
     }
   }
-  if (!doc) return json({ recipe_id: null, reason: "nothing_safe", problems }, 200);
+  // "busy": the model couldn't be reached or failed, so the app says "try again" instead of blaming the recipe.
+  if (!doc) return json({ recipe_id: null, reason: busy ? "busy" : "nothing_safe", problems }, 200);
 
   if (owner) doc.description = `${owner}: ${doc.description}`.slice(0, 300);
   const names = [...new Set(doc.ingredients.map((i) => i.ingredient))];

@@ -1390,5 +1390,8 @@
   "grocery.store.bigbasket": "BigBasket",
   "state.offline.bootBody": "Aapki kitchen kholne ke liye Cookmate ko internet chahiye. Connection check karein aur phir try karein.",
   "scan.webBody": "Fridge, shelf ya shop bill ki photo lein, ya pehle se li hui photo chunein.",
-  "scan.webPick": "Photo lein ya chunein"
+  "scan.webPick": "Photo lein ya chunein",
+  "invent.busy.title": "Cookmate ke chef se baat nahi ho paayi",
+  "invent.busy.body": "Aapki dish ya kitchen mein koi kami nahi hai. Thodi der mein phir try karein.",
+  "family.busy": "Abhi Cookmate ke chef se baat nahi ho paayi. Aapki recipe yahin hai: thodi der mein phir save karein."
 }

@@ -16,6 +16,7 @@ import { z } from "npm:zod@4.6.5";
 
 import { logAiRequest } from "./aiLog.ts";
 import type { RecipeDoc } from "./recipes.ts";
+import { thinkingOff } from "./thinking.ts";
 
 export const REVIEW_TASK = "review_recipe_safety";
 export const REVIEW_MODEL = "claude-haiku-5-5";
@@ -83,7 +84,7 @@ export async function reviewRecipe(
       {
         model: REVIEW_MODEL,
         max_tokens: 800,
-        thinking: { type: "disabled" },
+        ...thinkingOff(REVIEW_MODEL),
         output_config: { effort: "low", format: zodOutputFormat(Verdict) },
         system: [{ type: "text", cache_control: { type: "ephemeral" }, text: REVIEW_SYSTEM }],
         messages: [{ role: "user", content: reviewInput(doc, ctx) }],

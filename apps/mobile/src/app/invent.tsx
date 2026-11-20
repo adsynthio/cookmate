@@ -49,6 +49,8 @@ export default function InventScreen() {
       ? { title: "invent.tooLittle.title", body: "invent.tooLittle.body" }
       : reason === "unavailable"
         ? { title: "invent.unavailable.title", body: "invent.unavailable.body" }
+        : reason === "busy"
+        ? { title: "invent.busy.title", body: "invent.busy.body" }
         : reason
           ? { title: "invent.unsafe.title", body: "invent.unsafe.body" }
           : null;
@@ -74,8 +76,8 @@ export default function InventScreen() {
           illustration={illustrations.emptyPicks}
           title={dish && reason === "nothing_safe" ? t("invent.named.fail.title", { dish }) : t(failure.title, { dish: dish ?? "" })}
           body={dish && reason === "nothing_safe" ? t("invent.named.fail.body") : t(failure.body, { items: avoided.map((k) => displayName(catalogEntry(k), k, l)).join(", ") })}
-          actionLabel={reason === "nothing_safe" ? t("state.retry") : t("onb.back")}
-          onAction={() => (reason === "nothing_safe" ? mutate() : router.back())}
+          actionLabel={reason === "nothing_safe" || reason === "busy" ? t("state.retry") : t("onb.back")}
+          onAction={() => (reason === "nothing_safe" || reason === "busy" ? mutate() : router.back())}
         />
       ) : result?.recipeId ? (
         <>

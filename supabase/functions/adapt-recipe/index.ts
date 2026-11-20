@@ -26,6 +26,7 @@ import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { aiSwitchedOff } from "../_shared/killSwitch.ts";
 import { serverError } from "../_shared/errors.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "adapt_recipe";
 const MODEL = "claude-sonnet-5-5";
@@ -63,7 +64,7 @@ async function askModel(doc: RecipeDoc, a: Adaptation, catalogNames: string[]): 
     {
       model: MODEL,
       max_tokens: 2000,
-      thinking: { type: "disabled" },
+      ...thinkingOff(MODEL),
       output_config: { effort: "low", format: zodOutputFormat(Plan) },
       system: [{
         type: "text",

@@ -185,11 +185,14 @@ export function Button({
           paddingHorizontal: size === "small" ? space.lg : space.xl,
           opacity: disabled ? 0.45 : 1,
           alignSelf: stretch ? "stretch" : undefined,
+          // Never wider than its space: a long label (a dish name, Kannada or Hindi) wraps inside the button instead
+          // of running off the screen.
+          maxWidth: "100%",
         },
       ]}
     >
       {icon ? <Icon name={icon} size={size === "small" ? 18 : 20} color={fg} /> : null}
-      <Text variant={size === "small" ? "label" : "bodyStrong"} weight={600} color={fg}>
+      <Text variant={size === "small" ? "label" : "bodyStrong"} weight={600} color={fg} style={styles.buttonLabel}>
         {label}
       </Text>
       {iconAfter ? <Icon name={iconAfter} size={size === "small" ? 18 : 20} color={fg} /> : null}
@@ -493,6 +496,7 @@ export { shadow };
 const styles = StyleSheet.create({
   screenContent: { paddingHorizontal: space.gutter, paddingTop: space.sm, gap: space.xl },
   button: { borderRadius: radius.pill, flexDirection: "row", gap: space.sm, alignItems: "center", justifyContent: "center" },
+  buttonLabel: { flexShrink: 1, textAlign: "center" },
   chip: {
     borderRadius: radius.pill,
     paddingHorizontal: space.lg,

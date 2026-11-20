@@ -32,12 +32,34 @@
         }
       }
       @media (display-mode: standalone) and (prefers-color-scheme: dark) { #status-band { background: #15140F; } }
+      /* iOS 26 home-screen apps: 100% (and dvh/svh) stop at the bottom of the status bar instead of the bottom of the
+         screen, so the app ended one status bar short and the tab bar floated above an empty strip (WebKit bug
+         301994). The installed app uses the full screen height instead: --app-height from the script below on
+         iPhone, else 100vh, which iOS gets right with the black-translucent status bar. */
+      @media (display-mode: standalone) {
+        html, body, #root { height: var(--app-height, 100vh); }
+      }
     </style>
   </head>
   <body>
     <noscript>Cookmate needs JavaScript to run.</noscript>
     <div id="root"></div>
     <div id="status-band" aria-hidden="true"></div>
+    <script>
+      // Installed on an iPhone: the app fills the whole screen, so its height is the screen's height (in CSS pixels).
+      (function () {
+        var standalone = navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
+        if (!standalone || !/iPhone|iPod/.test(navigator.userAgent)) return;
+        function fit() {
+          var portrait = matchMedia("(orientation: portrait)").matches;
+          var full = portrait ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
+          document.documentElement.style.setProperty("--app-height", Math.max(window.innerHeight, full) + "px");
+        }
+        fit();
+        addEventListener("resize", fit);
+        addEventListener("orientationchange", fit);
+      })();
+    </script>
     <script>
       // Offline support for the installed web app (public/sw.js). Skipped on localhost so development stays fresh.
       if ("serviceWorker" in navigator && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {

@@ -3216,6 +3216,18 @@ export type Database = {
         Args: { p_name: string; p_language: string; p_members: Json };
         Returns: Json;
       };
+      add_household_member: {
+        Args: { p_household_id: string; p_member: Json };
+        Returns: string;
+      };
+      update_household_member: {
+        Args: { p_member_id: string; p_changes: Json };
+        Returns: undefined;
+      };
+      remove_household_member: {
+        Args: { p_member_id: string };
+        Returns: undefined;
+      };
       match_ingredient: {
         Args: { p_name: string };
         Returns: string | null;

@@ -198,7 +198,12 @@ export type Member = {
   diet: Diet;
   spice: number;
   notes: string | null;
+  /** True for the person with this phone's account (and anyone else with their own account): not removable here. */
+  hasAccount?: boolean;
 };
+
+/** What can change about a person after setup. */
+export type MemberChanges = Partial<{ displayName: string; ageGroup: AgeGroup; diet: Diet; spice: number }>;
 
 export type Memory = {
   id: string;
@@ -290,6 +295,12 @@ export interface PreferenceService {
   recordConsents(input: { householdId: string; memberId: string; policyVersion: string; consents: ConsentRecord[] }): Promise<void>;
   /** KIT-057: who can be eating today. */
   listMembers(householdId: string): Promise<Member[]>;
+  /** Q5: an owner adds a person after setup (up to 12 in a kitchen). Returns the new person's member id. */
+  addMember(input: { householdId: string; member: NewMember }): Promise<string>;
+  /** Q5: change a person's name, age group, diet or spice. */
+  updateMember(input: { memberId: string; changes: MemberChanges }): Promise<void>;
+  /** Q5: remove a person who has no account of their own; their past reactions and memories stay. */
+  removeMember(memberId: string): Promise<void>;
   listMemories(householdId: string): Promise<Memory[]>;
   forgetMemory(memoryId: string): Promise<void>;
   keepMemory(memoryId: string): Promise<void>;

@@ -11,6 +11,7 @@ import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { AppHeader } from "@/components/AppHeader";
 import { DrinksToggle } from "@/components/drinks/DrinksToggle";
 import { CreditsCard } from "@/components/you/CreditsCard";
+import { FamilyCard } from "@/components/you/FamilyCard";
 import { PlateCard } from "@/components/you/PlateCard";
 import { WeekCard } from "@/components/you/WeekCard";
 import { LanguageCard, ProfileCard, StatGrid, TasteCard } from "@/components/you/YouParts";
@@ -108,6 +109,7 @@ export default function YouScreen() {
       />
       {householdId ? <CreditsCard householdId={householdId} /> : null}
       {members.data ? <TasteCard members={members.data} prefs={prefs} /> : null}
+      {householdId && members.data ? <FamilyCard householdId={householdId} members={members.data} selfId={memberId} /> : null}
       {householdId ? <WeekCard householdId={householdId} /> : null}
       {householdId ? <PlateCard householdId={householdId} /> : null}
       {householdId ? <ToolsCard householdId={householdId} /> : null}

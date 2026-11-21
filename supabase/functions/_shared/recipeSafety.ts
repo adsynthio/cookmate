@@ -285,8 +285,9 @@ export const SAFETY_RULES_PROMPT = `Safety rules every recipe must follow (a rec
 - Raw meat, fish and egg: cooked through (no pink inside, egg fully set), said in a step with a safety note.
 - Never: raw egg, half-cooked or pink meat, a runny egg, skipping soaking or boiling, reusing frying oil, food left
   out overnight, reheating more than once, tasting raw batter or dough, alcohol.
-- Sensible amounts per serving: salt at most 4 g, oil or ghee at most 30 ml (frying oil aside), red chilli powder at
-  most 3 g, baking soda at most 1.5 g. Step times realistic.
+- Sensible amounts per serving: salt at most 4 g, oil or ghee at most 30 ml (frying oil aside), sugar or jaggery at
+  most 60 g, red chilli powder at most 3 g, baking soda at most 1.5 g. A sweet (mithai, halwa, kheer) may have twice the
+  sugar, jaggery, oil and ghee. Step times realistic.
 - No health, medical or weight-loss claims; no links, phone numbers or brand promotions.`;
 
 /** The problems as plain lines, for logs and for the model's one rewrite. */

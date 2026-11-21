@@ -1,6 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { planInvention, validateInvention } from "../_shared/invent.ts";
+import { checkRecipe, problemLines } from "../_shared/recipeSafety.ts";
 import { CATALOG, cleanDishName, closeness, docFromModel, inventItems, isWater, kitchenSwaps, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
 
 Deno.test("the table eats what its strictest member eats", () => {
@@ -118,4 +119,34 @@ Deno.test("water is never an ingredient: the steps say how much, so it can't fai
   }, "veg");
   assertEquals(doc.ingredients.map((i) => i.ingredient), ["kidney beans", "onion"]);
   assertEquals(doc.steps[0]!.text.includes("750 ml water"), true);
+});
+
+Deno.test("a named sweet is checked as a sweet: Motichoor laddu's sugar fits a dessert, not a main", () => {
+  const laddu = {
+    title: "Motichoor laddu",
+    title_hi: "मोतीचूर लड्डू",
+    title_hinglish: "Motichoor laddu",
+    description: "Tiny besan pearls in sugar syrup, rolled into laddus.",
+    servings: 2, prep_min: 15, cook_min: 30, spice_level: 1,
+    ingredients: [
+      { ingredient: "Besan", qty: 100, unit: "g" },
+      { ingredient: "sugar", qty: 150, unit: "g" },
+      { ingredient: "ghee", qty: 40, unit: "ml" },
+      { ingredient: "green cardamom", qty: 2, unit: "piece" },
+    ],
+    steps: [
+      { text: "Whisk the besan with water into a smooth flowing batter." },
+      { text: "Boil the sugar with water to a one-string syrup with crushed cardamom.", minutes: 8 },
+      { text: "Pour the batter through a slotted spoon into hot ghee and fry the pearls.", minutes: 10, safety: "Never leave hot ghee alone; keep children away." },
+      { text: "Soak the pearls in the warm syrup, then shape into laddus when cool enough to touch.", minutes: 10 },
+    ],
+  };
+  const sweet = docFromModel({ ...laddu, course: "dessert" }, "veg");
+  assertEquals(sweet.course, "dessert");
+  assertEquals(sweet.ingredients[0]!.ingredient, "gram flour", "everyday names become the catalog's");
+  const sugar = (doc: typeof sweet) => problemLines(checkRecipe(doc, { catalog: CATALOG, diet: "veg", avoid: [] })).filter((p) => p.includes("sugar"));
+  assertEquals(sugar(sweet), [], "75 g of sugar a serving is fine for a sweet (limit 120)");
+  const asMain = docFromModel(laddu, "veg");
+  assertEquals(asMain.course, "main", "without a course a model dish is a main");
+  assertEquals(sugar(asMain), ["too much sugar: 75 per serving, at most 60"]);
 });

@@ -3,13 +3,13 @@
 // shutter. A photo is made smaller on the phone, read once by the scan-pantry function and never kept; barcodes
 // pile up as you scan packets. Either way the cook checks the items on the add screen before anything is saved.
 import { CameraView, useCameraPermissions, type BarcodeScanningResult } from "expo-camera";
-import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { ActivityIndicator, Image, Platform, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
+import { shrinkPhoto } from "@/components/scan/shrinkPhoto";
 import { draftName } from "@/components/kitchen/names";
 import { Icon, type IconName } from "@/design-system/icons";
 import { ingredientImage, scenes } from "@/design-system/media";
@@ -30,8 +30,6 @@ const MODES: { key: Mode; icon: IconName }[] = [
   { key: "photo", icon: "camera" },
   { key: "barcode", icon: "barcode" },
 ];
-/** Long edge of the photo sent for reading: sharp enough for a bill, small enough to send quickly. */
-const SEND_EDGE = 1600;
 /** Photos picked from the gallery at once. */
 const PICK_LIMIT = 6;
 const MOCK = process.env.EXPO_PUBLIC_USE_MOCKS === "1";
@@ -85,7 +83,7 @@ export default function ScanScreen() {
   // Photos are made smaller one at a time: each is large, and several at once can run a phone out of memory.
   const shrinking = useRef<Promise<unknown>>(Promise.resolve());
   const readPhoto = (uri: string) => {
-    const small = shrinking.current.then(() => shrink(uri));
+    const small = shrinking.current.then(() => shrinkPhoto(uri));
     shrinking.current = small.catch(() => undefined);
     void read(small);
   };
@@ -312,30 +310,6 @@ export default function ScanScreen() {
       </View>
     </Screen>
   );
-}
-
-/**
- * Makes a photo small enough to send quickly (JPEG, base64). It is decoded straight to that size, so a 12–48 MP phone
- * photo is never held at full size: the web app used to copy it whole onto a canvas and resize it in JavaScript, which an
- * iPhone can't hold, and the photo was never read.
- */
-async function shrink(uri: string): Promise<string> {
-  const ctx = ImageManipulator.manipulate(uri, { maxWidth: SEND_EDGE, maxHeight: SEND_EDGE });
-  try {
-    const image = await ctx.renderAsync();
-    try {
-      const small = await image.saveAsync({ compress: 0.6, format: SaveFormat.JPEG, base64: true });
-      if (Platform.OS === "web") URL.revokeObjectURL(small.uri);
-      if (!small.base64) throw new Error("The smaller photo came out empty");
-      return small.base64;
-    } finally {
-      image.release();
-    }
-  } finally {
-    ctx.release();
-    // Web: the picked photo is a file held in memory by its blob: address until let go.
-    if (Platform.OS === "web" && uri.startsWith("blob:")) URL.revokeObjectURL(uri);
-  }
 }
 
 function SideAction({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {

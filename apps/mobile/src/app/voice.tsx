@@ -24,6 +24,11 @@ export default function VoiceScreen() {
   });
 
   const outcome = token.data === "consent_needed" ? "consent" : token.data === "not_configured" ? "soon" : "ready";
+  // T1: out of AI credits, voice waits for the free ones at midnight; tapping and typing still work.
+  const copy: { title: StringKey; body: StringKey } =
+    token.data === "out_of_credits"
+      ? { title: "credits.pausedTitle", body: "credits.paused" }
+      : { title: `voice.${outcome}.title` as StringKey, body: `voice.${outcome}.body` as StringKey };
   return (
     <Screen>
       <View style={{ flexDirection: "row" }}>
@@ -37,7 +42,7 @@ export default function VoiceScreen() {
         <StateView state="error" title={t("state.error.title")} body={t("state.error.body")} actionLabel={t("state.retry")} onAction={() => void token.refetch()} />
       ) : (
         <>
-          <StateView state="empty" title={t(`voice.${outcome}.title` as StringKey)} body={t(`voice.${outcome}.body` as StringKey)} />
+          <StateView state="empty" title={t(copy.title)} body={t(copy.body)} />
           <Button label={t("voice.type")} size="cook" onPress={() => router.replace("/pantry/add")} />
         </>
       )}

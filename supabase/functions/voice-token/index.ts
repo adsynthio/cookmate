@@ -6,6 +6,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 
 import { languageOr, mintToken, roomName } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -60,6 +61,10 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get("LIVEKIT_API_KEY");
   const apiSecret = Deno.env.get("LIVEKIT_API_SECRET");
   if (!url || !apiKey || !apiSecret) return json({ error: "voice_not_configured" }, 503);
+  // T1: a voice session costs credits (record_voice_session logs it in ai_requests when it ends); at zero none starts,
+  // and the app offers tapping and typing instead.
+  const credits = await creditsFor(sb, body.household_id);
+  if (!credits.allowed) return outOfCredits(credits, CORS);
 
   const profile = (me as unknown as { voice_profiles: { language_code: string } | { language_code: string }[] | null }).voice_profiles;
   const saved = Array.isArray(profile) ? profile[0]?.language_code : profile?.language_code;

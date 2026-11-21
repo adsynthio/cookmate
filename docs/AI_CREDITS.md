@@ -12,10 +12,13 @@ bill. Added 21 Nov 2026 (T1). Code: `supabase/migrations/20270524000000_ai_credi
 - Every kitchen also gets **5 free credits a day**. They come back at midnight India time, are used first, and don't
   pile up.
 - At zero, the paid features pause until the next day's free credits or a top-up. Photo scans, Ask Cookmate, new
-  dishes and family recipes say so in the app. AI picks and adapting a recipe quietly use the app's rules.
-- These are free and never pause: the safety review of AI recipes, help while cooking (questions, "I changed
-  something", rescue, the photo check), understanding typed text, learning from cooking and read-aloud audio. Each costs
-  under 2 paise.
+  dishes, family recipes and voice cooking say so in the app. AI picks and adapting a recipe quietly use the app's rules.
+- These are free and never pause: the safety review of AI recipes, help while cooking that is typed or tapped
+  (questions, "I changed something", rescue, the photo check), understanding typed text, learning from cooking and
+  read-aloud audio of recipe steps. Each costs under 2 paise.
+- Voice cooking is paid. When a voice session ends, `record_voice_session` logs its model and speech use in
+  `ai_requests` (`voice_turns`, `voice_tts`, `voice_stt`), and the trigger takes that off. At zero, `voice-token` starts
+  no new session and the app offers tapping and typing instead.
 - A call can cost more than what's left; the balance stops at zero instead of going below.
 - The limits of 60 AI calls an hour and 300 a day per kitchen still apply.
 

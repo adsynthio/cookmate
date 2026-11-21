@@ -46,6 +46,10 @@ Out of the box, Supabase sends these emails itself, with three limits that matte
   above stay waiting and Supabase's default emails go out instead. The workflow still sets 6-digit codes and says so in
   a warning.
 
+Supabase's default emails carry a sign-in link, not a code. The workflow points that link at the web app (`SITE_URL`),
+and the web app picks up a session from it, so until custom SMTP is on, opening the link in a browser signs that browser
+in (on an iPhone that's Safari, not the installed app).
+
 So custom SMTP is the switch that turns this on properly (Supabase dashboard → Authentication → Emails → SMTP Settings
 → Enable custom SMTP). After saving it, run **Actions → Auth email settings → Run workflow** once: the Cookmate code
 emails go live and the run prints "Sign-in emails are live."

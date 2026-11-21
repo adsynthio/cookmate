@@ -33,7 +33,9 @@ const storage =
 export const supabase =
   url && key
     ? createClient<Database>(url, key, {
-        auth: { storage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false },
+        // Web: a sign-in link opened in this browser (Supabase's default email, before the code emails are switched on;
+        // docs/SIGN_IN.md) lands on the app with the session in the address, and is picked up from there.
+        auth: { storage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: Platform.OS === "web" },
       })
     : null;
 

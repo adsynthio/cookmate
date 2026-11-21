@@ -5,9 +5,13 @@ import type Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { z } from "npm:zod@4.6.5";
 
+import { thinkingOff } from "../_shared/thinking.ts";
+
 export const TASK = "scan_pantry_image";
-export const MODEL = "claude-opus-5-5";
-export const PROMPT_VERSION = "scan_pantry_image@3";
+// Sonnet, not Opus: reading a photo into a list the cook checks anyway doesn't need the top model, and Opus cost
+// ₹3.65 a photo (Nov 2026; Sonnet is half the price per token).
+export const MODEL = "claude-sonnet-5-5";
+export const PROMPT_VERSION = "scan_pantry_image@4";
 
 export type ScanKind = "fridge" | "bill" | "photo";
 
@@ -90,8 +94,9 @@ export function scanRequest(kind: ScanKind, imageBase64: string, mediaType: "ima
   return {
     model: MODEL,
     max_tokens: 4000,
-    // Extraction with a fixed format: the lowest effort is enough and keeps the wait short.
+    // Extraction with a fixed format: the lowest effort, no thinking first, keeps the wait short.
     output_config: { effort: "low" as const, format: zodOutputFormat(ScanItems) },
+    ...thinkingOff(MODEL),
     system: [{ type: "text" as const, text: INSTRUCTIONS[kind] + hints, cache_control: { type: "ephemeral" as const } }],
     messages: [
       {

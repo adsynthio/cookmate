@@ -15,8 +15,10 @@ import { LANGUAGE_NAME, localeFor } from "../rescue/logic.ts";
 import { type Body, cleanReply, contextFor, fallbackReply, type ItemRow, MAX_ANSWER_CHARS, type MemberRow, parseBody, type RecipeRow } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { serverError } from "../_shared/errors.ts";
+import { thinkingOff } from "../_shared/thinking.ts";
 
-const MODEL = "claude-opus-5-5";
+// Sonnet, not Opus: short answers about this kitchen don't need the top model, at half the price per token.
+const MODEL = "claude-sonnet-5-5";
 const TASK = "ask_cookmate";
 
 const CORS = {
@@ -122,6 +124,7 @@ Deno.serve(async (req) => {
           model: MODEL,
           max_tokens: 2000,
           output_config: { effort: "low", format: zodOutputFormat(ReplyOut) },
+          ...thinkingOff(MODEL),
           system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
           messages,
         },

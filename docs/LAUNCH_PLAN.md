@@ -40,6 +40,7 @@ recipes, kill switches, per-household AI limits, crash-safe offline cooking, and
 | 0.8 | Voice: deploy the voice agent to LiveKit Cloud's free Build plan (1,000 agent minutes a month, 5 at a time) and keep Voice Cook as an invite-only switch | Claude | Free | To do: needs LiveKit Cloud keys |
 | 0.9 | Fix the stored TTS price: Sarvam lists Bulbul v3 at ₹30 per 10,000 characters, not the ₹15 in `private.usage_prices` | Claude | — | **Done** (#108), applied to the live database |
 | 0.10 | Email sign-up and log-in with a 6-digit code (no passwords), new welcome and sign-in screens, code emails | Claude | Free: Supabase's built-in sender for your own address; a Gmail account over SMTP for testers | **Done** (`docs/SIGN_IN.md`). You: switch on custom SMTP before inviting testers |
+| 0.11 | AI credits: 50 on a new kitchen, 5 free a day, paid AI features pause at zero; photo scans and Ask Cookmate moved from Opus 5.5 to Sonnet 5.5 (#128) | Claude | At most ₹50 per new kitchen plus ₹5 a day per active kitchen | Server **done** (`docs/AI_CREDITS.md`); the app's meter and messages next |
 
 WhatsApp Business (F8) and push notifications through an EAS phone build (F10) aren't needed for launch. Sharing to
 WhatsApp through the phone's share sheet already works and costs nothing.

@@ -23,6 +23,7 @@ import type { Diet } from "../_shared/ranking.ts";
 import { RECIPE_SELECT, type RecipeDoc, recipeDocFromRow, type RecipeRow } from "../_shared/recipes.ts";
 import { catalogNames, DIETS, missingEquipment, safetyProblems, validationContext, variantRows } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor } from "../_shared/credits.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { aiSwitchedOff } from "../_shared/killSwitch.ts";
 import { serverError } from "../_shared/errors.ts";
@@ -146,7 +147,11 @@ Deno.serve(async (req) => {
   let adaptation = applyRules(base, request);
   let usedModel = false;
   // G5: with the model switched off, the reviewed rules still adapt; what they can't is left for the cook.
-  if (adaptation.unresolved.length && Deno.env.get("ANTHROPIC_API_KEY") && !(await aiSwitchedOff(sb, "adapt"))) {
+  // T1: out of AI credits, likewise: the rules' result stands.
+  if (
+    adaptation.unresolved.length && Deno.env.get("ANTHROPIC_API_KEY") && !(await aiSwitchedOff(sb, "adapt")) &&
+    (await creditsFor(sb, householdId)).allowed
+  ) {
     try {
       const { plan, usage, ms, refused } = await askModel(base, adaptation, catalogNames());
       if (plan) {

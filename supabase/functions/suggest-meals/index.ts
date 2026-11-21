@@ -16,6 +16,7 @@ import { acceptChef, acceptNewDish, CHEF_POOL, chefBrief, type ChefOut } from ".
 import { calendarSummary, checkQuestion, type Kitchen, loadKitchen, rank } from "./engine.ts";
 import { localeFor, mergeCraving } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor } from "../_shared/credits.ts";
 import { serverError } from "../_shared/errors.ts";
 import { thinkingOff } from "../_shared/thinking.ts";
 
@@ -199,7 +200,8 @@ Deno.serve(async (req) => {
     ...ctx.eaters.filter((e) => t.includes(e.name)).map((e) => e.name),
     ...(t.match(/\d+/g) ?? []),
   ];
-  if (client && ranking.ranked.length) {
+  // T1: out of AI credits, the rules' picks stand too.
+  if (client && ranking.ranked.length && (await creditsFor(sb, householdId)).allowed) {
     const pool = ranking.ranked.slice(0, CHEF_POOL);
     const templateOf = (p: Ranked) => reasonFor(p, ctx, locale, nameOf);
     try {

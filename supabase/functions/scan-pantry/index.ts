@@ -10,6 +10,7 @@ import { type CatalogRow, catalogHints, toCatalog, toResponseItem } from "../par
 import { cleanAppliances, fromModel, fromOpenFoodFacts, type OffProduct, readBody } from "./logic.ts";
 import { callModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -91,6 +92,9 @@ Deno.serve(async (req) => {
   }
 
   if (!Deno.env.get("ANTHROPIC_API_KEY")) return json({ items: [], source: "not_configured" });
+  // T1: out of AI credits, the photo isn't read (barcodes above cost nothing and still work).
+  const credits = await creditsFor(sb, body.householdId);
+  if (!credits.allowed) return outOfCredits(credits, CORS);
 
   const started = Date.now();
   const log = (status: "ok" | "error" | "timeout" | "refused" | "invalid_output", latencyMs: number, usage?: Anthropic.Usage, error?: string) =>

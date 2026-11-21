@@ -81,7 +81,8 @@ const SLOW_COOK_RAW = /\bslow[- ]cook/;
 const COOKER = /\b(pressure[- ]cook|cooker|whistles?)\b/;
 const PRESSURE_DROPS = /\b(let the pressure (drop|settle|release|come down)|pressure (has )?(fully |completely )?(dropped|drops|settled|released)|until the pressure (drops|is gone|has dropped)|once the pressure (drops|has dropped|is down))/;
 
-const FRYING = /\b(deep[- ]fry|deep[- ]fried|fry (them |it )?in (batches|hot oil)|into the hot oil|slide .{0,40} into .{0,20}oil|drop .{0,40} into .{0,20}oil)/;
+// Frying in ghee counts too (boondi, jalebi, gulab jamun): the ghee is the frying medium, not eaten.
+const FRYING = /\b(deep[- ]fry|deep[- ]fried|fry (them |it )?in (batches|hot oil|hot ghee)|into (the )?hot (oil|ghee)|(slide|drop) .{0,40} into .{0,20}(oil|ghee)|through .{0,30} into .{0,20}(oil|ghee))/;
 const OIL_CARE = /\b(hot oil|never leave|keep children|water (and|in|into|near) .{0,15}oil|splutter|spatter|dry (them|it|the) |pat dry|careful|gently slide|slide .{0,30} close)/;
 
 const COOKED_THROUGH = /\b(cooked through|no pink|not pink|juices run clear|fully set|set completely|completely set|fully cooked|until done|opaque all the way|flakes easily)\b/;
@@ -284,7 +285,8 @@ export const SAFETY_RULES_PROMPT = `Safety rules every recipe must follow (a rec
 - Raw meat, fish and egg: cooked through (no pink inside, egg fully set), said in a step with a safety note.
 - Never: raw egg, half-cooked or pink meat, a runny egg, skipping soaking or boiling, reusing frying oil, food left
   out overnight, reheating more than once, tasting raw batter or dough, alcohol.
-- Sensible amounts per serving: salt at most 4 g, oil or ghee at most 30 ml (frying oil aside), sugar or jaggery at
+- Sensible amounts per serving: salt at most 4 g, oil or ghee at most 30 ml (frying oil aside: write "for frying" as
+  its local name), sugar or jaggery at
   most 60 g, red chilli powder at most 3 g, baking soda at most 1.5 g. A sweet (mithai, halwa, kheer) may have twice the
   sugar, jaggery, oil and ghee. Step times realistic.
 - No health, medical or weight-loss claims; no links, phone numbers or brand promotions.`;

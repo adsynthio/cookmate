@@ -310,3 +310,6 @@ ingredients:
   - {name: crab, hi: केकड़ा, latn: kekda, aliases: [kurlya, nandu, crabs], category: seafood, location: fridge, life: {fridge: 1, freezer: 90}, measures: {piece: 200}, groups: [protein], allergens: [shellfish], flags: [safety]}
   - {name: pork, hi: पोर्क, latn: pork, aliases: [pandi, suar ka gosht], category: meat, location: fridge, life: {fridge: 2, freezer: 120}, measures: {katori: 150}, groups: [protein], flags: [safety]}
   - {name: dried fish, hi: सूखी मछली, latn: sukhi machhli, aliases: [sukat, bombil, bombay duck, karuvadu, unakka meen], category: seafood, location: pantry, life: {pantry: 90}, measures: {piece: 20}, groups: [protein], allergens: [fish]}
+  # Big mild chillies cooked as the vegetable (mirchi bajji, mirchi vada, mirchi ka salan, bharwan mirch). As
+  # "green chilli" those dishes broke the 6 g per serving limit and were refused.
+  - {name: bhavnagri chilli, hi: भावनगरी मिर्च, latn: bhavnagri mirch, aliases: [bhavnagari mirchi, bajji mirchi, bajji chilli, banana pepper, moti mirch, pakode wali mirch], category: vegetable, location: fridge, life: {fridge: 7, counter: 2}, measures: {piece: 25}, groups: [sabzi]}

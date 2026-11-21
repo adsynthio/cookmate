@@ -3,7 +3,7 @@
 
 begin;
 
--- Ingredients (252)
+-- Ingredients (253)
 insert into public.ingredients (canonical_name, names, aliases, category, default_unit, default_location_kind,
   shelf_life_days, grams_per_measure, food_groups, is_staple, allergens) values
   ('potato', '{"en": "potato", "hi": "आलू", "hi-Latn": "aloo"}'::jsonb, array['alu', 'aaloo', 'batata']::text[], 'vegetable', 'g', 'pantry', '{"counter": 21, "fridge": 30, "pantry": 30}'::jsonb, '{"katori": 140, "piece": 150}'::jsonb, array['sabzi']::text[], false, '{}'::text[]),
@@ -257,7 +257,8 @@ insert into public.ingredients (canonical_name, names, aliases, category, defaul
   ('vanaspati', '{"en": "vanaspati", "hi": "वनस्पति घी", "hi-Latn": "vanaspati"}'::jsonb, array['dalda', 'vanaspati ghee']::text[], 'oil_fat', 'g', 'pantry', '{"pantry": 365}'::jsonb, '{"chammach": 13}'::jsonb, '{}'::text[], false, '{}'::text[]),
   ('crab', '{"en": "crab", "hi": "केकड़ा", "hi-Latn": "kekda"}'::jsonb, array['kurlya', 'nandu', 'crabs']::text[], 'seafood', 'g', 'fridge', '{"freezer": 90, "fridge": 1}'::jsonb, '{"piece": 200}'::jsonb, array['protein']::text[], false, array['shellfish']::text[]),
   ('pork', '{"en": "pork", "hi": "पोर्क", "hi-Latn": "pork"}'::jsonb, array['pandi', 'suar ka gosht']::text[], 'meat', 'g', 'fridge', '{"freezer": 120, "fridge": 2}'::jsonb, '{"katori": 150}'::jsonb, array['protein']::text[], false, '{}'::text[]),
-  ('dried fish', '{"en": "dried fish", "hi": "सूखी मछली", "hi-Latn": "sukhi machhli"}'::jsonb, array['sukat', 'bombil', 'bombay duck', 'karuvadu', 'unakka meen']::text[], 'seafood', 'g', 'pantry', '{"pantry": 90}'::jsonb, '{"piece": 20}'::jsonb, array['protein']::text[], false, array['fish']::text[])
+  ('dried fish', '{"en": "dried fish", "hi": "सूखी मछली", "hi-Latn": "sukhi machhli"}'::jsonb, array['sukat', 'bombil', 'bombay duck', 'karuvadu', 'unakka meen']::text[], 'seafood', 'g', 'pantry', '{"pantry": 90}'::jsonb, '{"piece": 20}'::jsonb, array['protein']::text[], false, array['fish']::text[]),
+  ('bhavnagri chilli', '{"en": "bhavnagri chilli", "hi": "भावनगरी मिर्च", "hi-Latn": "bhavnagri mirch"}'::jsonb, array['bhavnagari mirchi', 'bajji mirchi', 'bajji chilli', 'banana pepper', 'moti mirch', 'pakode wali mirch']::text[], 'vegetable', 'g', 'fridge', '{"counter": 2, "fridge": 7}'::jsonb, '{"piece": 25}'::jsonb, array['sabzi']::text[], false, '{}'::text[])
 on conflict (canonical_name) do update set names = excluded.names, aliases = excluded.aliases,
   category = excluded.category, default_unit = excluded.default_unit,
   default_location_kind = excluded.default_location_kind, shelf_life_days = excluded.shelf_life_days,

@@ -10,6 +10,9 @@ test("amounts the way each thing is bought", () => {
   assert.deepEqual(labels({ name: "toor dal", category: "pulse", unit: "g" }), ["500 g", "1 kg", "2 kg", "5 kg"]);
   assert.deepEqual(labels({ name: "milk", category: "dairy", unit: "ml" }), ["500 ml", "1 l", "2 l"]);
   assert.deepEqual(labels({ name: "mustard oil", category: "oil_fat", unit: "ml" }), ["500 ml", "1 l", "5 l"]);
+  assert.deepEqual(labels({ name: "vanilla essence", category: "condiment", unit: "ml" }), ["50 ml", "100 ml", "250 ml", "500 ml"]);
+  assert.deepEqual(labels({ name: "coconut milk", category: "nut_seed", unit: "ml" }), ["200 ml", "400 ml", "1 l"]);
+  assert.deepEqual(labels({ name: "noodles", category: "grain", unit: "piece" }), ["1 packet", "2 packet", "4 packet", "8 packet"]);
   assert.deepEqual(labels({ name: "egg", category: "egg", unit: "piece" }), ["6 piece", "12 piece", "30 piece"]);
   assert.deepEqual(labels({ name: "spinach", category: "vegetable", unit: "bunch" }), ["1 bunch", "2 bunch", "3 bunch"]);
   assert.deepEqual(labels({ name: "paneer", category: "dairy", unit: "g" }), ["200 g", "500 g", "1 kg"]);

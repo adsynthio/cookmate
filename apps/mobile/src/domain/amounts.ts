@@ -20,8 +20,15 @@ export function amountChoices(entry: Entry): Amount[] {
   if (unit === "bunch") return [bunch(1), bunch(2), bunch(3)];
   if (category === "egg") return [pc(6), pc(12), pc(30)];
   if (name === "bread" || name === "pav") return [packs(1, name === "bread" ? 20 : 6), packs(2, name === "bread" ? 20 : 6)];
+  if (name === "noodles") return [packs(1, 1), packs(2, 1), packs(4, 1), packs(8, 1)];
   if (unit === "piece") return [pc(2), pc(4), pc(6), pc(12)];
-  if (unit === "ml") return name?.includes("oil") ? [ml(500), ml(1000), ml(5000)] : [ml(500), ml(1000), ml(2000)];
+  if (unit === "ml") {
+    if (name?.includes("oil")) return [ml(500), ml(1000), ml(5000)];
+    // Small bottles and packs: vanilla essence, kewra, soy sauce, vinegar; coconut milk and cream in 200 ml packs.
+    if (category === "condiment") return [ml(50), ml(100), ml(250), ml(500)];
+    if (name === "coconut milk" || name === "fresh cream") return [ml(200), ml(400), ml(1000)];
+    return [ml(500), ml(1000), ml(2000)];
+  }
   switch (category) {
     case "vegetable":
     case "fruit":

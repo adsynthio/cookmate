@@ -2,7 +2,7 @@
 -- then the rest, never below zero; free tasks and failed calls cost nothing; at zero the AI pauses until the next day
 -- or a top-up; unlimited kitchens never pause; cooks can read their own kitchen's credits but not change them.
 begin;
-select plan(16);
+select plan(17);
 
 create function pg_temp.login(p_user uuid) returns void language plpgsql as $$
 begin
@@ -87,6 +87,12 @@ insert into public.ai_requests (household_id, task, model, prompt_version, input
 values ((select id from h), 'scan_pantry_image', 'claude-sonnet-5-5', 't@1', 20000, 0, 0, 100, 'ok');
 select is((select array[balance, spent_total] from public.ai_credits where household_id = (select id from h)), array[0, 24.64]::numeric[],
   'and still counts what it spends');
+
+-- Voice cooking is paid: record_voice_session logs each session's model and speech use in ai_requests (₹0.88 here).
+insert into public.ai_requests (household_id, task, model, prompt_version, input_tokens, cached_tokens, output_tokens, latency_ms, status)
+values ((select id from h), 'voice_turns', 'claude-haiku-5-5', 'voice_system@1', 100000, 0, 0, 100, 'ok');
+select is((select spent_total from public.ai_credits where household_id = (select id from h)), 25.52::numeric,
+  'voice cooking costs credits');
 
 select pg_temp.login('00000000-0000-0000-0000-0000000007b1');
 select is((select count(*)::int from public.ai_credits), 0, 'another family can''t see this kitchen''s credits');

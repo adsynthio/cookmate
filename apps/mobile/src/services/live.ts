@@ -1100,6 +1100,7 @@ export const liveServices: Services = {
           .catch(() => undefined);
         if (reason === "voice_not_configured") return "not_configured";
         if (reason === "voice_consent_needed") return "consent_needed";
+        if (reason === "out_of_credits") return "out_of_credits";
         throw error ?? new Error("voice-token returned nothing");
       }
       return { url: data.livekit_url, token: data.token, roomName: data.room_name, languageCode: data.language_code };

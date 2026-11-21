@@ -460,7 +460,8 @@ export interface CookingService {
 
 export type VoiceToken = { url: string; token: string; roomName: string; languageCode: string };
 /** Why a voice session couldn't start; anything else is an ordinary error. */
-export type VoiceUnavailable = "not_configured" | "consent_needed";
+/** "out_of_credits": the kitchen's paid AI is paused (T1); a voice session costs credits. */
+export type VoiceUnavailable = "not_configured" | "consent_needed" | "out_of_credits";
 
 export interface VoiceService {
   /** KIT-061: a token for one new room with the cooking agent dispatched to it. */

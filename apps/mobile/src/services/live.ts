@@ -78,6 +78,9 @@ export class NotImplemented extends Error {
   }
 }
 
+/** The most items add_inventory_items takes in one call. */
+const ADD_BATCH = 50;
+
 /** T1: a paid AI function answers 402 when the kitchen has used its AI credits. */
 const outOfCredits = (error: unknown) => (error as { context?: { status?: number } } | null)?.context?.status === 402;
 
@@ -510,15 +513,23 @@ export const liveServices: Services = {
       };
     },
 
-    async addItems({ householdId, items, addedVia }) {
+    async addItems({ householdId, items, addedVia, onSaved }) {
       const sb = requireSupabase();
-      const { data, error } = await sb.rpc("add_inventory_items", {
-        p_household: householdId,
-        p_items: items.map(toRpcItem),
-        p_added_via: addedVia,
-      });
-      if (error) throw error;
-      return (data ?? []) as string[];
+      const ids: string[] = [];
+      // add_inventory_items refuses more than 50 items in one call ("at most 50 items at a time"); 13 photos of
+      // shelves found more, and nothing could be added.
+      for (let i = 0; i < items.length; i += ADD_BATCH) {
+        const batch = items.slice(i, i + ADD_BATCH);
+        const { data, error } = await sb.rpc("add_inventory_items", {
+          p_household: householdId,
+          p_items: batch.map(toRpcItem),
+          p_added_via: addedVia,
+        });
+        if (error) throw error;
+        ids.push(...((data ?? []) as string[]));
+        onSaved?.(i + batch.length);
+      }
+      return ids;
     },
 
     async updateItem(itemId, c) {

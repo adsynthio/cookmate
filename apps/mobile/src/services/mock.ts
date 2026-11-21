@@ -503,7 +503,7 @@ const mocks: Services = {
         ),
       };
     },
-    async addItems({ items }) {
+    async addItems({ items, onSaved }) {
       await delay(250);
       const ids: string[] = [];
       for (const d of items) {
@@ -537,6 +537,7 @@ const mocks: Services = {
         ids.push(id);
       }
       changed();
+      onSaved?.(items.length);
       return ids;
     },
     async updateItem(itemId, c) {

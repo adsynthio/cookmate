@@ -77,7 +77,19 @@ export default function AddItemsScreen() {
     mutationFn: async (items: DraftItem[]) => {
       const toAdd = items.filter((d) => !d.out);
       const ranOut = items.filter((d) => d.out);
-      if (toAdd.length) await services.kitchen.addItems({ householdId, items: toAdd, addedVia: via });
+      if (toAdd.length) {
+        let saved = 0;
+        try {
+          await services.kitchen.addItems({ householdId, items: toAdd, addedVia: via, onSaved: (n) => (saved = n) });
+        } catch (e) {
+          // Saved 50 at a time: what got in before the error leaves the list, so trying again doesn't add it twice.
+          if (saved) {
+            const done = new Set(toAdd.slice(0, saved).map((d) => d.key));
+            setDrafts((ds) => ds?.filter((d) => !done.has(d.key)) ?? null);
+          }
+          throw e;
+        }
+      }
       if (ranOut.length) {
         // What ran out is marked finished (if Cookmate had it) and goes on the shopping list.
         const have = kitchen.data ?? [];

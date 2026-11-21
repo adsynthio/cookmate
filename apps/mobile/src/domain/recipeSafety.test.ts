@@ -140,6 +140,16 @@ test("small children: whole cashews, melon seeds and dried figs are, unless grou
   assert.ok(!has(blended, "children", kids), "the step blends it, called by its local name");
 });
 
+test("a long step passes up to 600 characters; past that the message says how to fix it", () => {
+  const r = bySlug("jeera-aloo");
+  r.steps[0]!.text = `${"Heat the ghee in a kadai on medium heat and add the cumin seeds. ".repeat(7)}`.trim();
+  assert.ok(r.steps[0]!.text.length > 400 && r.steps[0]!.text.length <= 600);
+  assert.ok(!has(r, "structure"), "about 450 characters is one stage of a method, not a problem");
+  r.steps[0]!.text = "Stir well. ".repeat(70).trim();
+  const lines = problemLines(checkRecipe(r, { catalog }));
+  assert.ok(lines.some((l) => /too long \(\d+ characters, at most 600\): split it into two steps/.test(l)), lines.join("; "));
+});
+
 test("every cooking fat has the same limit, and frying in it is exempt", () => {
   const coconut = bySlug("jeera-aloo");
   coconut.ingredients.push({ ingredient: "coconut oil", qty: 60 * coconut.base_servings, unit: "ml", role: "base" });

@@ -5,6 +5,12 @@
 // onions till slightly pink. Each was refusing good AI recipes (seen live on 21 Nov 2026 with Motichoor laddu).
 // Pure TypeScript with no imports (copied to supabase/functions/_shared by scripts/sync-shared.py).
 
+/**
+ * Longest step text: about four sentences. A writer that put a whole method in one step (seen live on 21 Nov 2026)
+ * failed twice at 400 because the retry only said "too long"; now the limit is roomier and the message says so.
+ */
+export const MAX_STEP_CHARS = 600;
+
 /** Meat, fish, egg and kidney beans: where "pink", "rare" and "half-cooked" are real hazards. */
 const PROTEIN = "chicken|mutton|meat|keema|lamb|goat|pork|beef|fish|prawns?|shrimps?|crabs?|eggs?|liver|kidney beans?|rajma";
 const HAS_PROTEIN = new RegExp(`\\b(${PROTEIN})\\b`);

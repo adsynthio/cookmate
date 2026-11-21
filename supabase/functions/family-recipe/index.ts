@@ -27,7 +27,7 @@ import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "write_family_recipe";
 const MODEL = "claude-sonnet-5-5";
-const VERSION = "write_family_recipe@4";
+const VERSION = "write_family_recipe@5";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",

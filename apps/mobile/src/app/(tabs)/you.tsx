@@ -91,7 +91,7 @@ export default function YouScreen() {
     setLocale(l);
     // Kept on the account so the next launch, the picks and the voice agent use it too.
     void services.auth.setLanguage(languageCodeFor(l)).catch(() => {});
-    void qc.invalidateQueries({ queryKey: ["picks"] });
+    void qc.invalidateQueries({ queryKey: ["picks"], refetchType: "none" });
   };
 
   return (

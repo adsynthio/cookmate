@@ -24,7 +24,7 @@ export function ToolsCard({ householdId }: { householdId: string }) {
     mutationFn: (next: Tool[]) => services.kitchen.setTools(householdId, next),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["tools", householdId] });
-      void qc.invalidateQueries({ queryKey: ["picks"] });
+      void qc.invalidateQueries({ queryKey: ["picks"], refetchType: "none" });
     },
   });
   if (!tools) return null;

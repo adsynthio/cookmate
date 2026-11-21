@@ -23,7 +23,7 @@ export function SeenTools({ householdId, seen }: { householdId: string; seen: To
     onSuccess: () => {
       setDone("added");
       void qc.invalidateQueries({ queryKey: ["tools", householdId] });
-      void qc.invalidateQueries({ queryKey: ["picks"] });
+      void qc.invalidateQueries({ queryKey: ["picks"], refetchType: "none" });
     },
   });
   if (!tools.isSuccess || (!fresh.length && done !== "added") || done === "no") return null;

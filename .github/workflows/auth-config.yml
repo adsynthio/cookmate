@@ -17,6 +17,8 @@ concurrency:
 
 env:
   SUPABASE_PROJECT_REF: usuwwzkorhsbaaziaanl
+  # The web app: where a link in an email lands. Change it here when the app moves to its own domain.
+  SITE_URL: https://cookmate-chi.vercel.app
 
 # Read-only token: nothing here writes to the repository.
 permissions:

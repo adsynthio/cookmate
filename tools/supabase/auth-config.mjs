@@ -6,7 +6,8 @@
 //   node tools/supabase/auth-config.mjs           apply, then read back and print what the project now has
 //   node tools/supabase/auth-config.mjs --check   only check the templates (CI); no network
 //
-// Needs SUPABASE_ACCESS_TOKEN and SUPABASE_PROJECT_REF for apply. Never prints secrets (SMTP password, keys).
+// Needs SUPABASE_ACCESS_TOKEN and SUPABASE_PROJECT_REF for apply; SITE_URL (optional) sets where email links land.
+// Never prints secrets (SMTP password, keys).
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -84,7 +85,9 @@ async function main() {
   const patch = (body) => fetch(url, { method: "PATCH", headers, body: JSON.stringify(body) });
 
   // 1. The code settings: allowed on every plan.
-  const settings = await patch({ external_email_enabled: true, mailer_otp_length: OTP_LENGTH, mailer_otp_exp: OTP_EXPIRY_S });
+  // SITE_URL: where a link in an email lands (the web app), instead of Supabase's default http://localhost:3000.
+  const site = process.env.SITE_URL ? { site_url: process.env.SITE_URL } : {};
+  const settings = await patch({ external_email_enabled: true, mailer_otp_length: OTP_LENGTH, mailer_otp_exp: OTP_EXPIRY_S, ...site });
   if (!settings.ok) throw new Error(`PATCH code settings: HTTP ${settings.status} ${(await settings.text()).slice(0, 300)}`);
 
   // 2. The emails. On the free plan Supabase only lets a project change them once it sends through its own SMTP
@@ -102,6 +105,7 @@ async function main() {
   const wrong = [
     after.mailer_otp_length !== OTP_LENGTH && "code length",
     after.mailer_otp_exp !== OTP_EXPIRY_S && "code expiry",
+    process.env.SITE_URL && after.site_url !== process.env.SITE_URL && "site URL",
     ...(waitingForSmtp ? [] : KINDS.filter((k) => after[`mailer_templates_${k}_content`] !== html[k]).map((k) => `${k} email`)),
   ].filter(Boolean);
   if (wrong.length) throw new Error(`Not applied: ${wrong.join(", ")}`);

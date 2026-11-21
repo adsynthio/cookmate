@@ -33,7 +33,7 @@ export default function ListScreen() {
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["list", householdId] });
     void queryClient.invalidateQueries({ queryKey: ["kitchen", householdId] });
-    void queryClient.invalidateQueries({ queryKey: ["picks"] });
+    void queryClient.invalidateQueries({ queryKey: ["picks"], refetchType: "none" });
   };
   const add = useMutation({
     mutationFn: () => services.kitchen.addToList(householdId, [{ name: text.trim(), reason: "manual" }]),

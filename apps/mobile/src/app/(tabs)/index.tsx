@@ -5,7 +5,7 @@
 // instantly (KIT-045), and "make something new" (KIT-056).
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { WantDish } from "@/components/home/WantDish";
@@ -27,6 +27,7 @@ import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick } from "@/services";
 import { useSession } from "@/state/session";
+import { useSettled } from "@/state/settled";
 
 const DISMISS_REASONS = ["not_today", "dont_like", "no_time", "missing_item"] as const;
 type DismissReason = (typeof DISMISS_REASONS)[number];
@@ -69,22 +70,40 @@ export default function HomeScreen() {
     queryFn: () => services.preference.listMembers(householdId!),
     enabled: !!householdId,
   });
+  // Each request for picks is an AI call (credits): ask once the filters settle, keep the answer for half an hour,
+  // and refresh when Home is opened after something changed rather than in the background.
+  // Compared as text: a new object every render would never settle.
+  const askKey = useSettled(JSON.stringify({ mealSlot, chips, craving, whoEating, focusKey: focus?.ingredientKey ?? null }));
+  const ask = useMemo(
+    () => JSON.parse(askKey) as { mealSlot: MealSlot; chips: string[]; craving: string; whoEating: typeof whoEating; focusKey: string | null },
+    [askKey],
+  );
   const picks = useQuery({
-    queryKey: ["picks", householdId, mealSlot, chips, craving, whoEating, focus?.ingredientKey, getLocale(), notified],
+    queryKey: ["picks", householdId, ask.mealSlot, ask.chips, ask.craving, ask.whoEating, ask.focusKey, getLocale(), notified],
     queryFn: async () =>
       (notified ? await services.recipe.getBatch(householdId!, notified).catch(() => null) : null) ??
       services.recipe.getPicks({
         householdId: householdId!,
         memberId: memberId!,
-        mealSlot,
-        chips,
-        craving: craving || undefined,
-        whoEating: whoEating ?? undefined,
-        focus: focus?.ingredientKey ? [focus.ingredientKey] : undefined,
+        mealSlot: ask.mealSlot,
+        chips: ask.chips,
+        craving: ask.craving || undefined,
+        whoEating: ask.whoEating ?? undefined,
+        focus: ask.focusKey ? [ask.focusKey] : undefined,
         languageCode: LANGUAGE_CODES[getLocale()],
       }),
     enabled: !!householdId && !!memberId,
+    staleTime: 30 * 60_000,
+    gcTime: 60 * 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
+  const { isStale: picksStale, refetch: refetchPicks } = picks;
+  useFocusEffect(
+    useCallback(() => {
+      if (picksStale) void refetchPicks();
+    }, [picksStale, refetchPicks]),
+  );
   const useSoon = useQuery({
     queryKey: ["useSoon", householdId],
     queryFn: () => services.kitchen.getUseSoon(householdId!),

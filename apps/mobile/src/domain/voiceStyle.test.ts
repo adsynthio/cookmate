@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { indianMobile, maskPhone, speechRate, stepWords, wantsCues } from "./voiceStyle.ts";
+import { speechRate, stepWords, wantsCues } from "./voiceStyle.ts";
 
 const STEP = { text: "Heat ghee and add cumin", cue: "until the seeds crackle", safety: "Keep the lid ajar." };
 
@@ -23,11 +23,3 @@ test("pace sets the read-aloud rate", () => {
   assert.ok(speechRate("slow") < speechRate("normal") && speechRate("normal") < speechRate("fast"));
 });
 
-test("Indian mobile numbers as people type them", () => {
-  assert.equal(indianMobile("98765 43210"), "+919876543210");
-  assert.equal(indianMobile("+91-98765-43210"), "+919876543210");
-  assert.equal(indianMobile("098765 43210"), "+919876543210");
-  assert.equal(indianMobile("12345 67890"), null); // mobiles start 6-9
-  assert.equal(indianMobile("98765"), null);
-  assert.equal(maskPhone("+919876543210"), "+91 98••• ••210");
-});

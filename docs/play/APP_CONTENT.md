@@ -5,7 +5,7 @@ Play Console → Policy → App content. Every form must be done before the firs
 | Form | Answer | Notes |
 |---|---|---|
 | **Privacy policy** | `https://cookmate-chi.vercel.app/legal/privacy` | From `site/privacy.html` |
-| **App access** | All functionality is available without special access | No login: the app opens on an anonymous account. Voice Cook is switched on per household and isn't shown otherwise, so reviewers see a complete app |
+| **App access** | All or some functionality is restricted | Cooks log in with an email and a 6-digit code (`docs/SIGN_IN.md`). Reviewers can't read a code sent to an inbox they don't have, so before the first review add a review login with a password and put its email, password and steps here. Voice Cook is switched on per household and isn't shown otherwise |
 | **Ads** | No, my app does not contain ads | |
 | **Content rating** | See the questionnaire below | |
 | **Target audience** | 18 and over only | The beta consent excludes under-18 account holders (`docs/beta/RECRUITMENT.md`). Choosing 18+ keeps the app out of the Families policy. Answer **No** to "appeal to children" |

@@ -7,6 +7,8 @@ import { withAnalytics } from "./tracked";
 import type { Services } from "./types";
 
 const useMocks = process.env.EXPO_PUBLIC_USE_MOCKS !== "0";
+/** True in the preview build (no backend): sign-in codes are always 123456 there. */
+export const usingMocks = useMocks;
 
 /** Live mode uses the Supabase backend for everything that has shipped; see live.ts for what still throws. */
 export const services: Services = withAnalytics(withOffline(useMocks ? mockServices : liveServices));

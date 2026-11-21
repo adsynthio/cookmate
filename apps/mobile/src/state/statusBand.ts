@@ -5,7 +5,7 @@
 import { create } from "zustand";
 
 type StatusBandState = {
-  /** True while Home's hero covers the status bar area (Home at or near the top). */
+  /** True while the screen's coloured top (Home's hero, the sign-in block) covers the status bar area. */
   heroUnder: boolean;
   setHeroUnder: (heroUnder: boolean) => void;
 };
@@ -15,8 +15,14 @@ export const useStatusBand = create<StatusBandState>((set) => ({
   setHeroUnder: (heroUnder) => set((s) => (s.heroUnder === heroUnder ? s : { heroUnder })),
 }));
 
-/** Whether the band should show: light theme, unless Home's hero is what's under the status bar. */
+/**
+ * Screens that start with a coloured block running under the status bar: Home's hero, and the sign-up and log-in
+ * screens. Each tells the store (heroUnder) while that block is still under the status bar.
+ */
+export const HERO_SCREENS: ReadonlySet<string> = new Set(["/", "/onboarding", "/onboarding/email", "/onboarding/code", "/account/email", "/account/code"]);
+
+/** Whether the band should show: light theme, unless a screen's coloured top is what's under the status bar. */
 export function statusBandOn(scheme: "light" | "dark", pathname: string, heroUnder: boolean): boolean {
   if (scheme === "dark") return false;
-  return !(pathname === "/" && heroUnder);
+  return !(HERO_SCREENS.has(pathname) && heroUnder);
 }

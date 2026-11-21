@@ -8,6 +8,9 @@ import { DEFAULT_TOOLS, type Tool } from "@/domain/tools";
 
 let nextKey = 2;
 
+/** Photos the kitchen step can hold before the kitchen exists (the scan screen picks 6 at once too). */
+export const SETUP_PHOTO_LIMIT = 6;
+
 type OnboardingState = {
   members: DraftMember[];
   spice: Spice;
@@ -20,6 +23,14 @@ type OnboardingState = {
   avoid: DraftAvoid[];
   /** Cooking tools at home; the usual ones start ticked. */
   tools: Tool[];
+  /**
+   * Photos of the fridge, shelves or a bill from the kitchen step, made small (JPEG, base64). Kept on the phone only:
+   * the last step reads them once the household exists, and the cook checks what they show before it's added.
+   */
+  photos: string[];
+  addPhotos: (photos: string[]) => void;
+  removePhoto: (index: number) => void;
+  clearPhotos: () => void;
   setTools: (tools: Tool[]) => void;
   addKitchenItem: (item: SetupItem) => void;
   removeKitchenItem: (name: string) => void;
@@ -47,6 +58,10 @@ export const useOnboarding = create<OnboardingState>((set) => ({
   avoid: [],
   tools: DEFAULT_TOOLS.map((type) => ({ type })),
   setTools: (tools) => set({ tools }),
+  photos: [],
+  addPhotos: (photos) => set((s) => ({ photos: [...s.photos, ...photos].slice(0, SETUP_PHOTO_LIMIT) })),
+  removePhoto: (index) => set((s) => ({ photos: s.photos.filter((_, i) => i !== index) })),
+  clearPhotos: () => set({ photos: [] }),
   addKitchenItem: (item) => set((s) => ({ kitchen: addSetupItem(s.kitchen, item) })),
   removeKitchenItem: (name) => set((s) => ({ kitchen: removeSetupItem(s.kitchen, name) })),
   toggleCuisine: (c) => set((s) => ({ cuisines: s.cuisines.includes(c) ? s.cuisines.filter((x) => x !== c) : [...s.cuisines, c] })),

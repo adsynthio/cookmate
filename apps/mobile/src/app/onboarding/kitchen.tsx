@@ -1,4 +1,5 @@
-// KIT-024 kitchen setup, from the Stitch "Let's get to know your kitchen" screen: the camera scan card, places
+// KIT-024 kitchen setup, from the Stitch "Let's get to know your kitchen" screen: the camera scan card (photos are
+// read on the last step, once the kitchen exists: SetupScanCard), places
 // (Fridge, Pantry, Freezer, Staples), what's already chosen as soft peach chips (tap to remove), common things for
 // this place to tap and add, a field for anything else ("leftover dal"), and how many dishes that already unlocks.
 // Nothing is saved yet: the items are added to the kitchen when the household is created on the last step.
@@ -6,6 +7,7 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { SetupScanCard } from "@/components/onboarding/SetupScanCard";
 import { StepScreen } from "@/components/onboarding/StepScreen";
 import { ToolsPicker } from "@/components/tools/ToolsPicker";
 import { catalogEntry } from "@/data/catalog";
@@ -13,7 +15,7 @@ import { recipeDocs } from "@/data/recipes";
 import { Icon, type IconName } from "@/design-system/icons";
 import { ingredientImage } from "@/design-system/media";
 import { Enter, Layout, PressableScale } from "@/design-system/motion";
-import { Badge, Card, Chip, Field, IconButton, Photo, Text } from "@/design-system/primitives";
+import { Card, Chip, Field, IconButton, Photo, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
@@ -91,28 +93,7 @@ export default function KitchenSetupScreen() {
       onSecondary={next}
     >
       <Enter index={1}>
-        <Card tone="primary">
-          <View style={styles.scanRow}>
-            <View style={[styles.scanIcon, { backgroundColor: "rgba(255,255,255,0.16)" }]}>
-              <Icon name="camera" size={26} color={colors.onPrimary} />
-            </View>
-            <View style={{ flex: 1, gap: space.xs }}>
-              <Badge label={t("onb.k.scan.badge")} tone="onColor" />
-              <Text variant="heading" color={colors.onPrimary}>
-                {t("onb.k.scan.title")}
-              </Text>
-              <Text variant="caption" color={colors.onPrimary} style={{ opacity: 0.85 }}>
-                {t("onb.k.scan.body")}
-              </Text>
-            </View>
-          </View>
-          <View style={[styles.soon, { backgroundColor: "rgba(255,255,255,0.16)" }]}>
-            <Icon name="clock" size={16} color={colors.onPrimary} />
-            <Text variant="label" color={colors.onPrimary}>
-              {t("onb.k.scan.soon")}
-            </Text>
-          </View>
-        </Card>
+        <SetupScanCard />
       </Enter>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.places} accessibilityRole="tablist">
@@ -248,9 +229,6 @@ function AddChip({ name, onAdd }: { name: string; onAdd: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  scanRow: { flexDirection: "row", gap: space.lg, alignItems: "flex-start" },
-  scanIcon: { width: 56, height: 56, borderRadius: 28, alignItems: "center", justifyContent: "center" },
-  soon: { flexDirection: "row", alignItems: "center", gap: 6, alignSelf: "flex-start", borderRadius: radius.pill, paddingHorizontal: space.lg, paddingVertical: 10 },
   places: { gap: space.sm, paddingVertical: 2, paddingRight: space.gutter },
   panel: { borderRadius: radius.card, padding: space.gutter, gap: space.md },
   panelHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.sm },

@@ -503,7 +503,6 @@
   "onb.k.scan.title": "Camera se scan karein",
   "onb.k.scan.body": "Phone ko fridge ya almari ki taraf karein, main pehchaan lunga kya rakha hai.",
   "onb.k.scan.open": "Camera kholein",
-  "onb.k.scan.soon": "Setup ke baad Kitchen tab se scan karein",
   "onb.k.have": "Aapki rasoi mein ({n})",
   "onb.k.tapRemove": "Hataane ke liye tap karein",
   "onb.k.empty": "Abhi kuch nahi. Neeche se cheezein tap karke jodein.",
@@ -1425,5 +1424,11 @@
   "credits.pausedTitle": "AI abhi ruka hai",
   "credits.paused": "Is kitchen ke AI credits khatam ho gaye. Aadhi raat ko free credits phir milenge.",
   "credits.pausedScan": "AI aadhi raat tak ruka hai, tab free credits phir milenge. Aap ab bhi cheezein type kar sakte hain ya barcode scan kar sakte hain.",
-  "credits.pausedMeter": "AI aadhi raat tak ruka hai"
+  "credits.pausedMeter": "AI aadhi raat tak ruka hai",
+  "onb.k.scan.waiting": "Aakhri step par, kitchen taiyaar hote hi main ye {n} photos padhunga. Jo milega, aap check kar lenge.",
+  "onb.k.scan.waitingOne": "Aakhri step par, kitchen taiyaar hote hi main ye photo padhunga. Jo milega, aap check kar lenge.",
+  "onb.k.scan.preparing": "Aapki photo taiyaar ho rahi hai…",
+  "onb.k.scan.failed": "Ye photo kaam nahi aayi. Koi aur try karein.",
+  "onb.k.scan.remove": "Photo {n} hatayein",
+  "onb.consent.reading": "Aapki photos padh rahe hain…"
 }

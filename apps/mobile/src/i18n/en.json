@@ -537,7 +537,6 @@
   "onb.k.scan.title": "Scan with your camera",
   "onb.k.scan.body": "Point your phone at the fridge or shelf and I'll spot what's there.",
   "onb.k.scan.open": "Open camera",
-  "onb.k.scan.soon": "Scan from the Kitchen tab once you're set up",
   "onb.k.have": "In your kitchen ({n})",
   "onb.k.tapRemove": "Tap to remove",
   "onb.k.empty": "Nothing yet. Tap things below to add them.",
@@ -1459,5 +1458,11 @@
   "credits.pausedTitle": "AI is paused",
   "credits.paused": "This kitchen has used its AI credits. Free credits come back at midnight.",
   "credits.pausedScan": "AI is paused until midnight, when free credits come back. You can still type items or scan barcodes.",
-  "credits.pausedMeter": "AI is paused until midnight"
+  "credits.pausedMeter": "AI is paused until midnight",
+  "onb.k.scan.waiting": "I'll read these {n} photos on the last step, once your kitchen is set up. You'll check what I find.",
+  "onb.k.scan.waitingOne": "I'll read this photo on the last step, once your kitchen is set up. You'll check what I find.",
+  "onb.k.scan.preparing": "Getting your photo ready…",
+  "onb.k.scan.failed": "That photo couldn't be used. Try another one.",
+  "onb.k.scan.remove": "Remove photo {n}",
+  "onb.consent.reading": "Reading your photos…"
 }

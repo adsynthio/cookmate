@@ -95,7 +95,9 @@ export default function AddItemsScreen() {
         queryClient.invalidateQueries({ queryKey: ["useSoon", householdId] }),
         queryClient.invalidateQueries({ queryKey: ["list", householdId] }),
       ]);
-      router.back();
+      // Straight after setup (photos from the kitchen step) there's no screen underneath: go Home.
+      if (router.canGoBack()) router.back();
+      else router.replace("/");
     },
   });
 

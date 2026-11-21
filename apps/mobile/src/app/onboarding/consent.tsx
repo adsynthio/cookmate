@@ -1,10 +1,11 @@
 // ONB-05: consent per purpose (DPDP Act 2023). Nothing is pre-ticked; every purpose asked is recorded.
 // This step creates the household (create_household, with each member's taste), then adds what was chosen on the
 // kitchen step and remembers dislikes and allergies, and lands on Home. If the extras fail, the household still
-// opens: they are a head start, not a requirement.
+// opens: they are a head start, not a requirement. Photos taken on the kitchen step are read here, now that the
+// kitchen exists, and what they show opens on the check screen (pantry/add) before anything is added.
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { StyleSheet, Switch, View } from "react-native";
 
 import { StepScreen } from "@/components/onboarding/StepScreen";
@@ -15,6 +16,8 @@ import { Button, Card, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
+import { mergeTray } from "@/domain/scanTray";
+import type { ToolKey } from "@/domain/tools";
 import {
   avoidStatement,
   buildMembers,
@@ -26,9 +29,10 @@ import {
   type ConsentPurpose,
 } from "@/domain/onboarding";
 import { getAppLocale, getLocale, t, useLocale, type StringKey } from "@/i18n";
-import { services } from "@/services";
+import { services, type DraftItem } from "@/services";
 import { track } from "@/services/analytics";
 import { useOnboarding } from "@/state/onboarding";
+import { useScan } from "@/state/scan";
 import { useSession } from "@/state/session";
 
 const ICONS: Record<ConsentPurpose, IconName> = { voice_processing: "mic", memory: "heart", analytics: "list" };
@@ -37,11 +41,14 @@ export default function ConsentScreen() {
   useLocale();
   const router = useRouter();
   const { colors } = useTheme();
-  const { members, spice, diet, consents, setConsent, kitchen, cuisines, pace, avoid, tools } = useOnboarding();
+  const { members, spice, diet, consents, setConsent, kitchen, cuisines, pace, avoid, tools, photos, clearPhotos } = useOnboarding();
   const setHousehold = useSession((s) => s.setHousehold);
   // If the household was created but a later call failed, a retry must not create a second household.
   const created = useRef<{ householdId: string; memberId: string } | null>(null);
   const extrasDone = useRef(false);
+  // Read once: a retry after a later failure doesn't pay for the photos again.
+  const photosRead = useRef<{ items: DraftItem[]; appliances: ToolKey[] } | null>(null);
+  const [reading, setReading] = useState(false);
 
   const finish = useMutation({
     mutationFn: async () => {
@@ -95,12 +102,36 @@ export default function ConsentScreen() {
           console.warn("onboarding: kitchen items or dislikes not saved", e);
         }
       }
-      return created.current;
+      if (photos.length && !photosRead.current) {
+        setReading(true);
+        let items: DraftItem[] = [];
+        let appliances: ToolKey[] = [];
+        for (const image of photos) {
+          try {
+            const r = await services.kitchen.scanItems({ householdId, kind: "photo", image, mediaType: "image/jpeg" });
+            items = mergeTray(items, r.items);
+            if (r.appliances?.length) appliances = [...new Set([...appliances, ...r.appliances])];
+          } catch (e) {
+            // A photo that can't be read is skipped: the kitchen still opens, and Scan is on the Kitchen tab.
+            console.warn("onboarding: a kitchen photo wasn't read", e);
+          }
+        }
+        photosRead.current = { items, appliances };
+      }
+      return { ...created.current, found: photosRead.current };
     },
-    onSuccess: ({ householdId, memberId }) => {
+    onSettled: () => setReading(false),
+    onSuccess: ({ householdId, memberId, found }) => {
       setHousehold(householdId, memberId);
+      clearPhotos();
       track("onboarding_completed", { members_count: members.length, language: languageCodeFor(getAppLocale()), voice_consent: !!consents.voice_processing });
-      router.replace("/");
+      if (found?.items.length) {
+        // What the photos show, to check before it's added; the check screen goes Home after.
+        useScan.getState().hand(found.items, "camera", found.appliances);
+        router.replace("/pantry/add");
+      } else {
+        router.replace("/");
+      }
     },
   });
 
@@ -113,7 +144,7 @@ export default function ConsentScreen() {
       overline={t("onb.c.overline")}
       title={t("onb.consent.title")}
       body={t("onb.consent.body")}
-      actionLabel={finish.isPending ? t("onb.consent.creating") : t("onb.c.open")}
+      actionLabel={finish.isPending ? (reading ? t("onb.consent.reading") : t("onb.consent.creating")) : t("onb.c.open")}
       actionIcon="forward"
       actionDisabled={finish.isPending}
       onAction={() => finish.mutate()}

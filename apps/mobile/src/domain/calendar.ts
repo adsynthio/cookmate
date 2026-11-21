@@ -77,3 +77,23 @@ export function eventName(e: CalendarEvent, locale: "hi" | "hinglish" | "en"): s
   const n = e.rules?.names;
   return (locale === "hi" ? n?.hi : locale === "hinglish" ? n?.["hi-Latn"] : n?.en) ?? e.name;
 }
+
+// --- Weekly no-meat days -----------------------------------------------------------------------------------------
+// Many families eat no meat, fish or egg on certain weekdays (Tuesday, Thursday, Saturday, Monday) though they are
+// non-vegetarian the rest of the week. The household keeps them as ISO weekdays (1 = Monday ... 7 = Sunday).
+
+/** ISO weekday of a YYYY-MM-DD day: 1 = Monday ... 7 = Sunday. */
+export function isoWeekday(day: string): number {
+  const d = new Date(`${day}T00:00:00Z`).getUTCDay();
+  return d === 0 ? 7 : d;
+}
+
+/** True when `day` is one of the family's no-meat weekdays. */
+export function isMeatlessDay(meatlessDays: readonly number[] | null | undefined, day: string): boolean {
+  return !!meatlessDays?.length && meatlessDays.includes(isoWeekday(day));
+}
+
+/** A person's diet for the day: on a no-meat day egg and non-veg eaters eat vegetarian; everyone else keeps theirs. */
+export function dietForDay<D extends string>(diet: D, meatless: boolean): D | "veg" {
+  return meatless && (diet === "nonveg" || diet === "eggetarian") ? "veg" : diet;
+}

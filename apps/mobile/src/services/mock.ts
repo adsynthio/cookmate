@@ -29,7 +29,7 @@ import { changeReply, fallbackAnswer } from "@/domain/assist";
 import { localRescue } from "./rescue";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import calendarJson from "@/data/calendar.json";
-import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type CalendarEvent } from "@/domain/calendar";
+import { calendarPrefs, dietForDay, eventsOn, fastsToOffer, isMeatlessDay, keepFast as keepFastRow, type CalendarEvent } from "@/domain/calendar";
 import { jobOf, swapsFor } from "@/domain/swaps";
 import { avoids, planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
 import { daysLeft as daysLeftOf } from "@/domain/pantry";
@@ -175,6 +175,17 @@ function readMembers(): Member[] {
   }
   // The person using this phone has the account; everyone else was added by them.
   return all.map((m) => ({ ...m, hasAccount: m.id === "mock-member" }));
+}
+
+const MEATLESS_KEY = "cookmate.mock.meatless";
+
+function readMeatless(): number[] {
+  try {
+    const raw = globalThis.localStorage?.getItem(MEATLESS_KEY);
+    return raw ? (JSON.parse(raw) as number[]) : [];
+  } catch {
+    return [];
+  }
 }
 
 function writeMembers(members: Member[]) {
@@ -405,6 +416,18 @@ const mocks: Services = {
       await delay(150);
       if (changes.displayName !== undefined && (!changes.displayName.trim() || changes.displayName.trim().length > 40)) throw new Error("a name has 1 to 40 characters");
       writeMembers(readMembers().map((m) => (m.id === memberId ? { ...m, ...changes, ...(changes.displayName !== undefined ? { displayName: changes.displayName.trim() } : {}) } : m)));
+    },
+    async getMeatlessDays() {
+      await delay(100);
+      return readMeatless();
+    },
+    async setMeatlessDays(_householdId, days) {
+      await delay(150);
+      try {
+        globalThis.localStorage?.setItem(MEATLESS_KEY, JSON.stringify([...new Set(days)].sort()));
+      } catch {
+        // storage blocked: lasts until reload
+      }
     },
     async removeMember(memberId) {
       await delay(150);
@@ -702,6 +725,8 @@ const mocks: Services = {
       const prefs = memories.filter(
         (m) => m.ingredientKey && m.recipeId === null && (m.about ?? "preference") === "preference" && (!eating || !m.memberId || eating.includes(m.memberId)),
       );
+      // Q6: on a weekly no-meat day everyone eats veg.
+      const meatlessToday = isMeatlessDay(readMeatless(), mockToday());
       const batch = buildPicks({
         equipment: equipmentList(loadTools()),
         avoid: [
@@ -715,7 +740,7 @@ const mocks: Services = {
         // Left out: dishes turned down today, and dishes the household said it doesn't like.
         docs: recipeDocs.filter((d) => !dismissedToday.has(d.slug) && ![...subjects.values()].includes(`${d.slug}:dislike`)),
         items: pantry,
-        members: readMembers(),
+        members: readMembers().map((m) => ({ ...m, diet: dietForDay(m.diet, meatlessToday) })),
         input,
         slot,
         recent: recent.map((r) => ({ recipeId: r.recipeId, daysAgo: Math.floor((now - r.at) / 86_400_000) })),
@@ -735,7 +760,10 @@ const mocks: Services = {
       const todayEvents = eventsOn([...globalEvents, ...keptEvents], mockToday(), null);
       const offer = fastsToOffer(todayEvents)[0];
       batch.calendar = {
-        today: todayEvents.map((e) => ({ id: e.id ?? null, name: e.name, kind: e.kind, kept: !!e.household_id, names: e.rules?.names ?? null })),
+        today: [
+          ...todayEvents.map((e) => ({ id: e.id ?? null, name: e.name, kind: e.kind, kept: !!e.household_id, names: e.rules?.names ?? null })),
+          ...(meatlessToday ? [{ id: null, name: "No non-veg day", kind: "meatless", kept: false, names: { en: "no non-veg day", hi: "बिना नॉन-वेज का दिन", "hi-Latn": "non-veg nahi" } }] : []),
+        ],
         offerFast: offer ? { id: offer.id ?? null, name: offer.name, names: offer.rules?.names ?? null, note: offer.rules?.note ?? null } : null,
       };
       for (const p of [batch.hero, ...batch.alternates]) if (p) shown.set(p.recommendationId, p.recipeId);

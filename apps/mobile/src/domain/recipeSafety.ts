@@ -96,8 +96,15 @@ const RAW_BATTER_TASTE = /\b(taste|lick|eat) (the )?(raw )?(batter|dough)\b/;
 // A recipe tagged "fasting" is offered on vrat days, so it must be vrat food in the common North Indian way
 // (Navratri, Ekadashi): no grains, ordinary flours or dals, no onion, garlic or hing, and rock salt, not ordinary salt.
 // The vrat flours and starches are allowed. A family's own fast rules (from the calendar) come in as "avoid".
-const VRAT_OK = new Set(["sabudana", "buckwheat flour", "water chestnut flour", "fox nuts", "rock salt", "sweet potato", "potato", "colocasia", "raw banana"]);
-const VRAT_NEVER = new Set(["onion", "spring onion", "garlic", "ginger garlic paste", "asafoetida", "salt", "black salt"]);
+const VRAT_OK = new Set([
+  "sabudana", "buckwheat flour", "water chestnut flour", "barnyard millet", "amaranth flour", "fox nuts", "rock salt",
+  "sweet potato", "potato", "colocasia", "raw banana",
+]);
+const VRAT_NEVER = new Set([
+  "onion", "spring onion", "shallots", "garlic", "green garlic", "ginger garlic paste", "asafoetida", "salt", "black salt",
+  // Wheat and rice in a packet: not "grain" in the catalog, still not vrat food.
+  "bread", "pav", "biscuits", "rusk", "idli dosa batter",
+]);
 
 /** Why an ingredient isn't vrat food, or null. */
 export function notVrat(name: string, entry: { category: string } | undefined): string | null {

@@ -2,6 +2,7 @@
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogEntry, catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
+import { readCredits } from "@/domain/credits";
 import { emailCodeProblem, isWrongCode } from "@/domain/emailAuth";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import type { ListLine } from "@/domain/shopping";
@@ -77,14 +78,23 @@ export class NotImplemented extends Error {
   }
 }
 
+/** T1: a paid AI function answers 402 when the kitchen has used its AI credits. */
+const outOfCredits = (error: unknown) => (error as { context?: { status?: number } } | null)?.context?.status === 402;
+
 export const liveServices: Services = {
   assistant: {
     async ask({ householdId, question, history, languageCode }) {
       const { data, error } = await requireSupabase().functions.invoke<{
         answer: string; recipes: { slug: string; title: string }[]; add_to_list: string[]; follow_ups: string[]; source: "model" | "fallback";
       }>("ask-cookmate", { body: { household_id: householdId, question, history, language_code: languageCode } });
+      if (outOfCredits(error)) return { answer: "", recipes: [], addToList: [], followUps: [], source: "out_of_credits" };
       if (error || !data) throw error ?? new Error("no answer");
       return { answer: data.answer, recipes: data.recipes, addToList: data.add_to_list, followUps: data.follow_ups, source: data.source };
+    },
+    async credits(householdId) {
+      const { data, error } = await requireSupabase().rpc("ai_credits_left", { p_household_id: householdId });
+      if (error) throw error;
+      return readCredits(data);
     },
   },
   auth: {
@@ -481,6 +491,7 @@ export const liveServices: Services = {
           ? { household_id: input.householdId, kind: "barcode", code: input.code }
           : { household_id: input.householdId, kind: input.kind, image: input.image, media_type: input.mediaType ?? "image/jpeg" };
       const { data, error } = await sb.functions.invoke("scan-pantry", { body });
+      if (outOfCredits(error)) return { source: "out_of_credits", items: [] };
       if (error || !data) throw error ?? new Error("scan failed");
       const result = data as { items: ParseInventoryItem[]; source: string };
       return {
@@ -793,6 +804,7 @@ export const liveServices: Services = {
         const status = (error as { context?: { status?: number } }).context?.status;
         if (status === 503) return { recipeId: null, reason: "unavailable" };
         if (status === 400) return { recipeId: null, reason: "invalid" };
+        if (status === 402) return { recipeId: null, reason: "out_of_credits" };
         throw error;
       }
       // "busy": the model couldn't be reached; the cook's words are still on screen to save again.
@@ -820,9 +832,10 @@ export const liveServices: Services = {
         closeness?: number | null;
       }>("invent-dish", { body: { household_id: householdId, ...(dish ? { dish } : {}) } });
       if (error) {
-        // 503: no model configured; the option is hidden (11_ai_tasks_and_models.csv).
+        // 503: no model configured; the option is hidden (11_ai_tasks_and_models.csv). 402: AI credits used up (T1).
         const status = (error as { context?: { status?: number } }).context?.status;
         if (status === 503) return { recipeId: null, reason: "unavailable" };
+        if (status === 402) return { recipeId: null, reason: "out_of_credits" };
         throw error;
       }
       if (!data?.recipe_id && data?.reason === "avoided") return { recipeId: null, reason: "avoided", avoided: data.avoided ?? [] };

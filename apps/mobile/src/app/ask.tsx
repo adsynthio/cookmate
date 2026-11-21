@@ -40,7 +40,14 @@ export default function AskScreen() {
         history: messages.slice(-6).map((m) => ({ role: m.role, text: m.text })),
         languageCode: LANGUAGE_CODES[getLocale()],
       }),
-    onSuccess: (reply) => setMessages((m) => [...m, { id: nextId.current++, role: "assistant", text: reply.answer, reply }]),
+    onSuccess: (reply) =>
+      setMessages((m) => [
+        ...m,
+        // T1: the kitchen's AI credits are used up: say so, with nothing to tap.
+        reply.source === "out_of_credits"
+          ? { id: nextId.current++, role: "assistant", text: t("credits.paused") }
+          : { id: nextId.current++, role: "assistant", text: reply.answer, reply },
+      ]),
     onError: () => setMessages((m) => [...m, { id: nextId.current++, role: "assistant", text: t("ask.error") }]),
   });
   const addToList = useMutation({

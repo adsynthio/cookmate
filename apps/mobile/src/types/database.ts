@@ -3324,6 +3324,10 @@ export type Database = {
         Args: { p_household_id: string; p_recipe_id: string; p_reason: string; p_note?: string | null };
         Returns: string;
       };
+      ai_credits_left: {
+        Args: { p_household_id: string };
+        Returns: Json;
+      };
       set_notification_settings: {
         Args: { p_household: string; p_settings: Json; p_policy_version?: string };
         Returns: Json;

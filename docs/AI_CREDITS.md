@@ -19,6 +19,11 @@ bill. Added 21 Nov 2026 (T1). Code: `supabase/migrations/20270524000000_ai_credi
 - A call can cost more than what's left; the balance stops at zero instead of going below.
 - The limits of 60 AI calls an hour and 300 a day per kitchen still apply.
 
+In the app, You → AI credits shows what's left and today's free credits (an unlimited kitchen just says so). When a
+paused feature is used, Ask, Scan, New dish and Family recipe say that the AI is paused until midnight; scanning still
+takes typed items and barcodes. The preview (mock) build keeps the same rules on the phone, under
+`cookmate.mock.credits` in local storage.
+
 What things cost (Sonnet 5.5, Nov 2026):
 
 | Feature | Credits |

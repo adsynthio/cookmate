@@ -1,6 +1,7 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
 import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+import type { AiCredits } from "@/domain/credits";
 import type { EmailCodeProblem } from "@/domain/emailAuth";
 import type { VoiceProfile } from "@/domain/voiceStyle";
 import type { Problem } from "@/domain/rescue";
@@ -16,6 +17,7 @@ export type LocationKind = Row<"storage_locations">["kind"];
 export type StapleLevel = NonNullable<Row<"inventory_items">["staple_level"]>;
 export type MemorySource = Row<"memories">["source"];
 export type { WeekRecap } from "@/domain/recap";
+export type { AiCredits } from "@/domain/credits";
 import type { WeekRecap } from "@/domain/recap";
 import type { Tool, ToolKey } from "@/domain/tools";
 export type { LearnedCandidate } from "@/domain/learning";
@@ -140,7 +142,7 @@ export type InventResult =
       /** M3: how close to the usual dish, 50–100. */
       closeness?: number | null;
     }
-  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" | "busy" }
+  | { recipeId: null; reason: "too_little" | "nothing_safe" | "unavailable" | "busy" | "out_of_credits" }
   /** The dish asked for is built on something the family never eats (an allergy or dislike). */
   | { recipeId: null; reason: "avoided"; avoided: string[] };
 
@@ -385,7 +387,7 @@ export interface RecipeService {
 
 export type FamilyRecipeResult =
   | { recipeId: string; title: string; titles?: EventNames; safetyAdded: string[]; questions: string[] }
-  | { recipeId: null; reason: "nothing_safe" | "unavailable" | "invalid" | "busy" };
+  | { recipeId: null; reason: "nothing_safe" | "unavailable" | "invalid" | "busy" | "out_of_credits" };
 
 export type RecipeReportReason = "unsafe" | "wrong" | "didnt_work" | "other";
 
@@ -522,9 +524,15 @@ export interface CommunityService {
 }
 
 /** "Ask Cookmate anything": a short answer from this household's kitchen, family and recipes. */
-export type AskReply = { answer: string; recipes: { slug: string; title: string }[]; addToList: string[]; followUps: string[]; source: "model" | "fallback" | "local" };
+/** "out_of_credits": the kitchen's paid AI is paused (T1); the answer is empty and the screen says so. */
+export type AskReply = {
+  answer: string; recipes: { slug: string; title: string }[]; addToList: string[]; followUps: string[];
+  source: "model" | "fallback" | "local" | "out_of_credits";
+};
 export interface AssistantService {
   ask(input: { householdId: string; question: string; history: { role: "user" | "assistant"; text: string }[]; languageCode: string }): Promise<AskReply>;
+  /** T1: what this kitchen has left of its AI credits. */
+  credits(householdId: string): Promise<AiCredits>;
 }
 
 export type Services = {

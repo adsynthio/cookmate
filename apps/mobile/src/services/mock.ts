@@ -33,6 +33,7 @@ import { calendarPrefs, eventsOn, fastsToOffer, keepFast as keepFastRow, type Ca
 import { jobOf, swapsFor } from "@/domain/swaps";
 import { avoids, planInvention, templateInvention, validateInvention, type CatalogEntry, type InventItem } from "@/domain/invent";
 import { daysLeft as daysLeftOf } from "@/domain/pantry";
+import { CREDIT_COSTS, creditsOf, spendCredits, TRIAL, type CreditLedger } from "@/domain/credits";
 
 import { nudgeTime } from "@/domain/dinnerTime";
 import type { Circle, CommunityPost, CookSession, HouseholdRef, ListLine, Member, Memory, NotificationSettings, PantryItem, PickBatch, Services } from "./types";
@@ -58,6 +59,31 @@ export function resetMockHousehold() {
 }
 
 const delay = (ms = 350) => new Promise((r) => setTimeout(r, ms));
+
+// T1 in the preview: the live credit rules (domain/credits.ts), kept on the phone. Photo scans, questions, new dishes
+// and family recipes spend about what they cost; at zero they pause until midnight India time.
+const CREDITS_KEY = "cookmate.mock.credits";
+function creditLedger(): CreditLedger {
+  try {
+    const raw = localStorage.getItem(CREDITS_KEY);
+    if (raw) return { ...TRIAL, ...(JSON.parse(raw) as Partial<CreditLedger>) };
+  } catch {
+    // A broken copy starts again from the trial.
+  }
+  return TRIAL;
+}
+/** Spends a paid call's credits. False when the kitchen's AI is paused: nothing is spent and nothing is made. */
+function payForAi(cost: number): boolean {
+  const now = new Date();
+  const ledger = creditLedger();
+  if (!creditsOf(ledger, now).allowed) return false;
+  try {
+    localStorage.setItem(CREDITS_KEY, JSON.stringify(spendCredits(ledger, cost, now)));
+  } catch {
+    // Storage blocked: the preview just doesn't count.
+  }
+  return true;
+}
 
 const isoOrNull = (days: number | null) => (days === null ? null : isoInDays(days));
 
@@ -251,6 +277,7 @@ const mocks: Services = {
     async ask({ question, languageCode }) {
       // Preview: answered on the phone from the kitchen (the live app asks the ask-cookmate function).
       await delay(500);
+      if (!payForAi(CREDIT_COSTS.ask)) return { answer: "", recipes: [], addToList: [], followUps: [], source: "out_of_credits" as const };
       const locale = localeFromLanguageCode(languageCode) ?? "en";
       const reply = localAnswer({
         question,
@@ -262,6 +289,10 @@ const mocks: Services = {
         named: findIngredients(question),
       });
       return { ...reply, source: "local" as const };
+    },
+    async credits() {
+      await delay(200);
+      return creditsOf(creditLedger(), new Date());
     },
   },
   auth: {
@@ -446,6 +477,8 @@ const mocks: Services = {
     },
     async scanItems(input) {
       await delay(900);
+      // Barcodes use no AI and always work.
+      if (input.kind !== "barcode" && !payForAi(CREDIT_COSTS.scan)) return { source: "out_of_credits", items: [] };
       // Mock mode: a believable result for each kind, so the whole scan flow can be tried without a key.
       const sample: Record<string, [string, number | null, string | null, number][]> = {
         fridge: [["paneer", 200, "g", 0.9], ["tomato", 4, "piece", 0.95], ["egg", 6, "piece", 0.95], ["curd", null, null, 0.85], ["coriander leaves", 1, "bunch", 0.8], ["lemon", 2, "piece", 0.9], ["green chilli", null, null, 0.6]],
@@ -738,6 +771,7 @@ const mocks: Services = {
       // The preview has no model: the telling becomes steps, one per sentence, so the flow can be tried.
       const sentences = telling.split(/(?<=[.!?।])\s+|\n+/).map((x) => x.trim()).filter((x) => x.length > 3).slice(0, 10);
       if (sentences.length < 2) return { recipeId: null, reason: "invalid" };
+      if (!payForAi(CREDIT_COSTS.dish)) return { recipeId: null, reason: "out_of_credits" };
       const id = `family-${nextId++}`;
       const title = owner?.trim() ? `${owner.trim()}'s recipe` : "Family recipe";
       adapted.set(id, {
@@ -758,6 +792,7 @@ const mocks: Services = {
         .map((m) => m.ingredientKey!);
       const named = dish ? avoid.filter((a) => avoids([a], dish.toLowerCase())) : [];
       if (named.length) return { recipeId: null, reason: "avoided", avoided: named };
+      if (!payForAi(CREDIT_COSTS.dish)) return { recipeId: null, reason: "out_of_credits" };
       if (dish) {
         // The preview knows a few everyday dishes by name; the live app has the model write any dish.
         const doc = ideaRecipe(dish);

@@ -74,7 +74,7 @@ export default function ScanScreen() {
       if (r.items.length) {
         setTray((t) => mergeTray(t, r.items));
         setPhotos((n) => n + 1);
-      } else setNote(r.source === "not_configured" ? t("scan.notOn") : t("scan.shotEmpty"));
+      } else setNote(r.source === "not_configured" ? t("scan.notOn") : r.source === "out_of_credits" ? t("credits.pausedScan") : t("scan.shotEmpty"));
     } catch {
       setNote(t("scan.shotFailed"));
     } finally {

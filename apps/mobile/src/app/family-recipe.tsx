@@ -71,7 +71,15 @@ export default function FamilyRecipeScreen() {
             accessibilityLabel={t("family.title")}
           />
           {r && r.recipeId === null ? (
-            <Text muted>{t(r.reason === "unavailable" ? "family.unavailable" : r.reason === "invalid" ? "family.invalid" : r.reason === "busy" ? "family.busy" : "family.unsafe")}</Text>
+            <Text muted>
+              {t(
+                r.reason === "unavailable" ? "family.unavailable"
+                  : r.reason === "invalid" ? "family.invalid"
+                  : r.reason === "busy" ? "family.busy"
+                  : r.reason === "out_of_credits" ? "credits.paused"
+                  : "family.unsafe",
+              )}
+            </Text>
           ) : null}
           {save.isError ? <Text muted>{t("state.error.body")}</Text> : null}
           <Button label={t("family.save")} disabled={!householdId || telling.trim().length < 20} onPress={() => save.mutate()} />

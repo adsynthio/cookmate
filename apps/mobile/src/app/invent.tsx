@@ -51,6 +51,8 @@ export default function InventScreen() {
         ? { title: "invent.unavailable.title", body: "invent.unavailable.body" }
         : reason === "busy"
         ? { title: "invent.busy.title", body: "invent.busy.body" }
+        : reason === "out_of_credits"
+        ? { title: "credits.pausedTitle", body: "credits.paused" }
         : reason
           ? { title: "invent.unsafe.title", body: "invent.unsafe.body" }
           : null;

@@ -1449,5 +1449,15 @@
   "you.account.logout": "Log out",
   "you.account.logoutBody": "Your kitchen stays saved. Log in with {email} any time to get it back.",
   "you.account.logoutSure": "Yes, log out",
-  "you.account.keep": "Stay logged in"
+  "you.account.keep": "Stay logged in",
+  "credits.title": "AI credits",
+  "credits.leftLabel": "credits left",
+  "credits.daily": "{n} free credits every day, used first",
+  "credits.today": "{n} of today's free credits left",
+  "credits.unlimited": "Unlimited AI for this kitchen",
+  "credits.how": "A photo scan uses about 2 credits, a new dish about 2 and a question about 0.3. Help while you cook is always free.",
+  "credits.pausedTitle": "AI is paused",
+  "credits.paused": "This kitchen has used its AI credits. Free credits come back at midnight.",
+  "credits.pausedScan": "AI is paused until midnight, when free credits come back. You can still type items or scan barcodes.",
+  "credits.pausedMeter": "AI is paused until midnight"
 }

@@ -147,3 +147,34 @@ test("frying oil marked 'for frying' stays exempt even when an adaptation drops 
   r.steps = r.steps.filter((s) => s.technique !== "deep_fry");
   assert.ok(!has(r, "amount"));
 });
+
+test("ghee for frying is the frying medium too (boondi, jalebi), and needs the hot-oil note", () => {
+  const boondi: RecipeDoc = {
+    slug: "boondi-test", title: "Boondi laddu", description: "Fried gram flour pearls in syrup.", course: "dessert", diet: "veg", base_servings: 4,
+    prep_time_min: 15, cook_time_min: 30, difficulty: 2, spice_level: 1, tags: [], review_status: "draft",
+    ingredients: [
+      { ingredient: "gram flour", qty: 200, unit: "g", role: "base" },
+      { ingredient: "sugar", qty: 250, unit: "g", role: "base" },
+      { ingredient: "ghee", qty: 500, unit: "ml", role: "fat" },
+    ],
+    steps: [
+      { text: "Whisk the gram flour with water into a smooth, flowing batter." },
+      { text: "Boil the sugar with 150 ml water to a one-string syrup.", minutes: 8 },
+      { text: "Pour the batter through a slotted spoon into hot ghee and fry the boondi.", minutes: 10, safety: "Never leave hot ghee alone; keep children away and slide the batter in gently." },
+      { text: "Soak the boondi in the lukewarm syrup, then shape into laddus.", minutes: 10 },
+    ],
+  };
+  assert.ok(!has(boondi, "amount"), "500 ml of frying ghee isn't eaten");
+  const noNote = structuredClone(boondi);
+  noNote.steps[2]!.safety = undefined;
+  assert.ok(has(noNote, "hot_oil"), "frying in ghee needs the same safety note as oil");
+});
+
+test("lukewarm syrup is fine; leftovers reheated only until lukewarm are not", () => {
+  const dal = bySlug("dal-tadka");
+  dal.steps.push({ text: "Reheat the leftover dal until just lukewarm." });
+  assert.ok(has(dal, "unsafe_shortcut"));
+  const syrup = bySlug("dal-tadka");
+  syrup.steps.push({ text: "Keep the syrup lukewarm while the boondi fries." });
+  assert.ok(!has(syrup, "unsafe_shortcut"));
+});

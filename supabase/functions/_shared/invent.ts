@@ -97,7 +97,9 @@ export function dietFits(diet: Diet, entry: CatalogEntry | undefined): boolean {
   return true;
 }
 
-const UNSAFE = /\b(raw egg|half[- ]cooked|undercook|still pink|slightly pink|runny yolk|skip (the )?(boil|soak)|no need to (boil|cook|reheat)|reuse (the )?oil|room temperature overnight|lukewarm)\b/i;
+// "Lukewarm" alone isn't unsafe (boondi goes into lukewarm syrup, dough into lukewarm milk): reheating leftovers only
+// until lukewarm is, and recipeSafety's "lukewarm leftovers" rule catches that.
+const UNSAFE = /\b(raw egg|half[- ]cooked|undercook|still pink|slightly pink|runny yolk|skip (the )?(boil|soak)|no need to (boil|cook|reheat)|reuse (the )?oil|room temperature overnight)\b/i;
 const REHEAT = /\b(steaming hot|piping hot|bubbling|boil(ing)?|simmer)/i;
 const COOKED_THROUGH = /\b(cooked through|no pink|firm|set completely|fully set|fully cooked|until done)\b/i;
 

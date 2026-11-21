@@ -98,3 +98,11 @@ test("avoids matches whole words and simple plurals only", () => {
   assert.equal(avoids(["garlic"], "ginger garlic paste"), true);
   assert.equal(avoids([], "anything"), false);
 });
+
+test("lukewarm on its own isn't unsafe: boondi soaks in lukewarm syrup", () => {
+  const plan = planInvention(kitchen, catalog, "veg")!;
+  const have = new Set(kitchen.map((k) => k.key));
+  const ok = templateInvention(plan, "veg");
+  const syrup = { ...ok, steps: [...ok.steps, { text: "Lift the boondi out with a slotted spoon, drain a few seconds and drop into the lukewarm syrup." }] };
+  assert.deepEqual(validateInvention(syrup, plan, { catalog, diet: "veg", have }).filter((p) => p.startsWith("unsafe")), []);
+});

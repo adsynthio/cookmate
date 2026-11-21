@@ -29,6 +29,7 @@ import {
   namedPlan, tableDiet, toBuyFor,
 } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 import { serverError } from "../_shared/errors.ts";
 import { thinkingOff } from "../_shared/thinking.ts";
 
@@ -225,6 +226,9 @@ Deno.serve(async (req) => {
   const children = memberRows.some((m) => m.age_group === "child");
   const plan = named ? null : planInvention(items, CATALOG, diet, avoid);
   if (!named && !plan) return json({ recipe_id: null, reason: "too_little" });
+  // T1: out of AI credits, the app says so and when the free ones come back.
+  const credits = await creditsFor(sb, householdId);
+  if (!credits.allowed) return outOfCredits(credits, CORS);
 
   const staples = [...CATALOG.values()].filter((c) => c.staple && (diet === "nonveg" || !["meat", "seafood", "egg"].includes(c.category))).map((c) => c.name);
   const have = new Set(items.filter((i) => i.confidence >= 0.5).map((i) => i.key));

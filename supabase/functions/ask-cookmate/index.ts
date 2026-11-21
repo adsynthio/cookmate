@@ -14,6 +14,7 @@ import { logAiRequest } from "../_shared/aiLog.ts";
 import { LANGUAGE_NAME, localeFor } from "../rescue/logic.ts";
 import { type Body, cleanReply, contextFor, fallbackReply, type ItemRow, MAX_ANSWER_CHARS, type MemberRow, parseBody, type RecipeRow } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 import { serverError } from "../_shared/errors.ts";
 import { thinkingOff } from "../_shared/thinking.ts";
 
@@ -109,6 +110,9 @@ Deno.serve(async (req) => {
   let reply = fallbackReply(locale);
   let source: "model" | "fallback" = "fallback";
   if (Deno.env.get("ANTHROPIC_API_KEY")) {
+    // T1: out of AI credits, the app says so and when the free ones come back.
+    const credits = await creditsFor(sb, householdId);
+    if (!credits.allowed) return outOfCredits(credits, CORS);
     const client = new Anthropic();
     const started = Date.now();
     const messages: Anthropic.MessageParam[] = [

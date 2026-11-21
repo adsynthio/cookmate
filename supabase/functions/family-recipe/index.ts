@@ -15,6 +15,7 @@ import { logAiRequest } from "../_shared/aiLog.ts";
 import { serverError } from "../_shared/errors.ts";
 import { aiSwitchedOff } from "../_shared/killSwitch.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
+import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 import { checkRecipe, problemLines, SAFETY_RULES_PROMPT } from "../_shared/recipeSafety.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
@@ -112,6 +113,9 @@ Deno.serve(async (req) => {
   if (!quota.ok) return quotaResponse(quota, CORS);
   if (!Deno.env.get("ANTHROPIC_API_KEY")) return json({ error: "family_unavailable" }, 503);
   if (await aiSwitchedOff(sb, "family_recipe")) return json({ error: "family_unavailable" }, 503);
+  // T1: out of AI credits, the app says so; the cook's words stay on screen to save later.
+  const credits = await creditsFor(sb, householdId);
+  if (!credits.allowed) return outOfCredits(credits, CORS);
 
   const { data: members } = await sb.from("household_members").select("diet, age_group").eq("household_id", householdId).eq("status", "active");
   const rows = (members ?? []) as { diet: Diet | null; age_group: string | null }[];

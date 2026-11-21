@@ -186,7 +186,7 @@ Part 5, loose ends and beta preparation (branch `sprint-6/loose-ends`):
 8. See it as a memory on the You tab
 9. See pantry quantities update
 
-**V1 in scope:** onboarding without password (anonymous → phone OTP), household of up to 6 members, living pantry (5 locations, staples Full/Low/Out, homemade components, confidence decay), NL/voice pantry entry, "Tonight, decided" + craving search + Use Soon, 300 curated dishes with adaptation and family plates, Cook With Me (timers, sensory cues, photo checkpoints, offline), Voice Cook (Hindi, Hinglish, English + 1 regional), Recipe Rescue with food-safety guards, feedback + memories (Edit · Keep · Forget), shopping list, DPDP consent/export/delete, analytics + cost telemetry.
+**V1 in scope:** onboarding without password (anonymous → phone OTP), household of up to 12 members (joint families), living pantry (5 locations, staples Full/Low/Out, homemade components, confidence decay), NL/voice pantry entry, "Tonight, decided" + craving search + Use Soon, 300 curated dishes with adaptation and family plates, Cook With Me (timers, sensory cues, photo checkpoints, offline), Voice Cook (Hindi, Hinglish, English + 1 regional), Recipe Rescue with food-safety guards, feedback + memories (Edit · Keep · Forget), shopping list, DPDP consent/export/delete, analytics + cost telemetry.
 
 **Not in V1:** scanning (V1.5), weekly plate (V1.5), leftovers, restock, grocery agent, WhatsApp, paid tier, cook handoff (V2), IVR and family recipes (V3).
 

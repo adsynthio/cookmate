@@ -1,4 +1,4 @@
-// ONB-03 / KIT-023: who eats here (up to 6 people, each with an age group for family plates) and the home's food
+// ONB-03 / KIT-023: who eats here (up to 12 people, each with an age group for family plates) and the home's food
 // rules, in the Stitch onboarding style. Per-person diets can be changed later on the You tab.
 import { useRouter } from "expo-router";
 import { useState } from "react";

@@ -10,7 +10,8 @@ import { type CatalogRow, catalogHints, toCatalog, toResponseItem, wasMentioned 
 import { callModel, MODEL, PROMPT_VERSION, TASK } from "./prompt.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 
-const MAX_TEXT = 600;
+// A typed monthly list ("2 kilo aloo, 1 kilo pyaaz, ...") runs past 600 characters; longer text used to skip the model.
+const MAX_TEXT = 2000;
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",

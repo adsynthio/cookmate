@@ -48,7 +48,8 @@ Catalog (canonical | hinglish | hindi | aliases):
 export function parseRequest(text: string, language: string, hints: string) {
   return {
     model: MODEL,
-    max_tokens: 1500,
+    // About 60 tokens per item: 1500 cut off a 25-item list, and a cut-off reply can't be read at all.
+    max_tokens: 6000,
     // Extraction with a fixed format: no thinking, lowest effort, for the 1.2 s latency budget.
     ...thinkingOff(MODEL),
     output_config: { effort: "low" as const, format: zodOutputFormat(ModelItems) },

@@ -9,7 +9,8 @@ export type ConsentPurpose = "voice_processing" | "memory" | "analytics";
 
 export type DraftMember = { key: string; displayName: string; ageGroup: AgeGroup; isSelf: boolean };
 
-export const MAX_MEMBERS = 6;
+/** Joint families: grandparents, parents, children and more eat from one kitchen (the database allows 12). */
+export const MAX_MEMBERS = 12;
 export const MAX_NAME_LENGTH = 40;
 
 /** Version of the privacy notice shown on the consent screen. Bump it whenever that copy changes. */

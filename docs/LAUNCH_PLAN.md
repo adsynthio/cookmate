@@ -142,7 +142,7 @@ None of them sells "cook like an experienced home cook, in your language, from w
    - Google case studies: Koo got 15% more organic installs from local-language custom store listings, and Splendid
      Apps got a 2% conversion lift in India from tested icons and screenshots. Expect gains like these, not the 2–5× that
      vendors advertise.
-4. **Invite the family.** A household has up to 6 members, so "add the person who cooks with you" is the most natural
+4. **Invite the family.** A household has up to 12 members, so "add the person who cooks with you" is the most natural
    referral. In a study by Schmitt, Skiera and Van den Bulte (2011), referred customers stayed longer and were worth
    16–25% more. Ask right after a good cook ("Dinner went well? Share it with whoever eats it").
 5. **Festival moments.** Ugadi, Ganesh Chaturthi, Navratri fasting, Diwali and Onam. The app already knows these dates

@@ -358,7 +358,7 @@ const mocks: Services = {
   preference: {
     async createHousehold({ language, members }) {
       await delay();
-      if (members.length < 1 || members.length > 6) throw new Error("a household has 1 to 6 members");
+      if (members.length < 1 || members.length > 12) throw new Error("a household has 1 to 12 members");
       const ref: HouseholdRef = { householdId: "mock-household", memberId: "mock-member", languageCode: language };
       globalThis.localStorage?.setItem(HOUSEHOLD_KEY, JSON.stringify(ref));
       const stored: Member[] = members.map((m, i) => ({

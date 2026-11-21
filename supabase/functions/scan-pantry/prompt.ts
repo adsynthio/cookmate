@@ -11,7 +11,7 @@ export const TASK = "scan_pantry_image";
 // Sonnet, not Opus: reading a photo into a list the cook checks anyway doesn't need the top model, and Opus cost
 // ₹3.65 a photo (Nov 2026; Sonnet is half the price per token).
 export const MODEL = "claude-sonnet-5-5";
-export const PROMPT_VERSION = "scan_pantry_image@4";
+export const PROMPT_VERSION = "scan_pantry_image@5";
 
 export type ScanKind = "fridge" | "bill" | "photo";
 
@@ -35,6 +35,7 @@ export const ScanItems = z.object({
 
 const COMMON = `Rules for every item:
 - One item per distinct food. Never list anything you cannot see (or that is not on the bill).
+- A long bill or order: list every food line, up to 100 items.
 - said: a short plain name for the item as an Indian home cook would say it, in English (e.g. "paneer", "toor dal").
 - ingredient_key: the canonical name from the catalog below when it is clearly one of those; otherwise null.
 - quantity and unit only when you can read or count them. Units: kg, g, l, ml, piece, packet, bunch, bottle, box.
@@ -93,7 +94,8 @@ export const INSTRUCTIONS: Record<ScanKind, string> = {
 export function scanRequest(kind: ScanKind, imageBase64: string, mediaType: "image/jpeg" | "image/png", hints: string) {
   return {
     model: MODEL,
-    max_tokens: 4000,
+    // A monthly kirana or DMart bill can have 60+ lines (about 60 tokens each); a cut-off reply can't be read at all.
+    max_tokens: 8000,
     // Extraction with a fixed format: the lowest effort, no thinking first, keeps the wait short.
     output_config: { effort: "low" as const, format: zodOutputFormat(ScanItems) },
     ...thinkingOff(MODEL),

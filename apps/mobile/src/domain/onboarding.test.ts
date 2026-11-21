@@ -17,15 +17,15 @@ import {
 const me: DraftMember = { key: "1", displayName: " Sunita ", ageGroup: "adult", isSelf: true };
 const kid: DraftMember = { key: "2", displayName: "Aarav", ageGroup: "child", isSelf: false };
 
-test("members: self required, names required, at most six", () => {
+test("members: self required, names required, at most twelve (joint families)", () => {
   assert.equal(checkMembers([]), "self_missing");
   assert.equal(checkMembers([kid]), "self_missing");
   assert.equal(checkMembers([me, kid]), "none");
   assert.equal(checkMembers([me, { ...kid, displayName: "  " }]), "name_missing");
   assert.equal(checkMembers([me, { ...kid, displayName: "x".repeat(41) }]), "name_too_long");
-  const seven = Array.from({ length: 7 }, (_, i) => ({ ...kid, key: String(i) }));
-  assert.equal(checkMembers([me, ...seven.slice(1)]), "too_many");
-  assert.equal(checkMembers([me, ...seven.slice(2)]), "none");
+  const thirteen = Array.from({ length: 13 }, (_, i) => ({ ...kid, key: String(i) }));
+  assert.equal(checkMembers([me, ...thirteen.slice(1)]), "too_many");
+  assert.equal(checkMembers([me, ...thirteen.slice(2)]), "none");
 });
 
 test("children start mild; everyone else gets the household spice", () => {

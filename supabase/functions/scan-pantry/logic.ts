@@ -3,6 +3,8 @@ import { type CatalogIndex, type ParsedItem, parsePantryText } from "../_shared/
 
 /** Photos larger than this (base64 characters, about 3 MB of JPEG) are refused; the app sends about 300 KB. */
 export const MAX_IMAGE_CHARS = 4_000_000;
+/** A big monthly bill has 60 to 80 food lines; 40 dropped the rest without a word. */
+export const MAX_ITEMS = 100;
 
 export type ScanBody =
   | { kind: "fridge" | "bill" | "photo"; householdId: string; image: string; mediaType: "image/jpeg" | "image/png" }
@@ -38,7 +40,7 @@ type ModelItem = {
 
 /**
  * Model output -> confirm-sheet items: unknown catalog keys become null (and less certain), amounts must be positive,
- * the same food listed twice is merged, and at most 40 items come back.
+ * the same food listed twice is merged, and at most MAX_ITEMS come back.
  */
 export function fromModel(items: ModelItem[], known: Set<string>): ParsedItem[] {
   const out = new Map<string, ParsedItem>();
@@ -65,7 +67,7 @@ export function fromModel(items: ModelItem[], known: Set<string>): ParsedItem[] 
       out.set(id, item);
     }
   }
-  return [...out.values()].slice(0, 40);
+  return [...out.values()].slice(0, MAX_ITEMS);
 }
 
 export type OffProduct = {

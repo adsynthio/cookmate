@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { buildIndex } from "../_shared/pantryParse.ts";
-import { cleanAppliances, fromModel, fromOpenFoodFacts, MAX_IMAGE_CHARS, readBody } from "./logic.ts";
+import { cleanAppliances, fromModel, fromOpenFoodFacts, MAX_IMAGE_CHARS, MAX_ITEMS, readBody } from "./logic.ts";
 
 const index = buildIndex([
   { name: "toor dal", aliases: ["arhar dal", "tuvar dal"], latn: "toor dal", hi: "तूर दाल" },
@@ -65,4 +65,10 @@ Deno.test("one photo mode: any picture, no need to say what it is", () => {
 Deno.test("appliances: only known kinds, once each", () => {
   assertEquals(cleanAppliances(["microwave", "air_fryer", "microwave", "spaceship"]), ["microwave", "air_fryer"]);
   assertEquals(cleanAppliances(undefined), []);
+});
+
+Deno.test("model output: a long monthly bill keeps every line, up to 100", () => {
+  const line = (n: number) => ({ said: `item ${n}`, ingredient_key: null, quantity: 1, unit: "packet", location_kind: "pantry" as const, state: null, confidence: 0.9 });
+  assertEquals(fromModel(Array.from({ length: 70 }, (_, n) => line(n)), new Set()).length, 70);
+  assertEquals(fromModel(Array.from({ length: 130 }, (_, n) => line(n)), new Set()).length, MAX_ITEMS);
 });

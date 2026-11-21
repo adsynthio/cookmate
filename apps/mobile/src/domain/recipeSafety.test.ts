@@ -106,6 +106,49 @@ test("small children: whole nuts are a choking risk unless ground or crushed", (
   assert.ok(!has(r, "children", { children: true }));
 });
 
+test("small children: tiny seeds, coconut milk, grated coconut and nut butter are not choking risks", () => {
+  const kids = { children: true };
+  for (const [ingredient, unit] of [["sesame seeds", "g"], ["poppy seeds", "g"], ["coconut milk", "ml"], ["peanut butter", "g"], ["basil seeds", "g"], ["desiccated coconut", "g"]] as const) {
+    const r = bySlug("jeera-aloo");
+    r.ingredients.push({ ingredient, qty: 10, unit, role: "garnish" });
+    assert.ok(!has(r, "children", kids), ingredient);
+  }
+  const grated = bySlug("jeera-aloo");
+  grated.ingredients.push({ ingredient: "coconut", qty: 30, unit: "g", local: "kasa hua nariyal", role: "garnish" });
+  grated.steps.push({ text: "Top with grated coconut and serve." });
+  assert.ok(!has(grated, "children", kids), "grated coconut on top");
+  const pieces = bySlug("jeera-aloo");
+  pieces.ingredients.push({ ingredient: "coconut", qty: 30, unit: "g", local: "nariyal ke tukde", role: "garnish" });
+  pieces.steps.push({ text: "Fry the coconut slices till golden and add." });
+  assert.ok(has(pieces, "children", kids), "coconut slices are whole pieces");
+});
+
+test("small children: whole cashews, melon seeds and dried figs are, unless ground or blended", () => {
+  const kids = { children: true };
+  for (const nut of ["cashews", "melon seeds", "dried figs", "pumpkin seeds"]) {
+    const r = bySlug("jeera-aloo");
+    r.ingredients.push({ ingredient: nut, qty: 10, unit: "g", role: "garnish" });
+    assert.ok(has(r, "children", kids), nut);
+    assert.ok(!has(r, "children"), `${nut} with no children`);
+  }
+  const paste = bySlug("jeera-aloo");
+  paste.ingredients.push({ ingredient: "cashews", qty: 15, unit: "g", local: "kaju paste", role: "base" });
+  assert.ok(!has(paste, "children", kids), "named as a paste");
+  const blended = bySlug("jeera-aloo");
+  blended.ingredients.push({ ingredient: "dried figs", qty: 30, unit: "g", local: "anjeer", role: "base" });
+  blended.steps.push({ text: "Soak the anjeer for 20 minutes and blend to a smooth paste." });
+  assert.ok(!has(blended, "children", kids), "the step blends it, called by its local name");
+});
+
+test("every cooking fat has the same limit, and frying in it is exempt", () => {
+  const coconut = bySlug("jeera-aloo");
+  coconut.ingredients.push({ ingredient: "coconut oil", qty: 60 * coconut.base_servings, unit: "ml", role: "base" });
+  assert.ok(has(coconut, "amount"), "60 ml coconut oil per serving in a sabzi is too much");
+  const puri = bySlug("puri");
+  for (const i of puri.ingredients) if (i.ingredient === "refined oil") i.ingredient = "coconut oil";
+  assert.ok(!has(puri, "amount"), "puri fried in coconut oil: the oil is the frying medium");
+});
+
 test("words: health claims, links, phone numbers and instructions to an AI", () => {
   const claims = bySlug("plain-dal");
   claims.description = "Boosts immunity and helps weight loss.";

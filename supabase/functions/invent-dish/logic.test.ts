@@ -148,5 +148,7 @@ Deno.test("a named sweet is checked as a sweet: Motichoor laddu's sugar fits a d
   assertEquals(sugar(sweet), [], "75 g of sugar a serving is fine for a sweet (limit 120)");
   const asMain = docFromModel(laddu, "veg");
   assertEquals(asMain.course, "main", "without a course a model dish is a main");
+  assertEquals(docFromModel({ ...laddu, course: "chutney_pickle" }, "veg").course, "chutney_pickle", "a family's achar stays a pickle");
+  assertEquals(docFromModel({ ...laddu, course: "component" as "main" }, "veg").course, "main", "an unknown course is a main");
   assertEquals(sugar(asMain), ["too much sugar: 75 per serving, at most 60"]);
 });

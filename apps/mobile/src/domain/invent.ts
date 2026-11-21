@@ -3,6 +3,7 @@
 // fails is never shown. Pure TypeScript with type-only imports: shared with the invent-dish Edge Function.
 import type { Diet, FlavorKey } from "./ranking.ts";
 import type { RecipeDoc } from "./recipes.ts";
+import { unsafeInstructions } from "./stepSafety.ts";
 
 export type CatalogEntry = { name: string; category: string; flags?: string[]; allergens?: string[]; staple?: boolean };
 
@@ -96,9 +97,7 @@ export function dietFits(diet: Diet, entry: CatalogEntry | undefined): boolean {
   return true;
 }
 
-// "Lukewarm" alone isn't unsafe (boondi goes into lukewarm syrup, dough into lukewarm milk): reheating leftovers only
-// until lukewarm is, and recipeSafety's "lukewarm leftovers" rule catches that.
-const UNSAFE = /\b(raw egg|half[- ]cooked|undercook|still pink|slightly pink|runny yolk|skip (the )?(boil|soak)|no need to (boil|cook|reheat)|reuse (the )?oil|room temperature overnight)\b/i;
+// Unsafe instructions: stepSafety.ts, shared with the recipe safety gate so the two agree.
 const REHEAT = /\b(steaming hot|piping hot|bubbling|boil(ing)?|simmer)/i;
 const COOKED_THROUGH = /\b(cooked through|no pink|firm|set completely|fully set|fully cooked|until done)\b/i;
 
@@ -144,7 +143,7 @@ export function validateInvention(
   if (doc.steps.length < 2 || doc.steps.length > 10) problems.push("needs 2 to 10 steps");
   for (const s of doc.steps) {
     if (!s.text.trim() || s.text.length > 400) problems.push("a step is empty or too long");
-    if (UNSAFE.test(s.text)) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
+    if (unsafeInstructions(s.text).length) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
   }
   const ownFood = new Set(plan.use.filter((u) => !ctx.catalog.has(u.key)).map((u) => u.key));
   for (const i of doc.ingredients) {

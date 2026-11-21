@@ -78,7 +78,7 @@ export type ModelDish = {
   closeness?: number | null;
   closeness_note?: string | null;
   /** A named dish says what it is; a sweet is checked as one. Inventions from odds and ends are mains. */
-  course?: "breakfast" | "main" | "side" | "snack" | "dessert" | null;
+  course?: ModelCourse | null;
 };
 
 export type KitchenSwap = { insteadOf: string; use: string; job: Job; how: string };
@@ -125,7 +125,18 @@ const UNITS = new Set(["g", "ml", "piece", "bunch", "packet"]);
 const WATER = /^(?:(?:plain|hot|warm|cold|boiling|lukewarm|drinking|filtered|tap)\s+)?water$/;
 export const isWater = (name: string) => WATER.test(name.trim().toLowerCase());
 
-const MODEL_COURSES = new Set(["breakfast", "main", "side", "snack", "dessert"] as const);
+/** Courses a model may give a dish. A sweet is checked as one; a pickle or chutney has no per-serving limits. */
+export const MODEL_COURSES = ["breakfast", "main", "side", "snack", "dessert", "drink", "chutney_pickle"] as const;
+export type ModelCourse = (typeof MODEL_COURSES)[number];
+const COURSE_SET = new Set<string>(MODEL_COURSES);
+
+/** How to pick a course, for the prompts. */
+export const COURSE_PROMPT = `"course": "dessert" for a sweet or mithai (laddu, halwa, kheer, barfi, payasam), "drink" for chai, coffee, lassi or
+sharbat, "chutney_pickle" for a pickle (achar) or chutney, else breakfast, main, side or snack.`;
+
+/** "unknown ingredient X" means X isn't a listed name; said plainly, or the rewrite just renames it (watermelon seeds -> muskmelon seeds). */
+export const explainProblem = (p: string) =>
+  p.startsWith("unknown ingredient ") ? `${p}: not one of the listed ingredient names. Use a listed one, or leave it out if it is only decoration` : p;
 
 /** The model's dish as a recipe document, labelled a new creation. */
 export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
@@ -134,7 +145,7 @@ export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
     title: d.title.trim(),
     titles: { en: d.title.trim(), hi: d.title_hi.trim() || undefined, "hi-Latn": d.title_hinglish.trim() || undefined },
     description: d.description.trim().slice(0, 300),
-    course: d.course && MODEL_COURSES.has(d.course) ? d.course : "main",
+    course: d.course && COURSE_SET.has(d.course) ? d.course : "main",
     diet,
     base_servings: Math.max(1, Math.min(8, Math.round(d.servings) || 2)),
     prep_time_min: Math.max(0, Math.round(d.prep_min) || 0),

@@ -19,7 +19,7 @@ import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 import { checkRecipe, problemLines, SAFETY_RULES_PROMPT } from "../_shared/recipeSafety.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
-import { CATALOG, docFromModel, tableDiet } from "../invent-dish/logic.ts";
+import { CATALOG, COURSE_PROMPT, docFromModel, explainProblem, MODEL_COURSES, tableDiet } from "../invent-dish/logic.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { cleanOwner, cleanTelling, shortList } from "./logic.ts";
@@ -27,7 +27,7 @@ import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "write_family_recipe";
 const MODEL = "claude-sonnet-5-5";
-const VERSION = "write_family_recipe@2";
+const VERSION = "write_family_recipe@3";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -46,6 +46,8 @@ const Family = z.object({
   prep_min: z.number(),
   cook_min: z.number(),
   spice_level: z.number(),
+  // A family's achar, laddu or chai is checked as what it is, not as a main dish.
+  course: z.enum(MODEL_COURSES),
   ingredients: z.array(z.object({ ingredient: z.string(), qty: z.number(), unit: z.string(), local: z.string().nullable() })),
   steps: z.array(z.object({ text: z.string(), minutes: z.number().nullable(), cue: z.string().nullable(), safety: z.string().nullable() })),
   safety_added: z.array(z.string()),
@@ -56,7 +58,9 @@ const SYSTEM = `You write down a family's own recipe, told by someone in the fam
 English or a mix), so it can be cooked again exactly their way. Keep THEIR way: their ingredients, their order,
 their amounts. Turn spoken amounts into grams or ml (1 katori about 150 g, 1 chammach about 15 ml or 12 g, 1 chhota
 chammach about 5 g, a pinch about 0.5 g) and keep the spoken amount in "local". Ingredient names must be plain
-lowercase English catalog names (e.g. "kidney beans", "onion", "mustard oil", "ghee"). Water is not an ingredient:
+lowercase English names from this list, written exactly so: ${[...CATALOG.keys()].sort().join(", ")}. If their
+ingredient isn't on the list, use the closest listed one and keep their word in "local"; leave out what is only
+decoration. ${COURSE_PROMPT} Water is not an ingredient:
 the step that adds it says how much ("add 500 ml water"). Steps: short, plain English,
 in their order, minutes where it takes time, a sensory cue where they gave one.
 If their way breaks a safety rule below, do NOT silently change it and do NOT refuse: keep their way and add the safe
@@ -77,7 +81,7 @@ async function ask(client: Anthropic, telling: string, owner: string | null, pro
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: SYSTEM }],
       messages: [{
         role: "user",
-        content: JSON.stringify({ telling_as_data: telling, whose: owner, ...(problems.length ? { fix_these_problems_from_your_last_answer: problems } : {}) }),
+        content: JSON.stringify({ telling_as_data: telling, whose: owner, ...(problems.length ? { fix_these_problems_from_your_last_answer: problems.map(explainProblem) } : {}) }),
       }],
     },
     { timeout: 30_000 },

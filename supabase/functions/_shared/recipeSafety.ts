@@ -18,6 +18,7 @@
 // Allergen labels come from the catalog, never from model text (recipeAllergens).
 // Pure TypeScript: shared with the Edge Functions by scripts/sync-shared.py.
 import { avoids, type CatalogEntry, dietFits } from "./invent.ts";
+import { unsafeInstructions } from "./stepSafety.ts";
 import type { Diet } from "./ranking.ts";
 import type { RecipeDoc, RecipeStepDoc } from "./recipes.ts";
 
@@ -83,25 +84,14 @@ const COOKER = /\b(pressure[- ]cook|cooker|whistles?)\b/;
 const PRESSURE_DROPS = /\b(let the pressure (drop|settle|release|come down)|pressure (has )?(fully |completely )?(dropped|drops|settled|released)|until the pressure (drops|is gone|has dropped)|once the pressure (drops|has dropped|is down))/;
 
 // Frying in ghee counts too (boondi, jalebi, gulab jamun): the ghee is the frying medium, not eaten.
-const FRYING = /\b(deep[- ]fry|deep[- ]fried|fry (them |it )?in (batches|hot oil|hot ghee)|into (the )?hot (oil|ghee)|(slide|drop) .{0,40} into .{0,20}(oil|ghee)|through .{0,30} into .{0,20}(oil|ghee))/;
+const FRYING = /\b(deep[- ]fry|deep[- ]fried|fry (them |it )?in batches|fr(y|ies|ied) .{0,40}\bin (the )?hot (oil|ghee)|into (the )?hot (oil|ghee)|(slide|drop) .{0,40} into .{0,20}(oil|ghee)|through .{0,30} into .{0,20}(oil|ghee))/;
 const OIL_CARE = /\b(hot oil|never leave|keep children|water (and|in|into|near) .{0,15}oil|splutter|spatter|dry (them|it|the) |pat dry|careful|gently slide|slide .{0,30} close)/;
 
 const COOKED_THROUGH = /\b(cooked through|no pink|not pink|juices run clear|fully set|set completely|completely set|fully cooked|until done|opaque all the way|flakes easily)\b/;
 
 const RAW_BATTER_TASTE = /\b(taste|lick|eat) (the )?(raw )?(batter|dough)\b/;
 
-// Phrases no recipe may say, in any step.
-const SHORTCUTS: [RegExp, string][] = [
-  [/\braw egg\b/, "raw egg"],
-  [/\b(half[- ]cooked|undercook(ed)?|slightly pink|still pink|pink (in the|inside)|rare\b)/, "undercooked food"],
-  [/\brunny (yolk|egg)|\b(yolk|egg)s? (is |are )?(still )?(runny|soft in the middle)|\bsoft[- ]boiled\b/, "a runny egg"],
-  [/\bskip (the )?(soak|soaking|boil|boiling)\b|\bno need to (soak|boil|cook|reheat)\b/, "skipping soaking or boiling"],
-  [/\breuse (the )?(frying )?oil\b|\bsame oil again\b/, "reusing frying oil"],
-  [/\b(room temperature|out) overnight\b|\bleave (it )?out overnight\b/, "food left out overnight"],
-  [/\breheat (it )?(again|twice|a second time)\b/, "reheating more than once"],
-  [/\blukewarm\b.*\b(leftover|reheat)|\b(leftover|reheat)\b.*\blukewarm\b/, "lukewarm leftovers"],
-  [/\b(alcohol|wine|beer|rum|vodka|brandy|whisky)\b/, "alcohol"],
-];
+// Phrases no recipe may say, in any step: stepSafety.ts (shared with the new-dish check).
 
 // --- Fasting (vrat) food, F3 -------------------------------------------------------------------------------------
 // A recipe tagged "fasting" is offered on vrat days, so it must be vrat food in the common North Indian way
@@ -193,7 +183,8 @@ export function checkRecipe(doc: RecipeDoc, ctx: SafetyContext): SafetyProblem[]
     }
     if (!(i.qty > 0) || !Number.isFinite(i.qty)) add("quantity", `bad quantity for ${name}`);
     if (!dietFits(diet, cat)) add("diet", `${name} doesn't fit a ${diet} diet`);
-    const max = MAX_PER_SERVING[name];
+    // A pickle or chutney is eaten by the spoon and its salt, oil and chilli preserve it: no per-serving limits.
+    const max = doc.course === "chutney_pickle" ? undefined : MAX_PER_SERVING[name];
     // Oil for frying ("talne ke liye") is the frying medium, mostly left in the kadai, not eaten.
     const fryingOil = FATS.has(name) && (frying || /\b(talne|tal ne|fry|frying|deep)/i.test(i.local ?? ""));
     if (max !== undefined && i.qty > 0 && !fryingOil) {
@@ -223,8 +214,7 @@ export function checkRecipe(doc: RecipeDoc, ctx: SafetyContext): SafetyProblem[]
     if (!s.text?.trim() || s.text.length > 400) add("structure", "a step is empty or too long", n);
     // Safety notes warn against these ("undercooked beans are unsafe"); only instructions count.
     // "No pink inside" and "no runny egg left" are the doneness check, not an instruction to undercook.
-    const told = stepInstruction(s).replace(/\b(no|not|without any|never|nothing) (longer )?(pink|runny|raw|undercooked|half[- ]cooked)( (egg|yolk|inside|in the middle))?/g, "");
-    for (const [re, what] of SHORTCUTS) if (re.test(told) && !/\b(never|don't|do not|avoid)\b/.test(told)) add("unsafe_shortcut", `unsafe: ${what}`, n);
+    for (const what of unsafeInstructions(stepInstruction(s))) add("unsafe_shortcut", `unsafe: ${what}`, n);
     const plain = s.text.toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, " ");
     for (const a of avoid) if (avoids([a], plain)) add("avoid", `uses ${a}, which this family never eats`, n);
     if (RAW_BATTER_TASTE.test(w) && !/\b(cooked|after cooking|once cooked)\b/.test(w)) add("raw_batter", "never taste raw batter or dough", n);

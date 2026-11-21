@@ -63,10 +63,12 @@ export default function ScanScreen() {
     router.replace("/pantry/add");
   };
 
-  const read = async (image: string) => {
+  /** Reads one photo in the background. "Reading…" shows from the start, while the photo is still being made smaller. */
+  const read = async (photo: string | Promise<string>) => {
     setReading((n) => n + 1);
     setNote(null);
     try {
+      const image = await photo;
       const r = await services.kitchen.scanItems({ householdId, kind: "photo", image, mediaType: "image/jpeg" });
       if (r.appliances?.length) setAppliances((a) => [...new Set([...a, ...r.appliances!])]);
       if (r.items.length) {
@@ -80,12 +82,12 @@ export default function ScanScreen() {
     }
   };
 
-  /** Makes a photo small enough to send quickly, then reads it in the background. */
-  const shrinkAndRead = async (uri: string, width: number, height: number) => {
-    const ctx = ImageManipulator.manipulate(uri);
-    if (Math.max(width, height) > SEND_EDGE) ctx.resize(width >= height ? { width: SEND_EDGE } : { height: SEND_EDGE });
-    const small = await (await ctx.renderAsync()).saveAsync({ compress: 0.6, format: SaveFormat.JPEG, base64: true });
-    void read(small.base64 ?? "");
+  // Photos are made smaller one at a time: each is large, and several at once can run a phone out of memory.
+  const shrinking = useRef<Promise<unknown>>(Promise.resolve());
+  const readPhoto = (uri: string) => {
+    const small = shrinking.current.then(() => shrink(uri));
+    shrinking.current = small.catch(() => undefined);
+    void read(small);
   };
 
   const shoot = async () => {
@@ -93,7 +95,7 @@ export default function ScanScreen() {
     setCapturing(true);
     try {
       const photo = await camera.current.takePictureAsync({ quality: 0.8, skipProcessing: false });
-      await shrinkAndRead(photo.uri, photo.width, photo.height);
+      readPhoto(photo.uri);
     } catch {
       setNote(t("scan.shotFailed"));
     } finally {
@@ -101,18 +103,26 @@ export default function ScanScreen() {
     }
   };
 
+  /** The web app (iPhone) has no live camera view: the shutter opens the phone's own camera, and the photo comes back here. */
+  const snap = async () => {
+    try {
+      const res = await ImagePicker.launchCameraAsync({ mediaTypes: ["images"], cameraType: ImagePicker.CameraType.back, quality: 1 });
+      if (!res.canceled) res.assets.forEach((a) => readPhoto(a.uri));
+    } catch {
+      setNote(t("scan.shotFailed"));
+    }
+  };
+
   /** Photos already on the phone: a bill from earlier, or screenshots of an online order. */
   const pick = async () => {
     if (MOCK && noCamera) return void read("sample");
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], allowsMultipleSelection: true, selectionLimit: PICK_LIMIT, quality: 1 });
-    if (res.canceled) return;
-    setMode("photo");
-    for (const a of res.assets.slice(0, PICK_LIMIT)) {
-      try {
-        await shrinkAndRead(a.uri, a.width, a.height);
-      } catch {
-        setNote(t("scan.shotFailed"));
-      }
+    try {
+      const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], allowsMultipleSelection: true, selectionLimit: PICK_LIMIT, quality: 1 });
+      if (res.canceled) return;
+      setMode("photo");
+      res.assets.slice(0, PICK_LIMIT).forEach((a) => readPhoto(a.uri));
+    } catch {
+      setNote(t("scan.shotFailed"));
     }
   };
 
@@ -137,7 +147,7 @@ export default function ScanScreen() {
   };
 
   const showCamera = !noCamera && permission?.granted && Platform.OS !== "web";
-  // The installed web app (iPhone) has no live camera view, but the photo picker can take a photo, so the shutter opens it.
+  // The installed web app (iPhone) has no live camera view: the shutter opens the phone's own camera instead.
   const webPhotos = Platform.OS === "web" && !MOCK;
 
   return (
@@ -235,7 +245,7 @@ export default function ScanScreen() {
             accessibilityLabel={t("scan.shutter")}
             accessibilityState={{ disabled: capturing || !(showCamera || webPhotos), busy: capturing }}
             disabled={capturing || !(showCamera || webPhotos)}
-            onPress={() => void (webPhotos ? pick() : shoot())}
+            onPress={() => void (webPhotos ? snap() : shoot())}
             scaleTo={0.9}
             style={[styles.shutterRing, { borderColor: colors.accentSoft, opacity: showCamera || webPhotos ? 1 : 0.5 }]}
           >
@@ -302,6 +312,30 @@ export default function ScanScreen() {
       </View>
     </Screen>
   );
+}
+
+/**
+ * Makes a photo small enough to send quickly (JPEG, base64). It is decoded straight to that size, so a 12–48 MP phone
+ * photo is never held at full size: the web app used to copy it whole onto a canvas and resize it in JavaScript, which an
+ * iPhone can't hold, and the photo was never read.
+ */
+async function shrink(uri: string): Promise<string> {
+  const ctx = ImageManipulator.manipulate(uri, { maxWidth: SEND_EDGE, maxHeight: SEND_EDGE });
+  try {
+    const image = await ctx.renderAsync();
+    try {
+      const small = await image.saveAsync({ compress: 0.6, format: SaveFormat.JPEG, base64: true });
+      if (Platform.OS === "web") URL.revokeObjectURL(small.uri);
+      if (!small.base64) throw new Error("The smaller photo came out empty");
+      return small.base64;
+    } finally {
+      image.release();
+    }
+  } finally {
+    ctx.release();
+    // Web: the picked photo is a file held in memory by its blob: address until let go.
+    if (Platform.OS === "web" && uri.startsWith("blob:")) URL.revokeObjectURL(uri);
+  }
 }
 
 function SideAction({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {

@@ -47,6 +47,9 @@ def ts_type(c: Column) -> str:
 # Hand-written RPCs (supabase/migrations/*_functions.sql, *_pantry.sql). Keep in step with the SQL signatures.
 FUNCTIONS: dict[str, tuple[str, str]] = {
     "create_household": ("{ p_name: string; p_language: string; p_members: Json }", "Json"),
+    "add_household_member": ("{ p_household_id: string; p_member: Json }", "string"),
+    "update_household_member": ("{ p_member_id: string; p_changes: Json }", "undefined"),
+    "remove_household_member": ("{ p_member_id: string }", "undefined"),
     "match_ingredient": ("{ p_name: string }", "string | null"),
     "add_inventory_items": ("{ p_household: string; p_items: Json; p_added_via?: string }", "string[]"),
     "update_inventory_item": ("{ p_item: string; p_changes: Json }", "undefined"),

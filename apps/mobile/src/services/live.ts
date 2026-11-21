@@ -230,7 +230,7 @@ export const liveServices: Services = {
       const sb = requireSupabase();
       const { data, error } = await sb
         .from("household_members")
-        .select("id, display_name, age_group, diet, notes, taste_profiles(spice)")
+        .select("id, user_id, display_name, age_group, diet, notes, taste_profiles(spice)")
         .eq("household_id", householdId)
         .eq("status", "active")
         .order("created_at");
@@ -244,8 +244,41 @@ export const liveServices: Services = {
           diet: (m.diet ?? "veg") as Member["diet"],
           spice: tp?.spice ?? (m.age_group === "child" ? 1 : 3),
           notes: m.notes,
+          hasAccount: m.user_id !== null,
         };
       });
+    },
+
+    async addMember({ householdId, member }) {
+      const sb = requireSupabase();
+      const { data, error } = await sb.rpc("add_household_member", {
+        p_household_id: householdId,
+        p_member: {
+          display_name: member.displayName.trim(),
+          age_group: member.ageGroup ?? "adult",
+          diet: member.diet ?? null,
+          ...(member.spice ? { spice: member.spice } : {}),
+        },
+      });
+      if (error) throw error;
+      return data as string;
+    },
+
+    async updateMember({ memberId, changes }) {
+      const sb = requireSupabase();
+      const p_changes: Record<string, string | number | null> = {};
+      if (changes.displayName !== undefined) p_changes.display_name = changes.displayName.trim();
+      if (changes.ageGroup !== undefined) p_changes.age_group = changes.ageGroup;
+      if (changes.diet !== undefined) p_changes.diet = changes.diet;
+      if (changes.spice !== undefined) p_changes.spice = changes.spice;
+      const { error } = await sb.rpc("update_household_member", { p_member_id: memberId, p_changes });
+      if (error) throw error;
+    },
+
+    async removeMember(memberId) {
+      const sb = requireSupabase();
+      const { error } = await sb.rpc("remove_household_member", { p_member_id: memberId });
+      if (error) throw error;
     },
 
     async listMemories(householdId) {

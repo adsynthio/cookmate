@@ -166,11 +166,22 @@ const PERSONA: Member[] = [
 const MEMBERS_KEY = "cookmate.mock.members";
 
 function readMembers(): Member[] {
+  let all = PERSONA;
   try {
     const raw = globalThis.localStorage?.getItem(MEMBERS_KEY);
-    return raw ? (JSON.parse(raw) as Member[]) : PERSONA;
+    if (raw) all = JSON.parse(raw) as Member[];
   } catch {
-    return PERSONA;
+    // keep the persona
+  }
+  // The person using this phone has the account; everyone else was added by them.
+  return all.map((m) => ({ ...m, hasAccount: m.id === "mock-member" }));
+}
+
+function writeMembers(members: Member[]) {
+  try {
+    globalThis.localStorage?.setItem(MEMBERS_KEY, JSON.stringify(members));
+  } catch {
+    // storage full or blocked: the change lasts until the app reloads
   }
 }
 
@@ -378,6 +389,27 @@ const mocks: Services = {
     async listMembers() {
       await delay(150);
       return readMembers();
+    },
+    async addMember({ member }) {
+      await delay(200);
+      const all = readMembers();
+      if (all.length >= 12) throw new Error("a household has up to 12 members");
+      const name = member.displayName.trim();
+      if (!name || name.length > 40) throw new Error("a name has 1 to 40 characters");
+      const ageGroup = member.ageGroup ?? "adult";
+      const added: Member = { id: `mock-m${Date.now()}`, displayName: name, ageGroup, diet: member.diet ?? "veg", spice: member.spice ?? (ageGroup === "child" ? 2 : 3), notes: null, hasAccount: false };
+      writeMembers([...all, added]);
+      return added.id;
+    },
+    async updateMember({ memberId, changes }) {
+      await delay(150);
+      if (changes.displayName !== undefined && (!changes.displayName.trim() || changes.displayName.trim().length > 40)) throw new Error("a name has 1 to 40 characters");
+      writeMembers(readMembers().map((m) => (m.id === memberId ? { ...m, ...changes, ...(changes.displayName !== undefined ? { displayName: changes.displayName.trim() } : {}) } : m)));
+    },
+    async removeMember(memberId) {
+      await delay(150);
+      if (memberId === "mock-member") throw new Error("someone with their own account leaves from their own phone");
+      writeMembers(readMembers().filter((m) => m.id !== memberId));
     },
     async listMemories() {
       await delay(200);

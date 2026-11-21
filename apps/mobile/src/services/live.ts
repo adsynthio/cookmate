@@ -281,6 +281,21 @@ export const liveServices: Services = {
       if (error) throw error;
     },
 
+    async getMeatlessDays(householdId) {
+      const sb = requireSupabase();
+      // meatless_days came after the generated types (migration 20270527000000).
+      const { data, error } = await sb.from("households").select("meatless_days").eq("id", householdId).maybeSingle();
+      if (error) throw error;
+      return ((data as { meatless_days?: number[] | null } | null)?.meatless_days ?? []).slice().sort();
+    },
+
+    async setMeatlessDays(householdId, days) {
+      const sb = requireSupabase();
+      const clean = [...new Set(days.filter((d) => Number.isInteger(d) && d >= 1 && d <= 7))].sort();
+      const { error } = await sb.from("households").update({ meatless_days: clean } as never).eq("id", householdId);
+      if (error) throw error;
+    },
+
     async listMemories(householdId) {
       const sb = requireSupabase();
       const { data, error } = await sb

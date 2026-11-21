@@ -36,6 +36,8 @@ export type RecipeRow = { slug: string; title: string; course: string; diet: str
 /** What the model sees about the household, compact and in a stable order (sorted, so the same kitchen gives the same text). */
 export function contextFor(a: {
   today: string;
+  /** One of the family's weekly no-meat days. */
+  noMeatToday?: boolean;
   items: ItemRow[];
   members: MemberRow[];
   memories: string[];
@@ -54,6 +56,7 @@ export function contextFor(a: {
     .sort((x, y) => x.name.localeCompare(y.name));
   return {
     today: a.today,
+    ...(a.noMeatToday ? { no_meat_today: true } : {}),
     kitchen,
     family: a.members.map((m) => ({ name: m.display_name, age_group: m.age_group ?? "adult", diet: m.diet ?? "veg" })),
     remembered: a.memories.slice(0, 30),

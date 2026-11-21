@@ -4,7 +4,7 @@
 // by hand (published, or drafts while show_draft_recipes is on).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.119.0";
 
-import { type CalendarEvent, calendarPrefs, eventsOn, fastsToOffer } from "../_shared/calendar.ts";
+import { type CalendarEvent, calendarPrefs, dietForDay, eventsOn, fastsToOffer, isMeatlessDay } from "../_shared/calendar.ts";
 import { buildIndex, normalise } from "../_shared/pantryParse.ts";
 import {
   choosePicks,
@@ -65,6 +65,8 @@ export type Kitchen = {
   recipes: RankRecipe[];
   inventory: InventoryRow[];
   calendarToday: CalendarEvent[];
+  /** One of the family's weekly no-meat days (households.meatless_days): everyone eats veg today. */
+  meatless: boolean;
   craving: Craving;
   nameOf: (key: string) => string;
 };
@@ -84,7 +86,7 @@ export async function loadKitchen(
   opts: { asService?: boolean; interpretCraving?: (text: string, base: Craving) => Promise<Craving> } = {},
 ): Promise<Kitchen> {
   const weekAgo = new Date(now.getTime() - 7 * 86_400_000).toISOString();
-  const { data: hh } = await sb.from("households").select("timezone, region").eq("id", householdId).maybeSingle();
+  const { data: hh } = await sb.from("households").select("timezone, region, meatless_days").eq("id", householdId).maybeSingle();
   const tz = (hh?.timezone as string | undefined) ?? "Asia/Kolkata";
   const region = (hh?.region as string | null | undefined) ?? null;
   const today = localDate(now, tz);
@@ -134,7 +136,10 @@ export async function loadKitchen(
   );
   const docs = ((recipes.data ?? []) as unknown as RecipeRow[]).map(recipeDocFromRow).filter((d) => !excluded.has(d.id!));
   const invRows = (inventory.data ?? []) as unknown as InventoryRow[];
-  const eaters = eatersFromRows((members.data ?? []) as unknown as MemberRow[], req.whoEating);
+  // A weekly no-meat day (Tuesday for many families): egg and non-veg eaters eat veg, so only veg dishes rank.
+  const meatless = isMeatlessDay((hh?.meatless_days as number[] | null | undefined) ?? null, today);
+  const eaters = eatersFromRows((members.data ?? []) as unknown as MemberRow[], req.whoEating)
+    .map((e) => ({ ...e, diet: dietForDay(e.diet, meatless) }));
   const memPrefs = prefsFromMemories((memories.data ?? []) as unknown as MemoryRow[], now, eaters.map((e) => e.id));
   const calendarToday = eventsOn((calendar.data ?? []) as unknown as CalendarEvent[], today, region);
   const calPrefs = calendarPrefs(calendarToday);
@@ -184,7 +189,7 @@ export async function loadKitchen(
     return (req.locale === "hi" ? n?.hi : req.locale === "hinglish" ? n?.["hi-Latn"] : undefined) ?? key;
   };
 
-  return { slot, today, tz, ctx, docs, recipes: docs.map(toRankRecipe), inventory: invRows, calendarToday, craving, nameOf };
+  return { slot, today, tz, ctx, docs, recipes: docs.map(toRankRecipe), inventory: invRows, calendarToday, meatless, craving, nameOf };
 }
 
 export function rank(k: Kitchen, locale: Locale): Ranking {
@@ -217,11 +222,17 @@ export async function checkQuestion(
   };
 }
 
+const MEATLESS_NAMES = { en: "no non-veg day", hi: "बिना नॉन-वेज का दिन", "hi-Latn": "non-veg nahi" };
+
 /** Today's festivals and fasts for the Home screen, and the fast to offer keeping (if any). */
 export function calendarSummary(r: Kitchen) {
   const offer = fastsToOffer(r.calendarToday)[0];
   return {
-    today: r.calendarToday.map((e) => ({ id: e.id ?? null, name: e.name, kind: e.kind, kept: !!e.household_id, names: e.rules?.names ?? null })),
+    today: [
+      ...r.calendarToday.map((e) => ({ id: e.id ?? null, name: e.name, kind: e.kind, kept: !!e.household_id, names: e.rules?.names ?? null })),
+      // Shown on Home as "Today: no non-veg day", so the cook knows why there's no chicken in the picks.
+      ...(r.meatless ? [{ id: null, name: "No non-veg day", kind: "meatless", kept: false, names: MEATLESS_NAMES }] : []),
+    ],
     offer_fast: offer ? { id: offer.id ?? null, name: offer.name, names: offer.rules?.names ?? null, note: offer.rules?.note ?? null } : null,
   };
 }

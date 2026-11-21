@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { calendarPrefs, type CalendarEvent, eventsOn, fastsToOffer, keepFast } from "./calendar.ts";
+import { calendarPrefs, type CalendarEvent, dietForDay, eventsOn, fastsToOffer, isMeatlessDay, isoWeekday, keepFast } from "./calendar.ts";
 
 const navratri: CalendarEvent = {
   event_date: "2027-09-30",
@@ -40,4 +40,18 @@ test("a global fast only nudges; its avoid list applies once the household keeps
 test("festivals without food rules are never offered as fasts", () => {
   const karva: CalendarEvent = { event_date: "2027-10-19", kind: "fast", name: "Karva Chauth", regions: [], rules: { prefer: ["festive"] } };
   assert.deepEqual(fastsToOffer([karva, diwali]), []);
+});
+
+test("weekly no-meat days: the weekday in India, and egg and non-veg eaters eat veg that day", () => {
+  assert.equal(isoWeekday("2026-11-24"), 2, "24 Nov 2026 is a Tuesday");
+  assert.equal(isoWeekday("2026-11-22"), 7, "Sunday is 7");
+  assert.equal(isMeatlessDay([2, 6], "2026-11-24"), true);
+  assert.equal(isMeatlessDay([2, 6], "2026-11-25"), false);
+  assert.equal(isMeatlessDay([], "2026-11-24"), false);
+  assert.equal(isMeatlessDay(null, "2026-11-24"), false);
+  assert.equal(dietForDay("nonveg", true), "veg");
+  assert.equal(dietForDay("eggetarian", true), "veg");
+  assert.equal(dietForDay("jain", true), "jain");
+  assert.equal(dietForDay("vegan", true), "vegan");
+  assert.equal(dietForDay("nonveg", false), "nonveg");
 });

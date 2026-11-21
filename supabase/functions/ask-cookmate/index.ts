@@ -17,6 +17,7 @@ import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { creditsFor, outOfCredits } from "../_shared/credits.ts";
 import { serverError } from "../_shared/errors.ts";
 import { thinkingOff } from "../_shared/thinking.ts";
+import { isMeatlessDay } from "../_shared/calendar.ts";
 
 // Sonnet, not Opus: short answers about this kitchen don't need the top model, at half the price per token.
 const MODEL = "claude-sonnet-5-5";
@@ -45,6 +46,8 @@ How to answer:
 - Answer in at most four short sentences (under ${MAX_ANSWER_CHARS} characters), in the language you are told to write in.
 - Ground every suggestion in what is in their kitchen and who is eating. Use leftovers and things close to their use-by
   date first. Never suggest an ingredient someone in the family must avoid, or a dish that breaks anyone's diet.
+- If no_meat_today is true, the family eats no meat, fish or egg today (their weekly rule): suggest vegetarian food
+  unless the cook asks for something else.
 - Use household measures (katori, chammach, chutki, a handful) and everyday Indian names.
 - When a recipe Cookmate has fits, put its slug in "recipes" (only slugs from the list you are given; at most three).
   You may also describe a quick dish that is not in the list in words.
@@ -77,7 +80,7 @@ Deno.serve(async (req) => {
   const householdId = input.householdId;
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
   const twoWeeksAgo = new Date(Date.now() - 14 * 86_400_000).toISOString();
-  const [members, items, memories, sessions, recipes] = await Promise.all([
+  const [members, items, memories, sessions, recipes, household] = await Promise.all([
     sb.from("household_members").select("display_name, age_group, diet").eq("household_id", householdId).eq("status", "active"),
     sb.from("inventory_items").select("quantity, unit, state, staple_level, expiry_date, custom_name, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
@@ -85,6 +88,7 @@ Deno.serve(async (req) => {
     sb.from("cooking_sessions").select("completed_at, recipes!cooking_sessions_recipe_id_fkey(title)").eq("household_id", householdId)
       .eq("status", "completed").gte("completed_at", twoWeeksAgo).order("completed_at", { ascending: false }).limit(10),
     sb.from("recipes").select("slug, title, course, diet, prep_time_min, cook_time_min").is("parent_recipe_id", null).eq("is_published", true),
+    sb.from("households").select("meatless_days").eq("id", householdId).maybeSingle(),
   ]);
   // Members are read through RLS: none back means this user is not in the household.
   if (members.error) return serverError(members.error, json);
@@ -97,6 +101,7 @@ Deno.serve(async (req) => {
   const recipeRows = (recipes.data ?? []) as RecipeRow[];
   const context = contextFor({
     today,
+    noMeatToday: isMeatlessDay((household.data?.meatless_days as number[] | null | undefined) ?? null, today),
     items: (items.data ?? []) as unknown as ItemRow[],
     members: members.data as MemberRow[],
     memories: ((memories.data ?? []) as { statement: string }[]).map((m) => m.statement),
@@ -137,7 +142,7 @@ Deno.serve(async (req) => {
       const refused = r.stop_reason === "refusal";
       const cleaned = !refused && r.parsed_output ? cleanReply(r.parsed_output, knownSlugs) : null;
       await logAiRequest({
-        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@1`,
+        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@2`,
         status: refused ? "refused" : cleaned ? "ok" : "invalid_output", latencyMs: Date.now() - started, usage: r.usage,
       });
       if (cleaned) {
@@ -146,7 +151,7 @@ Deno.serve(async (req) => {
       }
     } catch (err) {
       await logAiRequest({
-        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@1`,
+        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@2`,
         status: err instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "error", latencyMs: Date.now() - started,
         error: err instanceof Error ? err.message : String(err),
       });

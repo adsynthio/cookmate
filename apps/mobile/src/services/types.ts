@@ -301,6 +301,9 @@ export interface PreferenceService {
   updateMember(input: { memberId: string; changes: MemberChanges }): Promise<void>;
   /** Q5: remove a person who has no account of their own; their past reactions and memories stay. */
   removeMember(memberId: string): Promise<void>;
+  /** Q6: weekdays (ISO, 1 = Monday ... 7 = Sunday) the family eats no meat, fish or egg. */
+  getMeatlessDays(householdId: string): Promise<number[]>;
+  setMeatlessDays(householdId: string, days: number[]): Promise<void>;
   listMemories(householdId: string): Promise<Memory[]>;
   forgetMemory(memoryId: string): Promise<void>;
   keepMemory(memoryId: string): Promise<void>;

@@ -2,7 +2,7 @@
 // this is that place. Add a person (up to 12: joint families), change anyone's name, age group, diet or spice, and
 // remove someone without an account of their own (their past reactions and memories stay). Picks follow on the
 // next visit to Home.
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -100,7 +100,45 @@ export function FamilyCard({ householdId, members, selfId }: { householdId: stri
           {t("you.family.full", { max: MAX_MEMBERS })}
         </Text>
       )}
+      {members.some((m) => m.diet === "nonveg" || m.diet === "eggetarian") ? <MeatlessDays householdId={householdId} /> : null}
     </View>
+  );
+}
+
+const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7] as const;
+
+/** Q6: weekdays the family eats no meat, fish or egg (Tuesday for many). Picks and chosen dishes are veg then. */
+function MeatlessDays({ householdId }: { householdId: string }) {
+  const { colors } = useTheme();
+  const qc = useQueryClient();
+  const days = useQuery({ queryKey: ["meatless", householdId], queryFn: () => services.preference.getMeatlessDays(householdId) });
+  const save = useMutation({
+    mutationFn: (next: number[]) => services.preference.setMeatlessDays(householdId, next),
+    onMutate: (next) => qc.setQueryData(["meatless", householdId], next),
+    onError: () => void qc.invalidateQueries({ queryKey: ["meatless", householdId] }),
+    // Today's picks may change: Home asks again the next time it opens.
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["picks"], refetchType: "none" }),
+  });
+  const chosen = days.data ?? [];
+  const toggle = (d: number) => save.mutate(chosen.includes(d) ? chosen.filter((x) => x !== d) : [...chosen, d].sort());
+
+  return (
+    <Card>
+      <Text variant="bodyStrong">{t("you.family.meatless")}</Text>
+      <View style={styles.chips}>
+        {WEEKDAYS.map((d) => (
+          <Chip key={d} label={t(`day.${d}` as StringKey)} selected={chosen.includes(d)} showCheck onPress={() => toggle(d)} />
+        ))}
+      </View>
+      <Text variant="caption" muted>
+        {t("you.family.meatlessNote")}
+      </Text>
+      {save.isError ? (
+        <Text color={colors.alert} accessibilityLiveRegion="polite">
+          {problemText(save.error)}
+        </Text>
+      ) : null}
+    </Card>
   );
 }
 

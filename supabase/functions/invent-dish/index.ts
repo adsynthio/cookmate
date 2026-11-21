@@ -18,7 +18,7 @@ import { avoids, dietFits, type InventPlan, planInvention, validateInvention } f
 import { checkRecipe, problemLines, SAFETY_RULES_PROMPT } from "../_shared/recipeSafety.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { aiSwitchedOff } from "../_shared/killSwitch.ts";
-import { type CalendarEvent, calendarPrefs, eventsOn } from "../_shared/calendar.ts";
+import { type CalendarEvent, calendarPrefs, dietForDay, eventsOn, isMeatlessDay } from "../_shared/calendar.ts";
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
 import { swapsPrompt } from "../_shared/swaps.ts";
@@ -195,7 +195,7 @@ Deno.serve(async (req) => {
   if (await aiSwitchedOff(sb, named ? "named_dish" : "invent")) return json({ error: "invent_unavailable" }, 503);
 
   const [{ data: hh }, { data: members }, { data: rows, error }, { data: memories, error: memError }, { data: calendar }] = await Promise.all([
-    sb.from("households").select("timezone, region").eq("id", householdId).maybeSingle(),
+    sb.from("households").select("timezone, region, meatless_days").eq("id", householdId).maybeSingle(),
     sb.from("household_members").select("diet, age_group").eq("household_id", householdId).eq("status", "active"),
     sb.from("inventory_items").select("id, custom_name, state, flavor_roles, confidence, expiry_date, ingredients(canonical_name)")
       .eq("household_id", householdId).eq("status", "active"),
@@ -228,7 +228,9 @@ Deno.serve(async (req) => {
   if (avoidedInName.length) return json({ recipe_id: null, reason: "avoided", avoided: avoidedInName });
   const items = inventItems((rows ?? []) as unknown as ItemRow[], today);
   const memberRows = (members ?? []) as { diet: Diet | null; age_group: string | null }[];
-  const diet = tableDiet(memberRows.map((m) => m.diet));
+  // On a weekly no-meat day a dish Cookmate chooses is vegetarian; a dish the cook names is made as they asked.
+  const meatless = !named && isMeatlessDay((hh?.meatless_days as number[] | null | undefined) ?? null, today);
+  const diet = dietForDay(tableDiet(memberRows.map((m) => m.diet)), meatless);
   const children = memberRows.some((m) => m.age_group === "child");
   const plan = named ? null : planInvention(items, CATALOG, diet, avoid);
   if (!named && !plan) return json({ recipe_id: null, reason: "too_little" });

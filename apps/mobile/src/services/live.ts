@@ -2,6 +2,7 @@
 // and the app keeps using mocks for them (see services/index.ts).
 import { catalogEntry, catalogIndex } from "@/data/catalog";
 import { changeReply, type StepNote } from "@/domain/assist";
+import { emailCodeProblem, isWrongCode } from "@/domain/emailAuth";
 import { DEFAULT_PROFILE, type VoiceProfile } from "@/domain/voiceStyle";
 import type { ListLine } from "@/domain/shopping";
 import { weeksFromRows } from "@/domain/plate";
@@ -98,25 +99,36 @@ export const liveServices: Services = {
       return { userId: data.user.id, isAnonymous: true };
     },
 
-    async getPhone() {
-      const { data } = await requireSupabase().auth.getUser();
-      const phone = data.user?.phone;
-      return phone ? (phone.startsWith("+") ? phone : `+${phone}`) : null;
+    async getAccount() {
+      const sb = requireSupabase();
+      const { data } = await sb.auth.getSession();
+      let user = data.session?.user;
+      if (!user) return null;
+      // Fresh from the server when it can be reached, so an email just added shows at once; the phone's copy otherwise.
+      const fresh = await sb.auth.getUser().catch(() => null);
+      if (fresh?.data.user) user = fresh.data.user;
+      return { email: user.email || null, isAnonymous: user.is_anonymous ?? !user.email };
     },
-    async startPhoneLink(phone) {
-      // Linking keeps the same user id, so every household row stays exactly where it is (ONB-01).
-      const { error } = await requireSupabase().auth.updateUser({ phone });
+    async sendEmailCode(email, mode) {
+      const sb = requireSupabase();
+      // A code, not a link: the email templates (supabase/templates) carry {{ .Token }} only, so the cook types it
+      // here and stays in this app (an emailed link would open the browser instead of the installed app).
+      // "link" adds the email to the anonymous account on this phone: same user id, so every row stays put.
+      const { error } =
+        mode === "link" ? await sb.auth.updateUser({ email }) : await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
       if (!error) return "sent";
-      const code = (error as { code?: string }).code ?? "";
-      if (code === "phone_exists") return "taken";
-      if (code === "phone_provider_disabled" || code === "sms_send_failed" || /provider|sms/i.test(error.message)) return "not_configured";
+      const problem = emailCodeProblem(error);
+      if (problem === "other") throw error;
+      return problem;
+    },
+    async verifyEmailCode(email, code, mode) {
+      const { error } = await requireSupabase().auth.verifyOtp({ email, token: code, type: mode === "link" ? "email_change" : "email" });
+      if (!error) return true;
+      if (isWrongCode(error)) return false;
       throw error;
     },
-    async confirmPhoneLink(phone, code) {
-      const { error } = await requireSupabase().auth.verifyOtp({ phone, token: code, type: "phone_change" });
-      if (!error) return true;
-      if ((error as { code?: string }).code === "otp_expired" || /token|otp|expired|invalid/i.test(error.message)) return false;
-      throw error;
+    async signOut() {
+      await requireSupabase().auth.signOut({ scope: "local" });
     },
 
     async exportData(householdId) {

@@ -21,7 +21,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { parseNote, preferenceStatement } from "@/domain/learning";
-import { indianMobile, maskPhone, PACES, SKILLS, stepWords, UNITS, VERBOSITIES, type VoiceProfile } from "@/domain/voiceStyle";
+import { PACES, SKILLS, stepWords, UNITS, VERBOSITIES, type VoiceProfile } from "@/domain/voiceStyle";
 import { useVoiceProfile } from "@/components/voice/useVoiceProfile";
 import { hush, say } from "@/services/feedback";
 import { useTimers } from "@/state/timers";
@@ -96,6 +96,7 @@ export default function YouScreen() {
   return (
     <Screen header={<AppHeader title={t("you.title")} />}>
       <ProfileCard me={me} members={members.data ?? []} />
+      <SaveKitchenCard />
       <StatGrid
         stats={[
           { icon: "heart", value: favourites.data?.length ?? 0, label: t("you.stat.saved"), tone: "accent" },
@@ -172,7 +173,7 @@ export default function YouScreen() {
       <SectionHeader title={t("you.settings")} dot={undefined} />
       <VoiceSettings />
       {householdId ? <DailyPick householdId={householdId} /> : null}
-      <PhoneLink />
+      <AccountSection />
       <SectionHeader title={t("you.privacyTitle")} dot={undefined} />
       {householdId ? <Privacy householdId={householdId} /> : null}
     </Screen>
@@ -512,70 +513,87 @@ const SAMPLE_STEP: Record<"en" | "hi" | "hinglish", { text: string; cue: string;
   hinglish: { text: "Ghee garam karke jeera daalein", cue: "Daane chatakne tak rukein", safety: "Chehra kadhai se door rakhein" },
 };
 
-/** Keep your kitchen safe (KIT-021): link a phone to this anonymous account. Same account, so nothing moves. */
-function PhoneLink() {
+/**
+ * A kitchen made before email sign-in (an anonymous account) lives only on this phone: offer to save it with an
+ * email. Same account, so nothing moves (account/email). Shown at the top of You until it's done.
+ */
+function SaveKitchenCard() {
   const { colors } = useTheme();
+  const router = useRouter();
+  const account = useQuery({ queryKey: ["account"], queryFn: () => services.auth.getAccount() });
+  if (!account.data?.isAnonymous) return null;
+  return (
+    <Card tint={colors.peach}>
+      <View style={styles.dish}>
+        <Icon name="shield" color={colors.peachText} />
+        <Text variant="bodyStrong" style={{ flexShrink: 1 }}>
+          {t("you.account.anonTitle")}
+        </Text>
+      </View>
+      <Text muted>{t("you.account.anonBody")}</Text>
+      <View style={styles.actions}>
+        <Button kind="accent" label={t("you.account.save")} onPress={() => router.push("/account/email")} />
+      </View>
+    </Card>
+  );
+}
+
+/** Your account: the email this kitchen is saved under, and Log out (the kitchen stays; logging in brings it back). */
+function AccountSection() {
+  const { colors } = useTheme();
+  const router = useRouter();
   const qc = useQueryClient();
-  const phone = useQuery({ queryKey: ["phone"], queryFn: () => services.auth.getPhone() });
-  const [number, setNumber] = useState("");
-  const [sentTo, setSentTo] = useState<string | null>(null);
-  const [code, setCode] = useState("");
-  const [problem, setProblem] = useState<StringKey | null>(null);
-  const send = useMutation({
-    mutationFn: (e164: string) => services.auth.startPhoneLink(e164),
-    onSuccess: (result, e164) => {
-      if (result === "sent") {
-        setSentTo(e164);
-        setProblem(null);
-      } else setProblem(result === "taken" ? "you.phone.taken" : "you.phone.notReady");
+  const clear = useSession((s) => s.clear);
+  const account = useQuery({ queryKey: ["account"], queryFn: () => services.auth.getAccount() });
+  const [confirming, setConfirming] = useState(false);
+  const logout = useMutation({
+    mutationFn: async () => {
+      // Edits made offline go up first if they can; then nothing of this account stays on the phone.
+      await useOutbox.getState().flush().catch(() => {});
+      await services.auth.signOut();
     },
-    onError: () => setProblem("state.error.body"),
-  });
-  const verify = useMutation({
-    mutationFn: () => services.auth.confirmPhoneLink(sentTo!, code.trim()),
-    onSuccess: (ok) => {
-      if (!ok) return setProblem("you.phone.wrongCode");
-      setProblem(null);
-      void qc.invalidateQueries({ queryKey: ["phone"] });
+    onSuccess: () => {
+      hush();
+      void useTimers.getState().clearAll();
+      useOutbox.getState().clear();
+      clearBundles();
+      clearCopies();
+      resetAnalytics();
+      qc.clear();
+      clear();
+      router.replace("/onboarding");
     },
-    onError: () => setProblem("state.error.body"),
   });
-  if (phone.isPending) return null;
-  const e164 = indianMobile(number);
+  const email = account.data?.email;
+  if (!email) return null;
   return (
     <>
-      <View style={{ gap: space.xs }}>
-        <Text variant="heading">{t("you.phone.title")}</Text>
-        <Text muted>{t("you.phone.body")}</Text>
-      </View>
+      <SectionHeader title={t("you.account.title")} dot={undefined} />
       <Card>
-        {phone.data ? (
-          <View style={styles.dish}>
-            <Icon name="check" color={colors.primaryText} />
-            <Text variant="bodyStrong">{t("you.phone.linked", { phone: maskPhone(phone.data) })}</Text>
-          </View>
-        ) : sentTo ? (
+        <View style={styles.dish}>
+          <Icon name="checkCircle" color={colors.primaryText} />
+          <Text variant="bodyStrong" style={{ flexShrink: 1 }}>
+            {t("you.account.email", { email })}
+          </Text>
+        </View>
+        {confirming ? (
           <>
-            <Text>{t("you.phone.sent", { phone: maskPhone(sentTo) })}</Text>
-            <Field value={code} onChangeText={(v) => setCode(v.replace(/\D/g, "").slice(0, 6))} placeholder="123456" keyboardType="number-pad" accessibilityLabel={t("you.phone.codeLabel")} maxLength={6} />
+            <Text muted>{t("you.account.logoutBody", { email })}</Text>
             <View style={styles.actions}>
-              <Button label={verify.isPending ? t("finish.saving") : t("you.phone.verify")} disabled={verify.isPending || code.length !== 6} onPress={() => verify.mutate()} />
-              <Button kind="quiet" label={t("you.phone.change")} onPress={() => { setSentTo(null); setCode(""); }} />
+              <Button kind="secondary" label={t("you.account.logoutSure")} disabled={logout.isPending} onPress={() => logout.mutate()} />
+              <Button kind="quiet" label={t("you.account.keep")} onPress={() => setConfirming(false)} />
             </View>
+            {logout.isError ? (
+              <Text variant="caption" color={colors.alert} accessibilityLiveRegion="polite">
+                {t("state.error.body")}
+              </Text>
+            ) : null}
           </>
         ) : (
-          <>
-            <Field value={number} onChangeText={setNumber} placeholder="98765 43210" keyboardType="phone-pad" accessibilityLabel={t("you.phone.numberLabel")} maxLength={16} />
-            <View style={styles.actions}>
-              <Button label={send.isPending ? t("finish.saving") : t("you.phone.send")} disabled={!e164 || send.isPending} onPress={() => e164 && send.mutate(e164)} />
-            </View>
-          </>
+          <View style={styles.actions}>
+            <Button kind="secondary" label={t("you.account.logout")} onPress={() => setConfirming(true)} />
+          </View>
         )}
-        {problem ? (
-          <Text variant="caption" color={colors.alert} accessibilityLiveRegion="polite">
-            {t(problem)}
-          </Text>
-        ) : null}
       </Card>
     </>
   );

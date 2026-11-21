@@ -1,0 +1,43 @@
+name: Auth email settings
+
+# Puts the sign-in emails (supabase/templates) and the 6-digit code settings on the hosted project's Auth config,
+# through the Management API, whenever they change on main (or by hand from the Actions tab). The emails carry a code
+# the cook types into the app; see docs/SIGN_IN.md. Uses the same SUPABASE_ACCESS_TOKEN repository secret as the
+# function deploy; without it the job says so and does nothing.
+
+on:
+  push:
+    branches: [main]
+    paths: [supabase/templates/**, tools/supabase/auth-config.mjs, .github/workflows/auth-config.yml]
+  workflow_dispatch:
+
+concurrency:
+  group: auth-config
+  cancel-in-progress: false
+
+env:
+  SUPABASE_PROJECT_REF: usuwwzkorhsbaaziaanl
+
+# Read-only token: nothing here writes to the repository.
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the templates
+        run: node tools/supabase/auth-config.mjs --check
+      - name: Apply to the hosted project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::notice::SUPABASE_ACCESS_TOKEN is not set; the sign-in emails were not changed."
+            exit 0
+          fi
+          node tools/supabase/auth-config.mjs

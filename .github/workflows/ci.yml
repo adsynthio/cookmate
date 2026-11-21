@@ -75,6 +75,8 @@ jobs:
       - run: npm test
       - name: No service keys in the app
         run: "! grep -rEn 'service_role|SERVICE_ROLE|sk-ant-' src app.json"
+      - name: Sign-in emails carry a code and no link
+        run: node ../../tools/supabase/auth-config.mjs --check
 
   functions:
     name: Edge Functions (shared code in sync, deno check + tests)

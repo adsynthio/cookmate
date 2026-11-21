@@ -18,6 +18,11 @@ const easEnv = JSON.parse(readFileSync(join(app, "eas.json"), "utf8")).build.bas
 const env = { ...process.env };
 for (const [k, v] of Object.entries(easEnv)) if (!env[k]) env[k] = v;
 
+const email = process.env.SUPPORT_EMAIL?.trim();
+const operator = process.env.OPERATOR?.trim();
+// The sign-up screen links to the privacy policy only when this build publishes it.
+if (email && operator) env.EXPO_PUBLIC_PRIVACY_URL = "/legal/privacy";
+
 rmSync(out, { recursive: true, force: true });
 execSync(`npx expo export --platform web --output-dir dist`, { cwd: app, env, stdio: "inherit" });
 
@@ -27,8 +32,6 @@ for (const name of ["index.html", "manifest.webmanifest"]) {
 }
 if (readFileSync(join(out, "index.html"), "utf8").includes("__BASE__")) throw new Error("unfilled __BASE__");
 
-const email = process.env.SUPPORT_EMAIL?.trim();
-const operator = process.env.OPERATOR?.trim();
 if (email && operator) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const legal = join(out, "legal");

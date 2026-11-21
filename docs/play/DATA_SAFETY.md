@@ -1,7 +1,7 @@
 # Data safety form: answers
 
 Play Console → Policy → App content → Data safety. These answers come from the code and database as of
-19 Nov 2026 (tables in `supabase/migrations`, analytics in `apps/mobile/src/services/analytics.ts`, AI calls in
+21 Nov 2026 (tables in `supabase/migrations`, analytics in `apps/mobile/src/services/analytics.ts`, AI calls in
 `supabase/functions`). If a feature starts collecting something new, update this file and the form together,
 because a mismatch gets the app rejected.
 
@@ -12,7 +12,7 @@ because a mismatch gets the app rejected.
 | Does your app collect or share any of the required user data types? | **Yes** | |
 | Is all of the user data collected by your app encrypted in transit? | **Yes** | Every call goes over HTTPS: Supabase, Edge Functions, LiveKit, PostHog |
 | Do you provide a way for users to request that their data is deleted? | **Yes** | In the app: You → Privacy → Delete my account (instant, `delete-account`). On the web: the deletion page in `site/delete-account.html` |
-| Account creation | "My app allows users to create an account": **Yes, username/other** | Accounts start anonymous on first open; linking a phone number is optional |
+| Account creation | "My app allows users to create an account": **Yes, OAuth / other: email with a one-time code** | Cooks sign up and log in with a 6-digit code sent to their email; there are no passwords (`docs/SIGN_IN.md`) |
 | Delete account URL | `https://cookmate-chi.vercel.app/legal/delete-account` | |
 
 **Sharing:** answer **No** for every type. Anthropic (AI), Sarvam (speech), LiveKit (voice relay), Supabase
@@ -21,13 +21,13 @@ doesn't count that as sharing. Nothing is sold, and there are no ads.
 
 ## Data types
 
-Answer only the rows below; leave every other type unticked (no location, contacts, calendar, financial info,
-messages, web history, files, or crash logs: Sentry isn't installed).
+Answer only the rows below; leave every other type unticked (no phone number, location, contacts, calendar, financial
+info, messages, web history, files, or crash logs: Sentry isn't installed).
 
 | Category → type | Collected | Ephemeral? | Required or optional | Purposes | What it is in Cookmate |
 |---|---|---|---|---|---|
 | Personal info → **Name** | Yes | No | Required | App functionality | Names the cook gives household members ("who eats here"), and the circle display name ("Sunita's kitchen") |
-| Personal info → **Phone number** | Yes | No | Optional | App functionality, Account management | Only if the cook links a phone to keep the account (`profiles.phone`) |
+| Personal info → **Email address** | Yes | No | Required | App functionality, Account management | The address the cook signs up and logs in with (Supabase Auth `auth.users.email`); used only to send sign-in codes |
 | Personal info → **Other info** | Yes | No | Required | App functionality, Personalization | Each member's age group (child, teen, adult, elder) and diet (veg, Jain, …) |
 | Health and fitness → **Health info** | Yes | No | Optional | App functionality, Personalization | Foods a member must avoid, which can include allergies the cook types in. Declared to be safe |
 | Photos and videos → **Photos** | Yes | **Yes** | Optional | App functionality | Fridge, shelf and bill photos (`scan-pantry`) and "snap the pan" (`photo-check`) go to the model once and are never stored |
@@ -42,11 +42,14 @@ For every row: **"Is this data shared?" No.** "Is this data processed ephemerall
 ## What the listing then shows
 
 - No data shared with third parties
-- Data collected: personal info, health info, photos, audio, app activity, device IDs
+- Data collected: personal info (name, email address and other info), health info, photos, audio, app activity, device IDs
 - Data is encrypted in transit
 - You can request that data be deleted
 
 ## Keep in step
+
+- Custom SMTP for the sign-in codes (`docs/SIGN_IN.md`): the email provider sends the code emails on Cookmate's behalf
+  (a service provider, not sharing). Name it in the privacy policy's table of processors when it's switched on.
 
 - Turning on WhatsApp Business (F8) adds a phone number shared with Meta for messaging, which must be added here first.
 - Turning on Sentry or any crash reporter adds App info and performance → Crash logs.

@@ -16,6 +16,14 @@ test("light mode: Home's hero runs under the status bar; the band fades in once 
   assert.equal(statusBandOn("light", "/recipe/dal-tadka", true), true);
 });
 
+test("the sign-up and log-in screens run their coloured top under the status bar too", () => {
+  for (const path of ["/onboarding", "/onboarding/email", "/onboarding/code", "/account/email", "/account/code"]) {
+    assert.equal(statusBandOn("light", path, true), false, path);
+    assert.equal(statusBandOn("light", path, false), true, path);
+  }
+  assert.equal(statusBandOn("light", "/onboarding/family", true), true, "the setup steps keep the band");
+});
+
 test("the store only changes when the answer does", () => {
   const before = useStatusBand.getState();
   before.setHeroUnder(before.heroUnder);

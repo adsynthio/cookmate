@@ -1,6 +1,7 @@
 // Service interfaces: the ONLY way UI code reaches the backend (01_system_components.csv, "Service layer").
 // Each service has a mock implementation (mock.ts) and a live one (live.ts) behind the same interface.
 import type { Answer, ChangeResult, StepNote } from "@/domain/assist";
+import type { EmailCodeProblem } from "@/domain/emailAuth";
 import type { VoiceProfile } from "@/domain/voiceStyle";
 import type { Problem } from "@/domain/rescue";
 import type { ListLine } from "@/domain/shopping";
@@ -250,19 +251,29 @@ export type ConsentRecord = {
   granted: boolean;
 };
 
+export type AccountInfo = { email: string | null; isAnonymous: boolean };
+export type EmailCodeMode = "signin" | "link";
+export type { EmailCodeProblem };
+
 export interface AuthService {
-  /** ONB-01: "Try now" — anonymous account, no email or password. */
+  /** An anonymous account (no email yet). Kept for older installs and tests; new cooks sign in with an email code. */
   ensureSignedIn(): Promise<{ userId: string; isAnonymous: boolean }>;
   /** The household this device last used, or null when onboarding is still needed. Never signs in. */
   getCurrentHousehold(): Promise<HouseholdRef | null>;
   /** The app language, kept on the account so the next launch (and the voice agent) uses it: "hi-IN", "en-IN". */
   setLanguage(languageCode: string): Promise<void>;
-  /** KIT-021: the verified phone on this account (E.164), or null while it is anonymous. */
-  getPhone(): Promise<string | null>;
-  /** KIT-021: text a code to this phone to link it to the current (anonymous) account. Same user, same data. */
-  startPhoneLink(phone: string): Promise<"sent" | "not_configured" | "taken">;
-  /** KIT-021: the code from the text message. False when the code is wrong or expired. */
-  confirmPhoneLink(phone: string, code: string): Promise<boolean>;
+  /** Who is signed in on this device: the account's email, or none yet (an anonymous account). Null when signed out. */
+  getAccount(): Promise<AccountInfo | null>;
+  /**
+   * Email a 6-digit code. "signin" signs up or logs in (the same call: a new email gets a new account). "link" adds the
+   * email to the anonymous account on this device, so its kitchen stays exactly where it is. Throws when the server
+   * can't be reached; the other outcomes are answers the screen explains.
+   */
+  sendEmailCode(email: string, mode: EmailCodeMode): Promise<"sent" | Exclude<EmailCodeProblem, "other">>;
+  /** The code from the email. True when it matched (now signed in, or the email is now on this account). */
+  verifyEmailCode(email: string, code: string, mode: EmailCodeMode): Promise<boolean>;
+  /** Log out on this device only. The account and its kitchen stay; logging in with the email brings them back. */
+  signOut(): Promise<void>;
   /** KIT-121: a zip of everything about this household; the link works for 24 hours. */
   exportData(householdId: string): Promise<{ url: string; expiresAt: string }>;
   /** KIT-122: delete this account now. `confirm` is the word the cook typed. Signs out afterwards. */

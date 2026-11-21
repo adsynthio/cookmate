@@ -108,8 +108,25 @@ let memories: Memory[] = [
 ];
 const favourites: string[] = [];
 const voiceProfiles = new Map<string, VoiceProfile>();
-let mockPhone: string | null = null;
-let pendingPhone: string | null = null;
+/** Mock sign-in: the email on this preview's account (null = anonymous), and where a code was last sent. */
+const ACCOUNT_KEY = "cookmate.mock.account";
+type MockAccount = { email: string | null; signedIn: boolean };
+function readAccount(): MockAccount {
+  try {
+    const raw = globalThis.localStorage?.getItem(ACCOUNT_KEY);
+    if (raw) return JSON.parse(raw) as MockAccount;
+  } catch {}
+  // Older previews were signed in anonymously as soon as they had a household.
+  return { email: null, signedIn: readHousehold() !== null };
+}
+function writeAccount(a: MockAccount) {
+  try {
+    globalThis.localStorage?.setItem(ACCOUNT_KEY, JSON.stringify(a));
+  } catch {}
+}
+let pendingEmail: string | null = null;
+/** Each email's household while logged out, so logging back in brings the kitchen back (as the server would). */
+const savedKey = (email: string) => `cookmate.mock.saved.${email}`;
 const dismissedToday = new Set<string>();
 /** Subject of each saved memory ("recipe:about"), for the replace rule. */
 const subjects = new Map<string, string>();
@@ -249,10 +266,41 @@ const mocks: Services = {
   },
   auth: {
     async ensureSignedIn() {
-      return { userId: "mock-user", isAnonymous: mockPhone === null };
+      writeAccount({ ...readAccount(), signedIn: true });
+      return { userId: "mock-user", isAnonymous: readAccount().email === null };
     },
-    async getPhone() {
-      return mockPhone;
+    async getAccount() {
+      const a = readAccount();
+      return a.signedIn ? { email: a.email, isAnonymous: a.email === null } : null;
+    },
+    async sendEmailCode(email, mode) {
+      await delay(500);
+      // Mock mode: any address ending in @blocked.test shows the "not allowed yet" answer; the code is always 123456.
+      if (email.endsWith("@blocked.test")) return "not_allowed";
+      if (mode === "link" && globalThis.localStorage?.getItem(savedKey(email))) return "taken";
+      pendingEmail = email;
+      return "sent";
+    },
+    async verifyEmailCode(email, code, mode) {
+      await delay(400);
+      if (email !== pendingEmail || code !== "123456") return false;
+      pendingEmail = null;
+      if (mode === "signin") {
+        // Another email's kitchen on this preview is put away; this email's own comes back.
+        const saved = globalThis.localStorage?.getItem(savedKey(email));
+        if (saved) globalThis.localStorage?.setItem(HOUSEHOLD_KEY, saved);
+        else if (readAccount().email !== email) globalThis.localStorage?.removeItem(HOUSEHOLD_KEY);
+      }
+      writeAccount({ email, signedIn: true });
+      return true;
+    },
+    async signOut() {
+      await delay(200);
+      const a = readAccount();
+      const ref = globalThis.localStorage?.getItem(HOUSEHOLD_KEY);
+      if (a.email && ref) globalThis.localStorage?.setItem(savedKey(a.email), ref);
+      globalThis.localStorage?.removeItem(HOUSEHOLD_KEY);
+      writeAccount({ email: null, signedIn: false });
     },
     async exportData() {
       await delay(400);
@@ -264,23 +312,12 @@ const mocks: Services = {
       await delay(300);
       if (!["DELETE", "हटाएँ", "HATAO"].includes(confirm.trim().toUpperCase())) throw new Error("confirmation_required");
       resetMockHousehold();
-      mockPhone = null;
-    },
-    async startPhoneLink(phone) {
-      await delay(300);
-      pendingPhone = phone;
-      return "sent";
-    },
-    async confirmPhoneLink(phone, code) {
-      await delay(300);
-      // Mock mode: the code is always 123456.
-      if (phone !== pendingPhone || code !== "123456") return false;
-      mockPhone = phone;
-      pendingPhone = null;
-      return true;
+      const a = readAccount();
+      if (a.email) globalThis.localStorage?.removeItem(savedKey(a.email));
+      writeAccount({ email: null, signedIn: false });
     },
     async getCurrentHousehold() {
-      return readHousehold();
+      return readAccount().signedIn ? readHousehold() : null;
     },
     async setLanguage(languageCode) {
       const ref = readHousehold();

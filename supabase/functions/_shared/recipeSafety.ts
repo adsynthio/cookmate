@@ -6,7 +6,7 @@
 //
 // What it checks:
 // - the family: diet for the whole table, allergies and dislikes (even as an optional extra or a garnish in a step),
-//   small children at the table (whole nuts);
+//   small children at the table (whole nuts and big seeds, not ground or grated);
 // - hazards in Indian kitchens: kidney beans soaked and cooked soft, the pressure cooker opened only once the
 //   pressure has dropped, hot oil for frying, raw meat, fish and egg cooked through, raw batter or dough not tasted;
 // - unsafe shortcuts said in any step ("raw egg", "half-cooked", "reuse the oil", "leave it out overnight");
@@ -115,6 +115,28 @@ export function notVrat(name: string, entry: { category: string } | undefined): 
   return null;
 }
 
+// --- Small children ---------------------------------------------------------------------------------------------
+// Whole nuts, big seeds and dried fruit a small child can choke on. Tiny seeds (til, khus khus, flax, chia, sabja),
+// coconut milk, grated coconut and nut butters are not choking risks: flagging every "nut or seed" refused coconut
+// chutney, til laddoo and avial for families with children.
+const CHOKING = new Set([
+  "peanuts", "cashews", "almonds", "walnuts", "pistachios", "fox nuts", "raisins", "dried figs", "chironji",
+  "melon seeds", "pumpkin seeds", "sunflower seeds", "coconut",
+]);
+/** Words that mean it is no longer whole: ground, crushed, grated, blended. */
+const MADE_SMALL = /\b(ground|grind\w*|paste|powder\w*|crush\w*|grated|grate|grating|scraped|desiccated|blend\w*|pur[eé]e\w*|mash\w*)\b/;
+
+/** True when the recipe names this nut ground, grated or crushed, or a step that mentions it does that. */
+function madeSmall(doc: RecipeDoc, name: string, local: string | undefined): boolean {
+  if (MADE_SMALL.test(`${name} ${local ?? ""}`.toLowerCase())) return true;
+  const word = name.replace(/s$/, "");
+  const said = (local ?? "").toLowerCase().trim();
+  return doc.steps.some((s) => {
+    const t = s.text.toLowerCase();
+    return (t.includes(word) || (said.length > 2 && t.includes(said))) && MADE_SMALL.test(t);
+  });
+}
+
 // --- Amount ranges per serving ----------------------------------------------------------------------------------
 
 /** Upper limits per serving (g or ml). Frying oil is exempt: it is a frying medium, not eaten. */
@@ -135,8 +157,12 @@ const MAX_PER_SERVING: Record<string, number> = {
   "groundnut oil": 30,
   ghee: 30,
   butter: 30,
+  "coconut oil": 30,
+  "sesame oil": 30,
+  "olive oil": 30,
+  vanaspati: 30,
 };
-const FATS = new Set(["refined oil", "mustard oil", "groundnut oil", "ghee", "butter"]);
+const FATS = new Set(["refined oil", "mustard oil", "groundnut oil", "coconut oil", "sesame oil", "olive oil", "vanaspati", "ghee", "butter"]);
 /** Sweets carry much more sugar and ghee than a sabzi; they get double. */
 const SWEET_COURSES = new Set(["dessert", "sweet"]);
 
@@ -199,9 +225,7 @@ export function checkRecipe(doc: RecipeDoc, ctx: SafetyContext): SafetyProblem[]
       const limit = sweet && (name === "sugar" || name === "jaggery" || FATS.has(name)) ? max * 2 : max;
       if (per > limit) add("amount", `too much ${name}: ${Math.round(per * 10) / 10} per serving, at most ${limit}`);
     }
-    const nut = name.replace(/s$/, "");
-    const madeSafe = doc.steps.some((s) => s.text.toLowerCase().includes(nut) && /\b(ground|grind|paste|powder|crush|crushed)\b/.test(s.text.toLowerCase()));
-    if (ctx.children && cat.category === "nut_seed" && !madeSafe && !/\b(powder|paste|ground|crushed)\b/.test(`${name} ${i.local ?? ""}`)) {
+    if (ctx.children && CHOKING.has(name) && !madeSmall(doc, name, i.local)) {
       add("children", `whole ${name} can choke a small child; grind, crush or leave them out`);
     }
   }
@@ -287,6 +311,8 @@ export const SAFETY_RULES_PROMPT = `Safety rules every recipe must follow (a rec
   its local name), sugar or jaggery at
   most 60 g, red chilli powder at most 3 g, baking soda at most 1.5 g. A sweet (mithai, halwa, kheer) may have twice the
   sugar, jaggery, oil and ghee. Step times realistic.
+- When small_children is true: no whole nuts, big seeds or raisins (peanuts, cashews, almonds, melon seeds, makhana,
+  coconut pieces); grind, crush or grate them in a step, or leave them out. Til, khus khus and coconut milk are fine.
 - No health, medical or weight-loss claims; no links, phone numbers or brand promotions.`;
 
 /** The problems as plain lines, for logs and for the model's one rewrite. */

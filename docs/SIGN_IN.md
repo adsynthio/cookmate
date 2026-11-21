@@ -37,6 +37,9 @@ the free plan the emails only change once custom SMTP is on (below); the 6-digit
 
 ## Sending the emails: switch on an email provider
 
+**Status (21 Nov 2026):** custom SMTP through a Gmail account is on, and the Cookmate code emails are live (Supabase
+allows 30 emails an hour with custom SMTP; raise it under Authentication → Rate Limits when testers grow).
+
 Out of the box, Supabase sends these emails itself, with three limits that matter:
 
 - It only sends to the email addresses of your Supabase organization's team members. Anyone else gets "We can't send

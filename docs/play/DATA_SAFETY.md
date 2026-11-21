@@ -16,7 +16,8 @@ because a mismatch gets the app rejected.
 | Delete account URL | `https://cookmate-chi.vercel.app/legal/delete-account` | |
 
 **Sharing:** answer **No** for every type. Anthropic (AI), Sarvam (speech), LiveKit (voice relay), Supabase
-(database) and PostHog (analytics) process data on Cookmate's behalf as service providers, and Google's form
+(database), Google (Gmail, which sends the sign-in code emails) and PostHog (analytics) process data on Cookmate's
+behalf as service providers, and Google's form
 doesn't count that as sharing. Nothing is sold, and there are no ads.
 
 ## Data types
@@ -48,8 +49,8 @@ For every row: **"Is this data shared?" No.** "Is this data processed ephemerall
 
 ## Keep in step
 
-- Custom SMTP for the sign-in codes (`docs/SIGN_IN.md`): the email provider sends the code emails on Cookmate's behalf
-  (a service provider, not sharing). Name it in the privacy policy's table of processors when it's switched on.
+- The sign-in code emails go through Gmail (custom SMTP, `docs/SIGN_IN.md`), named in the privacy policy's table of
+  processors. Moving to another email provider (Resend with your own domain) changes that row.
 
 - Turning on WhatsApp Business (F8) adds a phone number shared with Meta for messaging, which must be added here first.
 - Turning on Sentry or any crash reporter adds App info and performance → Crash logs.

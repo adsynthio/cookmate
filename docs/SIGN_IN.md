@@ -32,18 +32,23 @@ Hindi and Kannada, and no link. The subject is "123456 is your Cookmate code", s
 Pushing a change to them on main runs `.github/workflows/auth-config.yml`, which puts them on the hosted project's
 Auth config through the Management API (`tools/supabase/auth-config.mjs`, with the `SUPABASE_ACCESS_TOKEN`
 repository secret) together with a 6-digit code that works for one hour, then reads the config back and prints it.
-It can also be run by hand from the Actions tab. CI checks that every template has `{{ .Token }}` and no link.
+It can also be run by hand from the Actions tab. CI checks that every template has `{{ .Token }}` and no link. On
+the free plan the emails only change once custom SMTP is on (below); the 6-digit code setting applies either way.
 
 ## Sending the emails: switch on an email provider
 
-Out of the box, Supabase sends these emails itself, with two limits that matter:
+Out of the box, Supabase sends these emails itself, with three limits that matter:
 
 - It only sends to the email addresses of your Supabase organization's team members. Anyone else gets "We can't send
   email to this address yet" in the app.
-- Only a few emails an hour for the whole project.
+- Only 2 emails an hour for the whole project.
+- On the free plan, the project's emails can't be changed while Supabase's own sender is on, so Cookmate's code emails
+  above stay waiting and Supabase's default emails go out instead. The workflow still sets 6-digit codes and says so in
+  a warning.
 
-That's enough to try sign-in with your own address, not for testers. Before inviting anyone, set up custom SMTP
-(Supabase dashboard → Authentication → Emails → SMTP Settings → Enable custom SMTP):
+So custom SMTP is the switch that turns this on properly (Supabase dashboard → Authentication → Emails → SMTP Settings
+→ Enable custom SMTP). After saving it, run **Actions → Auth email settings → Run workflow** once: the Cookmate code
+emails go live and the run prints "Sign-in emails are live."
 
 **Now, with no domain of your own: a Gmail account.** Free, up to about 500 emails a day.
 

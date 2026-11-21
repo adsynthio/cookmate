@@ -48,8 +48,12 @@ function summary(cfg, html) {
   const lines = SHOW.map((k) => `  ${k}: ${JSON.stringify(cfg[k])}`);
   lines.push(`  custom SMTP: ${cfg.smtp_host ? `yes (${cfg.smtp_host})` : "no, Supabase's built-in sender (team addresses only, a few emails an hour)"}`);
   for (const k of KINDS) {
-    const same = cfg[`mailer_templates_${k}_content`] === html[k] && cfg[`mailer_subjects_${k}`] === SUBJECT;
-    lines.push(`  ${k} email: ${same ? "Cookmate code email" : "something else"}`);
+    const live = cfg[`mailer_templates_${k}_content`] ?? "";
+    const same = live === html[k] && cfg[`mailer_subjects_${k}`] === SUBJECT;
+    const what = same
+      ? "Cookmate code email"
+      : `${live ? "another template" : "Supabase's default"}: ${live.includes("{{ .Token }}") ? "has the code" : live ? "NO code" : "content not returned"}${/ConfirmationURL/.test(live) ? ", has a link" : ""}`;
+    lines.push(`  ${k} email: ${what} (subject ${JSON.stringify(cfg[`mailer_subjects_${k}`] ?? null)})`);
   }
   return lines.join("\n");
 }
@@ -77,22 +81,37 @@ async function main() {
   };
 
   console.log("Before:\n" + summary(await get(), html));
-  const body = {
-    external_email_enabled: true,
-    mailer_otp_length: OTP_LENGTH,
-    mailer_otp_exp: OTP_EXPIRY_S,
-    ...Object.fromEntries(KINDS.flatMap((k) => [[`mailer_subjects_${k}`, SUBJECT], [`mailer_templates_${k}_content`, html[k]]])),
-  };
-  const r = await fetch(url, { method: "PATCH", headers, body: JSON.stringify(body) });
-  if (!r.ok) throw new Error(`PATCH auth config: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
+  const patch = (body) => fetch(url, { method: "PATCH", headers, body: JSON.stringify(body) });
+
+  // 1. The code settings: allowed on every plan.
+  const settings = await patch({ external_email_enabled: true, mailer_otp_length: OTP_LENGTH, mailer_otp_exp: OTP_EXPIRY_S });
+  if (!settings.ok) throw new Error(`PATCH code settings: HTTP ${settings.status} ${(await settings.text()).slice(0, 300)}`);
+
+  // 2. The emails. On the free plan Supabase only lets a project change them once it sends through its own SMTP
+  //    server (docs/SIGN_IN.md); until then the default emails go out, and this step says so without failing.
+  const emails = await patch(Object.fromEntries(KINDS.flatMap((k) => [[`mailer_subjects_${k}`, SUBJECT], [`mailer_templates_${k}_content`, html[k]]])));
+  let waitingForSmtp = false;
+  if (!emails.ok) {
+    const text = await emails.text();
+    if (emails.status === 400 && /entitlement_required|custom SMTP/i.test(text)) waitingForSmtp = true;
+    else throw new Error(`PATCH emails: HTTP ${emails.status} ${text.slice(0, 300)}`);
+  }
+
   const after = await get();
   console.log("After:\n" + summary(after, html));
   const wrong = [
     after.mailer_otp_length !== OTP_LENGTH && "code length",
     after.mailer_otp_exp !== OTP_EXPIRY_S && "code expiry",
-    ...KINDS.filter((k) => after[`mailer_templates_${k}_content`] !== html[k]).map((k) => `${k} email`),
+    ...(waitingForSmtp ? [] : KINDS.filter((k) => after[`mailer_templates_${k}_content`] !== html[k]).map((k) => `${k} email`)),
   ].filter(Boolean);
   if (wrong.length) throw new Error(`Not applied: ${wrong.join(", ")}`);
+  if (waitingForSmtp) {
+    console.log(
+      "::warning::Codes are now 6 digits, but Supabase keeps its default emails until the project sends through its own SMTP " +
+        "server (free plan). Switch on custom SMTP (docs/SIGN_IN.md), then run this workflow again from the Actions tab.",
+    );
+    return;
+  }
   console.log("Sign-in emails are live.");
 }
 

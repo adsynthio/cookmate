@@ -150,6 +150,15 @@ test("a long step passes up to 600 characters; past that the message says how to
   assert.ok(lines.some((l) => /too long \(\d+ characters, at most 600\): split it into two steps/.test(l)), lines.join("; "));
 });
 
+test("mirchi bajji: big mild chillies are the vegetable, and the chilli limit says to use them", () => {
+  const bajji = bySlug("jeera-aloo");
+  bajji.ingredients.push({ ingredient: "green chilli", qty: 50 * bajji.base_servings, unit: "g", role: "base" });
+  const lines = problemLines(checkRecipe(bajji, { catalog }));
+  assert.ok(lines.some((l) => l.includes("too much green chilli") && l.includes("use bhavnagri chilli")), lines.join("; "));
+  for (const i of bajji.ingredients) if (i.ingredient === "green chilli" && i.qty > 40) i.ingredient = "bhavnagri chilli";
+  assert.ok(!has(bajji, "amount"), "50 g of bhavnagri chilli per plate is the dish, not too much chilli");
+});
+
 test("every cooking fat has the same limit, and frying in it is exempt", () => {
   const coconut = bySlug("jeera-aloo");
   coconut.ingredients.push({ ingredient: "coconut oil", qty: 60 * coconut.base_servings, unit: "ml", role: "base" });

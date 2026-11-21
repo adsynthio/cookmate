@@ -223,7 +223,9 @@ export function checkRecipe(doc: RecipeDoc, ctx: SafetyContext): SafetyProblem[]
     if (max !== undefined && i.qty > 0 && !fryingOil) {
       const per = i.qty / servings;
       const limit = sweet && (name === "sugar" || name === "jaggery" || FATS.has(name)) ? max * 2 : max;
-      if (per > limit) add("amount", `too much ${name}: ${Math.round(per * 10) / 10} per serving, at most ${limit}`);
+      // Mirchi bajji, mirchi vada and stuffed chillies cook big mild chillies as the vegetable: say which name to use.
+      const hint = name === "green chilli" ? " (for mirchi bajji, mirchi vada or stuffed chillies use bhavnagri chilli)" : "";
+      if (per > limit) add("amount", `too much ${name}: ${Math.round(per * 10) / 10} per serving, at most ${limit}${hint}`);
     }
     if (ctx.children && CHOKING.has(name) && !madeSmall(doc, name, i.local)) {
       add("children", `whole ${name} can choke a small child; grind, crush or leave them out`);

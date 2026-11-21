@@ -35,9 +35,9 @@ import { thinkingOff } from "../_shared/thinking.ts";
 
 const TASK = "invent_combination";
 const MODEL = "claude-sonnet-5-5";
-const PROMPT_VERSION = "invent_combination@3";
+const PROMPT_VERSION = "invent_combination@4";
 const NAMED_TASK = "write_named_dish";
-const NAMED_VERSION = "write_named_dish@7";
+const NAMED_VERSION = "write_named_dish@8";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",

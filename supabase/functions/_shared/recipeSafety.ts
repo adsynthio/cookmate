@@ -18,7 +18,7 @@
 // Allergen labels come from the catalog, never from model text (recipeAllergens).
 // Pure TypeScript: shared with the Edge Functions by scripts/sync-shared.py.
 import { avoids, type CatalogEntry, dietFits } from "./invent.ts";
-import { unsafeInstructions } from "./stepSafety.ts";
+import { MAX_STEP_CHARS, unsafeInstructions } from "./stepSafety.ts";
 import type { Diet } from "./ranking.ts";
 import type { RecipeDoc, RecipeStepDoc } from "./recipes.ts";
 
@@ -242,7 +242,8 @@ export function checkRecipe(doc: RecipeDoc, ctx: SafetyContext): SafetyProblem[]
   doc.steps.forEach((s, idx) => {
     const n = idx + 1;
     const w = stepWords(s);
-    if (!s.text?.trim() || s.text.length > 400) add("structure", "a step is empty or too long", n);
+    if (!s.text?.trim()) add("structure", "a step is empty", n);
+    else if (s.text.length > MAX_STEP_CHARS) add("structure", `step ${n} is too long (${s.text.length} characters, at most ${MAX_STEP_CHARS}): split it into two steps`, n);
     // Safety notes warn against these ("undercooked beans are unsafe"); only instructions count.
     // "No pink inside" and "no runny egg left" are the doneness check, not an instruction to undercook.
     for (const what of unsafeInstructions(stepInstruction(s))) add("unsafe_shortcut", `unsafe: ${what}`, n);
@@ -313,6 +314,7 @@ export const SAFETY_RULES_PROMPT = `Safety rules every recipe must follow (a rec
   sugar, jaggery, oil and ghee. Step times realistic.
 - When small_children is true: no whole nuts, big seeds or raisins (peanuts, cashews, almonds, melon seeds, makhana,
   coconut pieces); grind, crush or grate them in a step, or leave them out. Til, khus khus and coconut milk are fine.
+- Each step is one stage of the method in at most 3 or 4 sentences (under 400 characters); a longer stage is two steps.
 - No health, medical or weight-loss claims; no links, phone numbers or brand promotions.`;
 
 /** The problems as plain lines, for logs and for the model's one rewrite. */

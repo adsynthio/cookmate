@@ -3,7 +3,7 @@
 // fails is never shown. Pure TypeScript with type-only imports: shared with the invent-dish Edge Function.
 import type { Diet, FlavorKey } from "./ranking.ts";
 import type { RecipeDoc } from "./recipes.ts";
-import { unsafeInstructions } from "./stepSafety.ts";
+import { MAX_STEP_CHARS, unsafeInstructions } from "./stepSafety.ts";
 
 export type CatalogEntry = { name: string; category: string; flags?: string[]; allergens?: string[]; staple?: boolean };
 
@@ -142,7 +142,8 @@ export function validateInvention(
   if (!doc.title.trim() || doc.title.length > 80) problems.push("bad title");
   if (doc.steps.length < 2 || doc.steps.length > 10) problems.push("needs 2 to 10 steps");
   for (const s of doc.steps) {
-    if (!s.text.trim() || s.text.length > 400) problems.push("a step is empty or too long");
+    if (!s.text.trim()) problems.push("a step is empty");
+    else if (s.text.length > MAX_STEP_CHARS) problems.push(`a step is too long (${s.text.length} characters, at most ${MAX_STEP_CHARS}): split it into two steps`);
     if (unsafeInstructions(s.text).length) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
   }
   const ownFood = new Set(plan.use.filter((u) => !ctx.catalog.has(u.key)).map((u) => u.key));

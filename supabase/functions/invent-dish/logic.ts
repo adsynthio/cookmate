@@ -8,6 +8,23 @@ import { avoids } from "../_shared/invent.ts";
 import { type Job, jobOf, SWAPS } from "../_shared/swaps.ts";
 
 export const CATALOG = new Map((catalogJson as CatalogEntry[]).map((c) => [c.name, c]));
+
+/** Every name an ingredient goes by (its catalog name first, then its Hinglish name and aliases) -> the catalog name. */
+const NAMES = new Map<string, string>();
+for (const pass of [0, 1]) {
+  for (const c of catalogJson as (CatalogEntry & { latn?: string; aliases?: string[] })[]) {
+    for (const n of pass === 0 ? [c.name] : [c.latn, ...(c.aliases ?? [])]) {
+      const k = n?.trim().toLowerCase();
+      if (k && !NAMES.has(k)) NAMES.set(k, c.name);
+    }
+  }
+}
+
+/** "besan" -> "gram flour", "haldi" -> "turmeric": the model's everyday name, as the catalog (and the checks) know it. */
+export const catalogName = (name: string) => {
+  const k = name.trim().toLowerCase();
+  return NAMES.get(k) ?? k;
+};
 const ROLES: FlavorKey[] = ["rich", "heat", "acid", "crunch", "starch", "sweet"];
 
 /** The diet the whole table can eat: the strictest one among the people who eat here. */
@@ -60,6 +77,8 @@ export type ModelDish = {
   /** How close to the usual dish, 50–100, and the honest note ("a little less crisp than the shop's"). */
   closeness?: number | null;
   closeness_note?: string | null;
+  /** A named dish says what it is; a sweet is checked as one. Inventions from odds and ends are mains. */
+  course?: "breakfast" | "main" | "side" | "snack" | "dessert" | null;
 };
 
 export type KitchenSwap = { insteadOf: string; use: string; job: Job; how: string };
@@ -106,6 +125,8 @@ const UNITS = new Set(["g", "ml", "piece", "bunch", "packet"]);
 const WATER = /^(?:(?:plain|hot|warm|cold|boiling|lukewarm|drinking|filtered|tap)\s+)?water$/;
 export const isWater = (name: string) => WATER.test(name.trim().toLowerCase());
 
+const MODEL_COURSES = new Set(["breakfast", "main", "side", "snack", "dessert"] as const);
+
 /** The model's dish as a recipe document, labelled a new creation. */
 export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
   return {
@@ -113,7 +134,7 @@ export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
     title: d.title.trim(),
     titles: { en: d.title.trim(), hi: d.title_hi.trim() || undefined, "hi-Latn": d.title_hinglish.trim() || undefined },
     description: d.description.trim().slice(0, 300),
-    course: "main",
+    course: d.course && MODEL_COURSES.has(d.course) ? d.course : "main",
     diet,
     base_servings: Math.max(1, Math.min(8, Math.round(d.servings) || 2)),
     prep_time_min: Math.max(0, Math.round(d.prep_min) || 0),
@@ -123,7 +144,7 @@ export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
     tags: ["new_creation"],
     review_status: "draft",
     ingredients: d.ingredients.filter((i) => !isWater(i.ingredient)).map((i) => ({
-      ingredient: i.ingredient.trim().toLowerCase(),
+      ingredient: catalogName(i.ingredient),
       qty: Number(i.qty),
       unit: UNITS.has(i.unit) ? i.unit : "g",
       local: i.local ?? undefined,

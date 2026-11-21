@@ -332,7 +332,11 @@ export interface KitchenService {
   /** Items found; `appliances` are cooking tools seen in a kitchen photo (offered, never added silently). */
   scanItems(input: ScanInput): Promise<{ items: DraftItem[]; source: string; appliances?: ToolKey[] }>;
   /** KIT-031: add confirmed items; the same thing in the same place is topped up. */
-  addItems(input: { householdId: string; items: DraftItem[]; addedVia: AddedVia }): Promise<string[]>;
+  /**
+   * Saves checked items, 50 at a time (the database takes no more in one go; a long scan finds more). `onSaved` hears
+   * how many are in so far, so a retry after a failed batch can leave those out.
+   */
+  addItems(input: { householdId: string; items: DraftItem[]; addedVia: AddedVia; onSaved?: (count: number) => void }): Promise<string[]>;
   /** KIT-032: every change is logged as an inventory event. */
   updateItem(itemId: string, changes: ItemChanges): Promise<void>;
   finishItem(itemId: string, discarded: boolean): Promise<void>;

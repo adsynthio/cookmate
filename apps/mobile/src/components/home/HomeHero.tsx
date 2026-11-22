@@ -120,7 +120,7 @@ export function HomeHero({
 
       {/* Which meal (tap to change) and the kitchen at a glance; recipe search and You on the right. */}
       <View style={styles.topRow}>
-        <PressableScale accessibilityRole="button" accessibilityLabel={`${t("home.slotPicker")}: ${slotLabel}`} onPress={onSlot} style={{ flex: 1, gap: 2 }}>
+        <PressableScale accessibilityRole="button" accessibilityLabel={`${t("home.slotPicker")}: ${slotLabel}`} hitSlop={{ top: 4, bottom: 4 }} onPress={onSlot} style={{ flex: 1, gap: 2 }}>
           <View style={styles.slot}>
             <Icon name="skillet" size={18} color={ON} />
             <Text variant="subheading" color={ON}>
@@ -134,13 +134,13 @@ export function HomeHero({
             {count ? t("home.hero.kitchen", { n: count }) : t("home.kitchenEmpty")}
           </Text>
         </PressableScale>
-        <PressableScale accessibilityRole="button" accessibilityLabel={t("ask.title")} onPress={() => router.push("/ask")} style={[styles.round, { backgroundColor: GLASS }]}>
+        <PressableScale accessibilityRole="button" accessibilityLabel={t("ask.title")} hitSlop={4} onPress={() => router.push("/ask")} style={[styles.round, { backgroundColor: GLASS }]}>
           <Icon name="sparkle" size={20} color={ON} />
         </PressableScale>
-        <PressableScale accessibilityRole="button" accessibilityLabel={t("home.search")} onPress={() => router.push("/search")} style={[styles.round, { backgroundColor: GLASS }]}>
+        <PressableScale accessibilityRole="button" accessibilityLabel={t("home.search")} hitSlop={4} onPress={() => router.push("/search")} style={[styles.round, { backgroundColor: GLASS }]}>
           <Icon name="list" size={20} color={ON} />
         </PressableScale>
-        <PressableScale accessibilityRole="button" accessibilityLabel={t("tab.you")} onPress={() => router.navigate("/you")} style={[styles.round, styles.avatar]}>
+        <PressableScale accessibilityRole="button" accessibilityLabel={t("tab.you")} hitSlop={4} onPress={() => router.navigate("/you")} style={[styles.round, styles.avatar]}>
           <Text variant="subheading" color="#7A3A12">
             {(name ?? "").trim().slice(0, 1).toUpperCase() || "☺"}
           </Text>
@@ -185,7 +185,7 @@ export function HomeHero({
           <Text variant="display" weight={600} color={ON} accessibilityRole="header" style={[styles.center, styles.headline]}>
             {t(`home.hero.title.${slot}` as StringKey)}
           </Text>
-          <PressableScale accessibilityRole="button" accessibilityLabel={t("home.hero.cta")} onPress={onPicks} style={styles.cta}>
+          <PressableScale accessibilityRole="button" accessibilityLabel={t("home.hero.cta")} hitSlop={{ top: 4, bottom: 4 }} onPress={onPicks} style={styles.cta}>
             <Text variant="label" weight={600} color={ON}>
               {t("home.hero.cta")}
             </Text>

@@ -17,6 +17,7 @@ import { displayName } from "@/domain/kitchen";
 import { daysLeft } from "@/domain/pantry";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t } from "@/i18n";
+import { minutesText } from "@/i18n/duration";
 import type { PantryItem, Pick } from "@/services";
 
 /** "Good evening" by the phone's clock. */
@@ -176,7 +177,7 @@ export function PickCard({ pick, hero, index, onOpen, onCook }: { pick: Pick; he
               <View style={styles.footItem}>
                 <Icon name="timer" size={16} color={colors.inkSecondary} />
                 <Text variant="label" color={colors.inkSecondary} numberOfLines={1} style={styles.shrink}>
-                  {t("home.minutes", { min: pick.totalTimeMin })}
+                  {minutesText(pick.totalTimeMin)}
                 </Text>
               </View>
             ) : null}

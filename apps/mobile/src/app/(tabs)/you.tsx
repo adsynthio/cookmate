@@ -29,6 +29,7 @@ import { hush, say } from "@/services/feedback";
 import { useTimers } from "@/state/timers";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, setLocale, t, useAppLocale, useLocale, type AppLocale, type Locale, type StringKey } from "@/i18n";
+import { minutesText } from "@/i18n/duration";
 import { languageCodeFor } from "@/domain/onboarding";
 import { clearBundles } from "@/offline/bundles";
 import { clearCopies } from "@/offline/kitchenCopy";
@@ -709,7 +710,7 @@ function SavedDishes({ dishes }: { dishes: Awaited<ReturnType<typeof services.re
           </Text>
           {d.totalTimeMin ? (
             <Text variant="label" muted>
-              {t("home.minutes", { min: d.totalTimeMin })}
+              {minutesText(d.totalTimeMin)}
             </Text>
           ) : null}
           <Icon name="forward" size={20} muted />

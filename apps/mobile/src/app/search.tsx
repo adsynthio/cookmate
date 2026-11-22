@@ -11,6 +11,7 @@ import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale } from "@/i18n";
+import { minutesText } from "@/i18n/duration";
 import { services, type RecipeSummary } from "@/services";
 
 export default function SearchScreen() {
@@ -93,7 +94,7 @@ function ResultRow({ recipe, onPress }: { recipe: RecipeSummary; onPress: () => 
             <Text variant="bodyStrong">{title}</Text>
             {recipe.totalTimeMin ? (
               <Text variant="label" muted>
-                {t("home.minutes", { min: recipe.totalTimeMin })}
+                {minutesText(recipe.totalTimeMin)}
               </Text>
             ) : null}
           </View>

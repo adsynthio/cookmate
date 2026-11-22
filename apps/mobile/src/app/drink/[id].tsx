@@ -17,6 +17,7 @@ import { radius, space } from "@/design-system/tokens";
 import { drinkMatch, kitchenHas, say } from "@/domain/drinks";
 import { displayName } from "@/domain/kitchen";
 import { getLocale, t, useLocale } from "@/i18n";
+import { minutesText } from "@/i18n/duration";
 import { services } from "@/services";
 import { STAPLES } from "@/services/picks";
 import { useDrinks } from "@/state/drinks";
@@ -67,7 +68,7 @@ export default function DrinkScreen() {
         </Text>
         <Text muted>{say(drink.about, locale)}</Text>
         <Text variant="label" muted>
-          {t("home.minutes", { min: drink.minutes })} · {t("drinks.serves", { n: drink.serves })}
+          {minutesText(drink.minutes)} · {t("drinks.serves", { n: drink.serves })}
         </Text>
       </Enter>
 

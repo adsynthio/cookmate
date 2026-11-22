@@ -2,12 +2,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { Icon } from "@/design-system/icons";
-import { dishImage, illustrations } from "@/design-system/media";
+import { DishPhoto } from "@/design-system/FoodPhoto";
+import { illustrations } from "@/design-system/media";
 import { Button, Card, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
-import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale } from "@/i18n";
@@ -85,18 +85,13 @@ export default function SearchScreen() {
 }
 
 function ResultRow({ recipe, onPress }: { recipe: RecipeSummary; onPress: () => void }) {
-  const { colors } = useTheme();
-  const photo = dishImage(recipe.slug);
   const title = recipeTitle(recipe, getLocale());
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress}>
       {({ pressed }) => (
         <Card style={[styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-          {photo ? (
-            <Image source={photo} style={styles.thumb} accessible={false} />
-          ) : (
-            <View style={[styles.thumb, { backgroundColor: colors.primaryPale }]} accessible={false} />
-          )}
+          {/* U26: the dish's photo, or its emoji on a soft tint; never an empty circle. */}
+          <DishPhoto slug={recipe.slug} name={recipe.title} course={recipe.course} size={48} round />
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="bodyStrong">{title}</Text>
             {recipe.totalTimeMin ? (
@@ -115,5 +110,4 @@ function ResultRow({ recipe, onPress }: { recipe: RecipeSummary; onPress: () => 
 const styles = StyleSheet.create({
   top: { flexDirection: "row", alignItems: "center", gap: space.md },
   row: { flexDirection: "row", alignItems: "center", gap: space.md, paddingVertical: space.md },
-  thumb: { width: 48, height: 48, borderRadius: 24 },
 });

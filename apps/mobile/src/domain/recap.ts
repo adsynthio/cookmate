@@ -1,6 +1,7 @@
 // Your kitchen week (D3): the last seven days at home, said warmly. The live app reads week_recap from the database;
 // the preview builds the same shape from its meal log. A week with no cooking says nothing at all: no guilt, no
 // streak to lose. No React, no network.
+import { fill } from "../i18n/fill.ts";
 import type { Locale } from "../i18n/locale";
 
 type Titles = { hi?: string; "hi-Latn"?: string; en?: string } | null;
@@ -49,11 +50,10 @@ const T: Record<string, L> = {
   one: { en: "One home-cooked meal this week", hi: "इस हफ़्ते घर पर एक बार खाना बना", hinglish: "Is hafte ghar par ek baar khana bana" },
   favourite: { en: "Most cooked: {dish} ({n} times)", hi: "सबसे ज़्यादा बना: {dish} ({n} बार)", hinglish: "Sabse zyada bana: {dish} ({n} baar)" },
   newOne: { en: "Something new: {dishes}", hi: "कुछ नया बना: {dishes}", hinglish: "Kuch naya bana: {dishes}" },
-  saved: { en: "{n} things used before they went off", hi: "{n} चीज़ें खराब होने से पहले इस्तेमाल हुईं", hinglish: "{n} cheezein kharab hone se pehle use huin" },
+  saved: { en: "{n} thing{n|s} used before {n|they|it} went off", hi: "{n} चीज़ें खराब होने से पहले इस्तेमाल हुईं", hinglish: "{n} cheezein kharab hone se pehle use huin" },
   loved: { en: "{name} loved the {dish}", hi: "{name} को {dish} बहुत पसंद आया", hinglish: "{name} ko {dish} bahut pasand aaya" },
   weeks: { en: "{n} weeks in a row of cooking at home", hi: "लगातार {n} हफ़्ते घर का खाना", hinglish: "Lagataar {n} hafte ghar ka khana" },
 };
-const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(v[k] ?? ""));
 
 /** Headline and up to four warm lines, or null for a week with no cooking (the card stays away). */
 export function recapLines(r: WeekRecap, locale: Locale, title: (d: { title: string; titles?: Titles }) => string = (d) => d.title): { headline: string; lines: string[] } | null {

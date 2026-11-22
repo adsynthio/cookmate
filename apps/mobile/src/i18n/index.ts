@@ -5,6 +5,7 @@ import en from "./en.json";
 import hi from "./hi.json";
 import hinglish from "./hinglish.json";
 import kn from "./kn.json";
+import { fill } from "./fill";
 import { type AppLocale, contentLocale, type Locale } from "./locale";
 import { setKannadaNames } from "../domain/kitchen";
 
@@ -46,16 +47,12 @@ export function getAppLocale(): AppLocale {
 
 /** Translate a key, falling back to English, with {name} style interpolation. */
 export function t(key: StringKey, params?: Record<string, string | number>): string {
-  const template = catalogues[current][key] ?? en[key];
-  if (!params) return template;
-  return template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`));
+  return fill(catalogues[current][key] ?? en[key], params);
 }
 
 /** The same string in a given language, whatever the app is set to (F1: a message for the house cook). */
 export function tIn(locale: AppLocale, key: StringKey, params?: Record<string, string | number>): string {
-  const template = catalogues[locale][key] ?? en[key];
-  if (!params) return template;
-  return template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? `{${name}}`));
+  return fill(catalogues[locale][key] ?? en[key], params);
 }
 
 /** Subscribe a component to language changes so its t() calls re-render without an app restart. */

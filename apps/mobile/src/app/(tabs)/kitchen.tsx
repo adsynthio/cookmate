@@ -1,12 +1,12 @@
 // Kitchen (KIT-030/033/034), from the Stitch "Pantry & Larder" screen: how many things are in, three ways to add,
 // the terracotta "Use soon" card, place filters, "Needs care" (going off, or not sure it's still there) above
 // "Fresh and stocked", staples as Full / Low / Out, and a dish this kitchen can make right now. Live across phones.
-import { RestockCard } from "@/components/kitchen/RestockCard";
+import { RestockCard, restockSnoozed } from "@/components/kitchen/RestockCard";
 import { ScanFirst } from "@/components/kitchen/ScanFirst";
 import { amountChoices, needsAmount } from "@/domain/amounts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
@@ -22,12 +22,14 @@ import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { expiryInfo, formatQuantity, LOW_CONFIDENCE, type ExpiryInfo } from "@/domain/kitchen";
 import { dishesWithin } from "@/domain/kitchenSetup";
+import { nextRestock } from "@/domain/restock";
 import type { Diet } from "@/domain/onboarding";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { recipeTimeText } from "@/i18n/duration";
 import { services, type LocationKind, type PantryItem, type StapleLevel } from "@/services";
 import { useSession } from "@/state/session";
 
+type Nudge = "soon" | "restock" | "amounts" | "scan";
 type Filter = "all" | Exclude<LocationKind, "counter">;
 const FILTERS: Filter[] = ["all", "fridge", "pantry", "freezer", "staples", "ready_made"];
 const FILTER_ICON: Record<Filter, IconName | undefined> = {
@@ -112,6 +114,23 @@ export default function KitchenScreen() {
 
   const cookWith = (item: PantryItem) => router.navigate({ pathname: "/", params: { use: item.id } });
 
+  // U3: one nudge at a time above the list, the most useful first (food going off, then something running low, then
+  // amounts to fill in, then a few photos for a thin kitchen). Chosen once per visit, so acting on it doesn't pop the
+  // next one straight up; the others wait for the next visit.
+  const restock = useQuery({ queryKey: ["restock", householdId], queryFn: () => services.kitchen.restockDue(householdId!), enabled: !!householdId });
+  const best: Nudge | null =
+    goingOff.length && !hideSoon ? "soon"
+      : nextRestock(restock.data ?? [], restockSnoozed()) ? "restock"
+      : noAmount > 0 ? "amounts"
+      : all.length > 0 && all.length < 15 ? "scan"
+      : null;
+  const [nudge, setNudge] = useState<Nudge | null | undefined>(undefined);
+  const ready = kitchen.isSuccess && (!householdId || restock.isFetched);
+  useEffect(() => {
+    if (ready && nudge === undefined) setNudge(best);
+  }, [ready, nudge, best]);
+  useFocusEffect(useCallback(() => () => setNudge(undefined), []));
+
   return (
     <View style={{ flex: 1 }}>
       <Screen
@@ -147,11 +166,11 @@ export default function KitchenScreen() {
           <QuickAction index={2} icon="mic" tone="peach" label={t("kitchen.action.voice")} onPress={() => router.push("/voice")} />
         </View>
         {/* Only a handful of things in: a few photos fill the rest fastest. */}
-        {kitchen.isSuccess && all.length > 0 && all.length < 15 ? <ScanFirst empty={false} /> : null}
+        {nudge === "scan" ? <ScanFirst empty={false} /> : null}
 
-        {householdId ? <RestockCard householdId={householdId} /> : null}
+        {householdId && nudge === "restock" ? <RestockCard householdId={householdId} /> : null}
 
-        {noAmount > 0 ? (
+        {nudge === "amounts" && noAmount > 0 ? (
           <Enter index={3}>
             <Card tone="primary" style={{ gap: space.sm }}>
               <Text variant="subheading" color={colors.onPrimary}>
@@ -165,7 +184,7 @@ export default function KitchenScreen() {
           </Enter>
         ) : null}
 
-        {goingOff.length && !hideSoon ? (
+        {nudge === "soon" && goingOff.length && !hideSoon ? (
           <Enter index={3}>
             <Card tone="accent">
               <View style={styles.soonHead}>
@@ -221,7 +240,7 @@ export default function KitchenScreen() {
               ))}
             </ScrollView>
 
-            {all.length < 12 ? (
+            {all.length < 12 && (nudge === null || nudge === "scan") ? (
               <Card tone="muted" onPress={() => router.push("/pantry/yesterday")} accessibilityLabel={t("quick.cta")}>
                 <View style={styles.quick}>
                   <View style={{ flex: 1, gap: 2 }}>

@@ -19,6 +19,11 @@ import { services } from "@/services";
 
 const KEY = "cookmate.restock.snoozed";
 
+/** Items the cook said they still have, quiet on this phone for a few days (read by Kitchen to pick one nudge). */
+export function restockSnoozed(): Record<string, string> {
+  return loadSnoozed();
+}
+
 function loadSnoozed(): Record<string, string> {
   try {
     return JSON.parse(globalThis.localStorage?.getItem(KEY) ?? "{}") as Record<string, string>;

@@ -872,7 +872,7 @@ const mocks: Services = {
         return {
           recipeId: id, title: doc.title, titles: doc.titles ?? null, description: doc.description, named: true,
           swaps, closeness: swaps.length ? Math.max(70, 95 - 5 * swaps.length) : 95,
-          uses: doc.ingredients.map((i) => i.ingredient).filter((k) => have.has(k)),
+          uses: [...new Set(doc.ingredients.map((i) => i.ingredient).filter((k) => have.has(k)))],
           toBuy: doc.ingredients.map((i) => i.ingredient).filter((k) => !have.has(k) && !staples.has(k) && !swapped.has(k)),
         };
       }

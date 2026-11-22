@@ -102,6 +102,15 @@ test("coverage counts confident items, staples and substitutes; optional items d
   assert.equal(pantryMatch(sub, [item("lemon")], []).items[0]?.status, "substitute");
 });
 
+test("an ingredient used twice in a recipe counts once", () => {
+  const kadhi = recipe({ id: "k", ingredients: [ing("curd"), ing("gram flour"), ing("gram flour"), ing("onion")] });
+  const m = pantryMatch(kadhi, [item("curd"), item("gram flour")], []);
+  assert.equal(m.total, 3);
+  assert.equal(m.have, 2);
+  assert.deepEqual(m.items.map((i) => i.key), ["curd", "gram flour", "onion"]);
+  assert.equal(pantryMatch(kadhi, [], []).items.filter((i) => i.status === "missing").length, 3);
+});
+
 test("use soon: today counts fully, three days out a quarter, capped at 1", () => {
   const today = pantryMatch(palakPaneer, [item("spinach", { daysLeft: 0 })], []);
   assert.equal(useSoonFactor(today), 1);

@@ -116,7 +116,7 @@ export default function KitchenScreen() {
     if (!best) return null;
     const doc = recipeDocs.find((r) => r.slug === best.slug)!;
     const names = new Set(have.map((h) => h.name));
-    const uses = doc.ingredients.filter((i) => names.has(i.ingredient) && !catalogEntry(i.ingredient)?.staple).map((i) => i.ingredient);
+    const uses = [...new Set(doc.ingredients.filter((i) => names.has(i.ingredient) && !catalogEntry(i.ingredient)?.staple).map((i) => i.ingredient))];
     return { doc, share: best.share, uses };
   }, [all, diet]);
 

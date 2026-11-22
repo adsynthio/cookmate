@@ -359,6 +359,121 @@ Used when an item has no photo of its own yet, and for homemade food and leftove
 | `media/ingredients/category-sweetener.png` | a small, tidy mix of three or four typical items from this group: sugar and jaggery, arranged together |
 | `media/ingredients/category-vegetable.png` | a small, tidy mix of three or four typical items from this group: vegetables, arranged together |
 
+### 1.20 Added to the catalog later (76)
+
+These came in with the bigger catalog. Each row has its own "how to show it", so use the last column for {HOW TO SHOW IT}. Same 480 x 480 size and the same ingredient prompt as the groups above; keep each small group below consistent with its matching group above (for example, vegetables here look like 1.1).
+
+#### Vegetables and herbs (18)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/chayote.png` | chayote (chow chow) | चाऊ चाऊ | two pale green, pear-shaped chayote (chow chow), one cut in half to show the white flesh |
+| `media/ingredients/snake-gourd.png` | snake gourd (chichinda) | चिचिंडा | one long, thin, pale green snake gourd with faint white stripes, gently curved, and one cut piece |
+| `media/ingredients/ash-gourd.png` | ash gourd (safed kaddu) | सफ़ेद कद्दू | a large wedge of ash gourd showing its pale, waxy, dusty green skin and white flesh |
+| `media/ingredients/banana-flower.png` | banana flower (kele ka phool) | केले का फूल | one whole deep maroon banana flower with two outer petals opened to show the pale florets |
+| `media/ingredients/drumstick-leaves.png` | drumstick leaves (sahjan ke patte) | सहजन के पत्ते | a small heap of tiny, round, bright green drumstick (moringa) leaves on their thin stems |
+| `media/ingredients/kohlrabi.png` | kohlrabi (ganth gobhi) | गांठ गोभी | two pale green kohlrabi bulbs with a few short leaf stalks, one cut to show the white inside |
+| `media/ingredients/broccoli.png` | broccoli | ब्रोकली | one fresh broccoli head and two loose florets |
+| `media/ingredients/baby-corn.png` | baby corn | बेबी कॉर्न | a handful of pale yellow baby corn, one still half in its green husk |
+| `media/ingredients/zucchini.png` | zucchini | ज़ुकीनी | two green zucchini, one sliced into rounds |
+| `media/ingredients/lettuce.png` | lettuce | लेट्यूस | one loose head of fresh green lettuce, crisp leaves |
+| `media/ingredients/shallots.png` | shallots (sambar pyaaz) | सांबर प्याज़ | a small heap of small pink-purple sambar onions, two of them peeled |
+| `media/ingredients/raw-papaya.png` | raw papaya (kachcha papita) | कच्चा पपीता | one firm green raw papaya, with half of a second one cut to show the pale flesh and white seeds |
+| `media/ingredients/colocasia-leaves.png` | colocasia leaves (arbi ke patte) | अरबी के पत्ते | two or three large, heart-shaped colocasia (arbi) leaves, slightly folded |
+| `media/ingredients/gongura.png` | gongura | गोंगुरा | a small bunch of gongura (sorrel) leaves on reddish stems |
+| `media/ingredients/green-garlic.png` | green garlic (hara lahsun) | हरा लहसुन | a small bunch of green garlic: thin stalks with small white bulbs and long flat green leaves |
+| `media/ingredients/lemongrass.png` | lemongrass | लेमनग्रास | three or four lemongrass stalks with pale bases and long green tops |
+| `media/ingredients/field-beans.png` | field beans (papdi ke dane) | पापड़ी के दाने | a small heap of flat, pale green papdi pods with a few shelled beans beside them |
+| `media/ingredients/bhavnagri-chilli.png` | bhavnagri chilli (bhavnagri mirch) | भावनगरी मिर्च | three or four long, fat, pale green bhavnagri chillies (the mild kind used for mirchi bajji) |
+
+#### Fruit (5)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/pineapple.png` | pineapple (ananas) | अनानास | one whole pineapple with two golden wedges cut from another |
+| `media/ingredients/dates.png` | dates (khajoor) | खजूर | a small heap of soft, glossy brown dates (khajoor), one split open |
+| `media/ingredients/custard-apple.png` | custard apple (sharifa) | शरीफ़ा | two green custard apples, one broken open to show the white creamy segments and black seeds |
+| `media/ingredients/jamun.png` | jamun | जामुन | a heap of glossy, dark purple jamun in a small bowl |
+| `media/ingredients/pear.png` | pear (nashpati) | नाशपाती | two green-yellow pears, one cut in half |
+
+#### Dairy, dals, grains and flours (15)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/milk-powder.png` | milk powder | मिल्क पाउडर | a small heap of fine off-white milk powder in a steel katori, a spoon resting in it |
+| `media/ingredients/condensed-milk.png` | condensed milk | कंडेंस्ड मिल्क | thick, glossy, cream-coloured condensed milk in a small glass bowl, a ribbon of it falling from a spoon |
+| `media/ingredients/moong-sprouts.png` | moong sprouts (ankurit moong) | अंकुरित मूंग | a heap of fresh green moong sprouts with short white tails in a steel bowl |
+| `media/ingredients/foxtail-millet.png` | foxtail millet (kangni) | कंगनी | a heap of tiny yellow foxtail millet grains in a steel katori |
+| `media/ingredients/little-millet.png` | little millet (kutki) | कुटकी | a heap of tiny pale cream little millet grains in a steel katori |
+| `media/ingredients/barnyard-millet.png` | barnyard millet (samak chawal) | सामक चावल | a heap of tiny off-white samak rice grains in a steel katori |
+| `media/ingredients/amaranth-flour.png` | amaranth flour (rajgira atta) | राजगिरा आटा | a heap of fine pale cream rajgira flour in a steel katori, a few puffed amaranth seeds beside it |
+| `media/ingredients/quinoa.png` | quinoa | क्विनोआ | a heap of small, round, pale quinoa grains in a ceramic bowl |
+| `media/ingredients/brown-rice.png` | brown rice | ब्राउन राइस | a heap of uncooked brown rice in a steel katori |
+| `media/ingredients/idli-rava.png` | idli rava | इडली रवा | a heap of coarse off-white idli rava in a steel katori |
+| `media/ingredients/noodles.png` | noodles | नूडल्स | a nest of dry wheat noodles on a plate, a few loose strands beside it (no packet) |
+| `media/ingredients/pasta.png` | pasta | पास्ता | a heap of dry penne pasta in a ceramic bowl |
+| `media/ingredients/horse-gram.png` | horse gram (kulthi) | कुलथी | a heap of small, flat, brown horse gram (kulthi) in a steel katori |
+| `media/ingredients/roasted-chana.png` | roasted chana (bhuna chana) | भुना चना | a heap of roasted chana with their brown, slightly cracked skins, in a steel katori |
+| `media/ingredients/dried-green-peas.png` | dried green peas (sukhi matar) | सूखी मटर | a heap of dried green peas, wrinkled and dull green, in a steel katori |
+
+#### Spices and masalas (12)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/rasam-powder.png` | rasam powder (rasam masala) | रसम पाउडर | a heap of coarse, reddish-brown rasam powder in a steel katori |
+| `media/ingredients/biryani-masala.png` | biryani masala | बिरयानी मसाला | a heap of deep brown biryani masala powder, with a star anise, a cinnamon stick and a few cloves beside it |
+| `media/ingredients/tandoori-masala.png` | tandoori masala | तंदूरी मसाला | a heap of bright red tandoori masala powder in a steel katori |
+| `media/ingredients/kitchen-king-masala.png` | kitchen king masala (kitchen king) | किचन किंग मसाला | a heap of golden-brown mixed masala powder in a steel katori |
+| `media/ingredients/chicken-masala.png` | chicken masala | चिकन मसाला | a heap of dark red-brown chicken masala powder in a steel katori |
+| `media/ingredients/star-anise.png` | star anise (chakra phool) | चक्र फूल | five or six whole star anise pods |
+| `media/ingredients/mace.png` | mace (javitri) | जावित्री | a few dried orange-red mace (javitri) blades |
+| `media/ingredients/black-stone-flower.png` | black stone flower (pathar phool) | पत्थर फूल | a small heap of dried, crinkly grey-black stone flower (pathar phool) |
+| `media/ingredients/chilli-flakes.png` | chilli flakes | चिली फ्लेक्स | a small heap of red chilli flakes with their seeds in a small bowl |
+| `media/ingredients/dried-pomegranate-seeds.png` | dried pomegranate seeds (anardana) | अनारदाना | a heap of sticky, dark reddish-brown dried pomegranate seeds (anardana) |
+| `media/ingredients/caraway-seeds.png` | caraway seeds (shahi jeera) | शाही जीरा | a heap of thin, dark, curved shahi jeera seeds |
+| `media/ingredients/panch-phoron.png` | panch phoron | पंच फोरन | a heap of the Bengali five-seed mix: cumin, mustard, fenugreek, nigella and fennel seeds mixed together |
+
+#### Nuts, seeds and oils (11)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/dried-figs.png` | dried figs (anjeer) | अंजीर | a few dried figs (anjeer), one split open to show the seeds |
+| `media/ingredients/coconut-milk.png` | coconut milk (nariyal ka doodh) | नारियल का दूध | thick white coconut milk in a ceramic bowl, half a brown coconut beside it |
+| `media/ingredients/melon-seeds.png` | melon seeds (magaz) | मगज़ | a heap of small, flat, peeled white melon seeds (magaz) |
+| `media/ingredients/chironji.png` | chironji | चिरौंजी | a heap of small, round, brown-skinned chironji nuts |
+| `media/ingredients/pumpkin-seeds.png` | pumpkin seeds (kaddu ke beej) | कद्दू के बीज | a heap of shelled green pumpkin seeds |
+| `media/ingredients/sunflower-seeds.png` | sunflower seeds (surajmukhi ke beej) | सूरजमुखी के बीज | a heap of shelled, pale grey-green sunflower seeds |
+| `media/ingredients/chia-seeds.png` | chia seeds | चिया सीड्स | a heap of tiny black-and-grey chia seeds in a small bowl |
+| `media/ingredients/basil-seeds.png` | basil seeds (sabja) | सब्जा | a heap of tiny black sabja seeds, with a spoonful swollen in water beside it |
+| `media/ingredients/peanut-butter.png` | peanut butter | पीनट बटर | a small glass bowl of creamy peanut butter with a spoon, a few peanuts beside it |
+| `media/ingredients/olive-oil.png` | olive oil | जैतून का तेल | pale green-gold olive oil in a small glass bowl, two olives beside it (no bottle) |
+| `media/ingredients/vanaspati.png` | vanaspati | वनस्पति घी | a scoop of solid white vanaspati in a steel katori (no tin, no label) |
+
+#### Baking, packaged food and sauces (12)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/eno.png` | eno | ईनो | fruit salt: a small heap of fine white granules in a tiny glass bowl, no sachet or packet |
+| `media/ingredients/rose-water.png` | rose water (gulab jal) | गुलाब जल | rose water in a small, plain clear glass bottle, a few pink rose petals beside it |
+| `media/ingredients/agar-agar.png` | agar agar | अगर अगर | a loose bundle of dried, translucent off-white agar agar strands (china grass) |
+| `media/ingredients/idli-dosa-batter.png` | idli dosa batter | इडली डोसा बैटर | thick white fermented idli dosa batter in a steel bowl with a ladle, small bubbles on top |
+| `media/ingredients/cocoa-powder.png` | cocoa powder | कोको पाउडर | a heap of dark brown cocoa powder in a small bowl, a spoon dusted with it |
+| `media/ingredients/vanilla-essence.png` | vanilla essence | वनीला एसेंस | a small, plain dark glass bottle with a dropper, two vanilla pods beside it |
+| `media/ingredients/kewra-water.png` | kewra water (kewra jal) | केवड़ा जल | kewra water in a small, plain clear glass bottle, a long kewra (screwpine) leaf beside it |
+| `media/ingredients/yeast.png` | yeast (khameer) | खमीर | dry yeast granules in a small glass bowl, a teaspoon beside it |
+| `media/ingredients/chocolate.png` | chocolate | चॉकलेट | a few squares of dark chocolate broken off a plain bar, no wrapper |
+| `media/ingredients/biscuits.png` | biscuits (biscuit) | बिस्कुट | a small stack of plain round tea biscuits with no brand marks |
+| `media/ingredients/rusk.png` | rusk | रस्क | a few golden-brown rusks stacked on a small plate |
+| `media/ingredients/jam.png` | jam | जैम | bright red mixed-fruit jam in a small glass bowl with a spoon |
+
+#### Meat and fish (3)
+
+| File | Item | Hindi | How to show it |
+| --- | --- | --- | --- |
+| `media/ingredients/crab.png` | crab (kekda) | केकड़ा | two raw mud crabs, dark green-brown, shells whole, on a steel plate |
+| `media/ingredients/pork.png` | pork | पोर्क | raw pork in curry-cut pieces with a little fat, on a steel plate |
+| `media/ingredients/dried-fish.png` | dried fish (sukhi machhli) | सूखी मछली | a few small, salted, golden-brown dried fish on a woven tray |
+
 ---
 
 ## 2. Onboarding and kitchen scenes (`media/scenes/`)
@@ -405,9 +520,9 @@ Same glyph as before (a small round handi seen from the side with one leaf risin
 
 ## 5. Later modules (do after sections 1 to 4)
 
-### 5.1 Dish photos (`media/dishes/`, 1080 x 1080, replace all ten)
+### 5.1 Dish photos (`media/dishes/`, 1080 x 1080, 19 photos: replace the first ten, nine new)
 
-The current ten are temporary and must be replaced before any release. Same file names as now. New prompt (after the shared style):
+The first ten are temporary and must be replaced before any release (same file names as now); the last nine are new. New prompt (after the shared style):
 
 > Three-quarter angle (about 35 degrees) photograph of homemade **{DISH}** in a {VESSEL}, on a wooden table or cream cloth, a spoon resting at the side, one small garnish. The dish is centred and fills about 75% of the square frame; nothing important in the outer 12% (it is also cropped to a circle). Real, appetising, a little imperfect.
 
@@ -423,8 +538,17 @@ The current ten are temporary and must be replaced before any release. Same file
 | `media/dishes/matar-paneer.png` | matar paneer in an orange-red tomato gravy | steel bowl |
 | `media/dishes/moong-dal-khichdi.png` | moong dal khichdi with ghee melting on top | steel bowl |
 | `media/dishes/rajma.png` | rajma in thick gravy, sliced onion on the side | steel bowl |
+| `media/dishes/bhatura.png` | two big puffed golden bhaturas, a small bowl of chole, sliced onion and a green chilli on the side | round steel plate |
+| `media/dishes/boiled-chana.png` | plain boiled kabuli chana, soft and whole, a pinch of salt on top | steel bowl |
+| `media/dishes/jeera-rice.png` | jeera rice, long separate grains with cumin seeds and a little ghee, a few coriander leaves | ceramic bowl |
+| `media/dishes/kulcha.png` | two tawa kulchas brushed with butter, golden-brown spots, coriander and nigella seeds pressed on top | round steel plate |
+| `media/dishes/onion-tomato-masala.png` | thick, dark red onion-tomato masala base with oil shining at the edges | small steel katori with a spoon in it |
+| `media/dishes/paratha.png` | two plain layered parathas, golden patches, ghee glistening, one folded into a triangle | round steel plate |
+| `media/dishes/plain-dal.png` | plain yellow toor dal, smooth and pourable, no tadka | steel bowl |
+| `media/dishes/puri.png` | a stack of four golden, puffed puris, a small bowl of aloo sabzi beside them | round steel plate |
+| `media/dishes/roti.png` | a stack of soft phulka rotis with light brown spots, a little ghee on the top one | cloth-lined roti basket |
 
-### 5.2 Cooking steps: how it should look (`media/steps/`, 1080 x 720, 24 photos)
+### 5.2 Cooking steps: how it should look (`media/steps/`, 1080 x 720, 37 photos)
 
 Shown at the top of each Cook With Me step, so the cook can compare their pan with the photo. Until a step's photo exists the dish photo is shown. Prompt (after the shared style):
 
@@ -456,6 +580,19 @@ Shown at the top of each Cook With Me step, so the cook can compare their pan wi
 | `media/steps/rajma-3.png` | Rajma, step 3: Heat the oil in a kadai. Add cumin and the bay leaf, then the finely chopped onion and cook until deep golden. | The onion is evenly golden brown. |
 | `media/steps/rajma-4.png` | Rajma, step 4: Add grated ginger, garlic and green chilli for a minute, then the tomato puree, turmeric, Kashmiri chilli and coriander powder. Cook, stirring. | The masala is thick and dark and the oil leaves the sides. |
 | `media/steps/rajma-5.png` | Rajma, step 5: Add the rajma with its cooking water. Mash a few beans against the side of the pan for body and simmer on low heat. | The gravy thickens and coats the beans. |
+| `media/steps/bhatura-3.png` | Bhatura, step 3: Heat the oil well. Roll a ball into an oval a little thicker than a roti, using oil instead of dry flour. | A pinch of dough rises to the top at once: the oil is ready. |
+| `media/steps/bhatura-4.png` | Bhatura, step 4: Slide one in, keep pressing gently and spooning oil over it until it puffs fully, flip once and fry until light golden. | It puffs into a big balloon and turns pale golden with darker spots. |
+| `media/steps/jeera-rice-3.png` | Jeera Rice, step 3: Drain the rice and stir it gently in the ghee for a minute. Add salt and one and a half katori of water for each katori of rice. Close and cook for one whistle. | The water should be about one finger joint above the rice before closing. |
+| `media/steps/kulcha-4.png` | Tawa Kulcha, step 4: Put it wet side down on a hot tawa. When bubbles rise, flip and cook the top until golden spots appear. Brush with butter and serve hot. | Puffy bubbles on top, then golden brown patches. |
+| `media/steps/onion-tomato-masala-2.png` | Onion-Tomato Masala, step 2: Heat the oil in a wide kadai and fry the onion paste, stirring often, until deep golden. | Deep golden brown, and the oil shows at the edges. |
+| `media/steps/onion-tomato-masala-3.png` | Onion-Tomato Masala, step 3: Add the tomato puree, the powders and salt. Cook, stirring, until thick and the oil separates. | Thick, dark red, and oil pools on the surface. |
+| `media/steps/paratha-3.png` | Plain Paratha, step 3: Cook on a hot tawa, flipping once the base has spots. Spread ghee on both sides and press the edges with a spatula until crisp and golden. | Golden brown patches on both sides and puffed layers. |
+| `media/steps/plain-dal-2.png` | Plain Dal, step 2: Close the cooker and cook for three whistles, then let the pressure drop by itself. | When opened, the dal is soft and mashes easily with a spoon. |
+| `media/steps/plain-dal-3.png` | Plain Dal, step 3: Whisk the dal smooth and add hot water if it's too thick. Simmer for two minutes. | It pours like thick soup. |
+| `media/steps/puri-2.png` | Puri, step 2: Heat the oil in a kadai. Roll small balls into thick palm-sized circles, using a drop of oil instead of dry atta. | A pinch of dough rises to the top straight away: the oil is ready. |
+| `media/steps/puri-3.png` | Puri, step 3: Slide in one puri, press it gently with the back of a slotted spoon until it puffs, flip and fry until light golden. Drain on paper. | It balloons up within seconds and turns light golden. |
+| `media/steps/roti-4.png` | Roti (Phulka), step 4: Heat the tawa. Make a lemon-sized ball, dust it in dry atta and roll it thin and round. | An even circle, thin enough to almost see light through the edges. |
+| `media/steps/roti-5.png` | Roti (Phulka), step 5: Put the roti on the hot tawa. Flip when small bubbles appear, cook the other side a little longer, then hold it over the open flame with tongs so it puffs. | Small bubbles on top, then light brown spots underneath. |
 
 ### 5.3 Drink photos (`media/drinks/`, 1080 x 1080, 12 photos)
 
@@ -488,10 +625,11 @@ Cocktails (the last four rows) are shown only to adults who switched them on. Ke
 - [ ] 1. Ingredient photos: dals, grains, flours
 - [ ] 1. Ingredient photos: spices, oils, nuts, sweeteners, condiments, packaged, tea, baking
 - [ ] 1.19 Category fallbacks
+- [ ] 1.20 Added to the catalog later (76)
 - [ ] 2. Three scenes
 - [ ] 3. Six state illustrations in the new colours
 - [ ] 4. App icon set and splash in olive
-- [ ] 5.1 Ten dish photos
-- [ ] 5.2 Cooking step photos (24)
+- [ ] 5.1 Dish photos (19)
+- [ ] 5.2 Cooking step photos (37)
 - [ ] 5.3 Drink photos (12)
 - [ ] `python3 tools/media/sync.py` reports no problems

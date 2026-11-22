@@ -440,8 +440,17 @@ function ItemRow({ item, expiry, onCook }: { item: PantryItem; expiry: ExpiryInf
       <Badge label={t("kitchen.badge.guess")} tone="peach" />
     ) : null;
   const soonLine = expiry?.kind === "soon" ? (expiry.days === 1 ? t("kitchen.useInOne") : t("kitchen.useIn", { n: expiry.days })) : null;
+  // U37: one short line under the name: where it is, homemade, an estimated date. Taste tags (spicy, tangy) are set
+  // when a homemade item is added and still steer the picks, but on the row they crowded it out ("Ready-made ·
+  // Homemade · Spicy, Te…"), so only screen readers hear them now.
+  const homemade = item.state === "homemade";
+  const meta = [
+    homemade && item.location === "ready_made" ? null : t(`kitchen.location.${item.location}` as StringKey),
+    homemade ? t("kitchen.homemade") : null,
+    expiry?.estimated ? t("kitchen.estimated") : null,
+  ].filter(Boolean);
   const extra = [
-    item.state === "homemade" ? t("kitchen.homemade") : null,
+    homemade ? t("kitchen.homemade") : null,
     item.flavorRoles.length ? item.flavorRoles.map((r) => t(`flavor.${r}` as StringKey)).join(", ") : null,
     expiry?.estimated ? t("kitchen.estimated") : null,
   ].filter(Boolean);
@@ -489,7 +498,7 @@ function ItemRow({ item, expiry, onCook }: { item: PantryItem; expiry: ExpiryInf
             ) : null}
           </View>
           <Text variant="overline" color={colors.inkTertiary} numberOfLines={1} style={{ letterSpacing: 0.2 }}>
-            {[t(`kitchen.location.${item.location}` as StringKey), ...extra].join(" · ")}
+            {meta.join(" · ")}
           </Text>
         </View>
       </PressableScale>

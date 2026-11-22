@@ -19,8 +19,9 @@ import { EaseCard } from "@/components/recipe/EaseCard";
 import { HandoffButton } from "@/components/recipe/HandoffButton";
 import { dishEmoji } from "@/domain/foodEmoji";
 import type { AmountChange } from "@/domain/learning";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { dishImage, ingredientImage } from "@/design-system/media";
+import {dishImage} from "@/design-system/media";
 import { Enter, PressableScale, SlideIn } from "@/design-system/motion";
 import { Badge, Button, Card, IconButton, Photo, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
@@ -693,7 +694,6 @@ function IngredientRow({
   const icon = status === "have" || status === "assumed" ? "check" : status === "substitute" ? "undo" : status === "missing" ? "plus" : null;
   const ok = status === "have" || status === "assumed";
   // Only the ingredient's own photo: a category stand-in on every row would read as clutter.
-  const photo = ingredientImage(ing.ingredient);
   return (
     <View
       style={[styles.ingRow, shadow.card, { backgroundColor: colors.surface }]}
@@ -716,7 +716,8 @@ function IngredientRow({
           </View>
         ) : null}
       </View>
-      {photo ? <Photo source={photo} size={40} round /> : null}
+      {/* U13: every ingredient gets a picture: its photo, or its food emoji on a soft tint. */}
+      <FoodPhoto name={ing.ingredient} category={catalogEntry(ing.ingredient)?.category} size={40} round />
       <View style={styles.amount}>
         <Text variant="label" muted style={{ textAlign: "right" }}>
           {amount}

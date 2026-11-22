@@ -1472,5 +1472,6 @@
   "onb.k.scan.preparing": "Aapki photo taiyaar ho rahi hai…",
   "onb.k.scan.failed": "Ye photo kaam nahi aayi. Koi aur try karein.",
   "onb.k.scan.remove": "Photo {n} hatayein",
-  "onb.consent.reading": "Aapki photos padh rahe hain…"
+  "onb.consent.reading": "Aapki photos padh rahe hain…",
+  "cook.stoveTitle": "Abhi chulhe par kuch nahi"
 }

@@ -45,3 +45,13 @@ test("the shared text is readable without the app", () => {
   );
   assert.match(shareText([], (s) => names[s], nameOf, "hi"), /^ख़रीदारी की सूची$/);
 });
+
+test("shared with emoji: a cart on the title and the food's emoji on each line", () => {
+  const groups = groupBySection([line("1", "tomato", "Tomato", 6, "piece"), line("3", null, "Candles")], categoryOf, nameOf);
+  const names = { produce: "Vegetables and fruit", dairy: "Dairy and eggs", staples: "Staples", meat: "Meat and fish", other: "Other" };
+  const emojiOf = (l: { ingredientKey: string | null }) => (l.ingredientKey === "tomato" ? "🍅" : "🛍️");
+  assert.equal(
+    shareText(groups, (s) => names[s], nameOf, "en", emojiOf),
+    "🛒 Shopping list\n\nVegetables and fruit:\n🍅 Tomato, 6\n\nOther:\n🛍️ Candles",
+  );
+});

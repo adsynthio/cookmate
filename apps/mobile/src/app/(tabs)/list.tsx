@@ -14,6 +14,7 @@ import { Enter, Layout, PressableScale } from "@/design-system/motion";
 import { Button, Card, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
+import { ingredientEmoji } from "@/domain/foodEmoji";
 import { capitalise, displayName } from "@/domain/kitchen";
 import { groupBySection, lineAmount, shareText, type ListLine } from "@/domain/shopping";
 import { STORES, storeSearchUrl, type Store } from "@/domain/grocery";
@@ -57,7 +58,9 @@ export default function ListScreen() {
 
   const [store, setStore] = useState<Store | null>(null);
   const share = async () => {
-    const message = shareText(groups, (s) => t(`list.section.${s}` as StringKey), nameOf, locale);
+    const emojiOf = (line: (typeof groups)[number]["lines"][number]) =>
+      ingredientEmoji(line.ingredientKey ?? line.name, line.ingredientKey ? catalogEntry(line.ingredientKey)?.category : null);
+    const message = shareText(groups, (s) => t(`list.section.${s}` as StringKey), nameOf, locale, emojiOf);
     try {
       await Share.share({ message });
     } catch {

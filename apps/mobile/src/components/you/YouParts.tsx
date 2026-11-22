@@ -18,7 +18,6 @@ function initials(name: string): string {
 
 export function ProfileCard({ me, members }: { me?: Member; members: Member[] }) {
   const { colors } = useTheme();
-  const others = members.filter((m) => m.id !== me?.id);
   return (
     <Enter>
       <View style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
@@ -35,23 +34,6 @@ export function ProfileCard({ me, members }: { me?: Member; members: Member[] })
             </Text>
           </View>
         </View>
-        {others.length ? (
-          <View style={styles.people}>
-            {others.map((m) => (
-              <View key={m.id} style={[styles.person, { backgroundColor: colors.surfaceMuted }]}>
-                <View style={[styles.mini, { backgroundColor: colors.peach }]}>
-                  <Text variant="caption" weight={600} color={colors.peachText}>
-                    {initials(m.displayName)}
-                  </Text>
-                </View>
-                <Text variant="label">{m.displayName}</Text>
-                <Text variant="caption" muted>
-                  {t(`age.${m.ageGroup}` as StringKey)}
-                </Text>
-              </View>
-            ))}
-          </View>
-        ) : null}
       </View>
     </Enter>
   );
@@ -80,29 +62,18 @@ export function StatGrid({ stats }: { stats: { icon: IconName; value: number; la
 
 
 /** Spice per person as a bar, and the loves and avoids as chips (olive and dashed terracotta). */
-export function TasteCard({ members, prefs }: { members: Member[]; prefs: Memory[] }) {
+export function TasteCard({ prefs }: { prefs: Memory[] }) {
   const { colors } = useTheme();
   const locale = getLocale();
   const nameOf = (key: string) => displayName(catalogEntry(key), key, locale);
   const loves = prefs.filter((p) => p.polarity > 0 && p.ingredientKey);
   const avoids = prefs.filter((p) => p.polarity < 0 && p.ingredientKey);
+  // Spice per person is in Your family; this card is what the table loves and never eats.
+  if (!loves.length && !avoids.length) return null;
   return (
     <Enter>
       <View style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
         <Text variant="heading">{t("you.taste")}</Text>
-        {members.map((m) => (
-          <View key={m.id} style={{ gap: 6 }}>
-            <View style={styles.between}>
-              <Text variant="label">{t("you.spiceOf", { name: m.displayName })}</Text>
-              <Text variant="label" weight={600} color={colors.accentText}>
-                {t(`you.spice.${Math.max(1, Math.min(5, m.spice))}` as StringKey)} ({m.spice}/5)
-              </Text>
-            </View>
-            <View style={[styles.track, { backgroundColor: colors.surfaceHigh }]}>
-              <View style={[styles.fill, { width: `${(m.spice / 5) * 100}%`, backgroundColor: colors.accent }]} />
-            </View>
-          </View>
-        ))}
         {loves.length ? (
           <View style={{ gap: space.sm }}>
             <Text variant="overline" muted>

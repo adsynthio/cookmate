@@ -1483,6 +1483,7 @@
   "credits.today": "{n} of today's free credits left",
   "credits.unlimited": "Unlimited AI for this kitchen",
   "credits.how": "A photo scan uses about 2 credits, a new dish about 2 and a question about 0.3. Voice cooking uses credits too; help you type or tap while you cook is always free.",
+  "credits.howToggle": "How credits work",
   "credits.pausedTitle": "AI is paused",
   "credits.paused": "This kitchen has used its AI credits. Free credits come back at midnight.",
   "credits.pausedScan": "AI is paused until midnight, when free credits come back. You can still type items or scan barcodes.",

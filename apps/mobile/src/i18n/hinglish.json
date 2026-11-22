@@ -1449,6 +1449,7 @@
   "credits.today": "Aaj ke free credits mein se {n} baaki",
   "credits.unlimited": "Is kitchen ke liye unlimited AI",
   "credits.how": "Ek photo scan mein lagbhag 2 credits, nayi dish mein lagbhag 2 aur ek sawaal mein lagbhag 0.3 lagte hain. Awaaz se khana banane mein bhi credits lagte hain; khana banate waqt type ya tap karke milne wali madad hamesha free hai.",
+  "credits.howToggle": "Credits kaise kaam karte hain",
   "credits.pausedTitle": "AI abhi ruka hai",
   "credits.paused": "Is kitchen ke AI credits khatam ho gaye. Aadhi raat ko free credits phir milenge.",
   "credits.pausedScan": "AI aadhi raat tak ruka hai, tab free credits phir milenge. Aap ab bhi cheezein type kar sakte hain ya barcode scan kar sakte hain.",

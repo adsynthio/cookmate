@@ -396,6 +396,11 @@ export function stepImage(slug: string, step: number): ImageSourcePropType | nul
   return (stepPhotos as Record<string, ImageSourcePropType | null>)[`${slug}/${step}`] ?? dishImage(slug);
 }
 
+/** The photo made for this exact step, without falling back to the dish photo. */
+export function ownStepImage(slug: string, step: number): ImageSourcePropType | null {
+  return (stepPhotos as Record<string, ImageSourcePropType | null>)[`${slug}/${step}`] ?? null;
+}
+
 /** Photo for a drink by id, if one has been generated. */
 export function drinkImage(id: string): ImageSourcePropType | null {
   return (drinkPhotos as Record<string, ImageSourcePropType | null>)[id] ?? null;

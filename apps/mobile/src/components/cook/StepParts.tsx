@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Image, type ImageSourcePropType, StyleSheet, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
 import { Animated, Enter, PressableScale, Pulse, useReducedMotion } from "@/design-system/motion";
 import { Badge, Button, Chip, Text } from "@/design-system/primitives";
@@ -83,6 +84,28 @@ export function StepPhoto({ source, label, time, finalLook }: { source: ImageSou
         <PhotoTag icon="skillet" label={label} />
         {time ? <PhotoTag icon="timer" label={time} /> : null}
       </View>
+    </View>
+  );
+}
+
+/** U21: a middle step with no photo of its own: a slim strip with the dish and the step's time, not the same big
+ *  dish photo again, so the instruction and how to tell it's right sit higher on the screen. */
+export function StepDishStrip({ slug, label, course, time }: { slug: string; label: string; course?: string | null; time?: string }) {
+  const { colors } = useTheme();
+  return (
+    <View style={[styles.strip, { backgroundColor: colors.surfaceMuted }]} accessible accessibilityLabel={time ? `${label}, ${time}` : label}>
+      <DishPhoto slug={slug} name={label} course={course} size={36} round />
+      <Text variant="label" weight={600} numberOfLines={1} style={{ flex: 1 }}>
+        {label}
+      </Text>
+      {time ? (
+        <View style={[styles.stripTime, { backgroundColor: colors.surface }]}>
+          <Icon name="timer" size={14} color={colors.primaryText} />
+          <Text variant="label" weight={600} color={colors.primaryText}>
+            {time}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -364,6 +387,8 @@ const styles = StyleSheet.create({
   segmentFill: { height: 6, borderRadius: 3 },
   photo: { height: 188, borderRadius: radius.card, overflow: "hidden" },
   photoImage: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
+  strip: { flexDirection: "row", alignItems: "center", gap: space.sm, borderRadius: radius.pill, paddingVertical: 6, paddingLeft: 6, paddingRight: 6 },
+  stripTime: { flexDirection: "row", alignItems: "center", gap: 4, borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6 },
   photoTag: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6, backgroundColor: "rgba(28,28,24,0.62)", maxWidth: "70%" },
   photoTop: { position: "absolute", top: space.md, left: space.md },
   photoBottom: { position: "absolute", left: space.md, right: space.md, bottom: space.md, flexDirection: "row", justifyContent: "space-between", gap: space.sm },

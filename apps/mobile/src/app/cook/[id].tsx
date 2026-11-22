@@ -13,7 +13,7 @@ import { PanResponder, ScrollView, StyleSheet, View, type ScrollViewInstance } f
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { FinishSheet } from "@/components/cook/FinishSheet";
-import { DirectionCard, HandCard, StepMeta, StepPhoto, StepProgress, StepTimerCard, TimeUpCard } from "@/components/cook/StepParts";
+import { DirectionCard, HandCard, StepDishStrip, StepMeta, StepPhoto, StepProgress, StepTimerCard, TimeUpCard } from "@/components/cook/StepParts";
 import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
 import { WhistleCounter } from "@/components/cook/WhistleCounter";
@@ -29,7 +29,7 @@ import { stepWords } from "@/domain/voiceStyle";
 import { catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { SlideIn } from "@/design-system/motion";
-import { dishImage, stepImage } from "@/design-system/media";
+import { dishImage, ownStepImage } from "@/design-system/media";
 import { Button, Card, IconButton, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
@@ -396,6 +396,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   }
 
   const secs = secondsFor(stepNo) ?? stepSeconds(step);
+  const bigPhoto = ownStepImage(doc.slug, stepNo) ?? (stepNo === 1 || last ? dishImage(doc.slug) : null);
   const stepTimer = timers.find((x) => x.stepNo === stepNo);
   // The step's own timer lives in the timer card; finished ones get a "Time's up" card; the rest stay as chips.
   const finished = timers.filter((x) => remaining(x, now) === 0);
@@ -581,7 +582,13 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
         ) : null}
 
         <SlideIn key={stepNo} from={dir} style={styles.step}>
-          <StepPhoto source={stepImage(doc.slug, stepNo)} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
+          {/* U21: the big photo when this step has its own, or to show the dish at the start and how it should look at
+              the end; in between, a slim strip so the instruction sits higher. */}
+          {bigPhoto ? (
+            <StepPhoto source={bigPhoto} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
+          ) : (
+            <StepDishStrip slug={doc.slug} label={dish} course={doc.course} time={secs ? durationLabel(secs) : undefined} />
+          )}
 
           {check && need ? (
             <KitchenCheckCard

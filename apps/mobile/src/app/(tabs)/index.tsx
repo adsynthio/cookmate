@@ -313,7 +313,7 @@ export default function HomeScreen() {
             {members.data.map((m) => (
               <Chip
                 key={m.id}
-                icon="you"
+                initial={(m.displayName.trim()[0] ?? "?").toUpperCase()}
                 label={m.displayName}
                 selected={whoEating === null || whoEating.includes(m.id)}
                 showCheck

@@ -118,12 +118,13 @@ mix regions and styles (Punjabi, South Indian, Gujarati, Bengali, Maharashtrian,
 restaurant favourite made at home, a festive or weekend special), and build at least one around leftovers or what
 goes off soon. Real dishes with their real names (e.g. "Pav Bhaji", "Masala Dosa", "Paneer Tikka Masala", "Veg Hakka
 Noodles", "Dahi Vada", "Stuffed Capsicum", "Besan ke Gatte", "Aloo Tikki Chaat"), right for the meal, the season and
-the time asked for. Every idea fits everyone's diet, any fast today and nothing from "avoid". "why": one warm line, at
+the time asked for. The main ingredient an idea is named for (the dal, beans, paneer, meat, egg or vegetable) must
+be in "kitchen": no Rajma without rajma. Every idea fits everyone's diet, any fast today and nothing from "avoid". "why": one warm line, at
 most 90 characters, naming what in the kitchen it uses; "uses": those kitchen items. Same language rules as the
 reasons; no health claims, no emoji.`;
 
 async function modelChef(client: Anthropic, householdId: string, language: string, brief: unknown) {
-  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@2" }, () => client.messages.parse(
+  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@3" }, () => client.messages.parse(
     {
       model: CHEF_MODEL,
       max_tokens: 1400,

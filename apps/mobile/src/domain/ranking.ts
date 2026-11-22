@@ -350,9 +350,24 @@ export function rankRecipes(recipes: RankRecipe[], ctx: RankContext): Ranked[] {
   let pool = recipes.filter((r) => excludedBecause(r, ctx) === null);
   // Nothing uses the items the cook wanted to use up: show ordinary picks rather than nothing.
   if (!pool.length && ctx.focus?.length) pool = recipes.filter((r) => excludedBecause(r, { ...ctx, focus: [] }) === null);
-  return pool
+  const ranked = pool
     .map((r) => scoreRecipe(r, ctx))
     .sort((a, b) => shoppingTier(a.match) - shoppingTier(b.match) || b.score - a.score || a.recipe.slug.localeCompare(b.recipe.slug));
+  // Rajma with no rajma isn't a dish this kitchen can make, however many of the spices are here (22 Nov 2026). Only
+  // when the cook asks for it, or nothing else is left, is a dish missing its main ingredient shown.
+  const cookable = ranked.filter((r) => !missingMain(r, ctx.craving.ingredients));
+  return cookable.length ? cookable : ranked;
+}
+
+/** What the dish is made of (role base or protein): rajma in Rajma, paneer in Matar Paneer, besan in Kadhi. */
+export function mainIngredients(r: RankRecipe): string[] {
+  return [...new Set(r.ingredients.filter((i) => !i.optional && (i.role === "base" || i.role === "protein")).map((i) => i.key))];
+}
+
+/** True when a main ingredient is missing (not here, no substitute, not a staple) and the cook didn't ask for it. */
+export function missingMain(r: Ranked, asked: string[] = []): boolean {
+  const main = mainIngredients(r.recipe);
+  return r.match.items.some((m) => m.status === "missing" && main.includes(m.key) && !asked.includes(m.key));
 }
 
 /**

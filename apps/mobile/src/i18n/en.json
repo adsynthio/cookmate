@@ -1506,5 +1506,6 @@
   "onb.k.scan.preparing": "Getting your photo ready…",
   "onb.k.scan.failed": "That photo couldn't be used. Try another one.",
   "onb.k.scan.remove": "Remove photo {n}",
-  "onb.consent.reading": "Reading your photos…"
+  "onb.consent.reading": "Reading your photos…",
+  "cook.stoveTitle": "Nothing on the stove yet"
 }

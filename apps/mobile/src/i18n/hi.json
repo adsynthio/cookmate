@@ -1502,5 +1502,6 @@
   "onb.k.scan.preparing": "आपकी फ़ोटो तैयार हो रही है…",
   "onb.k.scan.failed": "यह फ़ोटो काम नहीं आई। कोई और आज़माएँ।",
   "onb.k.scan.remove": "फ़ोटो {n} हटाएँ",
-  "onb.consent.reading": "आपकी फ़ोटो पढ़ रहे हैं…"
+  "onb.consent.reading": "आपकी फ़ोटो पढ़ रहे हैं…",
+  "cook.stoveTitle": "अभी चूल्हे पर कुछ नहीं"
 }

@@ -16,7 +16,7 @@ import { Badge, Button, Screen, SectionHeader, StateView, Text } from "@/design-
 import { Icon } from "@/design-system/icons";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
-import { Image, StyleSheet } from "react-native";
+import { Image, ScrollView, StyleSheet } from "react-native";
 import { recipeDocs } from "@/data/recipes";
 import { GuestsCard } from "@/components/cook/GuestsCard";
 import { recipeTitle } from "@/domain/recipes";
@@ -90,7 +90,12 @@ export default function CookTab() {
           <Enter>
             <View style={[styles.resume, shadow.card, { backgroundColor: colors.surface }]}>
               <View style={[styles.photo, { backgroundColor: colors.primaryPale }]}>
-                {dishImage(recipe.data.slug) ? <Image source={dishImage(recipe.data.slug)!} style={styles.photoFill} resizeMode="cover" accessible={false} /> : null}
+                {/* U18: no photo yet? The dish's own emoji on its tint, not an empty block. */}
+                {dishImage(recipe.data.slug) ? (
+                  <Image source={dishImage(recipe.data.slug)!} style={styles.photoFill} resizeMode="cover" accessible={false} />
+                ) : (
+                  <DishPhoto slug={recipe.data.slug} name={recipe.data.title} course={recipe.data.course} size={120} round />
+                )}
                 <View style={styles.photoTag}>
                   <Badge tone="onColor" icon="cook" label={t("cook.resume.badge")} />
                 </View>
@@ -116,13 +121,21 @@ export default function CookTab() {
         </>
       ) : (
         <>
-          <StateView
-            state="empty"
-            illustration={illustrations.emptyPicks}
-            title={t("cook.empty")}
-            actionLabel={t("cook.pick")}
-            onAction={() => router.navigate("/")}
-          />
+          {/* U18: one compact card instead of a screen-high empty state, so what you can cook shows straight away. */}
+          <Enter>
+            <View style={[styles.stove, { backgroundColor: colors.surfaceMuted }]}>
+              {illustrations.emptyPicks ? <Image source={illustrations.emptyPicks} style={styles.stoveArt} accessible={false} /> : null}
+              <View style={{ flex: 1, gap: space.xs }}>
+                <Text variant="subheading">{t("cook.stoveTitle")}</Text>
+                <Text variant="label" muted>
+                  {t("cook.empty")}
+                </Text>
+                <View style={{ alignSelf: "flex-start", marginTop: space.xs }}>
+                  <Button kind="accent" size="small" iconAfter="arrowRight" label={t("cook.pick")} onPress={() => router.navigate("/")} />
+                </View>
+              </View>
+            </View>
+          </Enter>
           {saved.data?.length ? (
             <>
               <SectionHeader title={t("cook.savedTitle")} dot={undefined} />
@@ -160,26 +173,30 @@ export default function CookTab() {
           {basics.length ? (
             <>
               <SectionHeader title={t("cook.basicsTitle")} dot={undefined} />
-              <Text muted>{t("cook.basicsBody")}</Text>
-              {basics.map((d, i) => (
-                <Enter key={d.slug} index={i}>
-                  <PressableScale
-                    accessibilityRole="button"
-                    accessibilityLabel={recipeTitle(d, getLocale())}
-                    onPress={() => router.push(`/recipe/${d.slug}`)}
-                    style={[styles.row, shadow.card, { backgroundColor: colors.surface }]}
-                  >
-                    <DishPhoto slug={d.slug} name={d.title} course={d.course} size={56} round />
-                    <View style={{ flex: 1, gap: 2 }}>
-                      <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
-                      <Text variant="caption" muted>
+              <Text variant="label" muted>
+                {t("cook.basicsBody")}
+              </Text>
+              {/* U18: a shelf of tiles you swipe through, not a second long list (some are also in the ideas above). */}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bleed} contentContainerStyle={styles.shelf}>
+                {basics.map((d, i) => (
+                  <Enter key={d.slug} index={i}>
+                    <PressableScale
+                      accessibilityRole="button"
+                      accessibilityLabel={`${recipeTitle(d, getLocale())}, ${recipeTimeText(d)}`}
+                      onPress={() => router.push(`/recipe/${d.slug}`)}
+                      style={[styles.tile, shadow.card, { backgroundColor: colors.surface }]}
+                    >
+                      <DishPhoto slug={d.slug} name={d.title} course={d.course} size={76} round />
+                      <Text variant="bodyStrong" numberOfLines={2} style={styles.tileName}>
+                        {recipeTitle(d, getLocale())}
+                      </Text>
+                      <Text variant="caption" muted numberOfLines={1}>
                         {recipeTimeText(d)}
                       </Text>
-                    </View>
-                    <Icon name="forward" size={20} color={colors.inkSecondary} />
-                  </PressableScale>
-                </Enter>
-              ))}
+                    </PressableScale>
+                  </Enter>
+                ))}
+              </ScrollView>
             </>
           ) : null}
         </>
@@ -190,8 +207,15 @@ export default function CookTab() {
 
 const styles = StyleSheet.create({
   resume: { borderRadius: radius.cardLg, overflow: "hidden" },
-  photo: { height: 180, overflow: "hidden" },
+  photo: { height: 180, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   photoFill: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
   photoTag: { position: "absolute", left: space.md, bottom: space.md },
   row: { flexDirection: "row", alignItems: "center", gap: space.md, borderRadius: radius.card, padding: space.md },
+  stove: { flexDirection: "row", alignItems: "center", gap: space.md, borderRadius: radius.cardLg, padding: space.lg },
+  stoveArt: { width: 84, height: 84 },
+  // The shelf runs to the screen edges, so the next tile peeks in from the side.
+  bleed: { marginHorizontal: -space.gutter },
+  shelf: { gap: space.sm, paddingVertical: 6, paddingHorizontal: space.gutter },
+  tile: { width: 128, alignItems: "center", gap: 4, borderRadius: radius.card, paddingVertical: space.md, paddingHorizontal: space.sm },
+  tileName: { textAlign: "center", minHeight: 40 },
 });

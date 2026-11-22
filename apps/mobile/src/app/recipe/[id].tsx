@@ -23,7 +23,7 @@ import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
 import {dishImage} from "@/design-system/media";
 import { Enter, PressableScale, SlideIn } from "@/design-system/motion";
-import { Badge, Button, Card, IconButton, Photo, Screen, StateView, Text } from "@/design-system/primitives";
+import { Badge, Button, Card, IconButton, Photo, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
@@ -394,59 +394,6 @@ function RecipeBody({
         </Card>
       ) : null}
 
-      <MakeItDifferent doc={doc} has={(k) => inKitchen.has(k)} avoid={avoid} nameOf={nameOf} />
-
-      {householdId ? <PlanToDinner doc={doc} householdId={householdId} servings={servings} /> : null}
-
-      {/* S10: a little extra tonight is tomorrow's tiffin. */}
-      {(() => {
-        const tiffin = tiffinFrom(doc.parent_id ? doc.slug.replace(/-v\d+$/, "") : doc.slug, 1);
-        if (!tiffin) return null;
-        return (
-          <Card style={{ gap: space.xs }}>
-            <Text variant="subheading">{t("tiffin.title")}</Text>
-            <Text>{t(`tiffin.idea.${tiffin.idea}`)}</Text>
-            <Text variant="caption" muted>
-              {t("tiffin.fridge")}
-            </Text>
-            <View style={{ alignSelf: "flex-start" }}>
-              <Button kind="secondary" size="small" icon="plus" label={t("tiffin.cookExtra", { n: servings + 1 })} onPress={() => setServings((s) => Math.min(20, s + 1))} />
-            </View>
-          </Card>
-        );
-      })()}
-
-      {/* F4: cook once, eat twice. Make double, keep half safely, and tomorrow's idea from it. */}
-      {(() => {
-        const plan = cookTwicePlan(doc);
-        if (!plan) return null;
-        const doubled = servings >= 2 * Math.max(1, eaters.length || doc.base_servings);
-        return (
-          <Card style={{ gap: space.xs }}>
-            <Text variant="subheading">{t("twice.title")}</Text>
-            <Text>{t("twice.keep", { hours: plan.keep.fridgeWithinHours, days: plan.keep.eatWithinDays })}</Text>
-            {plan.riceCare ? <Text variant="caption" muted>{t("left.riceCare")}</Text> : null}
-            {plan.ideas.length ? (
-              <Text variant="caption" muted>
-                {t("twice.tomorrow", { ideas: plan.ideas.map((i) => t(`left.idea.${i}.t` as StringKey)).join(" · ") })}
-              </Text>
-            ) : null}
-            <View style={{ alignSelf: "flex-start" }}>
-              <Button
-                kind="secondary"
-                size="small"
-                icon={doubled ? "check" : "plus"}
-                disabled={doubled}
-                label={doubled ? t("twice.doubled", { n: servings }) : t("twice.double", { n: Math.min(20, servings * 2) })}
-                onPress={() => setServings((s) => Math.min(20, s * 2))}
-              />
-            </View>
-          </Card>
-        );
-      })()}
-
-      <BalanceTip slug={doc.slug} groups={doc.food_groups} course={doc.course} diet={doc.diet} />
-
       {remembered.length ? (
         <Card tint={colors.peach}>
           <Text variant="label" muted>
@@ -631,6 +578,62 @@ function RecipeBody({
           </>
         )}
       </SlideIn>
+
+      {/* U24: what's for later (another version, planning, tomorrow's tiffin, cooking double, a full meal) comes after
+          the ingredients and steps, so they are the first thing below the dish. */}
+      <SectionHeader title={t("recipe.moreTitle")} dot={undefined} />
+      <MakeItDifferent doc={doc} has={(k) => inKitchen.has(k)} avoid={avoid} nameOf={nameOf} />
+
+      {householdId ? <PlanToDinner doc={doc} householdId={householdId} servings={servings} /> : null}
+
+      {/* S10: a little extra tonight is tomorrow's tiffin. */}
+      {(() => {
+        const tiffin = tiffinFrom(doc.parent_id ? doc.slug.replace(/-v\d+$/, "") : doc.slug, 1);
+        if (!tiffin) return null;
+        return (
+          <Card style={{ gap: space.xs }}>
+            <Text variant="subheading">{t("tiffin.title")}</Text>
+            <Text>{t(`tiffin.idea.${tiffin.idea}`)}</Text>
+            <Text variant="caption" muted>
+              {t("tiffin.fridge")}
+            </Text>
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button kind="secondary" size="small" icon="plus" label={t("tiffin.cookExtra", { n: servings + 1 })} onPress={() => setServings((s) => Math.min(20, s + 1))} />
+            </View>
+          </Card>
+        );
+      })()}
+
+      {/* F4: cook once, eat twice. Make double, keep half safely, and tomorrow's idea from it. */}
+      {(() => {
+        const plan = cookTwicePlan(doc);
+        if (!plan) return null;
+        const doubled = servings >= 2 * Math.max(1, eaters.length || doc.base_servings);
+        return (
+          <Card style={{ gap: space.xs }}>
+            <Text variant="subheading">{t("twice.title")}</Text>
+            <Text>{t("twice.keep", { hours: plan.keep.fridgeWithinHours, days: plan.keep.eatWithinDays })}</Text>
+            {plan.riceCare ? <Text variant="caption" muted>{t("left.riceCare")}</Text> : null}
+            {plan.ideas.length ? (
+              <Text variant="caption" muted>
+                {t("twice.tomorrow", { ideas: plan.ideas.map((i) => t(`left.idea.${i}.t` as StringKey)).join(" · ") })}
+              </Text>
+            ) : null}
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button
+                kind="secondary"
+                size="small"
+                icon={doubled ? "check" : "plus"}
+                disabled={doubled}
+                label={doubled ? t("twice.doubled", { n: servings }) : t("twice.double", { n: Math.min(20, servings * 2) })}
+                onPress={() => setServings((s) => Math.min(20, s * 2))}
+              />
+            </View>
+          </Card>
+        );
+      })()}
+
+      <BalanceTip slug={doc.slug} groups={doc.food_groups} course={doc.course} diet={doc.diet} />
     </Screen>
   );
 }

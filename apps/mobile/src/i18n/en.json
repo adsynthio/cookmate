@@ -1515,5 +1515,6 @@
   "community.example.name": "Mummy",
   "community.example.circle": "Family",
   "community.example.note": "Soaked it overnight and added extra ginger. Everyone had seconds!",
-  "community.example.change": "More ginger"
+  "community.example.change": "More ginger",
+  "list.heading": "What to buy"
 }

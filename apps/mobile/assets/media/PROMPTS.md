@@ -359,7 +359,7 @@ Used when an item has no photo of its own yet, and for homemade food and leftove
 | `media/ingredients/category-sweetener.png` | a small, tidy mix of three or four typical items from this group: sugar and jaggery, arranged together |
 | `media/ingredients/category-vegetable.png` | a small, tidy mix of three or four typical items from this group: vegetables, arranged together |
 
-### 1.20 Added to the catalog later (76)
+### 1.20 Added to the catalog later (77)
 
 These came in with the bigger catalog. Each row has its own "how to show it", so use the last column for {HOW TO SHOW IT}. Same 480 x 480 size and the same ingredient prompt as the groups above; keep each small group below consistent with its matching group above (for example, vegetables here look like 1.1).
 
@@ -416,7 +416,7 @@ These came in with the bigger catalog. Each row has its own "how to show it", so
 | `media/ingredients/roasted-chana.png` | roasted chana (bhuna chana) | भुना चना | a heap of roasted chana with their brown, slightly cracked skins, in a steel katori |
 | `media/ingredients/dried-green-peas.png` | dried green peas (sukhi matar) | सूखी मटर | a heap of dried green peas, wrinkled and dull green, in a steel katori |
 
-#### Spices and masalas (12)
+#### Spices and masalas (13)
 
 | File | Item | Hindi | How to show it |
 | --- | --- | --- | --- |
@@ -431,6 +431,7 @@ These came in with the bigger catalog. Each row has its own "how to show it", so
 | `media/ingredients/chilli-flakes.png` | chilli flakes | चिली फ्लेक्स | a small heap of red chilli flakes with their seeds in a small bowl |
 | `media/ingredients/dried-pomegranate-seeds.png` | dried pomegranate seeds (anardana) | अनारदाना | a heap of sticky, dark reddish-brown dried pomegranate seeds (anardana) |
 | `media/ingredients/caraway-seeds.png` | caraway seeds (shahi jeera) | शाही जीरा | a heap of thin, dark, curved shahi jeera seeds |
+| `media/ingredients/coriander-seeds.png` | coriander seeds (sabut dhaniya) | साबुत धनिया | a heap of round, ridged, pale brown coriander seeds in a steel katori |
 | `media/ingredients/panch-phoron.png` | panch phoron | पंच फोरन | a heap of the Bengali five-seed mix: cumin, mustard, fenugreek, nigella and fennel seeds mixed together |
 
 #### Nuts, seeds and oils (11)
@@ -625,7 +626,7 @@ Cocktails (the last four rows) are shown only to adults who switched them on. Ke
 - [ ] 1. Ingredient photos: dals, grains, flours
 - [ ] 1. Ingredient photos: spices, oils, nuts, sweeteners, condiments, packaged, tea, baking
 - [ ] 1.19 Category fallbacks
-- [ ] 1.20 Added to the catalog later (76)
+- [ ] 1.20 Added to the catalog later (77)
 - [ ] 2. Three scenes
 - [ ] 3. Six state illustrations in the new colours
 - [ ] 4. App icon set and splash in olive

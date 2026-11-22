@@ -1,12 +1,12 @@
 // Recipe search in any language and script (KIT-054, REC-08): "rajma", "राजमा" or "kidney bean curry".
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
 import { Icon } from "@/design-system/icons";
 import { dishImage, illustrations } from "@/design-system/media";
-import { Card, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
+import { Button, Card, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { space } from "@/design-system/tokens";
 import { recipeTitle } from "@/domain/recipes";
@@ -17,7 +17,9 @@ import { services, type RecipeSummary } from "@/services";
 export default function SearchScreen() {
   useLocale();
   const router = useRouter();
-  const [text, setText] = useState("");
+  // U15: opened from "In season now" with a word already typed.
+  const { q } = useLocalSearchParams<{ q?: string }>();
+  const [text, setText] = useState(typeof q === "string" ? q : "");
   const [query, setQuery] = useState("");
 
   // Search as you type, a beat after the last key.
@@ -64,12 +66,17 @@ export default function SearchScreen() {
           onAction={() => results.refetch()}
         />
       ) : results.data.length === 0 ? (
-        <StateView
-          state="empty"
-          illustration={illustrations.emptyPicks}
-          title={t("search.none", { q: query })}
-          body={t("search.noneBody")}
-        />
+        <View style={{ gap: space.md }}>
+          <StateView
+            state="empty"
+            illustration={illustrations.emptyPicks}
+            title={t("search.none", { q: query })}
+            body={t("search.noneBody")}
+          />
+          {/* U15: not a dead end. Cookmate can write a dish around it, or answer what to make with it. */}
+          <Button kind="accent" stretch icon="sparkle" label={t("search.make", { q: query })} onPress={() => router.push({ pathname: "/invent", params: { dish: query } })} />
+          <Button kind="secondary" stretch label={t("search.ask")} onPress={() => router.push({ pathname: "/ask", params: { q: t("search.askQ", { q: query }) } })} />
+        </View>
       ) : (
         results.data.map((r) => <ResultRow key={r.id} recipe={r} onPress={() => router.push(`/recipe/${r.id}`)} />)
       )}

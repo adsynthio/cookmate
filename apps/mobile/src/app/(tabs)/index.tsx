@@ -14,6 +14,7 @@ import { ReadyCard } from "@/components/home/ReadyCard";
 import { PlanCard } from "@/components/home/PlanCard";
 import { DinnerCard } from "@/components/home/DinnerCard";
 import { PicksSkeleton } from "@/components/home/PicksSkeleton";
+import { InSeason } from "@/components/home/InSeason";
 import { WeekCard } from "@/components/you/WeekCard";
 import { InventCard, NewDishCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
 
@@ -442,6 +443,9 @@ export default function HomeScreen() {
           ) : null}
         </>
       )}
+
+      {/* U15: what's in season this month, after today's picks. */}
+      {!focus && !craving ? <InSeason today={new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" })} /> : null}
 
       {useSoon.data && useSoon.data.length > 0 ? (
         <View style={{ gap: space.sm }}>

@@ -5,11 +5,9 @@ import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
-import { DishPhoto } from "@/design-system/FoodPhoto";
-import { Icon } from "@/design-system/icons";
-import { ingredientImage } from "@/design-system/media";
+import { DishPhoto, FoodPhoto } from "@/design-system/FoodPhoto";
 import { Enter } from "@/design-system/motion";
-import { Badge, Button, Photo, Text } from "@/design-system/primitives";
+import { Badge, Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
@@ -95,7 +93,7 @@ export function WantDish({
             <View style={styles.chips}>
               {missing.map((m) => (
                 <View key={m.key} style={[styles.chip, { borderColor: colors.accent }]}>
-                  {ingredientImage(m.key) ? <Photo source={ingredientImage(m.key)} size={22} round /> : <Icon name="cart" size={14} color={colors.accentText} />}
+                  <FoodPhoto name={m.key} category={catalogEntry(m.key)?.category} size={22} round />
                   <Text variant="label" color={colors.accentText}>
                     {nameOf(m.key)}
                     {m.substitute ? ` · ${t("recipe.orUse", { item: nameOf(m.substitute) })}` : ""}

@@ -356,6 +356,8 @@ export function Field({ variant = "body", style, onFocus, onBlur, ...rest }: Tex
       }}
       style={[
         styles.field,
+        // U32: a box for several lines gets card corners; a pill-round tall box turns into an oval and clips its text.
+        rest.multiline ? styles.fieldMultiline : null,
         textStyle(variant),
         { color: colors.ink, backgroundColor: colors.surface, borderColor: focused ? colors.primary : colors.line },
         // The browser's own focus outline is replaced by the olive border above.
@@ -549,6 +551,7 @@ const styles = StyleSheet.create({
   card: { borderRadius: radius.card, padding: space.gutter, gap: space.md },
   iconButton: { alignItems: "center", justifyContent: "center" },
   field: { borderRadius: radius.pill, paddingHorizontal: space.gutter, paddingVertical: space.md, minHeight: 52, borderWidth: 1 },
+  fieldMultiline: { borderRadius: radius.card, paddingHorizontal: space.lg, minHeight: 96, textAlignVertical: "top" },
   badge: { flexDirection: "row", alignItems: "center", gap: 4, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3, alignSelf: "flex-start" },
   section: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.md },
   sectionTitle: { flexDirection: "row", alignItems: "center", gap: space.sm, flexShrink: 1 },

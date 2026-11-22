@@ -1521,5 +1521,10 @@
   "lang.hi": "हिन्दी",
   "lang.hinglish": "Hinglish",
   "lang.en": "English",
-  "tools.gasBurners": "गैस चूल्हा, {n} बर्नर"
+  "tools.gasBurners": "गैस चूल्हा, {n} बर्नर",
+  "list.movedOne": "{item} अब आपकी रसोई में है",
+  "list.movedMany": "{n} चीज़ें आपकी रसोई में आ गईं",
+  "list.allIn": "सब रसोई में आ गया 🎉",
+  "list.allInBody": "आपकी लिस्ट पूरी हुई। देखिए अब इससे क्या बना सकते हैं।",
+  "list.cookNow": "देखें क्या बना सकते हैं"
 }

@@ -21,6 +21,16 @@
       body { overflow: hidden; overscroll-behavior: none; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
       #root { display: flex; height: 100%; flex: 1; }
       @media (prefers-color-scheme: dark) { html, body { background: #15140F; } }
+      /* U10: a branded first moment while the app's code loads (a second or two on a phone), instead of a blank
+         screen. Plain HTML and CSS in #root; React replaces it as soon as the app starts. */
+      #boot { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 6px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #56652B; }
+      #boot .bowl { font-size: 56px; line-height: 1.2; animation: boot-bob 1.4s ease-in-out infinite; }
+      #boot .name { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; }
+      #boot .tag { font-size: 14px; color: #7A6F5E; }
+      @keyframes boot-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+      @media (prefers-reduced-motion: reduce) { #boot .bowl { animation: none; } }
+      @media (prefers-color-scheme: dark) { #boot { color: #C9D69A; } #boot .tag { color: #A89F8E; } }
       /* iOS draws the clock and battery in white under black-translucent. The screens run under the notch / Dynamic
          Island like a native app; only where the white clock would sit on a light screen (light mode, except Home
          while its dark hero is up there) does an olive band fade in behind it. The root layout sets
@@ -49,7 +59,13 @@
   </head>
   <body>
     <noscript>Cookmate needs JavaScript to run.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot" role="status" aria-label="Cookmate is starting">
+        <div class="bowl" aria-hidden="true">🍲</div>
+        <div class="name">Cookmate</div>
+        <div class="tag">Made for Indian kitchens</div>
+      </div>
+    </div>
     <div id="status-band" aria-hidden="true"></div>
     <script>
       // Installed on an iPhone: the app fills the whole screen, so its height is the screen's height (in CSS pixels).

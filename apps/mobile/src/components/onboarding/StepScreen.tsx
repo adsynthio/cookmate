@@ -65,11 +65,8 @@ export function StepScreen({
           <View style={styles.spacer} />
         )}
         <Text variant="wordmark">Cookmate</Text>
-        <View style={[styles.chip, { backgroundColor: colors.surfaceHigh }]}>
-          <Text variant="caption" weight={500} muted numberOfLines={1}>
-            {chip}
-          </Text>
-        </View>
+        {/* U31: the step's name is said once, beside "Step 2 of 4"; it was also a chip here and the line above the
+            question ("Your family" three times on one screen). */}
         <View style={{ flex: 1 }} />
         {onSkip ? (
           <Button kind="quiet" size="small" label={t("onb.skip")} onPress={onSkip} />
@@ -90,7 +87,7 @@ export function StepScreen({
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <Enter style={styles.heading}>
-          {overline ? (
+          {overline && overline !== chip ? (
             <Text variant="bodyStrong" color={colors.accentText}>
               {overline}
             </Text>
@@ -124,7 +121,6 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   top: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingHorizontal: space.md, minHeight: 56 },
   spacer: { width: 44 },
-  chip: { borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 4, flexShrink: 1 },
   progress: { paddingHorizontal: space.gutter, gap: space.sm, paddingBottom: space.sm },
   progressRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   upper: { textTransform: "uppercase" },

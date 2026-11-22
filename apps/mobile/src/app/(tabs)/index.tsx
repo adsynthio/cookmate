@@ -29,6 +29,7 @@ import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick } from "@/services";
+import { rememberShown, seenLately } from "@/state/seen";
 import { useSession } from "@/state/session";
 import { useSettled } from "@/state/settled";
 
@@ -94,6 +95,11 @@ export default function HomeScreen() {
         whoEating: ask.whoEating ?? undefined,
         focus: ask.focusKey ? [ask.focusKey] : undefined,
         languageCode: LANGUAGE_CODES[getLocale()],
+        // What Home showed lately, so the picks and ideas change each time (read when the request is made).
+        ...(() => {
+          const l = seenLately();
+          return { shownLately: l.recipes, ideasLately: l.ideas };
+        })(),
       }),
     enabled: !!householdId && !!memberId,
     staleTime: 30 * 60_000,
@@ -102,6 +108,16 @@ export default function HomeScreen() {
     refetchOnReconnect: false,
   });
   const { isStale: picksStale, refetch: refetchPicks } = picks;
+  // Remember what was shown, so the next picks (after 30 minutes, or "Something different") bring new ones.
+  useEffect(() => {
+    const d = picks.data;
+    if (!d) return;
+    rememberShown({
+      recipeIds: [d.hero, ...d.alternates].filter((p): p is NonNullable<typeof p> => !!p).map((p) => p.recipeId),
+      ideas: (d.ideas ?? []).map((i) => i.name),
+    });
+  }, [picks.data]);
+  const ideas = picks.data?.ideas?.length ? picks.data.ideas : picks.data?.newDish ? [picks.data.newDish] : [];
   useFocusEffect(
     useCallback(() => {
       if (picksStale) void refetchPicks();
@@ -435,12 +451,32 @@ export default function HomeScreen() {
               </View>
             )}
           </View>
+          {/* New dishes beyond Cookmate's recipes, from this kitchen: right after the hero, so Home isn't the same
+              three library dishes every day. Tapping one has it written out for this kitchen. */}
+          {ideas.length ? (
+            <View style={{ gap: space.sm }}>
+              <SectionHeader title={t("home.newIdeas.title")} dot={undefined} />
+              <Text variant="caption" muted>
+                {t("home.newIdeas.body")}
+              </Text>
+              {ideas.map((d) => (
+                <NewDishCard key={d.name} dish={d} overline={false} onPress={() => router.push({ pathname: "/invent", params: { dish: d.name } })} />
+              ))}
+            </View>
+          ) : null}
           {picks.data.alternates.map((p, i) => (
             <PickCard key={p.recommendationId} pick={p} index={i + 1} onOpen={() => open(p)} />
           ))}
-          {picks.data.newDish ? (
-            <NewDishCard dish={picks.data.newDish} onPress={() => router.push({ pathname: "/invent", params: { dish: picks.data!.newDish!.name } })} />
-          ) : null}
+          <View style={{ alignSelf: "center" }}>
+            <Button
+              kind="quiet"
+              size="small"
+              icon="sparkle"
+              label={picks.isFetching ? t("home.newIdeas.finding") : t("home.newIdeas.more")}
+              disabled={picks.isFetching}
+              onPress={() => void refetchPicks()}
+            />
+          </View>
         </>
       )}
 

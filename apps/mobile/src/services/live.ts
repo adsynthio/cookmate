@@ -689,6 +689,8 @@ export const liveServices: Services = {
           who_eating: input.whoEating,
           focus: input.focus,
           language_code: input.languageCode,
+          shown_lately: input.shownLately,
+          ideas_lately: input.ideasLately,
         },
       });
       if (error || !data) throw error ?? new Error("suggest-meals returned nothing");
@@ -714,6 +716,7 @@ export const liveServices: Services = {
         alternates: picks.slice(1),
         chosenBy: data.chosen_by ?? "rules",
         newDish: data.new_dish ?? null,
+        ideas: data.ideas ?? (data.new_dish ? [data.new_dish] : []),
         check: data.check ? { itemId: data.check.item_id, name: data.check.name, ifYes: data.check.if_yes, ifNo: data.check.if_no } : null,
         calendar: data.calendar
           ? {
@@ -1207,6 +1210,7 @@ type SuggestMealsResponse = {
   batch_id: string;
   chosen_by?: "model" | "rules";
   new_dish?: { name: string; why: string } | null;
+  ideas?: { name: string; why: string; uses?: string[] }[];
   meal_slot: MealSlot;
   picks: {
     recommendation_id: string;

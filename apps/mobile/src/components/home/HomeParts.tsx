@@ -277,7 +277,7 @@ export function InventCard({ onPress }: { onPress: () => void }) {
 }
 
 /** The chef step's idea for a dish beyond Cookmate's recipes; tapping it has the dish written for this kitchen. */
-export function NewDishCard({ dish, onPress }: { dish: { name: string; why: string }; onPress: () => void }) {
+export function NewDishCard({ dish, onPress, overline = true }: { dish: { name: string; why: string }; onPress: () => void; overline?: boolean }) {
   const { colors } = useTheme();
   return (
     <Enter>
@@ -287,13 +287,18 @@ export function NewDishCard({ dish, onPress }: { dish: { name: string; why: stri
         onPress={onPress}
         style={[styles.pick, shadow.card, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line }]}
       >
+        {overline ? (
+          <View style={styles.row}>
+            <Icon name="sparkle" size={14} color={colors.accentText} />
+            <Text variant="overline" color={colors.accentText}>
+              {t("home.newDish.overline").toUpperCase()}
+            </Text>
+          </View>
+        ) : null}
         <View style={styles.row}>
-          <Icon name="sparkle" size={14} color={colors.accentText} />
-          <Text variant="overline" color={colors.accentText}>
-            {t("home.newDish.overline").toUpperCase()}
-          </Text>
+          {overline ? null : <Icon name="sparkle" size={16} color={colors.accentText} />}
+          <Text variant="subheading" style={{ flexShrink: 1 }}>{dish.name}</Text>
         </View>
-        <Text variant="subheading">{dish.name}</Text>
         <Text variant="label" muted>
           {dish.why}
         </Text>

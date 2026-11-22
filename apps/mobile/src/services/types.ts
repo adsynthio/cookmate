@@ -111,6 +111,8 @@ export type PickBatch = {
   chosenBy?: "model" | "rules";
   /** An everyday dish beyond Cookmate's recipes that this kitchen can make tonight; tap to have it written out. */
   newDish?: { name: string; why: string } | null;
+  /** Two or three new dishes beyond Cookmate's recipes that this kitchen can make; tap one to have it written out. */
+  ideas?: { name: string; why: string; uses?: string[] }[];
 };
 
 export type PantryQuestion = { itemId: string; name: string; ifYes: string | null; ifNo: string | null };
@@ -157,6 +159,9 @@ export type PickInput = {
   /** "Use these first": ingredient keys from the Use Soon strip (KIT-043). */
   focus?: string[];
   languageCode: string;
+  /** What Home showed lately (recipe ids and idea names), so the next picks change. */
+  shownLately?: string[];
+  ideasLately?: string[];
 };
 
 export type RecipeSummary = {

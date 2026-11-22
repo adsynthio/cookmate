@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { NO_CRAVING, type Ranked, type RankContext } from "../_shared/ranking.ts";
-import { acceptChef, acceptNewDish, chefBrief, seasonOf } from "./chef.ts";
+import { acceptChef, acceptIdeas, acceptNewDish, chefBrief, MAX_IDEAS, seasonOf } from "./chef.ts";
 
 const dish = (id: string, title: string, items: { key: string; daysLeft?: number | null; missing?: boolean }[]): Ranked => ({
   recipe: { id, slug: id, title, course: "main", diet: "veg", timeMin: 30, spiceLevel: 2, equipment: [], tags: [], flavor: {}, ingredients: [], equipmentFallbacks: [] },
@@ -74,4 +74,47 @@ Deno.test("the brief carries leftovers, what's going off and who is eating", () 
   assertEquals(b.candidates[0]!.cooked_days_ago, 2);
   assertEquals(b.candidates[2]!.to_buy, ["peanuts"]);
   assertEquals(b.season, "autumn");
+});
+
+Deno.test("the brief shows the whole kitchen, going-off first, and what Home showed lately", () => {
+  const ctx = {
+    slot: "dinner", eaters: [], staples: [], equipment: null, avoid: [], like: [], prefer: [], recent: [], craving: NO_CRAVING,
+    timeBudgetMin: 45, weights: {} as RankContext["weights"], alreadyCooked: [],
+    pantry: [
+      { itemId: "1", key: "paneer", confidence: 1, daysLeft: 6, out: false },
+      { itemId: "2", key: "spinach", confidence: 1, daysLeft: 1, out: false },
+      { itemId: "3", key: "salt", confidence: 1, daysLeft: null, out: true },
+      { itemId: "4", key: "capsicum", confidence: 0.3, daysLeft: null, out: false },
+    ],
+  } as RankContext;
+  const b = chefBrief({
+    ranked: pool, templates: new Map(), ctx, slot: "dinner", today: "2026-11-22", festivals: [], craving: NO_CRAVING, nameOf: (k) => k,
+    shownLately: new Set(["rajma"]), ideasLately: ["Pav Bhaji"],
+  });
+  assertEquals(b.kitchen, ["spinach (1 days left)", "paneer"], "going off first; nothing marked out or unsure");
+  assertEquals(b.candidates[0]!.shown_lately, true);
+  assertEquals(b.candidates[1]!.shown_lately, undefined);
+  assertEquals(b.ideas_lately, ["Pav Bhaji"]);
+});
+
+Deno.test("ideas: up to three, real names, nothing avoided, nothing shown lately, no repeats", () => {
+  const out = {
+    picks: [],
+    ideas: [
+      { name: "Pav Bhaji", why: "The capsicum and potatoes are here.", uses: ["capsicum", "potato"] },
+      { name: "Masala Dosa", why: "There's dosa batter to use up.", uses: ["idli dosa batter"] },
+      { name: "pav bhaji", why: "Again.", uses: [] },
+      { name: "Peanut Chaat", why: "Crunchy and quick.", uses: ["peanuts"] },
+      { name: "Rajma", why: "Already a recipe.", uses: [] },
+      { name: "Veg Hakka Noodles", why: "Noodles and cabbage in the kitchen.", uses: ["noodles", "cabbage"] },
+      { name: "Paneer Tikka Masala", why: "Paneer is here.", uses: ["paneer"] },
+      { name: "Stuffed Capsicum", why: "One more.", uses: [] },
+    ],
+  };
+  const ideas = acceptIdeas(out, ["Rajma"], { avoid: ["peanuts"], lately: ["masala dosa"] });
+  assertEquals(ideas.map((i) => i.name), ["Pav Bhaji", "Veg Hakka Noodles", "Paneer Tikka Masala"]);
+  assertEquals(ideas.length, MAX_IDEAS);
+  assertEquals(ideas[0]!.uses, ["capsicum", "potato"]);
+  assertEquals(acceptIdeas({ picks: [], new_dish: { name: "Aloo Methi", why: "Methi is fresh." } }, []), [{ name: "Aloo Methi", why: "Methi is fresh." }], "the older single idea still counts");
+  assertEquals(acceptIdeas(null, []), []);
 });

@@ -103,11 +103,17 @@ export type IdeaLocale = "en" | "hi" | "hinglish";
 
 /** The first idea the kitchen can make that isn't one of Cookmate's recipes or tonight's picks. */
 export function ideaFor(have: ReadonlySet<string>, takenTitles: string[], locale: IdeaLocale): { name: string; why: string } | null {
-  const taken = new Set(takenTitles.map((t) => t.toLowerCase()));
-  const idea = IDEAS.find((i) => i.needs.every((k) => have.has(k)) && !taken.has(i.doc.title.toLowerCase()));
-  if (!idea) return null;
-  const name = locale === "hi" ? idea.doc.titles?.hi ?? idea.doc.title : idea.doc.title;
-  return { name, why: idea.why[locale] };
+  return ideasFor(have, takenTitles, locale, 1)[0] ?? null;
+}
+
+/** Up to `max` ideas this kitchen can make, skipping taken titles and ones shown lately (preview mode). */
+export function ideasFor(have: ReadonlySet<string>, takenTitles: string[], locale: IdeaLocale, max = 3, lately: string[] = []): { name: string; why: string }[] {
+  const taken = new Set([...takenTitles, ...lately].map((t) => t.toLowerCase()));
+  return IDEAS.filter((i) => i.needs.every((k) => have.has(k)))
+    .map((i) => ({ name: locale === "hi" ? i.doc.titles?.hi ?? i.doc.title : i.doc.title, title: i.doc.title, why: i.why[locale] }))
+    .filter((i) => !taken.has(i.title.toLowerCase()) && !taken.has(i.name.toLowerCase()))
+    .slice(0, max)
+    .map(({ name, why }) => ({ name, why }));
 }
 
 /** The written-out idea for a dish name (any of its titles), or null when the preview doesn't know that dish. */

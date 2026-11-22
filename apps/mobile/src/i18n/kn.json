@@ -1519,5 +1519,6 @@
   "list.heading": "ಏನು ಖರೀದಿಸಬೇಕು",
   "recipe.moreTitle": "ಈ ಖಾದ್ಯದೊಂದಿಗೆ ಇನ್ನಷ್ಟು",
   "kitchen.preview.title": "ಇಲ್ಲಿಯವರೆಗೆ ನನಗೆ ಕಂಡದ್ದು",
-  "kitchen.preview.out": "ಮುಗಿದಿದೆ"
+  "kitchen.preview.out": "ಮುಗಿದಿದೆ",
+  "safety.containsFrom": "{allergen} ({items}ನಿಂದ)"
 }

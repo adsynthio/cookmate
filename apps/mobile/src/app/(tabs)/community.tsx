@@ -9,12 +9,15 @@ import { Image, Share, StyleSheet, View } from "react-native";
 
 import { AppHeader } from "@/components/AppHeader";
 import { Icon } from "@/design-system/icons";
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { dishImage, illustrations } from "@/design-system/media";
 import { Enter, Layout, PressableScale } from "@/design-system/motion";
 import { Badge, Button, Chip, Field, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
+import { recipeDocs } from "@/data/recipes";
 import { cleanInviteCode, showInviteCode, timeAgo } from "@/domain/community";
+import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { CommunityError, services, type Circle, type CommunityPost, type ReportReason } from "@/services";
 import { useSession } from "@/state/session";
@@ -60,7 +63,10 @@ export default function CommunityScreen() {
       ) : circles.isError ? (
         <StateView state="error" title={t("state.error.title")} body={t("state.error.body")} actionLabel={t("state.retry")} onAction={() => void circles.refetch()} />
       ) : !circles.data.length && panel === "none" ? (
-        <Welcome onCreate={() => setPanel("create")} onJoin={() => setPanel("join")} />
+        <>
+          <Welcome onCreate={() => setPanel("create")} onJoin={() => setPanel("join")} />
+          <HowItWorks />
+        </>
       ) : (
         <>
           {circles.data.length ? (
@@ -135,6 +141,71 @@ function Welcome({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => voi
         </View>
       </View>
     </Enter>
+  );
+}
+
+const HOW_STEPS: { emoji: string; key: StringKey }[] = [
+  { emoji: "📲", key: "community.how.1" },
+  { emoji: "🍲", key: "community.how.2" },
+  { emoji: "👨‍👩‍👧", key: "community.how.3" },
+];
+
+/** U20: before the first circle, what one looks like: three steps and an example of a shared dish. */
+function HowItWorks() {
+  const { colors } = useTheme();
+  const rajma = recipeDocs.find((d) => d.slug === "rajma");
+  const dish = rajma ? recipeTitle(rajma, getLocale()) : "Rajma";
+  return (
+    <>
+      <SectionHeader title={t("community.how.title")} dot={undefined} />
+      <View style={{ gap: space.md }}>
+        {HOW_STEPS.map((s, i) => (
+          <Enter key={s.key} index={i}>
+            <View style={styles.row}>
+              <View style={[styles.step, { backgroundColor: colors.surfaceMuted }]}>
+                <Text style={styles.stepEmoji} accessible={false}>
+                  {s.emoji}
+                </Text>
+              </View>
+              <Text style={{ flex: 1 }}>{t(s.key)}</Text>
+            </View>
+          </Enter>
+        ))}
+      </View>
+      <Enter index={3}>
+        <View style={[styles.post, shadow.card, { backgroundColor: colors.surface, opacity: 0.92 }]} accessibilityLabel={`${t("community.example")}: ${dish}`}>
+          <View style={[styles.row, { padding: space.lg, paddingBottom: space.sm }]}>
+            <View style={[styles.avatar, { backgroundColor: colors.peach }]}>
+              <Text variant="bodyStrong" color={colors.peachText}>
+                {t("community.example.name").slice(0, 1).toUpperCase()}
+              </Text>
+            </View>
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text variant="bodyStrong" numberOfLines={1}>
+                {t("community.kitchenOf", { name: t("community.example.name") })}
+              </Text>
+              <Text variant="caption" muted numberOfLines={1}>
+                {t("community.example.circle")}
+              </Text>
+            </View>
+            <Badge tone="muted" label={t("community.example")} />
+          </View>
+          <View style={[styles.row, { paddingHorizontal: space.lg, paddingBottom: space.lg, alignItems: "flex-start" }]}>
+            <DishPhoto slug="rajma" name={dish} course="main" size={72} radius={radius.item} />
+            <View style={{ flex: 1, gap: space.xs }}>
+              <Text variant="subheading">{dish}</Text>
+              <Text variant="label" color={colors.inkSecondary}>{`“${t("community.example.note")}”`}</Text>
+              <View style={[styles.change, { backgroundColor: colors.primaryPale, alignSelf: "flex-start" }]}>
+                <Icon name="edit" size={12} color={colors.primaryText} />
+                <Text variant="caption" weight={600} color={colors.primaryText}>
+                  {t("community.example.change")}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Enter>
+    </>
   );
 }
 
@@ -404,4 +475,6 @@ const styles = StyleSheet.create({
   photo: { width: "100%", height: 220 },
   change: { flexDirection: "row", alignItems: "center", gap: 4, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 4 },
   menu: { borderRadius: radius.item, padding: space.md, gap: space.sm },
+  step: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
+  stepEmoji: { fontSize: 24, lineHeight: 30 },
 });

@@ -1503,5 +1503,14 @@
   "onb.k.scan.failed": "यह फ़ोटो काम नहीं आई। कोई और आज़माएँ।",
   "onb.k.scan.remove": "फ़ोटो {n} हटाएँ",
   "onb.consent.reading": "आपकी फ़ोटो पढ़ रहे हैं…",
-  "cook.stoveTitle": "अभी चूल्हे पर कुछ नहीं"
+  "cook.stoveTitle": "अभी चूल्हे पर कुछ नहीं",
+  "community.how.title": "सर्कल कैसे चलता है",
+  "community.how.1": "सर्कल बनाएँ और उसका कोड परिवार को भेजें, WhatsApp पर या कहीं भी।",
+  "community.how.2": "खाना बनाने के बाद डिश शेयर करें, आपने क्या बदला और एक नोट के साथ।",
+  "community.how.3": "सर्कल में सब उसे देखते हैं और वैसे ही बना सकते हैं।",
+  "community.example": "उदाहरण",
+  "community.example.name": "मम्मी",
+  "community.example.circle": "परिवार",
+  "community.example.note": "रात भर भिगोया और थोड़ा ज़्यादा अदरक डाला। सबने दोबारा लिया!",
+  "community.example.change": "ज़्यादा अदरक"
 }

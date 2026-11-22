@@ -1522,5 +1522,10 @@
   "kitchen.preview.out": "used up",
   "safety.containsFrom": "{allergen} (from {items})",
   "tools.gasBurners": "Gas stove, {n} burners",
+  "list.movedOne": "{item} is in your kitchen now",
+  "list.movedMany": "{n} thing{n|s} went into your kitchen",
+  "list.allIn": "All in your kitchen 🎉",
+  "list.allInBody": "Your list is done. See what you can cook with it now.",
+  "list.cookNow": "See what you can cook",
   "kitchen.addedToast": "{n} thing{n|s} added: {items}"
 }

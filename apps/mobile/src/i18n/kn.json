@@ -1522,5 +1522,10 @@
   "kitchen.preview.out": "ಮುಗಿದಿದೆ",
   "safety.containsFrom": "{allergen} ({items}ನಿಂದ)",
   "tools.gasBurners": "ಗ್ಯಾಸ್ ಒಲೆ, {n} ಬರ್ನರ್",
+  "list.movedOne": "{item} ಈಗ ನಿಮ್ಮ ಅಡುಗೆಮನೆಯಲ್ಲಿದೆ",
+  "list.movedMany": "{n} ವಸ್ತುಗಳು ನಿಮ್ಮ ಅಡುಗೆಮನೆಗೆ ಸೇರಿದವು",
+  "list.allIn": "ಎಲ್ಲವೂ ಅಡುಗೆಮನೆಗೆ ಬಂತು 🎉",
+  "list.allInBody": "ನಿಮ್ಮ ಪಟ್ಟಿ ಮುಗಿಯಿತು. ಈಗ ಇದರಿಂದ ಏನು ಮಾಡಬಹುದು ನೋಡಿ.",
+  "list.cookNow": "ಏನು ಮಾಡಬಹುದು ನೋಡಿ",
   "kitchen.addedToast": "{n} ವಸ್ತುಗಳು ಸೇರಿದವು: {items}"
 }

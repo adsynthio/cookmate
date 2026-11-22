@@ -1,6 +1,7 @@
 // Shopping list (KIT-110/111/112): what to buy, grouped the way a shop is laid out. Ticking a line (or "Bought
 // everything") moves it into the kitchen with an estimated expiry; the list can be shared as plain text.
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Linking, Share, StyleSheet, View } from "react-native";
 
@@ -30,6 +31,9 @@ export default function ListScreen() {
   const householdId = useSession((s) => s.householdId)!;
   const [text, setText] = useState("");
   const [note, setNote] = useState<string | null>(null);
+  // U44: after a whole shop, the empty list says so and points at cooking, not "Nothing to buy".
+  const [allIn, setAllIn] = useState(false);
+  const router = useRouter();
 
   const list = useQuery({ queryKey: ["list", householdId], queryFn: () => services.kitchen.getList(householdId), staleTime: 0 });
   const refresh = () => {
@@ -46,8 +50,12 @@ export default function ListScreen() {
   });
   const buy = useMutation({
     mutationFn: (ids?: string[]) => services.kitchen.markBought(householdId, ids),
-    onSuccess: () => {
-      setNote(t("list.moved"));
+    onSuccess: (_, ids) => {
+      // Say what went in: "Ginger is in your kitchen now" or "5 things went into your kitchen".
+      const lines = list.data ?? [];
+      const moved = ids ? lines.filter((l) => ids.includes(l.id)) : lines;
+      setNote(moved.length === 1 ? t("list.movedOne", { item: nameOf(moved[0]!) }) : t("list.movedMany", { n: moved.length }));
+      setAllIn(moved.length > 0 && moved.length === lines.length);
       refresh();
     },
   });
@@ -105,10 +113,13 @@ export default function ListScreen() {
         <Text color={colors.alert} accessibilityLiveRegion="polite">
           {t("state.error.body")}
         </Text>
-      ) : note ? (
-        <Text color={colors.primaryText} accessibilityLiveRegion="polite">
-          {note}
-        </Text>
+      ) : note && !(allIn && count === 0) ? (
+        <View style={styles.noteRow} accessibilityLiveRegion="polite">
+          <Icon name="check" size={16} color={colors.primaryText} />
+          <Text variant="label" weight={600} color={colors.primaryText} style={{ flex: 1 }}>
+            {note}
+          </Text>
+        </View>
       ) : null}
 
       {/* S8: the smallest shop that opens up the most dishes. */}
@@ -118,6 +129,15 @@ export default function ListScreen() {
         <StateView state="loading" title={t("list.title")} />
       ) : list.isError ? (
         <StateView state="error" title={t("state.error.title")} body={t("state.error.body")} actionLabel={t("state.retry")} onAction={() => void list.refetch()} />
+      ) : groups.length === 0 && allIn ? (
+        <StateView
+          state="empty"
+          illustration={illustrations.allDone}
+          title={t("list.allIn")}
+          body={t("list.allInBody")}
+          actionLabel={t("list.cookNow")}
+          onAction={() => router.navigate("/")}
+        />
       ) : groups.length === 0 ? (
         <StateView state="empty" illustration={illustrations.emptyList} title={t("list.empty")} body={t("list.emptyBody")} />
       ) : (
@@ -236,6 +256,7 @@ export default function ListScreen() {
 }
 
 const styles = StyleSheet.create({
+  noteRow: { flexDirection: "row", alignItems: "center", gap: space.xs },
   addRow: { flexDirection: "row", alignItems: "center", borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, paddingRight: 4 },
   addField: { flex: 1, borderWidth: 0, backgroundColor: "transparent" },
   infoRow: { flexDirection: "row", gap: space.md, alignItems: "flex-start" },

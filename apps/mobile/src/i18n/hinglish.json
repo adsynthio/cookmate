@@ -1485,5 +1485,6 @@
   "list.heading": "Kya khareedna hai",
   "recipe.moreTitle": "Is dish ke saath aur",
   "kitchen.preview.title": "Abhi tak mujhe ye dikha",
-  "kitchen.preview.out": "khatam"
+  "kitchen.preview.out": "khatam",
+  "safety.containsFrom": "{allergen} ({items} se)"
 }

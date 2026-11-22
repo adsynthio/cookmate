@@ -1515,5 +1515,6 @@
   "list.heading": "क्या ख़रीदना है",
   "recipe.moreTitle": "इस डिश के साथ और",
   "kitchen.preview.title": "अब तक मुझे ये दिखा",
-  "kitchen.preview.out": "ख़त्म"
+  "kitchen.preview.out": "ख़त्म",
+  "safety.containsFrom": "{allergen} ({items} से)"
 }

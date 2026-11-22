@@ -5,19 +5,35 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { View } from "react-native";
 
-import { catalog } from "@/data/catalog";
+import { catalog, catalogEntry } from "@/data/catalog";
 import { Icon } from "@/design-system/icons";
 import { Badge, Button, Card, Text } from "@/design-system/primitives";
 import { space } from "@/design-system/tokens";
 import type { CatalogEntry } from "@/domain/invent";
 import { recipeAllergens } from "@/domain/recipeSafety";
+import { displayName } from "@/domain/kitchen";
 import type { RecipeDoc } from "@/domain/recipes";
-import { t, type StringKey } from "@/i18n";
+import { getLocale, t, type StringKey } from "@/i18n";
 import { services } from "@/services";
 import type { RecipeReportReason } from "@/services/types";
 
 const CATALOG = new Map((catalog as unknown as CatalogEntry[]).map((c) => [c.name, c]));
 const REASONS: RecipeReportReason[] = ["unsafe", "wrong", "didnt_work", "other"];
+
+/** U34: which ingredients bring each allergen ("Gluten" alone surprises people on a dal; "from hing" explains it). */
+function allergenSources(doc: RecipeDoc, allergen: string): string[] {
+  const keys = new Set<string>();
+  for (const i of doc.ingredients) {
+    const key = i.ingredient.trim().toLowerCase();
+    if (CATALOG.get(key)?.allergens?.includes(allergen)) keys.add(key);
+  }
+  const locale = getLocale();
+  // Inside a sentence in Latin script: "from asafoetida", not "from Asafoetida".
+  return [...keys].map((k) => {
+    const name = displayName(catalogEntry(k), k, locale);
+    return locale === "hi" ? name : name.charAt(0).toLowerCase() + name.slice(1);
+  });
+}
 
 /** True for a recipe Cookmate's AI wrote for this household. */
 export function isAiRecipe(doc: RecipeDoc): boolean {
@@ -52,9 +68,12 @@ export function SafetyNotes({ doc, householdId, onReported }: { doc: RecipeDoc; 
             {t("safety.contains")}
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space.xs }}>
-            {allergens.map((a) => (
-              <Badge key={a} tone="peach" label={t(`allergen.${a}` as StringKey)} />
-            ))}
+            {allergens.map((a) => {
+              const from = allergenSources(doc, a);
+              const name = t(`allergen.${a}` as StringKey);
+              const items = from.slice(0, 2).join(", ") + (from.length > 2 ? "…" : "");
+              return <Badge key={a} tone="peach" label={from.length ? t("safety.containsFrom", { allergen: name, items }) : name} />;
+            })}
           </View>
         </View>
       ) : null}

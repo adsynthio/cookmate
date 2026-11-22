@@ -11,6 +11,7 @@ import {
   DEFAULT_WEIGHTS,
   interpretCraving,
   pantryCheck,
+  rankAhead,
   rankRecipes,
   reasonFor,
   type Eater,
@@ -129,6 +130,7 @@ export function buildPicks(args: {
     timeBudgetMin: defaultBudget(slot),
     weights: args.weights ?? DEFAULT_WEIGHTS,
     focus: input.focus,
+    prepped: input.prepped,
   };
   const bySlug = new Map(docs.map((d) => [d.id ?? d.slug, d]));
   const picks = choosePicks(rankRecipes(docs.map(toRankRecipe), ctx)).map((r, i) =>
@@ -152,5 +154,9 @@ export function buildPicks(args: {
       };
     }
   }
-  return { batchId: args.batchId, mealSlot: slot, hero: picks[0] ?? null, alternates: picks.slice(1), check };
+  const ahead = rankAhead(docs.map(toRankRecipe), ctx).map((r) => {
+    const d = bySlug.get(r.recipe.id)!;
+    return { recipeId: d.id ?? d.slug, slug: d.slug, title: d.title, titles: d.titles, hours: r.recipe.aheadHours ?? 0 };
+  });
+  return { batchId: args.batchId, mealSlot: slot, hero: picks[0] ?? null, alternates: picks.slice(1), check, ahead };
 }

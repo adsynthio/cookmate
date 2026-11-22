@@ -11,7 +11,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { WantDish } from "@/components/home/WantDish";
 import { HomeHero } from "@/components/home/HomeHero";
 import { ReadyCard } from "@/components/home/ReadyCard";
-import { PlanCard } from "@/components/home/PlanCard";
+import { localDate, PlanCard } from "@/components/home/PlanCard";
 import { DinnerCard } from "@/components/home/DinnerCard";
 import { PicksSkeleton } from "@/components/home/PicksSkeleton";
 import { InSeason } from "@/components/home/InSeason";
@@ -29,6 +29,7 @@ import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick, type PickBatch } from "@/services";
+import { usePlan } from "@/state/plan";
 import { rememberShown, seenLately } from "@/state/seen";
 import { useSession } from "@/state/session";
 import { useSettled } from "@/state/settled";
@@ -82,7 +83,10 @@ export default function HomeScreen() {
     () => JSON.parse(askKey) as { mealSlot: MealSlot; chips: string[]; craving: string; whoEating: typeof whoEating; focusKey: string | null },
     [askKey],
   );
-  const picksKey = ["picks", householdId, ask.mealSlot, ask.chips, ask.craving, ask.whoEating, ask.focusKey, getLocale(), notified];
+  // A dish planned for today whose soaking or marinating is done can be cooked now (Rajma after its overnight soak).
+  const plan = usePlan((s) => s.plan);
+  const prepped = plan?.prepDone && plan.forDate === localDate(new Date()) && (!plan.readyAt || Date.now() >= plan.readyAt) ? [plan.recipeId] : [];
+  const picksKey = ["picks", householdId, ask.mealSlot, ask.chips, ask.craving, ask.whoEating, ask.focusKey, getLocale(), notified, prepped.join()];
   const picks = useQuery({
     queryKey: picksKey,
     queryFn: async () =>
@@ -96,6 +100,7 @@ export default function HomeScreen() {
         whoEating: ask.whoEating ?? undefined,
         focus: ask.focusKey ? [ask.focusKey] : undefined,
         languageCode: LANGUAGE_CODES[getLocale()],
+        prepped,
         // What Home showed lately, so the picks and ideas change each time (read when the request is made).
         ...(() => {
           const l = seenLately();
@@ -396,7 +401,11 @@ export default function HomeScreen() {
       ) : null}
       {!focus ? <ReadyCard items={kitchen.data ?? []} /> : null}
       {!focus && !craving && picks.data ? (
-        <PlanCard picks={[picks.data.hero, ...picks.data.alternates].filter((p): p is NonNullable<typeof p> => !!p)} kitchen={kitchen.data ?? []} onOpen={(id) => router.push(`/recipe/${id}`)} />
+        <PlanCard
+          picks={[...(picks.data.ahead ?? []), ...[picks.data.hero, ...picks.data.alternates].filter((p): p is NonNullable<typeof p> => !!p)]}
+          kitchen={kitchen.data ?? []}
+          onOpen={(id) => router.push(`/recipe/${id}`)}
+        />
       ) : null}
 
       <View style={{ gap: space.xs }} onLayout={(e) => (ideasY.current = e.nativeEvent.layout.y)}>

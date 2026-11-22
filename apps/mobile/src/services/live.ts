@@ -691,6 +691,7 @@ export const liveServices: Services = {
           language_code: input.languageCode,
           shown_lately: input.shownLately,
           ideas_lately: input.ideasLately,
+          prepped: input.prepped,
         },
       });
       if (error || !data) throw error ?? new Error("suggest-meals returned nothing");
@@ -717,6 +718,7 @@ export const liveServices: Services = {
         chosenBy: data.chosen_by ?? "rules",
         newDish: data.new_dish ?? null,
         ideas: data.ideas ?? (data.new_dish ? [data.new_dish] : []),
+        ahead: (data.ahead ?? []).map((a) => ({ recipeId: a.recipe.id, slug: a.recipe.slug, title: a.recipe.title, titles: a.recipe.titles ?? undefined, hours: a.hours })),
         check: data.check ? { itemId: data.check.item_id, name: data.check.name, ifYes: data.check.if_yes, ifNo: data.check.if_no } : null,
         calendar: data.calendar
           ? {
@@ -1211,6 +1213,7 @@ type SuggestMealsResponse = {
   chosen_by?: "model" | "rules";
   new_dish?: { name: string; why: string } | null;
   ideas?: { name: string; why: string; uses?: string[] }[];
+  ahead?: { recipe: { id: string; slug: string; title: string; titles?: { en?: string; hi?: string; "hi-Latn"?: string } | null }; hours: number }[];
   meal_slot: MealSlot;
   picks: {
     recommendation_id: string;

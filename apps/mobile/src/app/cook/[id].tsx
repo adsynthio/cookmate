@@ -43,6 +43,9 @@ import { useStepTimes } from "@/state/stepTimes";
 import { useTechniques } from "@/state/techniques";
 import { recordDone } from "@/domain/blueprint";
 import { useHabits } from "@/state/habits";
+import { usePlan } from "@/state/plan";
+import { localDate } from "@/components/home/PlanCard";
+import { minutesText } from "@/i18n/duration";
 import { heatStep, isFamiliar, mildShare, setFull } from "@/domain/habits";
 import { readyBases, shortcuts } from "@/domain/bases";
 import { recordStep, yourSeconds } from "@/domain/stepTimes";
@@ -152,6 +155,9 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
   const dish = recipeTitle(doc, locale);
 
   const [stepNo, setStepNo] = useState(() => Math.max(1, Math.min(total, session.currentStep)));
+  // The opening step that takes hours of waiting (soaking, marinating), as Home's "plan ahead" counts it; 0 if none.
+  const aheadAt = doc.steps.slice(0, 2).findIndex((s) => (s.minutes ?? 0) >= 120) + 1;
+  const setPlan = usePlan((s) => s.setPlan);
   /** Which way the last move went, so the new step slides in from that side. */
   const [dir, setDir] = useState<1 | -1 | 0>(0);
   /** The companion's last words in "Need a hand?". */
@@ -584,6 +590,27 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
         <SlideIn key={stepNo} from={dir} style={styles.step}>
           {/* U21: the big photo when this step has its own, or to show the dish at the start and how it should look at
               the end; in between, a slim strip so the instruction sits higher. */}
+          {/* An opening step that takes hours (soak the rajma 8 hours): asked first, above the photo, so it can't be missed. */}
+          {stepNo === aheadAt && !last ? (
+            <View style={[styles.note, { backgroundColor: colors.accentSoft, gap: space.sm }]}>
+              <Text variant="bodyStrong">{t("cook.ahead.title", { time: minutesText(step.minutes ?? 0) })}</Text>
+              <Button kind="primary" stretch label={t("cook.ahead.done")} onPress={() => go(1)} />
+              <Button
+                kind="secondary"
+                stretch
+                label={t("cook.ahead.later")}
+                onPress={() => {
+                  const readyAt = Date.now() + (step.minutes ?? 0) * 60_000;
+                  setPlan({ recipeId: rawDoc.id ?? rawDoc.slug, slug: rawDoc.slug, title: rawDoc.title, forDate: localDate(new Date(readyAt)), prepDone: true, readyAt });
+                  router.canGoBack() ? router.back() : router.replace("/");
+                }}
+              />
+              <Text variant="caption" muted>
+                {t("cook.ahead.laterNote", { dish })}
+              </Text>
+            </View>
+          ) : null}
+
           {bigPhoto ? (
             <StepPhoto source={bigPhoto} label={dish} time={secs ? durationLabel(secs) : undefined} finalLook={last} />
           ) : (
@@ -604,6 +631,7 @@ function Cooking({ session, doc: rawDoc, members, householdId }: { session: Cook
           ) : null}
 
           <DirectionCard step={step} brief={brief} onFull={() => setHabits(setFull(useHabits.getState().times, doc.slug, true))} />
+
 
           {baseCuts
             .filter((c) => c.steps.includes(stepNo))

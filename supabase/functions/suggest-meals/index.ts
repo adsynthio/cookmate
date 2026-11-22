@@ -47,6 +47,8 @@ type Body = {
   shown_lately?: string[];
   /** New dish ideas Home showed in the last few days, so new ones come. */
   ideas_lately?: string[];
+  /** Recipe ids whose soaking or marinating is done (the app's plan). */
+  prepped?: string[];
 };
 
 /** A short list of short strings from the request, or []. */
@@ -189,6 +191,7 @@ Deno.serve(async (req) => {
       chips: body.chips,
       whoEating: body.who_eating,
       focus: body.focus,
+      prepped: shortList(body.prepped, 10),
       locale,
     }, now, {
       interpretCraving: client
@@ -286,6 +289,11 @@ Deno.serve(async (req) => {
     calendar: calendarSummary(kitchen),
     chosen_by: chose,
     ideas,
+    // Dishes to plan for later because they need soaking or marinating first (Home's evening "plan ahead").
+    ahead: ranking.ahead.map((r) => {
+      const d = docById.get(r.recipe.id)!;
+      return { recipe: { id: d.id, slug: d.slug, title: d.title, titles: d.titles ?? null }, hours: r.recipe.aheadHours ?? 0 };
+    }),
     // Older app versions read one idea.
     new_dish: ideas[0] ? { name: ideas[0].name, why: ideas[0].why } : null,
     picks: picks.map((p, i) => {

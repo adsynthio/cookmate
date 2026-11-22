@@ -14,6 +14,7 @@ import {
   interpretCraving,
   mainIngredients,
   missingMain,
+  rankAhead,
   NO_CRAVING,
   noveltyFactor,
   pantryCheck,
@@ -314,4 +315,17 @@ test("a missing side ingredient still leaves the dish on the list", () => {
   const ranked = rankRecipes([kadhi], ctx({ pantry: [item("curd"), item("gram flour")] }));
   assert.deepEqual(ranked.map((r) => r.recipe.id), ["kadhi"]);
   assert.equal(missingMain(ranked[0]!), false, "ginger and chilli are not what kadhi is made of");
+});
+
+test("a dish that soaks for hours isn't offered to cook now; it's offered to plan ahead", () => {
+  const rajma = recipe({ id: "rajma", aheadHours: 8, ingredients: [ing("kidney beans", { role: "base" }), ing("onion", { role: "aromatic" })] });
+  const aloo = recipe({ id: "jeera-aloo", ingredients: [ing("potato", { role: "base" })] });
+  const kitchen = ctx({ pantry: [item("kidney beans"), item("onion"), item("potato")] });
+  assert.equal(excludedBecause(rajma, kitchen), "ahead");
+  assert.deepEqual(rankRecipes([rajma, aloo], kitchen).map((r) => r.recipe.id), ["jeera-aloo"]);
+  assert.deepEqual(rankAhead([rajma, aloo], kitchen).map((r) => r.recipe.id), ["rajma"], "offered for later");
+  assert.deepEqual(rankRecipes([rajma, aloo], { ...kitchen, prepped: ["rajma"] }).map((r) => r.recipe.id).sort(), ["jeera-aloo", "rajma"], "soaked: cook it now");
+  assert.deepEqual(rankAhead([rajma, aloo], { ...kitchen, prepped: ["rajma"] }), [], "nothing left to plan");
+  assert.equal(excludedBecause(rajma, { ...kitchen, craving: { ...NO_CRAVING, ingredients: ["kidney beans"] } }), null, "asked for rajma: shown");
+  assert.deepEqual(rankAhead([rajma], { ...kitchen, pantry: [item("onion")] }), [], "no rajma in the kitchen: not even for later");
 });

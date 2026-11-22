@@ -375,10 +375,6 @@ export default function HomeScreen() {
         />
       ) : null}
       {!focus ? <ReadyCard items={kitchen.data ?? []} /> : null}
-      {/* D3: on Sundays, a look back at the week. */}
-      {!focus && !craving && householdId && new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "Asia/Kolkata" }).format(new Date()) === "Sun" ? (
-        <WeekCard householdId={householdId} />
-      ) : null}
       {!focus && !craving && picks.data ? (
         <PlanCard picks={[picks.data.hero, ...picks.data.alternates].filter((p): p is NonNullable<typeof p> => !!p)} kitchen={kitchen.data ?? []} onOpen={(id) => router.push(`/recipe/${id}`)} />
       ) : null}
@@ -411,28 +407,31 @@ export default function HomeScreen() {
         />
       ) : (
         <>
-          <PickCard pick={hero} hero index={0} onOpen={() => open(hero)} onCook={() => cook(hero)} />
-          {asking ? (
-            <Enter style={{ gap: space.sm }}>
-              <Text variant="label" muted>
-                {t("home.whyNot")}
-              </Text>
-              <View style={styles.reasons}>
-                {DISMISS_REASONS.map((r) => (
-                  <Chip
-                    key={r}
-                    label={t(`home.reason.${r}` as StringKey)}
-                    onPress={() => !dismiss.isPending && dismiss.mutate({ pick: hero, reason: r })}
-                  />
-                ))}
+          {/* U4: "Not this one" sits right under the dish it turns down, on the right like a card action. */}
+          <View style={{ gap: space.xs }}>
+            <PickCard pick={hero} hero index={0} onOpen={() => open(hero)} onCook={() => cook(hero)} />
+            {asking ? (
+              <Enter style={{ gap: space.sm }}>
+                <Text variant="label" muted>
+                  {t("home.whyNot")}
+                </Text>
+                <View style={styles.reasons}>
+                  {DISMISS_REASONS.map((r) => (
+                    <Chip
+                      key={r}
+                      label={t(`home.reason.${r}` as StringKey)}
+                      onPress={() => !dismiss.isPending && dismiss.mutate({ pick: hero, reason: r })}
+                    />
+                  ))}
+                </View>
+                {dismiss.isError ? <Text>{t("state.error.body")}</Text> : null}
+              </Enter>
+            ) : (
+              <View style={{ alignSelf: "flex-end" }}>
+                <Button kind="quiet" size="small" icon="close" label={t("home.notThis")} onPress={() => setAsking(true)} />
               </View>
-              {dismiss.isError ? <Text>{t("state.error.body")}</Text> : null}
-            </Enter>
-          ) : (
-            <View style={{ alignSelf: "flex-start" }}>
-              <Button kind="quiet" size="small" icon="close" label={t("home.notThis")} onPress={() => setAsking(true)} />
-            </View>
-          )}
+            )}
+          </View>
           {picks.data.alternates.map((p, i) => (
             <PickCard key={p.recommendationId} pick={p} index={i + 1} onOpen={() => open(p)} />
           ))}
@@ -449,6 +448,10 @@ export default function HomeScreen() {
         </View>
       ) : null}
 
+      {/* D3: on Sundays, a look back at the week, after today's picks (U4: deciding comes first). */}
+      {!focus && !craving && householdId && new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "Asia/Kolkata" }).format(new Date()) === "Sun" ? (
+        <WeekCard householdId={householdId} />
+      ) : null}
       <InventCard onPress={() => router.push("/invent")} />
     </Screen>
   );

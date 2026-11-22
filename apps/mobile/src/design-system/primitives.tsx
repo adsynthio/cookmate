@@ -209,6 +209,7 @@ export function Chip({
   onPress,
   solid,
   icon,
+  initial,
   showCheck,
   dashed,
 }: {
@@ -217,6 +218,8 @@ export function Chip({
   onPress?: () => void;
   solid?: boolean;
   icon?: IconName;
+  /** A person: their initial in a small circle instead of an icon (U12, "Who's eating?"). */
+  initial?: string;
   /** A tick after the label when selected (taste and setup screens). */
   showCheck?: boolean;
   /** Dashed terracotta outline: missing, needs restock. */
@@ -243,7 +246,15 @@ export function Chip({
         },
       ]}
     >
-      {icon ? <Icon name={icon} size={16} color={fg} /> : null}
+      {initial ? (
+        <View style={[styles.chipInitial, { backgroundColor: selected ? colors.surface : colors.peach }]}>
+          <Text variant="caption" weight={600} color={colors.peachText}>
+            {initial}
+          </Text>
+        </View>
+      ) : icon ? (
+        <Icon name={icon} size={16} color={fg} />
+      ) : null}
       <Text variant="label" color={fg}>
         {label}
       </Text>
@@ -521,6 +532,7 @@ export function StateView({
 export { shadow };
 
 const styles = StyleSheet.create({
+  chipInitial: { width: 24, height: 24, borderRadius: 12, alignItems: "center", justifyContent: "center", marginLeft: -6 },
   screenContent: { paddingHorizontal: space.gutter, paddingTop: space.sm, gap: space.xl },
   button: { borderRadius: radius.pill, flexDirection: "row", gap: space.sm, alignItems: "center", justifyContent: "center" },
   buttonLabel: { flexShrink: 1, textAlign: "center" },

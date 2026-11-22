@@ -1517,5 +1517,7 @@
   "community.example.note": "Soaked it overnight and added extra ginger. Everyone had seconds!",
   "community.example.change": "More ginger",
   "list.heading": "What to buy",
-  "recipe.moreTitle": "More with this dish"
+  "recipe.moreTitle": "More with this dish",
+  "kitchen.preview.title": "So far I see",
+  "kitchen.preview.out": "used up"
 }

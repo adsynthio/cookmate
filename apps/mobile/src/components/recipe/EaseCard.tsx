@@ -6,7 +6,7 @@ import { Pressable, View } from "react-native";
 import { Icon } from "@/design-system/icons";
 import { Card, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { radius, space } from "@/design-system/tokens";
+import { radius, space, touch } from "@/design-system/tokens";
 import { ease } from "@/domain/blueprint";
 import type { RecipeDoc } from "@/domain/recipes";
 import { t, type StringKey } from "@/i18n";
@@ -41,7 +41,7 @@ export function EaseCard({ doc }: { doc: RecipeDoc }) {
               accessibilityRole="button"
               accessibilityState={{ expanded: isOpen }}
               onPress={() => setOpen(isOpen ? null : p.technique)}
-              style={{ padding: space.sm, borderRadius: radius.item, backgroundColor: colors.surfaceMuted, gap: space.xs }}
+              style={{ padding: space.sm, minHeight: touch.min, justifyContent: "center", borderRadius: radius.item, backgroundColor: colors.surfaceMuted, gap: space.xs }}
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: space.sm }}>
                 <Text weight={600}>{i + 1}.</Text>

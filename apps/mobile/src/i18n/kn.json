@@ -606,6 +606,8 @@
   "kitchen.heading": "ನಿಮ್ಮ ಅಡುಗೆಮನೆಯಲ್ಲಿ ಏನಿದೆ",
   "kitchen.count": "{n} ವಸ್ತುಗಳು",
   "kitchen.sub": "ಮೊದಲು ಬಳಸಬೇಕಾದದ್ದು ಮತ್ತು ಎಲ್ಲಿ ಇಟ್ಟಿದೆ ಎಂಬಂತೆ ಜೋಡಿಸಲಾಗಿದೆ.",
+  "kitchen.find": "ಅಡುಗೆಮನೆಯಲ್ಲಿ ಹುಡುಕಿ",
+  "kitchen.findNone": "ಅಡುಗೆಮನೆಯಲ್ಲಿ \"{q}\" ಇಲ್ಲ.",
   "kitchen.action.add": "ವಸ್ತುಗಳನ್ನು ಸೇರಿಸಿ",
   "kitchen.action.scan": "ಸ್ಕ್ಯಾನ್",
   "kitchen.action.voice": "ಹೇಳಿ",

@@ -17,7 +17,7 @@ import { recipeDocs } from "@/data/recipes";
 import { DishPhoto, FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
 import { Enter, Layout, PressableScale, Pulse } from "@/design-system/motion";
-import { Badge, Button, Card, Chip, IconButton, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
+import { Badge, Button, Card, Chip, Field, IconButton, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { expiryInfo, formatQuantity, LOW_CONFIDENCE, type ExpiryInfo } from "@/domain/kitchen";
@@ -54,6 +54,7 @@ export default function KitchenScreen() {
   const memberId = useSession((s) => s.memberId);
   const [filter, setFilter] = useState<Filter>("all");
   const [hideSoon, setHideSoon] = useState(false);
+  const [find, setFind] = useState("");
 
   const kitchen = useQuery({
     queryKey: ["kitchen", householdId],
@@ -88,7 +89,14 @@ export default function KitchenScreen() {
     return c;
   }, [all]);
 
-  const shown = all.filter((i) => filter === "all" || placeOf(i) === filter);
+  // U16: a long kitchen (a monthly bill can add 80 things) needs a way to find one, in any of its names.
+  const q = find.trim().toLowerCase();
+  const found = (i: PantryItem) => {
+    if (!q) return true;
+    const e = catalogEntry(i.ingredientKey) as (ReturnType<typeof catalogEntry> & { hi?: string; latn?: string; aliases?: string[] }) | undefined;
+    return [itemName(i), i.name, e?.name, e?.hi, e?.latn, e?.kn, ...(e?.aliases ?? [])].some((n) => !!n && n.toLowerCase().includes(q));
+  };
+  const shown = all.filter((i) => (filter === "all" || placeOf(i) === filter) && found(i));
   const staples = shown.filter((i) => i.stapleLevel !== null);
   const loose = shown
     .filter((i) => i.stapleLevel === null)
@@ -227,6 +235,22 @@ export default function KitchenScreen() {
           <ScanFirst empty />
         ) : (
           <>
+            {all.length >= 12 ? (
+              <Field
+                value={find}
+                onChangeText={setFind}
+                placeholder={t("kitchen.find")}
+                accessibilityLabel={t("kitchen.find")}
+                autoCorrect={false}
+                returnKeyType="search"
+                clearButtonMode="while-editing"
+              />
+            ) : null}
+            {q && !shown.length ? (
+              <Text muted accessibilityLiveRegion="polite">
+                {t("kitchen.findNone", { q: find.trim() })}
+              </Text>
+            ) : null}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters} accessibilityRole="tablist">
               {FILTERS.filter((f) => f === "all" || (counts.get(f) ?? 0) > 0).map((f) => (
                 <Chip

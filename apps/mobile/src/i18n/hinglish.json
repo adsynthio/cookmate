@@ -590,6 +590,8 @@
   "kitchen.heading": "Aapki rasoi mein kya hai",
   "kitchen.count": "{n} cheezein",
   "kitchen.sub": "Pehle woh jise jaldi use karna hai, aur kahan rakha hai.",
+  "kitchen.find": "Kitchen mein dhoondhein",
+  "kitchen.findNone": "Kitchen mein \"{q}\" nahi hai.",
   "kitchen.action.add": "Cheezein jodein",
   "kitchen.action.scan": "Scan karein",
   "kitchen.action.voice": "Bolkar jodein",

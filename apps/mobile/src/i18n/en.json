@@ -624,6 +624,8 @@
   "kitchen.heading": "What's in your kitchen",
   "kitchen.count": "{n} things",
   "kitchen.sub": "Sorted by what needs using first, and where it's kept.",
+  "kitchen.find": "Find in your kitchen",
+  "kitchen.findNone": "Nothing called \"{q}\" in your kitchen.",
   "kitchen.action.add": "Add items",
   "kitchen.action.scan": "Scan",
   "kitchen.action.voice": "Say it",

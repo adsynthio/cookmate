@@ -620,6 +620,8 @@
   "kitchen.heading": "आपकी रसोई में क्या है",
   "kitchen.count": "{n} चीज़ें",
   "kitchen.sub": "पहले वो जिसे जल्दी इस्तेमाल करना है, और कहाँ रखा है।",
+  "kitchen.find": "रसोई में ढूँढें",
+  "kitchen.findNone": "रसोई में \"{q}\" नहीं है।",
   "kitchen.action.add": "चीज़ें जोड़ें",
   "kitchen.action.scan": "स्कैन करें",
   "kitchen.action.voice": "बोलकर जोड़ें",

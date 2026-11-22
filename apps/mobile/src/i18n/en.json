@@ -1507,5 +1507,14 @@
   "onb.k.scan.failed": "That photo couldn't be used. Try another one.",
   "onb.k.scan.remove": "Remove photo {n}",
   "onb.consent.reading": "Reading your photos…",
-  "cook.stoveTitle": "Nothing on the stove yet"
+  "cook.stoveTitle": "Nothing on the stove yet",
+  "community.how.title": "How a circle works",
+  "community.how.1": "Start a circle and send its code to family, on WhatsApp or anywhere.",
+  "community.how.2": "When you finish cooking, share the dish with what you changed and a note.",
+  "community.how.3": "Everyone in the circle sees it and can cook it the same way.",
+  "community.example": "Example",
+  "community.example.name": "Mummy",
+  "community.example.circle": "Family",
+  "community.example.note": "Soaked it overnight and added extra ginger. Everyone had seconds!",
+  "community.example.change": "More ginger"
 }

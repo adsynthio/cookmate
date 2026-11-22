@@ -1473,5 +1473,14 @@
   "onb.k.scan.failed": "Ye photo kaam nahi aayi. Koi aur try karein.",
   "onb.k.scan.remove": "Photo {n} hatayein",
   "onb.consent.reading": "Aapki photos padh rahe hain…",
-  "cook.stoveTitle": "Abhi chulhe par kuch nahi"
+  "cook.stoveTitle": "Abhi chulhe par kuch nahi",
+  "community.how.title": "Circle kaise chalta hai",
+  "community.how.1": "Circle banayein aur uska code parivaar ko bhejein, WhatsApp par ya kahin bhi.",
+  "community.how.2": "Khaana banaane ke baad dish share karein, aapne kya badla aur ek note ke saath.",
+  "community.how.3": "Circle mein sab use dekhte hain aur waise hi bana sakte hain.",
+  "community.example": "Udaaharan",
+  "community.example.name": "Mummy",
+  "community.example.circle": "Parivaar",
+  "community.example.note": "Raat bhar bhigoya aur thoda zyada adrak daala. Sabne dobaara liya!",
+  "community.example.change": "Zyada adrak"
 }

@@ -12,10 +12,10 @@ import { StepScreen } from "@/components/onboarding/StepScreen";
 import { ToolsPicker } from "@/components/tools/ToolsPicker";
 import { catalogEntry } from "@/data/catalog";
 import { recipeDocs } from "@/data/recipes";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
-import { ingredientImage } from "@/design-system/media";
 import { Enter, Layout, PressableScale } from "@/design-system/motion";
-import { Card, Chip, Field, IconButton, Photo, Text } from "@/design-system/primitives";
+import { Card, Chip, Field, IconButton, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
@@ -202,7 +202,7 @@ function HaveChip({ item, onRemove }: { item: SetupItem; onRemove: () => void })
       onPress={onRemove}
       style={[styles.have, { backgroundColor: colors.peach }]}
     >
-      <Photo source={ingredientImage(item.known ? item.name : null, entry?.category ?? (item.known ? null : "homemade"))} size={26} round />
+      <FoodPhoto name={item.name} category={entry?.category ?? (item.known ? null : "homemade")} size={26} round />
       <Text variant="label" color={colors.ink}>
         {label}
       </Text>
@@ -221,7 +221,7 @@ function AddChip({ name, onAdd }: { name: string; onAdd: () => void }) {
       onPress={onAdd}
       style={[styles.add, shadow.card, { backgroundColor: colors.surface, borderColor: colors.line }]}
     >
-      <Photo source={ingredientImage(name, entry?.category)} size={26} round />
+      <FoodPhoto name={name} category={entry?.category} size={26} round />
       <Text variant="label">{nameOf(name)}</Text>
       <Icon name="plus" size={16} color={colors.inkSecondary} />
     </PressableScale>

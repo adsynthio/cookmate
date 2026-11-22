@@ -5,12 +5,14 @@ import { Image, type ImageSourcePropType, ScrollView, StyleSheet, TextInput, Vie
 
 import { itemName } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
+import { DishPhoto, FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { dishImage, ingredientImage } from "@/design-system/media";
+import { dishImage } from "@/design-system/media";
 import { Enter, PressableScale, Pulse } from "@/design-system/motion";
 import { Badge, Photo, Text, textStyle } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space, touch } from "@/design-system/tokens";
+import { dishEmoji } from "@/domain/foodEmoji";
 import { displayName } from "@/domain/kitchen";
 import { daysLeft } from "@/domain/pantry";
 import { recipeTitle } from "@/domain/recipes";
@@ -112,7 +114,7 @@ export function ResumeCard({ dish, step, total, photo, onResume }: { dish: strin
           onPress={onResume}
           style={[styles.resumeInner, { backgroundColor: colors.surface }]}
         >
-          <Photo source={photo} size={64} round />
+          <Photo source={photo} emoji={dishEmoji(dish)} tint="peach" size={64} round />
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="subheading" numberOfLines={1}>
               {dish}
@@ -147,7 +149,7 @@ export function PickCard({ pick, hero, index, onOpen, onCook }: { pick: Pick; he
         style={[styles.pick, shadow.card, { backgroundColor: colors.surface }]}
       >
         <View style={styles.pickTop}>
-          <Photo source={pickPhoto(pick)} size={hero ? 104 : 88} round />
+          <DishPhoto slug={pick.slug} name={pick.title} source={pickPhoto(pick)} size={hero ? 104 : 88} round />
           <View style={{ flex: 1, gap: space.xs }}>
             {ready ? (
               <Badge tone="primary" label={t("home.canMake")} />
@@ -225,7 +227,7 @@ export function UseSoonCards({ items, focused, onPick }: { items: PantryItem[]; 
           <Enter key={item.id} index={i}>
             <View style={[styles.useSoon, shadow.card, { backgroundColor: on ? colors.primarySoft : colors.surface }]}>
               <View style={styles.useSoonTop}>
-                <Photo source={ingredientImage(item.ingredientKey, entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade"))} size={44} round />
+                <FoodPhoto name={item.ingredientKey ?? item.name} category={entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade")} size={44} round />
                 <Badge tone={days !== null && days <= 1 ? "alert" : "accent"} label={label} />
               </View>
               <Text variant="bodyStrong" numberOfLines={1}>

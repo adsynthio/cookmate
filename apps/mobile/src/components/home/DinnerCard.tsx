@@ -4,9 +4,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { StyleSheet, View } from "react-native";
 
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
 import { PressableScale } from "@/design-system/motion";
-import { Button, Photo, Text } from "@/design-system/primitives";
+import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { clock, minutesToDinner, pickByTime } from "@/domain/dinnerTime";
@@ -63,7 +64,7 @@ export function DinnerCard({
               {bucket === 60 ? t("home.dinner.hour") : t("home.dinner.in", { n: bucket })}
             </Text>
           </View>
-          <Photo source={pickPhoto(pick)} size={40} round />
+          <DishPhoto slug={pick.slug} name={pick.title} source={pickPhoto(pick)} size={40} round />
           <Text variant="bodyStrong" numberOfLines={1} style={{ flex: 1 }}>
             {recipeTitle(pick, locale)}
           </Text>

@@ -7,10 +7,11 @@ import { Linking, Share, StyleSheet, View } from "react-native";
 import { AppHeader } from "@/components/AppHeader";
 import { BuyFewCard } from "@/components/list/BuyFewCard";
 import { catalogEntry } from "@/data/catalog";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { illustrations, ingredientImage } from "@/design-system/media";
+import { illustrations } from "@/design-system/media";
 import { Enter, Layout, PressableScale } from "@/design-system/motion";
-import { Button, Card, Field, IconButton, Photo, Screen, StateView, Text } from "@/design-system/primitives";
+import { Button, Card, Field, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { capitalise, displayName } from "@/domain/kitchen";
@@ -184,7 +185,7 @@ export default function ListScreen() {
                           scaleTo={0.85}
                           style={[styles.check, { borderColor: colors.inkTertiary }]}
                         />
-                        <Photo source={ingredientImage(l.ingredientKey, l.ingredientKey ? catalogEntry(l.ingredientKey)?.category : "homemade")} size={40} round />
+                        <FoodPhoto name={l.ingredientKey ?? l.name} category={l.ingredientKey ? catalogEntry(l.ingredientKey)?.category : "homemade"} size={40} round />
                         <View style={{ flex: 1, gap: 2 }}>
                           <Text variant="bodyStrong">{name}</Text>
                           {detail.length ? (

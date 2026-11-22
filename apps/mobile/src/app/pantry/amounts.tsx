@@ -9,9 +9,9 @@ import { AppHeader } from "@/components/AppHeader";
 import { itemName } from "@/components/kitchen/names";
 import { AmountChips } from "@/components/pantry/AmountChips";
 import { catalogEntry } from "@/data/catalog";
-import { ingredientImage } from "@/design-system/media";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Enter, Layout } from "@/design-system/motion";
-import { Button, Card, Photo, Screen, StateView, Text } from "@/design-system/primitives";
+import { Button, Card, Screen, StateView, Text } from "@/design-system/primitives";
 import { radius, space } from "@/design-system/tokens";
 import { amountChoices, needsAmount, type Amount } from "@/domain/amounts";
 import { t, useLocale } from "@/i18n";
@@ -53,7 +53,7 @@ export default function AmountsScreen() {
               <Enter key={item.id} index={i}>
                 <Card style={{ gap: space.md }}>
                   <View style={styles.head}>
-                    <Photo source={ingredientImage(item.ingredientKey, catalogEntry(item.ingredientKey)?.category)} size={44} radius={radius.tag} />
+                    <FoodPhoto name={item.ingredientKey ?? item.name} category={catalogEntry(item.ingredientKey)?.category} size={44} radius={radius.tag} />
                     <Text variant="bodyStrong" style={{ flex: 1 }}>
                       {itemName(item)}
                     </Text>

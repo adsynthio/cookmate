@@ -4,10 +4,11 @@ import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import { itemName } from "@/components/kitchen/names";
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
-import { Button, Photo, Text } from "@/design-system/primitives";
+import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { daysLeft } from "@/domain/pantry";
@@ -38,7 +39,7 @@ export function ReadyCard({ items }: { items: PantryItem[] }) {
     <Enter>
       <View style={[styles.card, shadow.card, { backgroundColor: colors.primary }]}>
         <View style={styles.row}>
-          <Photo source={dishImage(KIND_PHOTO[leftoverKind(meal.main.name)] ?? "") ?? ingredientImage(null, "leftover")} size={56} round />
+          <DishPhoto slug={null} name={meal.main.name} source={dishImage(KIND_PHOTO[leftoverKind(meal.main.name)] ?? "") ?? ingredientImage(null, "leftover")} size={56} round />
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="overline" color={colors.onPrimary} style={{ opacity: 0.85 }}>
               {t("ready.overline").toUpperCase()}

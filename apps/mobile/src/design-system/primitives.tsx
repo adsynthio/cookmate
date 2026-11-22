@@ -423,25 +423,52 @@ export function SectionHeader({
   );
 }
 
-/** Rounded photo with a soft tinted fallback (a picture may not be generated yet). */
+/** The soft wash behind a food emoji (see domain/foodEmoji.ts foodTint). */
+export type PhotoTint = "green" | "peach" | "cream" | "rose" | "spice";
+
+/**
+ * Rounded photo. With no picture yet (most of the catalog), a food emoji on a soft tint stands in, so a list reads as
+ * food rather than empty grey circles (U1).
+ */
 export function Photo({
   source,
+  emoji,
+  tint = "cream",
   size: s = 56,
   round,
   radius: r = radius.tag,
   style,
 }: {
   source: ImageSourcePropType | null | undefined;
+  /** Shown when there is no picture. */
+  emoji?: string;
+  tint?: PhotoTint;
   size?: number;
   round?: boolean;
   radius?: number;
   style?: StyleProp<ViewStyle>;
 }) {
   const { colors } = useTheme();
-  const shape = { width: s, height: s, borderRadius: round ? s / 2 : r, overflow: "hidden" as const, backgroundColor: colors.surfaceMuted };
+  const wash = { green: colors.primaryPale, peach: colors.peach, cream: colors.surfaceMuted, rose: colors.alertSoft, spice: colors.accentSoft }[tint];
+  const shape = {
+    width: s,
+    height: s,
+    borderRadius: round ? s / 2 : r,
+    overflow: "hidden" as const,
+    backgroundColor: source ? colors.surfaceMuted : wash,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  };
   return (
-    <View style={[shape, style]} accessible={false}>
-      {source ? <Image source={source} style={{ width: s, height: s }} resizeMode="cover" /> : null}
+    <View style={[shape, style]} accessible={false} importantForAccessibility="no-hide-descendants">
+      {source ? (
+        <Image source={source} style={{ width: s, height: s }} resizeMode="cover" />
+      ) : emoji ? (
+        // Decorative: the name is always next to it. System emoji font, sized to sit inside the circle.
+        <RNText allowFontScaling={false} aria-hidden style={{ fontSize: Math.round(s * 0.5), lineHeight: Math.round(s * 0.64), textAlign: "center" }}>
+          {emoji}
+        </RNText>
+      ) : null}
     </View>
   );
 }

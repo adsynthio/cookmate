@@ -5,10 +5,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Image, type ImageSourcePropType, Pressable, StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
 import { Enter, PressableScale } from "@/design-system/motion";
-import { illustrations, ingredientImage } from "@/design-system/media";
-import { Badge, Button, Card, Chip, Field, Photo, Text } from "@/design-system/primitives";
+import { illustrations } from "@/design-system/media";
+import { Badge, Button, Card, Chip, Field, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { adjustmentFor, readableLine, rememberedQty, type LineReview } from "@/domain/cooking";
@@ -379,7 +380,7 @@ export function FinishSheet({
                     >
                       {s.on ? <Icon name="check" size={18} color={colors.onPrimary} /> : null}
                     </Pressable>
-                    <Photo source={ingredientImage(l.ingredient, catalogEntry(l.ingredient)?.category)} size={40} round />
+                    <FoodPhoto name={l.ingredient} category={catalogEntry(l.ingredient)?.category} size={40} round />
                     <View style={{ flex: 1, gap: 2, opacity: s.on ? 1 : 0.5 }}>
                       <Text variant="bodyStrong">{name}</Text>
                       {!l.staple && changes?.get(l.ingredient) ? (

@@ -7,9 +7,9 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
-import { ingredientImage } from "@/design-system/media";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Enter } from "@/design-system/motion";
-import { Button, Photo, Text } from "@/design-system/primitives";
+import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
@@ -70,7 +70,7 @@ export function RestockCard({ householdId }: { householdId: string }) {
     <Enter>
       <View style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
         <View style={styles.row}>
-          <Photo source={ingredientImage(q.ingredientKey, catalogEntry(q.ingredientKey)?.category)} size={52} round />
+          <FoodPhoto name={q.ingredientKey} category={catalogEntry(q.ingredientKey)?.category} size={52} round />
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="subheading">{t("restock.title", { item: name })}</Text>
             <Text variant="label" muted>

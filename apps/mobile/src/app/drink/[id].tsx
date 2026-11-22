@@ -7,10 +7,11 @@ import { Image, StyleSheet, View } from "react-native";
 import { AppHeader } from "@/components/AppHeader";
 import { catalogEntry } from "@/data/catalog";
 import { DRINKS } from "@/data/drinks";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { drinkImage, ingredientImage } from "@/design-system/media";
+import { drinkImage } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
-import { Button, Card, Photo, Screen, StateView, Text } from "@/design-system/primitives";
+import { Button, Card, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { drinkMatch, kitchenHas, say } from "@/domain/drinks";
@@ -77,7 +78,7 @@ export default function DrinkScreen() {
           const has = ing.key ? have.has(ing.key) : null;
           return (
             <View key={i} style={styles.ing}>
-              <Photo source={ing.key ? ingredientImage(ing.key, catalogEntry(ing.key)?.category) : null} size={36} radius={radius.tag} />
+              <FoodPhoto name={ing.key ?? ing.name?.en} category={ing.key ? catalogEntry(ing.key)?.category : null} size={36} radius={radius.tag} />
               <View style={{ flex: 1 }}>
                 <Text variant="bodyStrong">
                   {name}

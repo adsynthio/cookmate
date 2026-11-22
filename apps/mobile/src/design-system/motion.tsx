@@ -184,3 +184,27 @@ export function Pulse({ color, size = 6 }: { color: string; size?: number }) {
   const style = useAnimatedStyle(() => ({ opacity: o.value }));
   return <Animated.View style={[{ width: size, height: size, borderRadius: size / 2, backgroundColor: color }, style]} />;
 }
+
+/** Gently fades its children in and out: placeholders while something loads (U5). Still when motion is reduced. */
+export function Breathe({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const reduce = useReducedMotion();
+  const o = useSharedValue(1);
+  useEffect(() => {
+    if (reduce) return;
+    let alive = true;
+    const loop = () => {
+      if (!alive) return;
+      o.value = withTiming(0.45, { duration: 800 }, () => {
+        o.value = withTiming(1, { duration: 800 });
+      });
+    };
+    loop();
+    const id = setInterval(loop, 1600);
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
+  }, [reduce, o]);
+  const animated = useAnimatedStyle(() => ({ opacity: o.value }));
+  return <Animated.View style={[style, animated]}>{children}</Animated.View>;
+}

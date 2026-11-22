@@ -489,6 +489,7 @@
   "home.check.no": "नहीं, ख़त्म हो गया",
   "home.check.thanks": "धन्यवाद, सुझाव बदल दिए",
   "home.calendar.today": "आज: {names}",
+  "home.calendar.todayLabel": "आज",
   "home.fast.title": "क्या आज {name} का व्रत है?",
   "home.fast.yes": "हाँ, व्रत के हिसाब से सुझाइए",
   "home.fast.no": "इस बार नहीं",

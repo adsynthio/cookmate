@@ -493,6 +493,7 @@
   "home.check.no": "No, it's finished",
   "home.check.thanks": "Thanks, your picks are updated",
   "home.calendar.today": "Today: {names}",
+  "home.calendar.todayLabel": "Today",
   "home.fast.title": "Keeping the {name} fast today?",
   "home.fast.yes": "Yes, pick for the fast",
   "home.fast.no": "Not this time",

@@ -99,6 +99,8 @@ export default function YouScreen() {
   return (
     <Screen header={<AppHeader title={t("you.title")} />}>
       <ProfileCard me={me} members={members.data ?? []} />
+      {/* U22: the week's story first, the warm part of You (it hides itself until something was cooked). */}
+      {householdId ? <WeekCard householdId={householdId} /> : null}
       {/* U6: who you cook for, right under you. */}
       {householdId && members.data ? <FamilyCard householdId={householdId} members={members.data} selfId={memberId} /> : null}
       <SaveKitchenCard />
@@ -106,13 +108,11 @@ export default function YouScreen() {
         stats={[
           { icon: "heart", value: favourites.data?.length ?? 0, label: t("you.stat.saved"), tone: "accent" },
           { icon: "sparkle", value: general.length, label: t("you.stat.learned"), tone: "primary" },
-          { icon: "users", value: members.data?.length ?? 0, label: t("you.stat.people"), tone: "primary" },
           { icon: "shield", value: prefs.filter((p) => p.polarity < 0).length, label: t("you.stat.avoids"), tone: "accent" },
         ]}
       />
       {householdId ? <CreditsCard householdId={householdId} /> : null}
       <TasteCard prefs={prefs} />
-      {householdId ? <WeekCard householdId={householdId} /> : null}
       {householdId ? <PlateCard householdId={householdId} /> : null}
       {householdId ? <ToolsCard householdId={householdId} /> : null}
       <LanguageCard value={appLocale} onChange={changeLanguage} />

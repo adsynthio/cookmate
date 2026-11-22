@@ -44,7 +44,7 @@ export function StatGrid({ stats }: { stats: { icon: IconName; value: number; la
   return (
     <View style={styles.grid}>
       {stats.map((s, i) => (
-        <Enter key={s.label} index={i} style={styles.cell}>
+        <Enter key={s.label} index={i} style={[styles.cell, stats.length === 3 && styles.third]}>
           <View style={[styles.stat, shadow.card, { backgroundColor: colors.surface }]} accessible accessibilityLabel={`${s.value} ${s.label}`}>
             <View style={[styles.well, { backgroundColor: s.tone === "primary" ? colors.primaryPale : colors.accentSoft }]}>
               <Icon name={s.icon} size={18} color={s.tone === "primary" ? colors.primaryText : colors.accentText} />
@@ -163,7 +163,9 @@ const styles = StyleSheet.create({
   mini: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
   cell: { width: "47%", flexGrow: 1 },
-  stat: { borderRadius: radius.card, padding: space.lg, gap: 2 },
+  // U22: three numbers sit in one row.
+  third: { width: "30%" },
+  stat: { flexGrow: 1, borderRadius: radius.card, padding: space.lg, gap: 2 },
   well: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: space.sm },
   track: { height: 8, borderRadius: 4, overflow: "hidden" },
   fill: { height: 8, borderRadius: 4 },

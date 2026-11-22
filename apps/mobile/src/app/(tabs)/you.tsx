@@ -384,6 +384,8 @@ function Preferences({
 /** How Cookmate talks to you (KIT-068): pace, detail, experience and units, for voice and read-aloud. */
 function VoiceSettings() {
   const qc = useQueryClient();
+  const { colors } = useTheme();
+  const [open, setOpen] = useState(false);
   const { profile, query, memberId } = useVoiceProfile();
   const save = useMutation({
     mutationFn: (changes: Partial<VoiceProfile>) => services.preference.updateVoiceProfile(memberId!, changes),
@@ -391,6 +393,12 @@ function VoiceSettings() {
     onError: () => void qc.invalidateQueries({ queryKey: ["voiceProfile", memberId] }),
   });
   if (!memberId || !query.data) return null;
+  const summary = [
+    t(`you.voice.paceLabel`) + ": " + t(`you.voice.pace.${profile.pace}` as StringKey),
+    t(`you.voice.verbosityLabel`) + ": " + t(`you.voice.verbosity.${profile.verbosity}` as StringKey),
+    t(`you.voice.skillLabel`) + ": " + t(`you.voice.skill.${profile.skill}` as StringKey),
+    t(`you.voice.unitsLabel`) + ": " + t(`you.voice.units.${profile.units}` as StringKey),
+  ].join(" · ");
   const row = <K extends keyof VoiceProfile>(key: K, values: VoiceProfile[K][], label: StringKey) => (
     <View style={{ gap: space.xs }}>
       <Text variant="label" muted>
@@ -410,10 +418,27 @@ function VoiceSettings() {
         <Text muted>{t("you.voice.body")}</Text>
       </View>
       <Card>
-        {row("pace", PACES, "you.voice.paceLabel")}
-        {row("verbosity", VERBOSITIES, "you.voice.verbosityLabel")}
-        {row("skill", SKILLS, "you.voice.skillLabel")}
-        {row("units", UNITS, "you.voice.unitsLabel")}
+        {/* U39: set once, so folded to one line of the choices until tapped (like Kitchen tools). */}
+        <PressableScale
+          accessibilityRole="button"
+          accessibilityState={{ expanded: open }}
+          accessibilityLabel={`${t("you.voice.title")}: ${summary}`}
+          onPress={() => setOpen((o) => !o)}
+          style={styles.foldHead}
+        >
+          <Text variant="label" muted style={{ flex: 1 }} numberOfLines={open ? undefined : 2}>
+            {summary}
+          </Text>
+          <Icon name={open ? "minus" : "edit"} size={18} color={colors.primaryText} />
+        </PressableScale>
+        {open ? (
+          <>
+            {row("pace", PACES, "you.voice.paceLabel")}
+            {row("verbosity", VERBOSITIES, "you.voice.verbosityLabel")}
+            {row("skill", SKILLS, "you.voice.skillLabel")}
+            {row("units", UNITS, "you.voice.unitsLabel")}
+          </>
+        ) : null}
         <Button kind="secondary" label={t("you.voice.try")} onPress={() => say(stepWords(SAMPLE_STEP[getLocale()], profile))} />
       </Card>
     </>
@@ -819,6 +844,7 @@ const styles = StyleSheet.create({
   memoryActions: { flexDirection: "row", flexWrap: "wrap", gap: space.lg, marginTop: space.xs, paddingTop: space.md, borderTopWidth: StyleSheet.hairlineWidth },
   memoryAction: { flexDirection: "row", alignItems: "center", gap: 6, minHeight: 32 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
+  foldHead: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 44 },
   pref: { flexDirection: "row", alignItems: "center", gap: space.xs, borderRadius: radius.pill, paddingHorizontal: space.md, minHeight: 40 },
   dish: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 56 },
 });

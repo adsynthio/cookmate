@@ -464,12 +464,23 @@ function ItemRow({ item, expiry, onCook }: { item: PantryItem; expiry: ExpiryInf
         scaleTo={0.985}
         style={styles.itemMain}
       >
-        <FoodPhoto
-          name={item.ingredientKey ?? item.name}
-          category={entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade")}
-          size={56}
-          radius={radius.tag}
-        />
+        {/* U42: a freshness ring, readable before any words: red today or past, terracotta within 3 days. */}
+        <View
+          style={[
+            styles.ring,
+            {
+              borderColor:
+                expiry?.kind === "expired" || expiry?.kind === "today" ? colors.alert : expiry?.kind === "soon" ? colors.accent : "transparent",
+            },
+          ]}
+        >
+          <FoodPhoto
+            name={item.ingredientKey ?? item.name}
+            category={entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade")}
+            size={52}
+            radius={radius.tag - 2}
+          />
+        </View>
         <View style={{ flex: 1, gap: 2 }}>
           <View style={styles.row}>
             <Text variant="bodyStrong" numberOfLines={1} style={{ flexShrink: 1 }}>
@@ -586,6 +597,7 @@ function StapleRow({ item, householdId }: { item: PantryItem; householdId: strin
 }
 
 const styles = StyleSheet.create({
+  ring: { borderWidth: 2, borderRadius: radius.tag + 2, padding: 2 },
   titleRow: { flexDirection: "row", alignItems: "center", gap: space.sm, marginBottom: 4 },
   count: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
   actions: { flexDirection: "row", gap: space.sm },

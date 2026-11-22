@@ -17,6 +17,7 @@ import { PlanToDinner } from "@/components/recipe/PlanToDinner";
 import { SafetyNotes } from "@/components/recipe/SafetyNotes";
 import { EaseCard } from "@/components/recipe/EaseCard";
 import { HandoffButton } from "@/components/recipe/HandoffButton";
+import { dishEmoji } from "@/domain/foodEmoji";
 import type { AmountChange } from "@/domain/learning";
 import { Icon } from "@/design-system/icons";
 import { dishImage, ingredientImage } from "@/design-system/media";
@@ -263,8 +264,15 @@ function RecipeBody({
       }
     >
       <Enter>
-        <View style={[styles.hero, { backgroundColor: colors.primaryPale }]}>
-          {photo ? <Image source={photo} style={styles.heroImage} resizeMode="cover" accessibilityLabel={title} /> : null}
+        {/* U9: dish photos are square plates; a square frame shows the whole plate. No photo: the dish's emoji. */}
+        <View style={[styles.hero, photo ? styles.heroSquare : styles.heroPlain, { backgroundColor: photo ? "#F6F6F6" : colors.peach }]}>
+          {photo ? (
+            <Image source={photo} style={styles.heroImage} resizeMode="cover" accessibilityLabel={title} />
+          ) : (
+            <View style={styles.heroEmoji} importantForAccessibility="no-hide-descendants">
+              <Text style={{ fontSize: 112, lineHeight: 136 }}>{dishEmoji(doc.title, doc.course)}</Text>
+            </View>
+          )}
           {doc.tags?.includes("new_creation") || doc.review_status !== "approved" ? (
             <View style={styles.heroTop}>
               <View style={styles.tag}>
@@ -735,7 +743,10 @@ function IngredientRow({
 }
 
 const styles = StyleSheet.create({
-  hero: { height: 300, borderRadius: radius.cardLg, overflow: "hidden" },
+  hero: { borderRadius: radius.cardLg, overflow: "hidden" },
+  heroSquare: { aspectRatio: 1 },
+  heroPlain: { height: 300 },
+  heroEmoji: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
   heroImage: { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" },
   heroTop: { position: "absolute", top: space.md, left: space.md },
   heroBottom: { position: "absolute", bottom: space.md, left: space.md },

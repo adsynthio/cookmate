@@ -105,22 +105,19 @@ export function WantDish({
             </View>
           </View>
         ) : null}
+        {/* U9: one full-width button each, the recipe first; side by side they wrapped onto two cramped lines. */}
         <View style={styles.actions}>
+          <Button kind="accent" stretch iconAfter="arrowRight" label={t("home.viewRecipe")} onPress={() => onOpen(top.id)} />
           {missing.length ? (
-            <View style={{ flex: 1 }}>
-              <Button
-                kind="secondary"
-                stretch
-                icon={listed ? "check" : "cart"}
-                label={listed ? t("recipe.added") : t("recipe.addMissing", { n: missing.length })}
-                disabled={listed || addToList.isPending}
-                onPress={() => addToList.mutate()}
-              />
-            </View>
+            <Button
+              kind="secondary"
+              stretch
+              icon={listed ? "check" : "cart"}
+              label={listed ? t("recipe.added") : t("recipe.addMissing", { n: missing.length })}
+              disabled={listed || addToList.isPending}
+              onPress={() => addToList.mutate()}
+            />
           ) : null}
-          <View style={{ flex: 1 }}>
-            <Button kind="accent" stretch iconAfter="arrowRight" label={t("home.viewRecipe")} onPress={() => onOpen(top.id)} />
-          </View>
         </View>
       </View>
     </Enter>
@@ -132,6 +129,6 @@ const styles = StyleSheet.create({
   top: { flexDirection: "row", alignItems: "center", gap: space.md },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   chip: { flexDirection: "row", alignItems: "center", gap: 6, borderWidth: 1, borderStyle: "dashed", borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6 },
-  actions: { flexDirection: "row", gap: space.sm },
+  actions: { gap: space.sm },
   stack: { gap: space.xs },
 });

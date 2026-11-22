@@ -98,3 +98,18 @@ export function isMeatlessDay(meatlessDays: readonly number[] | null | undefined
 export function dietForDay<D extends string>(diet: D, meatless: boolean): D | "veg" {
   return meatless && (diet === "nonveg" || diet === "eggetarian") ? "veg" : diet;
 }
+
+// --- How a day looks ------------------------------------------------------------------------------------------------
+
+/** One emoji per festival or fast, for the "Today" pills on Home (U5). Unknown ones fall back by kind. */
+const EVENT_EMOJI: Record<string, string> = {
+  diwali: "🪔", holi: "🎨", "holika dahan": "🔥", lohri: "🔥", "makar sankranti": "🪁", pongal: "🌾", onam: "🌼",
+  "raksha bandhan": "🎀", "ganesh chaturthi": "🌺", dussehra: "🏹", "ram navami": "🌞", janmashtami: "🦚",
+  "guru nanak jayanti": "🙏", christmas: "🎄", "eid ul-fitr": "🕌", "eid ul-adha": "🕌", ramzan: "🌙",
+  "chaitra navratri": "🌸", "sharad navratri": "🌸", "chhath puja": "🌅", ekadashi: "🌙", "karva chauth": "🌕",
+  "maha shivaratri": "🔱", "no non-veg day": "🥗",
+};
+
+export function eventEmoji(name: string, kind: string): string {
+  return EVENT_EMOJI[name.trim().toLowerCase()] ?? (kind === "meatless" ? "🥗" : kind === "fast" ? "🌙" : "🎉");
+}

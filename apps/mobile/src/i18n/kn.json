@@ -406,6 +406,7 @@
   "home.check.no": "ಇಲ್ಲ, ಮುಗಿದಿದೆ",
   "home.check.thanks": "ಧನ್ಯವಾದ, ನಿಮ್ಮ ಆಯ್ಕೆಗಳು ನವೀಕರಿಸಲಾಗಿದೆ",
   "home.calendar.today": "ಇಂದು: {names}",
+  "home.calendar.todayLabel": "ಇಂದು",
   "home.fast.title": "ಇಂದು {name} ಉಪವಾಸ ಮಾಡುತ್ತಿದ್ದೀರಾ?",
   "home.fast.yes": "ಹೌದು, ಉಪವಾಸಕ್ಕೆ ಆರಿಸಿ",
   "home.fast.no": "ಈ ಬಾರಿ ಇಲ್ಲ",

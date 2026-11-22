@@ -13,6 +13,7 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { ReadyCard } from "@/components/home/ReadyCard";
 import { PlanCard } from "@/components/home/PlanCard";
 import { DinnerCard } from "@/components/home/DinnerCard";
+import { PicksSkeleton } from "@/components/home/PicksSkeleton";
 import { WeekCard } from "@/components/you/WeekCard";
 import { InventCard, NewDishCard, PickCard, pickPhoto, ResumeCard, UseSoonCards } from "@/components/home/HomeParts";
 
@@ -21,7 +22,8 @@ import { dishImage, illustrations } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
 import { Button, Card, Chip, Screen, SectionHeader, StateView, Text, type Scroller } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
-import { space } from "@/design-system/tokens";
+import { radius, space } from "@/design-system/tokens";
+import { eventEmoji } from "@/domain/calendar";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
@@ -387,7 +389,7 @@ export default function HomeScreen() {
       </View>
 
       {picks.isPending ? (
-        <StateView state="loading" title={t("state.loading.home")} />
+        <PicksSkeleton />
       ) : picks.isError ? (
         <StateView
           state="error"
@@ -476,15 +478,30 @@ function CalendarNote({
   onKeep: (id: string) => void;
   onDecline: (id: string) => void;
 }) {
+  const { colors } = useTheme();
   const kept = calendar.today.find((e) => e.kept);
   const offer = calendar.offerFast;
-  const names = [...new Set(calendar.today.filter((e) => !e.kept).map((e) => eventLabel(e.names, e.name)))];
+  // U5: today's festivals and fasts as small pills with their own emoji (🪔 Diwali, 🪁 Sankranti, 🥗 no non-veg day).
+  const seen = new Set<string>();
+  const today = calendar.today
+    .filter((e) => !e.kept)
+    .map((e) => ({ label: eventLabel(e.names, e.name), emoji: eventEmoji(e.name, e.kind) }))
+    .filter((e) => (seen.has(e.label) ? false : (seen.add(e.label), true)));
   return (
     <View style={{ gap: space.sm }}>
-      {names.length ? (
-        <Text variant="label" muted>
-          {t("home.calendar.today", { names: names.join(", ") })}
-        </Text>
+      {today.length ? (
+        <View style={styles.todayRow} accessible accessibilityLabel={t("home.calendar.today", { names: today.map((e) => e.label).join(", ") })}>
+          <Text variant="label" muted>
+            {t("home.calendar.todayLabel")}
+          </Text>
+          {today.map((e) => (
+            <View key={e.label} style={[styles.todayPill, { backgroundColor: colors.peach }]}>
+              <Text variant="label" weight={600} color={colors.peachText}>
+                {`${e.emoji} ${e.label.charAt(0).toUpperCase()}${e.label.slice(1)}`}
+              </Text>
+            </View>
+          ))}
+        </View>
       ) : null}
       {kept ? (
         <Text variant="label">{t("home.fast.kept", { name: eventLabel(kept.names, kept.name) })}</Text>
@@ -520,6 +537,8 @@ function CheckCard({ question, busy, onAnswer }: { question: PantryQuestion; bus
 }
 
 const styles = StyleSheet.create({
+  todayRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: space.sm },
+  todayPill: { flexDirection: "row", alignItems: "center", borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6 },
   reasons: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   row: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, alignItems: "center" },
   chips: { gap: space.sm, paddingVertical: space.xs, paddingRight: space.gutter },

@@ -459,6 +459,7 @@
   "home.check.no": "Nahi, khatam ho gaya",
   "home.check.thanks": "Shukriya, sujhav update ho gaye",
   "home.calendar.today": "Aaj: {names}",
+  "home.calendar.todayLabel": "Aaj",
   "home.fast.title": "Kya aaj {name} ka vrat hai?",
   "home.fast.yes": "Haan, vrat ke hisaab se suggest kijiye",
   "home.fast.no": "Is baar nahi",

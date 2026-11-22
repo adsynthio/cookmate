@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { calendarPrefs, type CalendarEvent, dietForDay, eventsOn, fastsToOffer, isMeatlessDay, isoWeekday, keepFast } from "./calendar.ts";
+import { calendarPrefs, type CalendarEvent, dietForDay, eventEmoji, eventsOn, fastsToOffer, isMeatlessDay, isoWeekday, keepFast } from "./calendar.ts";
 
 const navratri: CalendarEvent = {
   event_date: "2027-09-30",
@@ -54,4 +54,13 @@ test("weekly no-meat days: the weekday in India, and egg and non-veg eaters eat 
   assert.equal(dietForDay("jain", true), "jain");
   assert.equal(dietForDay("vegan", true), "vegan");
   assert.equal(dietForDay("nonveg", false), "nonveg");
+});
+
+test("each festival and fast has its own emoji; unknown ones fall back by kind", () => {
+  assert.equal(eventEmoji("Diwali", "festival"), "🪔");
+  assert.equal(eventEmoji("Makar Sankranti", "festival"), "🪁");
+  assert.equal(eventEmoji("Ekadashi", "fast"), "🌙");
+  assert.equal(eventEmoji("No non-veg day", "meatless"), "🥗");
+  assert.equal(eventEmoji("Bihu", "festival"), "🎉");
+  assert.equal(eventEmoji("Pradosh", "fast"), "🌙");
 });

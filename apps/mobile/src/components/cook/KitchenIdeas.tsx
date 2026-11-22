@@ -8,10 +8,10 @@ import { View } from "react-native";
 import { catalogEntry } from "@/data/catalog";
 import calendarJson from "@/data/calendar.json";
 import { recipeDocs } from "@/data/recipes";
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { dishImage } from "@/design-system/media";
 import { Enter, PressableScale } from "@/design-system/motion";
-import { Photo, Text } from "@/design-system/primitives";
+import { Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { kitchenIdeas, occasionOn } from "@/domain/kitchenIdeas";
@@ -54,7 +54,7 @@ export function KitchenIdeas({ householdId }: { householdId: string }) {
             onPress={() => router.push(`/recipe/${i.doc.slug}`)}
             style={[{ flexDirection: "row", alignItems: "center", gap: space.md, padding: space.md, borderRadius: radius.card }, shadow.card, { backgroundColor: colors.surface }]}
           >
-            <Photo source={dishImage(i.doc.slug)} size={56} round />
+            <DishPhoto slug={i.doc.slug} name={i.doc.title} course={i.doc.course} size={56} round />
             <View style={{ flex: 1, gap: 2 }}>
               <Text variant="bodyStrong">{recipeTitle(i.doc, l)}</Text>
               <Text variant="caption" muted>

@@ -9,9 +9,10 @@ import { AppHeader } from "@/components/AppHeader";
 import { StepProgress } from "@/components/cook/StepParts";
 import { TimerChips } from "@/components/cook/TimerChips";
 import { useNow } from "@/components/cook/useNow";
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { dishImage, illustrations } from "@/design-system/media";
 import { Enter, PressableScale } from "@/design-system/motion";
-import { Badge, Button, Photo, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
+import { Badge, Button, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { Icon } from "@/design-system/icons";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
@@ -132,7 +133,7 @@ export default function CookTab() {
                     onPress={() => router.push(`/recipe/${d.id}`)}
                     style={[styles.row, shadow.card, { backgroundColor: colors.surface }]}
                   >
-                    <Photo source={dishImage(d.slug)} size={56} round />
+                    <DishPhoto slug={d.slug} name={d.title} course={d.course} size={56} round />
                     <View style={{ flex: 1, gap: 2 }}>
                       <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
                       {d.totalTimeMin ? (
@@ -167,7 +168,7 @@ export default function CookTab() {
                     onPress={() => router.push(`/recipe/${d.slug}`)}
                     style={[styles.row, shadow.card, { backgroundColor: colors.surface }]}
                   >
-                    <Photo source={dishImage(d.slug)} size={56} round />
+                    <DishPhoto slug={d.slug} name={d.title} course={d.course} size={56} round />
                     <View style={{ flex: 1, gap: 2 }}>
                       <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
                       <Text variant="caption" muted>

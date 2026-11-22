@@ -8,10 +8,10 @@ import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { AppHeader } from "@/components/AppHeader";
 import { itemName } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
-import { ingredientImage } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
-import { Button, Card, Chip, Field, Photo, Screen, StateView, Text } from "@/design-system/primitives";
+import { Button, Card, Chip, Field, Screen, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { expiryInfo, formatQuantity, parseQuantity, roughDuration, shelfLife } from "@/domain/kitchen";
@@ -104,8 +104,9 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
     <>
       <Enter>
         <View style={[styles.hero, { backgroundColor: colors.surfaceMuted }]}>
-          <Photo
-            source={ingredientImage(item.ingredientKey, entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade"))}
+          <FoodPhoto
+            name={item.ingredientKey ?? item.name}
+            category={entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade")}
             size={heroSize}
             radius={radius.cardLg}
           />

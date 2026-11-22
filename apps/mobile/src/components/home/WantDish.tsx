@@ -5,8 +5,9 @@ import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { dishImage, ingredientImage } from "@/design-system/media";
+import { ingredientImage } from "@/design-system/media";
 import { Enter } from "@/design-system/motion";
 import { Badge, Button, Photo, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
@@ -74,7 +75,7 @@ export function WantDish({
     <Enter>
       <View style={[styles.card, shadow.card, { backgroundColor: colors.surface }]} accessibilityLabel={t("home.want.title", { dish: name })}>
         <View style={styles.top}>
-          <Photo source={dishImage(recipe.data.slug)} size={64} round />
+          <DishPhoto slug={recipe.data.slug} name={recipe.data.title} course={recipe.data.course} size={64} round />
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="overline" color={colors.accentText}>
               {t("home.want.overline").toUpperCase()}

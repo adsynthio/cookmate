@@ -13,6 +13,7 @@ import { Badge, Button, Card, Chip, Photo, Screen, Text } from "@/design-system/
 import { drinkImage } from "@/design-system/media";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
+import { dishEmoji } from "@/domain/foodEmoji";
 import { drinkMatch, kitchenHas, drinksFor, say, type DrinkFilter } from "@/domain/drinks";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services } from "@/services";
@@ -102,7 +103,7 @@ function DrinkCard({ drink, index, locale, have, onOpen }: { drink: Drink; index
     <Enter index={index}>
       <PressableScale accessibilityRole="button" accessibilityLabel={title} onPress={onOpen} style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
         {drinkImage(drink.id) ? (
-          <Photo source={drinkImage(drink.id)} size={64} radius={18} />
+          <Photo source={drinkImage(drink.id)} emoji={dishEmoji(drink.title.en, "drink")} tint="peach" size={64} radius={18} />
         ) : (
           <View style={[styles.swatch, { backgroundColor: drink.colors[1] }]}>
             <Icon name={drink.kind === "hot" ? "flame" : "drop"} size={22} color="#FFFFFF" />

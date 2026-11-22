@@ -14,10 +14,10 @@ import { itemName } from "@/components/kitchen/names";
 import { UndoBar } from "@/components/UndoBar";
 import { catalogEntry } from "@/data/catalog";
 import { recipeDocs } from "@/data/recipes";
+import { DishPhoto, FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
-import { dishImage, ingredientImage } from "@/design-system/media";
 import { Enter, Layout, PressableScale, Pulse } from "@/design-system/motion";
-import { Badge, Button, Card, Chip, IconButton, Photo, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
+import { Badge, Button, Card, Chip, IconButton, Screen, SectionHeader, StateView, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { expiryInfo, formatQuantity, LOW_CONFIDENCE, type ExpiryInfo } from "@/domain/kitchen";
@@ -290,7 +290,7 @@ export default function KitchenScreen() {
                     </Text>
                   </View>
                   <View style={styles.suggestBody}>
-                    <Photo source={dishImage(suggestion.doc.slug)} size={84} radius={radius.item} />
+                    <DishPhoto slug={suggestion.doc.slug} name={suggestion.doc.title} course={suggestion.doc.course} size={84} radius={radius.item} />
                     <View style={{ flex: 1, gap: 4 }}>
                       <Text variant="heading" numberOfLines={2}>
                         {dishTitle(suggestion.doc)}
@@ -412,8 +412,9 @@ function ItemRow({ item, expiry, onCook }: { item: PantryItem; expiry: ExpiryInf
         scaleTo={0.985}
         style={styles.itemMain}
       >
-        <Photo
-          source={ingredientImage(item.ingredientKey, entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade"))}
+        <FoodPhoto
+          name={item.ingredientKey ?? item.name}
+          category={entry?.category ?? (item.state === "leftover" ? "leftover" : "homemade")}
           size={56}
           radius={radius.tag}
         />
@@ -489,7 +490,7 @@ function StapleRow({ item, householdId }: { item: PantryItem; householdId: strin
   return (
     <View style={[styles.item, shadow.card, { backgroundColor: colors.surface }]}>
       <View style={styles.itemMain}>
-        <Photo source={ingredientImage(item.ingredientKey, entry?.category)} size={44} radius={radius.tag} />
+        <FoodPhoto name={item.ingredientKey ?? item.name} category={entry?.category} size={44} radius={radius.tag} />
         <Text variant="bodyStrong" style={{ flex: 1 }} numberOfLines={1}>
           {itemName(item)}
         </Text>

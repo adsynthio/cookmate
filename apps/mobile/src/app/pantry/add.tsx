@@ -10,10 +10,10 @@ import { draftName, rematch } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
 import { AmountChips } from "@/components/pantry/AmountChips";
 import { AppHeader } from "@/components/AppHeader";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
-import { ingredientImage } from "@/design-system/media";
 import { Enter, Layout, PressableScale } from "@/design-system/motion";
-import { Badge, Button, Card, Chip, Field, IconButton, Photo, Screen, Text } from "@/design-system/primitives";
+import { Badge, Button, Card, Chip, Field, IconButton, Screen, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { needsCheck, parseQuantity, readBackText } from "@/domain/kitchen";
@@ -242,7 +242,7 @@ function OutCard({ draft, onKeep, onRemove }: { draft: DraftItem; onKeep: () => 
   return (
     <Card style={{ backgroundColor: colors.surfaceMuted }}>
       <View style={styles.cardHead}>
-        <Photo source={ingredientImage(draft.ingredientKey, entry?.category ?? "homemade")} size={52} radius={radius.tag} />
+        <FoodPhoto name={draft.ingredientKey ?? draft.said} category={entry?.category ?? "homemade"} size={52} radius={radius.tag} />
         <View style={{ flex: 1, gap: 4 }}>
           <Badge label={t("kitchen.ranOut")} tone="accent" icon="cart" />
           <Text variant="bodyStrong">{draftName(draft)}</Text>
@@ -293,7 +293,7 @@ function DraftCard({
         onPress={onToggle}
         style={[styles.rowCard, { backgroundColor: colors.surface }, unsure ? { borderWidth: 1.5, borderColor: colors.accent } : null]}
       >
-        <Photo source={ingredientImage(draft.ingredientKey, entry?.category ?? "homemade")} size={40} radius={radius.tag} />
+        <FoodPhoto name={draft.ingredientKey ?? draft.said} category={entry?.category ?? "homemade"} size={40} radius={radius.tag} />
         <View style={{ flex: 1 }}>
           <Text variant="bodyStrong" numberOfLines={1}>
             {draftName(draft)}
@@ -313,7 +313,7 @@ function DraftCard({
   return (
     <Card style={unsure ? { borderWidth: 1.5, borderColor: colors.accent } : undefined}>
       <View style={styles.cardHead}>
-        <Photo source={ingredientImage(draft.ingredientKey, entry?.category ?? "homemade")} size={52} radius={radius.tag} />
+        <FoodPhoto name={draft.ingredientKey ?? draft.said} category={entry?.category ?? "homemade"} size={52} radius={radius.tag} />
         <View style={{ flex: 1, gap: 4 }}>
           {unsure ? <Badge label={t("kitchen.unsure")} tone="accent" icon="bulb" /> : null}
           <Field

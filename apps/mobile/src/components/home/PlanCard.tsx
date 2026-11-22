@@ -5,10 +5,10 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { StyleSheet, View } from "react-native";
 
 import { catalogEntry } from "@/data/catalog";
+import { DishPhoto } from "@/design-system/FoodPhoto";
 import { Icon } from "@/design-system/icons";
-import { dishImage } from "@/design-system/media";
 import { Enter, PressableScale } from "@/design-system/motion";
-import { Button, Photo, Text } from "@/design-system/primitives";
+import { Button, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
@@ -140,7 +140,7 @@ function Shell({ icon, overline, title, slug, children }: { icon: "clock" | "bel
     <Enter>
       <View style={[styles.card, shadow.card, { backgroundColor: colors.surface }]}>
         <View style={styles.top}>
-          {dishImage(slug) ? <Photo source={dishImage(slug)} size={52} round /> : null}
+          <DishPhoto slug={slug} name={title} size={52} round />
           <View style={{ flex: 1, gap: 2 }}>
             <View style={styles.row}>
               <Icon name={icon} size={14} color={colors.accentText} />

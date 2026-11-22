@@ -11,8 +11,9 @@ import { ActivityIndicator, Image, Platform, StyleSheet, View } from "react-nati
 import { AppHeader } from "@/components/AppHeader";
 import { shrinkPhoto } from "@/components/scan/shrinkPhoto";
 import { draftName } from "@/components/kitchen/names";
+import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
-import { ingredientImage, scenes } from "@/design-system/media";
+import { scenes } from "@/design-system/media";
 import { Enter, Layout, PressableScale, Pulse } from "@/design-system/motion";
 import { Button, Photo, Screen, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
@@ -282,7 +283,7 @@ export default function ScanScreen() {
             {tray.map((d) => (
               <Layout key={d.key}>
                 <View style={[styles.found, { backgroundColor: colors.peach }]}>
-                  <Photo source={ingredientImage(d.ingredientKey, catalogEntry(d.ingredientKey)?.category ?? "packaged")} size={24} round />
+                  <FoodPhoto name={d.ingredientKey ?? d.said} category={catalogEntry(d.ingredientKey)?.category ?? "packaged"} size={24} round />
                   <Text variant="label">{draftName(d)}</Text>
                   <Icon name="checkCircle" size={16} color={colors.peachText} />
                 </View>

@@ -51,19 +51,24 @@ export function lineAmount(line: Pick<ListLine, "quantity" | "unit">): string {
 
 const TITLE: Record<Locale, string> = { en: "Shopping list", hi: "ख़रीदारी की सूची", hinglish: "Shopping list" };
 
-/** The list as text: a title, then each section with one item per line ("- Paneer, 200 g"). */
+/**
+ * The list as text: a title, then each section with one item per line ("- Paneer, 200 g"). With `emojiOf`, each line
+ * starts with the food's emoji instead ("🧀 Paneer, 200 g") and the title with a cart (U14): easier to read in a
+ * WhatsApp chat, and still plain text.
+ */
 export function shareText<T extends ListLine>(
   groups: { section: Section; lines: T[] }[],
   sectionName: (s: Section) => string,
   nameOf: (line: T) => string,
   locale: Locale,
+  emojiOf?: (line: T) => string,
 ): string {
-  const parts = [TITLE[locale]];
+  const parts = [emojiOf ? `🛒 ${TITLE[locale]}` : TITLE[locale]];
   for (const g of groups) {
     parts.push("", `${sectionName(g.section)}:`);
     for (const line of g.lines) {
       const amount = lineAmount(line);
-      parts.push(`- ${nameOf(line)}${amount ? `, ${amount}` : ""}`);
+      parts.push(`${emojiOf ? emojiOf(line) : "-"} ${nameOf(line)}${amount ? `, ${amount}` : ""}`);
     }
   }
   return parts.join("\n");

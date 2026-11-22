@@ -24,7 +24,7 @@ import { expiryInfo, formatQuantity, LOW_CONFIDENCE, type ExpiryInfo } from "@/d
 import { dishesWithin } from "@/domain/kitchenSetup";
 import { nextRestock } from "@/domain/restock";
 import type { Diet } from "@/domain/onboarding";
-import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { getLocale, t, useLocale, type StringKey, getAppLocale } from "@/i18n";
 import { recipeTimeText } from "@/i18n/duration";
 import { services, type LocationKind, type PantryItem, type StapleLevel } from "@/services";
 import { useSession } from "@/state/session";
@@ -402,7 +402,7 @@ function ItemRow({ item, expiry, onCook }: { item: PantryItem; expiry: ExpiryInf
   });
   const entry = catalogEntry(item.ingredientKey);
   const name = itemName(item);
-  const qty = formatQuantity(item.quantity, item.unit);
+  const qty = formatQuantity(item.quantity, item.unit, getAppLocale());
   const unsure = (item.confidence < LOW_CONFIDENCE || item.guess) && !confirm.isSuccess;
 
   const badge =

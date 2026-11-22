@@ -9,6 +9,7 @@ import { StyleSheet, View } from "react-native";
 import { draftName, rematch } from "@/components/kitchen/names";
 import { catalogEntry } from "@/data/catalog";
 import { AmountChips } from "@/components/pantry/AmountChips";
+import { LivePreview } from "@/components/pantry/LivePreview";
 import { AppHeader } from "@/components/AppHeader";
 import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
@@ -169,6 +170,7 @@ export default function AddItemsScreen() {
                 style={styles.bigField}
               />
             </Enter>
+            <LivePreview text={text} />
             <Enter index={2} style={{ gap: space.sm }}>
               <Text variant="overline" muted style={styles.upper}>
                 {t("kitchen.addExamples")}

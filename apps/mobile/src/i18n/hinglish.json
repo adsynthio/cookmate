@@ -1483,5 +1483,7 @@
   "community.example.note": "Raat bhar bhigoya aur thoda zyada adrak daala. Sabne dobaara liya!",
   "community.example.change": "Zyada adrak",
   "list.heading": "Kya khareedna hai",
-  "recipe.moreTitle": "Is dish ke saath aur"
+  "recipe.moreTitle": "Is dish ke saath aur",
+  "kitchen.preview.title": "Abhi tak mujhe ye dikha",
+  "kitchen.preview.out": "khatam"
 }

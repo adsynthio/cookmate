@@ -394,7 +394,7 @@ export interface RecipeService {
   keepFast(householdId: string, eventId: string): Promise<void>;
   /**
    * KIT-056: invent a dish from what's here; never returns one that failed the safety checks. With `dish`, write that
-   * dish the home way from this kitchen instead (at most three things to buy, returned in toBuy).
+   * dish the home way from this kitchen instead. What either dish needs that the kitchen lacks comes back in toBuy.
    */
   inventDish(householdId: string, dish?: string): Promise<InventResult>;
   /** G5: "Something's off" on this household's own AI recipe. It is hidden for the household and kept for review. */

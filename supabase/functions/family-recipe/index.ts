@@ -16,7 +16,7 @@ import { serverError } from "../_shared/errors.ts";
 import { aiSwitchedOff } from "../_shared/killSwitch.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
 import { creditsFor, outOfCredits } from "../_shared/credits.ts";
-import { checkRecipe, problemLines, SAFETY_RULES_PROMPT } from "../_shared/recipeSafety.ts";
+import { checkRecipe, guessEntry, problemLines, SAFETY_RULES_PROMPT, tidyRecipe } from "../_shared/recipeSafety.ts";
 import { reviewRecipe } from "../_shared/recipeReview.ts";
 import { variantRows } from "../adapt-recipe/logic.ts";
 import { CATALOG, COURSE_PROMPT, docFromModel, explainProblem, MODEL_COURSES, tableDiet } from "../invent-dish/logic.ts";
@@ -134,9 +134,11 @@ Deno.serve(async (req) => {
     try {
       const r = await ask(client, telling, owner, problems, children);
       // The family's own dish: its diet is what it contains, not the table's.
-      const candidate = r.out ? docFromModel(r.out, "nonveg") : null;
+      let candidate = r.out ? docFromModel(r.out, "nonveg") : null;
       if (candidate) {
-        const names = new Set(candidate.ingredients.map((i) => CATALOG.get(i.ingredient)?.category ?? ""));
+        // Fix what can be fixed (standard safety notes, a long step split): the family's dish is told as it is.
+        candidate = tidyRecipe(candidate, { catalog: CATALOG }).doc;
+        const names = new Set(candidate.ingredients.map((i) => (CATALOG.get(i.ingredient) ?? guessEntry(i.ingredient)).category));
         candidate.diet = names.has("meat") || names.has("seafood") ? "nonveg" : names.has("egg") ? "eggetarian" : tableDiet([]);
         candidate.tags = ["family_recipe"];
         candidate.slug = "family-recipe";

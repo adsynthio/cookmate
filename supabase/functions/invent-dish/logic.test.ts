@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert@1";
 
 import { planInvention, validateInvention } from "../_shared/invent.ts";
-import { checkRecipe, problemLines } from "../_shared/recipeSafety.ts";
+import { checkRecipe, problemLines, tidyRecipe } from "../_shared/recipeSafety.ts";
 import { CATALOG, cleanDishName, closeness, docFromModel, inventItems, isWater, kitchenSwaps, namedPlan, tableDiet, toBuyFor } from "./logic.ts";
 
 Deno.test("the table eats what its strictest member eats", () => {
@@ -121,7 +121,7 @@ Deno.test("water is never an ingredient: the steps say how much, so it can't fai
   assertEquals(doc.steps[0]!.text.includes("750 ml water"), true);
 });
 
-Deno.test("a named sweet is checked as a sweet: Motichoor laddu's sugar fits a dessert, not a main", () => {
+Deno.test("Motichoor laddu passes: sugar and ghee are the cook's choice, whatever the course", () => {
   const laddu = {
     title: "Motichoor laddu",
     title_hi: "मोतीचूर लड्डू",
@@ -145,10 +145,11 @@ Deno.test("a named sweet is checked as a sweet: Motichoor laddu's sugar fits a d
   assertEquals(sweet.course, "dessert");
   assertEquals(sweet.ingredients[0]!.ingredient, "gram flour", "everyday names become the catalog's");
   const sugar = (doc: typeof sweet) => problemLines(checkRecipe(doc, { catalog: CATALOG, diet: "veg", avoid: [] })).filter((p) => p.includes("sugar"));
-  assertEquals(sugar(sweet), [], "75 g of sugar a serving is fine for a sweet (limit 120)");
+  assertEquals(sugar(sweet), [], "75 g of sugar a serving is how laddu is made");
   const asMain = docFromModel(laddu, "veg");
   assertEquals(asMain.course, "main", "without a course a model dish is a main");
   assertEquals(docFromModel({ ...laddu, course: "chutney_pickle" }, "veg").course, "chutney_pickle", "a family's achar stays a pickle");
   assertEquals(docFromModel({ ...laddu, course: "component" as "main" }, "veg").course, "main", "an unknown course is a main");
-  assertEquals(sugar(asMain), ["too much sugar: 75 per serving, at most 60"]);
+  assertEquals(sugar(asMain), [], "no sugar limit even when the model calls it a main");
+  assertEquals(problemLines(checkRecipe(tidyRecipe(sweet, { catalog: CATALOG }).doc, { catalog: CATALOG, diet: "veg", avoid: [] })), []);
 });

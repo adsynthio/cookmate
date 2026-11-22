@@ -174,7 +174,6 @@ export function docFromModel(d: ModelDish, diet: Diet): RecipeDoc {
 // --- "Make Aloo Methi": a dish the cook named (from Home's search or Cookmate's new-dish idea) ------------------
 
 export const MAX_DISH_CHARS = 60;
-export const MAX_TO_BUY = 3;
 
 /** A dish name worth asking for: letters, spaces and a few marks, in any script. */
 export function cleanDishName(raw: unknown): string | null {
@@ -186,8 +185,8 @@ export function cleanDishName(raw: unknown): string | null {
 }
 
 /**
- * Things a named dish needs that the kitchen doesn't have (not staples, not optional). A named dish may need a few
- * (they go on the list); more than MAX_TO_BUY means it isn't a dish for this kitchen tonight.
+ * Things a dish needs that the kitchen doesn't have (not staples, not optional). They go on the list as "you'd
+ * need"; the writer is told to buy the fewest, but a dish is never refused for needing a few things.
  */
 export function toBuyFor(doc: RecipeDoc, have: Set<string>): string[] {
   return [...new Set(doc.ingredients

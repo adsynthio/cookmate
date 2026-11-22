@@ -3,15 +3,14 @@ import { ingredientFitsDiet, type ValidationContext } from "../_shared/adapt.ts"
 import catalogJson from "../_shared/catalog.json" with { type: "json" };
 import type { Diet } from "../_shared/ranking.ts";
 import type { RecipeDoc } from "../_shared/recipes.ts";
-import { checkRecipe, problemLines } from "../_shared/recipeSafety.ts";
+import { checkRecipe, guessEntry, problemLines } from "../_shared/recipeSafety.ts";
 
 type CatalogRow = { name: string; category: string; flags?: string[]; allergens?: string[] };
 const catalog = new Map((catalogJson as CatalogRow[]).map((c) => [c.name, c]));
 
 export function validationContext(diet?: Diet): ValidationContext {
   return {
-    known: (k) => catalog.has(k),
-    allowed: (d, k) => ingredientFitsDiet(d, catalog.get(k)),
+    allowed: (d, k) => ingredientFitsDiet(d, catalog.get(k) ?? guessEntry(k)),
     diet,
   };
 }

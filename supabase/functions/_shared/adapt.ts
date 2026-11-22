@@ -6,6 +6,7 @@
 // Pure TypeScript, shared with the Edge Functions by scripts/sync-shared.py.
 import type { Diet } from "./ranking.ts";
 import { scaleQty, type RecipeDoc, type RecipeIngredientDoc, type RecipeStepDoc } from "./recipes.ts";
+import { anyProtein, unsafeInstructions } from "./stepSafety.ts";
 
 export type AdaptRequest = {
   /** Ingredients the cook doesn't have. */
@@ -222,14 +223,12 @@ export function applyModelPlan(a: Adaptation, plan: ModelPlan): Adaptation {
 // --- validator ----------------------------------------------------------------------------------------------------
 
 export type ValidationContext = {
-  /** Is this a catalog ingredient? */
-  known: (key: string) => boolean;
-  /** Can someone on this diet eat this ingredient? */
+  /** Can someone on this diet eat this ingredient? Any real ingredient may be used; one off Cookmate's list is read by
+   * its name (recipeSafety.guessEntry). */
   allowed: (diet: Diet, key: string) => boolean;
   diet?: Diet;
 };
 
-const UNSAFE = /\b(raw egg|half[- ]cooked|undercook|still pink|slightly pink|skip (the )?(boil|soak)|no need to (boil|cook)|reuse (the )?oil|room temperature overnight)\b/i;
 
 /** Problems with an adaptation; empty means it is safe to show and save. */
 export function validateAdaptation(base: RecipeDoc, a: Adaptation, ctx: ValidationContext): string[] {
@@ -260,12 +259,13 @@ export function validateAdaptation(base: RecipeDoc, a: Adaptation, ctx: Validati
     if ((s.whistles ?? 0) > (now.whistles ?? 0)) problems.push(`fewer whistles at step ${n}`);
   });
 
+  // The same unsafe-instruction rules as every other recipe (stepSafety.ts).
+  const protein = anyProtein(doc.ingredients.map((i) => i.ingredient));
   for (const s of doc.steps) {
     if (!s.text.trim() || s.text.length > 600) problems.push("a step is empty or too long");
-    if (UNSAFE.test(s.text)) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
+    if (unsafeInstructions(s.text, protein).length) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
   }
   for (const i of doc.ingredients) {
-    if (!ctx.known(i.ingredient)) problems.push(`unknown ingredient ${i.ingredient}`);
     if (!(i.qty > 0) || !Number.isFinite(i.qty)) problems.push(`bad quantity for ${i.ingredient}`);
     if (ctx.diet && !ctx.allowed(ctx.diet, i.ingredient)) problems.push(`${i.ingredient} doesn't fit a ${ctx.diet} diet`);
   }

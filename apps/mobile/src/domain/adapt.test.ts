@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import { applyModelPlan, applyRules, ingredientFitsDiet, summarise, validateAdaptation, type ValidationContext } from "./adapt.ts";
+import { guessEntry } from "./recipeSafety.ts";
 import type { RecipeDoc } from "./recipes.ts";
 
 const docs = JSON.parse(readFileSync(new URL("../data/recipes.json", import.meta.url), "utf8")) as RecipeDoc[];
@@ -13,8 +14,7 @@ const catalog = JSON.parse(readFileSync(new URL("../data/catalog.json", import.m
 const byName = new Map(catalog.map((c) => [c.name, c]));
 const doc = (slug: string) => docs.find((d) => d.slug === slug)!;
 const ctx = (diet?: ValidationContext["diet"]): ValidationContext => ({
-  known: (k) => byName.has(k),
-  allowed: (d, k) => ingredientFitsDiet(d, byName.get(k)),
+  allowed: (d, k) => ingredientFitsDiet(d, byName.get(k) ?? guessEntry(k)),
   diet,
 });
 
@@ -129,8 +129,9 @@ test("the validator rejects model plans that drop safety, cut chicken cooking ti
     summary: "",
   });
   const problems = validateAdaptation(base, invented, ctx()).join();
-  assert.match(problems, /unknown ingredient unicorn meat/);
+  assert.doesNotMatch(problems, /unknown ingredient/, "any real ingredient may be used");
   assert.match(problems, /unsafe instruction/);
+  assert.match(validateAdaptation(base, invented, ctx("veg")).join(), /unicorn meat doesn't fit a veg diet/, "a new name is still read for the diet");
 });
 
 test("no chilli means no heat ingredients at all", () => {

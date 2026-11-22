@@ -11,6 +11,7 @@ import { toDraft } from "./drafts";
 import { recipeBySlug, recipeDocs } from "@/data/recipes";
 import { localHour, slotForHour } from "@/domain/ranking";
 import { applyRules, ingredientFitsDiet, summarise, validateAdaptation } from "@/domain/adapt";
+import { guessEntry } from "@/domain/recipeSafety";
 import { recipeTitle, searchRecipes, toSummary, type RecipeDoc } from "@/domain/recipes";
 
 import { deductionPreview } from "@/domain/cooking";
@@ -791,8 +792,7 @@ const mocks: Services = {
       const a = applyRules(base, input);
       const byName = new Map(catalog.map((c) => [c.name, c]));
       const problems = validateAdaptation(base, a, {
-        known: (k) => byName.has(k),
-        allowed: (d, k) => ingredientFitsDiet(d, byName.get(k)),
+        allowed: (d, k) => ingredientFitsDiet(d, byName.get(k) ?? guessEntry(k)),
         diet: input.diet,
       });
       const summary = summarise(a);

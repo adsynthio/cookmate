@@ -40,6 +40,16 @@ against it, so a new library recipe can't merge unless it passes. It is used by 
 family recipes, house-cook handoff and the library build. It returns a list of problems; an empty list means the
 recipe can be shown.
 
+**Only real harm (22 Nov 2026).** Cooking is creative: a home cook makes boondi from besan, sugar and ghee, with
+Eno for baking soda. The gate now refuses a recipe only when it could hurt someone: the family's allergies, dislikes,
+diet and fasts, small children's choking risks, food that can make people ill (rajma, raw meat, fish and egg, food
+left out overnight, salt or soda in amounts no dish uses) and burns (hot oil, the pressure cooker). Sugar, ghee, oil
+and chilli limits are gone; any real ingredient may be used, on Cookmate's list or not, and one that isn't is read by
+its name for the diet and allergen labels (`guessEntry`). `tidyRecipe()` runs on every AI draft first and fixes what
+can be fixed instead of refusing: it adds the standard safety notes, splits a long step, drops an impossible timer or a
+title in the wrong script, and takes out a sentence with a health claim or a link. A new dish may need a few things
+from the shop (shown as "you'd need"), and the second model review blocks only for harm.
+
 **The family's rules**
 - Diet for the whole table (the strictest one among the people eating), Jain rules, and vegan.
 - **Allergies and dislikes** (the same avoid list ranking uses), including inside cooked components and spice mixes. A recipe that needs an avoided ingredient is rejected, not quietly changed.
@@ -47,7 +57,7 @@ recipe can be shown.
 - Children at the table: no whole nuts as a choking risk, mild chilli, nothing raw that should be cooked.
 
 **Allergen labels**
-- Every recipe lists its allergens, worked out from the ingredient catalog's `allergens` field, never from model text: milk, peanut, tree nuts, gluten, sesame, mustard, soy, egg, fish, shellfish.
+- Every recipe lists its allergens, worked out from the ingredient catalog's `allergens` field (or the ingredient's name when the catalog doesn't know it), never from model text: milk, peanut, tree nuts, gluten, sesame, mustard, soy, egg, fish, shellfish.
 - They show as chips on the recipe and are read aloud when cooking starts.
 
 **Hazards in Indian kitchens.** If an ingredient or step matches a hazard, the recipe must have the safe step with a

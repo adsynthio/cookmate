@@ -4,7 +4,7 @@
 // fails is never shown. Pure TypeScript with type-only imports: shared with the invent-dish Edge Function.
 import type { Diet, FlavorKey } from "./ranking.ts";
 import type { RecipeDoc } from "./recipes.ts";
-import { MAX_STEP_CHARS, unsafeInstructions } from "./stepSafety.ts";
+import { unsafeInstructions } from "./stepSafety.ts";
 
 export type CatalogEntry = { name: string; category: string; flags?: string[]; allergens?: string[]; staple?: boolean };
 
@@ -118,17 +118,19 @@ export function avoids(avoid: Iterable<string>, key: string): boolean {
 }
 
 /**
- * Problems with an invented dish; empty means it can be shown (labelled "new creation") and cooked.
- * - nothing the family avoids (allergies and dislikes), not even as an optional extra;
- * - only catalog ingredients that fit the diet, and nothing the kitchen doesn't have except staples;
- * - every planned odd-and-end is used (that's the point);
- * - leftovers and cooked food are reheated until steaming hot, in a step with a safety note;
- * - raw meat, fish and egg must be cooked through, said in a step with a safety note; no unsafe shortcuts.
+ * Problems with an invented dish that could hurt someone; empty means it can be shown (labelled "new creation") and
+ * cooked. Only harm counts (22 Nov 2026): the AI may use any real ingredient, buy a few things, leave out an odd and
+ * end that doesn't fit, and write a long method. Refused:
+ * - anything the family avoids (allergies and dislikes), not even as an optional extra or a garnish in a step;
+ * - an ingredient Cookmate knows that doesn't fit the table's diet (an unknown name is read by recipeSafety.ts);
+ * - unsafe shortcuts and bad quantities;
+ * - leftovers and cooked food not reheated until steaming hot, raw meat, fish and egg not cooked through, each said in
+ *   a step with a safety note (tidyRecipe() adds the standard note when the writer leaves it out).
  */
 export function validateInvention(
   doc: RecipeDoc,
   plan: InventPlan,
-  ctx: { catalog: Map<string, CatalogEntry>; diet: Diet; have: Set<string>; avoid?: Iterable<string> },
+  ctx: { catalog: Map<string, CatalogEntry>; diet: Diet; have?: Set<string>; avoid?: Iterable<string> },
 ): string[] {
   const problems: string[] = [];
   const avoid = [...(ctx.avoid ?? [])];
@@ -140,30 +142,19 @@ export function validateInvention(
     const words = s.text.toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, " ");
     for (const a of avoid) if (avoids([a], words)) problems.push(`a step uses ${a}, which this family never eats`);
   }
-  if (!doc.title.trim() || doc.title.length > 80) problems.push("bad title");
-  if (doc.steps.length < 2 || doc.steps.length > 10) problems.push("needs 2 to 10 steps");
+  const protein = doc.ingredients.some((i) => ["meat", "seafood", "egg"].includes(ctx.catalog.get(i.ingredient)?.category ?? "") || /^(kidney beans|rajma)$/.test(i.ingredient));
   for (const s of doc.steps) {
-    if (!s.text.trim()) problems.push("a step is empty");
-    else if (s.text.length > MAX_STEP_CHARS) problems.push(`a step is too long (${s.text.length} characters, at most ${MAX_STEP_CHARS}): split it into two steps`);
-    if (unsafeInstructions(s.text).length) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
+    if (unsafeInstructions(s.text, protein).length) problems.push(`unsafe instruction: "${s.text.slice(0, 60)}"`);
   }
-  const ownFood = new Set(plan.use.filter((u) => !ctx.catalog.has(u.key)).map((u) => u.key));
   for (const i of doc.ingredients) {
-    const cat = ctx.catalog.get(i.ingredient);
-    if (ownFood.has(i.ingredient)) continue; // the household's own component, from the plan
-    if (!cat) {
-      problems.push(`unknown ingredient ${i.ingredient}`);
-      continue;
-    }
     if (!(i.qty > 0) || !Number.isFinite(i.qty)) problems.push(`bad quantity for ${i.ingredient}`);
-    if (!dietFits(ctx.diet, cat)) problems.push(`${i.ingredient} doesn't fit a ${ctx.diet} diet`);
-    if (!cat.staple && !ctx.have.has(i.ingredient) && !i.optional) problems.push(`${i.ingredient} isn't in the kitchen`);
+    const cat = ctx.catalog.get(i.ingredient);
+    if (cat && !dietFits(ctx.diet, cat)) problems.push(`${i.ingredient} doesn't fit a ${ctx.diet} diet`);
   }
-  const used = new Set(doc.ingredients.map((i) => i.ingredient));
-  for (const u of plan.use) if (!used.has(u.key)) problems.push(`doesn't use ${u.key}`);
 
   const safetySteps = doc.steps.filter((s) => s.safety?.trim());
-  if (plan.cooked.length && !safetySteps.some((s) => REHEAT.test(`${s.text} ${s.safety}`))) {
+  const used = new Set(doc.ingredients.map((i) => i.ingredient));
+  if (plan.cooked.some((k) => used.has(k)) && !safetySteps.some((s) => REHEAT.test(`${s.text} ${s.safety}`))) {
     problems.push("leftovers must be reheated until steaming hot, with a safety note");
   }
   const risky = doc.ingredients.filter((i) => ["meat", "seafood", "egg"].includes(ctx.catalog.get(i.ingredient)?.category ?? "") && !plan.cooked.includes(i.ingredient));
@@ -171,6 +162,13 @@ export function validateInvention(
     problems.push(`${risky.map((r) => r.ingredient).join(", ")} must be cooked through, with a safety note`);
   }
   return [...new Set(problems)];
+}
+
+/** What a dish needs that the kitchen doesn't have (not staples, not optional, not water): the cook's shopping. */
+export function toBuyFor(doc: RecipeDoc, have: Set<string>, catalog: Map<string, CatalogEntry>): string[] {
+  return [...new Set(doc.ingredients
+    .filter((i) => !i.optional && !have.has(i.ingredient) && !catalog.get(i.ingredient)?.staple)
+    .map((i) => i.ingredient))];
 }
 
 /** Mock mode and tests: a plain tawa dish from the plan (the real dish comes from the model). */

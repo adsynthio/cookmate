@@ -1520,5 +1520,6 @@
   "recipe.moreTitle": "ಈ ಖಾದ್ಯದೊಂದಿಗೆ ಇನ್ನಷ್ಟು",
   "kitchen.preview.title": "ಇಲ್ಲಿಯವರೆಗೆ ನನಗೆ ಕಂಡದ್ದು",
   "kitchen.preview.out": "ಮುಗಿದಿದೆ",
-  "safety.containsFrom": "{allergen} ({items}ನಿಂದ)"
+  "safety.containsFrom": "{allergen} ({items}ನಿಂದ)",
+  "tools.gasBurners": "ಗ್ಯಾಸ್ ಒಲೆ, {n} ಬರ್ನರ್"
 }

@@ -17,7 +17,7 @@ import { recordCook, usualSkips } from "@/domain/habits";
 import { useHabits } from "@/state/habits";
 import { displayName, formatQuantity } from "@/domain/kitchen";
 import { feedbackCandidates, type AmountChange } from "@/domain/learning";
-import { getLocale, t, type StringKey } from "@/i18n";
+import { getLocale, t, type StringKey, getAppLocale } from "@/i18n";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { services, type DeductionAdjustment, type DeductionLine, type Rating, type StapleLevel } from "@/services";
 
@@ -417,7 +417,7 @@ export function FinishSheet({
                         </Text>
                       ) : original.currentQuantity !== null ? (
                         <Text variant="caption" muted>
-                          {t("finish.had", { qty: formatQuantity(original.currentQuantity, original.unit) })}
+                          {t("finish.had", { qty: formatQuantity(original.currentQuantity, original.unit, getAppLocale()) })}
                         </Text>
                       ) : null}
                       {l.staple && s.on ? (

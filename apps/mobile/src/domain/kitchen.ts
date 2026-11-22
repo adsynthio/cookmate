@@ -33,11 +33,18 @@ export function capitalise(s: string): string {
 }
 
 /** "2 kg", "500 g", "12", "1.5 l"; whole numbers stay whole, others keep up to 2 decimals. */
-export function formatQuantity(quantity: number | null, unit: string | null): string {
+/** Units as people say them in each app language (U8): "1 गड्डी", "2 katori", "200 ग्राम"; English keeps g, kg, ml. */
+const UNIT_WORDS: Record<string, Record<string, string>> = {
+  hi: { bunch: "गड्डी", katori: "कटोरी", packet: "पैकेट", bottle: "बोतल", box: "डिब्बा", cup: "कप", g: "ग्राम", kg: "किलो", ml: "मि.ली.", l: "लीटर" },
+  hinglish: { bunch: "gaddi", katori: "katori", packet: "packet", bottle: "botal", box: "dabba", cup: "cup" },
+  kn: { bunch: "ಕಟ್ಟು", katori: "ಬಟ್ಟಲು", packet: "ಪ್ಯಾಕೆಟ್", bottle: "ಬಾಟಲ್", box: "ಡಬ್ಬ", cup: "ಕಪ್" },
+};
+
+export function formatQuantity(quantity: number | null, unit: string | null, appLocale: string = "en"): string {
   if (quantity === null) return "";
   const n = Number.isInteger(quantity) ? String(quantity) : String(Math.round(quantity * 100) / 100);
   if (!unit || unit === "piece") return n;
-  return `${n} ${unit}`;
+  return `${n} ${UNIT_WORDS[appLocale]?.[unit] ?? unit}`;
 }
 
 /** Whole days from today (local date) to an ISO date; negative when past. */

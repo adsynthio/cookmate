@@ -73,3 +73,13 @@ test("F7: Kannada names when the app is in Kannada, English otherwise", async ()
   assert.equal(name(potato, "potato", "en"), "Potato");
   assert.equal(name(potato, "potato", "hi"), "आलू");
 });
+
+test("amounts read in the app language: gaddi, katori, ग्राम", () => {
+  assert.equal(formatQuantity(1, "bunch"), "1 bunch");
+  assert.equal(formatQuantity(1, "bunch", "hi"), "1 गड्डी");
+  assert.equal(formatQuantity(200, "g", "hi"), "200 ग्राम");
+  assert.equal(formatQuantity(2, "katori", "hinglish"), "2 katori");
+  assert.equal(formatQuantity(1, "packet", "kn"), "1 ಪ್ಯಾಕೆಟ್");
+  assert.equal(formatQuantity(200, "g", "kn"), "200 g");
+  assert.equal(formatQuantity(3, "piece", "hi"), "3");
+});

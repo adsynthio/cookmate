@@ -16,7 +16,7 @@ import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
 import { expiryInfo, formatQuantity, parseQuantity, roughDuration, shelfLife } from "@/domain/kitchen";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
-import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { getLocale, t, useLocale, type StringKey, getAppLocale } from "@/i18n";
 import { services, type ItemChanges, type LocationKind, type PantryItem } from "@/services";
 import { LeftoverIdeas } from "@/components/pantry/LeftoverIdeas";
 import { useSession } from "@/state/session";
@@ -117,7 +117,7 @@ function ItemDetail({ item, householdId }: { item: PantryItem; householdId: stri
           {name}
         </Text>
         <Text muted>
-          {[formatQuantity(item.quantity, item.unit), t(`kitchen.location.${item.location}` as StringKey)].filter(Boolean).join(" · ")}
+          {[formatQuantity(item.quantity, item.unit, getAppLocale()), t(`kitchen.location.${item.location}` as StringKey)].filter(Boolean).join(" · ")}
         </Text>
         {useBy ? (
           <View style={styles.useBy}>

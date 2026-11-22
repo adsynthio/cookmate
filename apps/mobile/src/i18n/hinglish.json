@@ -1520,5 +1520,6 @@
   "onb.language.speak": "Apni bhasha chuniye. Choose your language.",
   "lang.hi": "हिन्दी",
   "lang.hinglish": "Hinglish",
-  "lang.en": "English"
+  "lang.en": "English",
+  "tools.gasBurners": "Gas chulha, {n} burner"
 }

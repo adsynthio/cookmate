@@ -1520,5 +1520,6 @@
   "recipe.moreTitle": "More with this dish",
   "kitchen.preview.title": "So far I see",
   "kitchen.preview.out": "used up",
-  "safety.containsFrom": "{allergen} (from {items})"
+  "safety.containsFrom": "{allergen} (from {items})",
+  "tools.gasBurners": "Gas stove, {n} burners"
 }

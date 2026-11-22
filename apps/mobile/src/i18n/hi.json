@@ -1516,5 +1516,9 @@
   "recipe.moreTitle": "इस डिश के साथ और",
   "kitchen.preview.title": "अब तक मुझे ये दिखा",
   "kitchen.preview.out": "ख़त्म",
-  "safety.containsFrom": "{allergen} ({items} से)"
+  "safety.containsFrom": "{allergen} ({items} से)",
+  "onb.language.speak": "Apni bhasha chuniye. Choose your language.",
+  "lang.hi": "हिन्दी",
+  "lang.hinglish": "Hinglish",
+  "lang.en": "English"
 }

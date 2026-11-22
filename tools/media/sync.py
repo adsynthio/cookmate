@@ -5,8 +5,8 @@ The images in apps/mobile/assets/media are made outside the repo (see PROMPTS.md
 Metro can only bundle files that exist, so this script writes src/design-system/media.ts with a require() for
 every expected file that is present and `null` for the rest; screens fall back to a tinted shape on null.
 
-    python3 tools/media/sync.py          # regenerate media.ts, report missing or wrongly sized files
-    python3 tools/media/sync.py --check  # CI: fail if media.ts is out of date or a file has the wrong size
+    python3 tools/media/sync.py          # regenerate media.ts, shrink heavy photos, report missing or wrongly sized files
+    python3 tools/media/sync.py --check  # CI: fail if media.ts is out of date or a file has the wrong size or weight
 """
 from __future__ import annotations
 
@@ -85,6 +85,33 @@ SCENES = {
 }
 
 
+# Phones download these over mobile data, so each file has a weight limit. A plain photo over it is shrunk in place
+# to a 256-colour palette with dithering: about a third of the size and no visible change at phone size.
+# Pictures with transparency are left alone (shrink those by hand).
+MAX_KB = {"ingredients/": 150, "illustrations/": 200, "onboarding/": 250}
+DEFAULT_MAX_KB = 500  # dishes, steps, drinks and scenes: 1080 px wide
+
+
+def max_kb(rel: str) -> int:
+    return next((kb for prefix, kb in MAX_KB.items() if rel.startswith(prefix)), DEFAULT_MAX_KB)
+
+
+def shrink(path: Path) -> bool:
+    try:
+        from PIL import Image
+    except ImportError:
+        return False
+    with Image.open(path) as im:
+        if im.mode != "RGB":
+            return False
+        rgb = im.convert("RGB")
+    rgb.info.pop("transparency", None)  # a stray colour key punches holes in a photo
+    small = rgb.quantize(colors=256, dither=Image.Dither.FLOYDSTEINBERG)
+    small.info.pop("transparency", None)
+    small.save(path, optimize=True)
+    return True
+
+
 def png_size(path: Path) -> tuple[int, int] | None:
     with path.open("rb") as f:
         head = f.read(24)
@@ -93,7 +120,7 @@ def png_size(path: Path) -> tuple[int, int] | None:
     return struct.unpack(">II", head[16:24])
 
 
-def render() -> tuple[str, list[str]]:
+def render(fix: bool = False) -> tuple[str, list[str]]:
     problems: list[str] = []
 
     def entry(key: str, rel: str, w: int, h: int, quote: bool) -> str:
@@ -106,6 +133,13 @@ def render() -> tuple[str, list[str]]:
             problems.append(f"{rel}: not a PNG")
         elif size != (w, h):
             problems.append(f"{rel}: is {size[0]}x{size[1]}, expected {w}x{h}")
+        limit = max_kb(rel)
+        kb = path.stat().st_size // 1024
+        if kb > limit and fix and shrink(path):
+            print(f"shrank {rel}: {kb} KB -> {path.stat().st_size // 1024} KB")
+            kb = path.stat().st_size // 1024
+        if kb > limit:
+            problems.append(f"{rel}: {kb} KB, keep it under {limit} KB (run python3 tools/media/sync.py)")
         return f'  {name}: require("../../assets/media/{rel}") as ImageSourcePropType,'
 
     def block(name: str, items: dict, quote: bool = False) -> str:
@@ -155,11 +189,11 @@ def render() -> tuple[str, list[str]]:
 
 def main() -> int:
     check = "--check" in sys.argv
-    src, problems = render()
+    src, problems = render(fix=not check)
     all_items = {**ILLUSTRATIONS, **ONBOARDING, **DISHES, **SCENES, **INGREDIENTS, **CATEGORIES, **STEPS, **DRINKS}
     missing = [rel for rel, _, _ in all_items.values() if not (MEDIA / rel).exists()]
     for p in problems:
-        print(f"wrong size: {p}", file=sys.stderr)
+        print(f"problem: {p}", file=sys.stderr)
     if check:
         current = OUT.read_text() if OUT.exists() else ""
         if current != src:

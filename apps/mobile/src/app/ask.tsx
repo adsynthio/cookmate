@@ -1,6 +1,6 @@
 // "Ask Cookmate anything": a short chat about this kitchen. Answers can carry recipes to open, things to add to the
 // list and follow-up questions to tap. Opened from the sparkle on every screen's header and on Home's hero.
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
@@ -12,6 +12,10 @@ import { Enter, PressableScale, Pulse } from "@/design-system/motion";
 import { Button, Chip, Text, textStyle } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, shadow, space } from "@/design-system/tokens";
+import { itemName } from "@/components/kitchen/names";
+import { catalogEntry } from "@/data/catalog";
+import { ingredientEmoji } from "@/domain/foodEmoji";
+import { localHour, slotForHour } from "@/domain/ranking";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { getLocale, t, useLocale } from "@/i18n";
 import { services, type AskReply } from "@/services";
@@ -76,7 +80,17 @@ export default function AskScreen() {
     return () => clearTimeout(id);
   }, [messages.length, ask.isPending]);
 
-  const suggestions = [t("ask.s.make"), t("ask.s.soon"), t("ask.s.leftovers"), t("ask.s.guests")];
+  // U11: questions from this kitchen and this time of day ("What can I make with spinach today?" when it's going
+  // off, breakfast ideas in the morning), then the everyday ones. Each with a fitting emoji.
+  const soon = useQuery({ queryKey: ["useSoon", householdId], queryFn: () => services.kitchen.getUseSoon(householdId!), enabled: !!householdId });
+  const first = soon.data?.[0];
+  const slot = slotForHour(localHour(new Date(), "Asia/Kolkata"));
+  const suggestions: { emoji: string; text: string }[] = [
+    ...(first ? [{ emoji: ingredientEmoji(first.ingredientKey ?? first.name, catalogEntry(first.ingredientKey)?.category), text: t("ask.s.withItem", { item: itemName(first) }) }] : []),
+    slot === "breakfast" ? { emoji: "🍳", text: t("ask.s.breakfast") } : slot === "dinner" ? { emoji: "🌙", text: t("ask.s.dinner") } : { emoji: "⏱️", text: t("ask.s.make") },
+    { emoji: "🍲", text: t("ask.s.leftovers") },
+    { emoji: "🎉", text: t("ask.s.guests") },
+  ].slice(0, 4);
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: colors.canvas }}>
@@ -98,10 +112,12 @@ export default function AskScreen() {
               </View>
               <View style={{ gap: space.sm }}>
                 {suggestions.map((s, i) => (
-                  <Enter key={s} index={i}>
-                    <PressableScale accessibilityRole="button" accessibilityLabel={s} onPress={() => send(s)} style={[styles.suggestion, shadow.card, { backgroundColor: colors.surface }]}>
-                      <Icon name="sparkle" size={16} color={colors.accentText} />
-                      <Text style={{ flex: 1 }}>{s}</Text>
+                  <Enter key={s.text} index={i}>
+                    <PressableScale accessibilityRole="button" accessibilityLabel={s.text} onPress={() => send(s.text)} style={[styles.suggestion, shadow.card, { backgroundColor: colors.surface }]}>
+                      <Text style={{ fontSize: 20 }} importantForAccessibility="no">
+                        {s.emoji}
+                      </Text>
+                      <Text style={{ flex: 1 }}>{s.text}</Text>
                       <Icon name="forward" size={14} color={colors.inkSecondary} />
                     </PressableScale>
                   </Enter>

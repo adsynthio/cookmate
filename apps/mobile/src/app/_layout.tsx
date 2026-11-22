@@ -5,7 +5,7 @@ import { NotoSansDevanagari_400Regular } from "@expo-google-fonts/noto-sans-deva
 import { NotoSansDevanagari_500Medium } from "@expo-google-fonts/noto-sans-devanagari/500Medium";
 import { NotoSansDevanagari_600SemiBold } from "@expo-google-fonts/noto-sans-devanagari/600SemiBold";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useFonts } from "expo-font";
+import { isLoaded, loadAsync, useFonts } from "expo-font";
 import { Stack, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
@@ -17,7 +17,7 @@ import { StateView } from "@/design-system/primitives";
 import { useReducedMotion } from "@/design-system/motion";
 import { ThemeProvider, useTheme } from "@/design-system/theme";
 import { appLocaleFromLanguageCode } from "@/domain/onboarding";
-import { setLocale, t, useLocale } from "@/i18n";
+import { setLocale, t, useAppLocale, useLocale } from "@/i18n";
 import { services } from "@/services";
 import { track } from "@/services/analytics";
 import { listenForPickTaps } from "@/state/push";
@@ -87,17 +87,40 @@ const FONTS = {
   Inter_400Regular,
   Inter_500Medium,
   Inter_600SemiBold,
+};
+const DEVANAGARI_FONTS = {
   NotoSansDevanagari_400Regular,
   NotoSansDevanagari_500Medium,
   NotoSansDevanagari_600SemiBold,
 };
+
+/** U33: Hindi's Devanagari faces (about 660 KB) load only when the app is in Hindi, so English, Hinglish and
+ *  Kannada kitchens open without waiting for them. Switching to Hindi shows the loading cover for a moment. */
+function useDevanagariReady(): boolean {
+  const locale = useAppLocale();
+  const [loaded, setLoaded] = useState(() => isLoaded("NotoSansDevanagari_400Regular"));
+  useEffect(() => {
+    if (locale !== "hi" || loaded) return;
+    let live = true;
+    loadAsync(DEVANAGARI_FONTS)
+      .catch(() => undefined)
+      .finally(() => {
+        if (live) setLoaded(true);
+      });
+    return () => {
+      live = false;
+    };
+  }, [locale, loaded]);
+  return locale !== "hi" || loaded;
+}
 
 function RootNavigator() {
   useLocale();
   const { scheme, colors } = useTheme();
   const reduceMotion = useReducedMotion();
   const [fontsLoaded, fontError] = useFonts(FONTS);
-  const ready = useSession((s) => s.ready) && (fontsLoaded || !!fontError);
+  const devanagariReady = useDevanagariReady();
+  const ready = useSession((s) => s.ready) && (fontsLoaded || !!fontError) && devanagariReady;
   const onboarded = useSession((s) => s.householdId !== null);
   const { failed, retry } = useBootstrap();
   useWebStatusBand(scheme);

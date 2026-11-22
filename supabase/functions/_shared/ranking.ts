@@ -211,8 +211,10 @@ export function pantryMatch(r: RankRecipe, pantry: PantryEntry[], staples: strin
     if (!prev || (usable(e) && (!usable(prev) || (e.daysLeft ?? 999) < (prev.daysLeft ?? 999)))) byKey.set(e.key, e);
   }
   const stapleSet = new Set(staples);
+  // An ingredient used twice (gram flour for the kadhi and for the pakoras) is one thing to have or buy, not two.
+  const seen = new Set<string>();
   const items: IngredientMatch[] = r.ingredients
-    .filter((i) => !i.optional)
+    .filter((i) => !i.optional && !seen.has(i.key) && (seen.add(i.key), true))
     .map((i) => {
       const e = byKey.get(i.key);
       if (e && usable(e)) return { key: i.key, status: "have", entry: e };

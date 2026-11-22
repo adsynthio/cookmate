@@ -9,7 +9,7 @@ export const palette = {
     surfaceHigh: "#ECE8E1", // pressed fills, inactive segments, icon wells
     ink: "#1C1C18", // all text
     inkSecondary: "#46483E", // supporting text
-    inkTertiary: "#77786D", // captions, metadata
+    inkTertiary: "#6C6D62", // captions, metadata (U41: 4.5:1 or better on white, cream and the grey panels)
     line: "#E6E1D9", // hairlines, dividers, progress track
     primary: "#505A34", // olive: confirmed actions, selected tab, focus
     primaryPressed: "#414B26",

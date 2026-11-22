@@ -1,7 +1,7 @@
 // Motion for the whole app: things press in, ease in, and move between states, never jump.
 // Every helper follows the phone's "reduce motion" setting: movement turns into a short fade (or nothing).
 import { type ReactNode, useEffect, useState } from "react";
-import { Platform, Pressable, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
+import { Platform, Pressable, StyleSheet, View, type DimensionValue, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import Animated, {
   Easing,
   FadeIn,
@@ -11,6 +11,7 @@ import Animated, {
   useReducedMotion,
   useSharedValue,
   withDelay,
+  withSequence,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
@@ -207,4 +208,33 @@ export function Breathe({ children, style }: { children: ReactNode; style?: Styl
   }, [reduce, o]);
   const animated = useAnimatedStyle(() => ({ opacity: o.value }));
   return <Animated.View style={[style, animated]}>{children}</Animated.View>;
+}
+
+/**
+ * A short burst of emoji that float up and fade once: the "you cooked it" moment (U7). Decorative and hidden from
+ * screen readers; nothing at all when the phone asks for reduced motion.
+ */
+export function Celebrate({ emojis = ["🎉", "✨", "🌿", "😋", "✨", "🎊"] }: { emojis?: string[] }) {
+  const reduce = useReducedMotion();
+  if (reduce) return null;
+  return (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill} importantForAccessibility="no-hide-descendants" aria-hidden>
+      {emojis.map((e, i) => (
+        <Floater key={i} emoji={e} index={i} count={emojis.length} />
+      ))}
+    </View>
+  );
+}
+
+function Floater({ emoji, index, count }: { emoji: string; index: number; count: number }) {
+  const y = useSharedValue(0);
+  const o = useSharedValue(0);
+  useEffect(() => {
+    const delay = index * 90;
+    o.value = withDelay(delay, withSequence(withTiming(1, { duration: 180 }), withDelay(650, withTiming(0, { duration: 450 }))));
+    y.value = withDelay(delay, withTiming(-150 - (index % 3) * 25, { duration: 1300, easing: Easing.out(Easing.cubic) }));
+  }, [index, o, y]);
+  const style = useAnimatedStyle(() => ({ opacity: o.value, transform: [{ translateY: y.value }] }));
+  const left: DimensionValue = `${8 + (index * 78) / Math.max(1, count - 1)}%`;
+  return <Animated.Text style={[{ position: "absolute", bottom: 24, left, fontSize: 30 }, style]}>{emoji}</Animated.Text>;
 }

@@ -7,7 +7,7 @@ import { Image, type ImageSourcePropType, Pressable, StyleSheet, View } from "re
 import { catalogEntry } from "@/data/catalog";
 import { FoodPhoto } from "@/design-system/FoodPhoto";
 import { Icon, type IconName } from "@/design-system/icons";
-import { Enter, PressableScale } from "@/design-system/motion";
+import { Celebrate, Enter, PressableScale } from "@/design-system/motion";
 import { illustrations } from "@/design-system/media";
 import { Badge, Button, Card, Chip, Field, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
@@ -213,6 +213,8 @@ export function FinishSheet({
           {photo ?? illustrations.allDone ? (
             <Image source={(photo ?? illustrations.allDone)!} style={photo ? styles.photoImage : styles.art} resizeMode={photo ? "cover" : "contain"} accessibilityLabel={dish} />
           ) : null}
+          {/* U7: a little burst of joy, once. */}
+          <Celebrate />
         </View>
       </Enter>
 
@@ -300,22 +302,43 @@ export function FinishSheet({
                 {t("finish.react.title")}
               </Text>
             </View>
+            {/* U7: one row per person, three faces: quicker than three wrapped chips each. */}
             {eaters.map((e) => (
-              <View key={e.id} style={{ gap: space.xs }}>
-                <Text variant="bodyStrong">{e.name}</Text>
-                <View style={styles.chips} accessibilityRole="radiogroup" accessibilityLabel={e.name}>
-                  {([1, 0, -1] as const).map((v) => (
-                    <Chip
-                      key={v}
-                      icon={v > 0 ? "heart" : v < 0 ? "close" : "check"}
-                      label={t(v > 0 ? "finish.react.loved" : v < 0 ? "finish.react.notFor" : "finish.react.okay")}
-                      selected={reactions[e.id] === v}
-                      onPress={() => setReactions((r) => ({ ...r, [e.id]: r[e.id] === v ? 0 : v }))}
-                    />
-                  ))}
+              <View key={e.id} style={styles.faceRow}>
+                <Text variant="bodyStrong" style={{ flex: 1 }} numberOfLines={1}>
+                  {e.name}
+                </Text>
+                <View style={styles.faces} accessibilityRole="radiogroup" accessibilityLabel={e.name}>
+                  {([1, 0, -1] as const).map((v) => {
+                    const on = reactions[e.id] === v;
+                    const label = t(v > 0 ? "finish.react.loved" : v < 0 ? "finish.react.notFor" : "finish.react.okay");
+                    return (
+                      <PressableScale
+                        key={v}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected: on }}
+                        accessibilityLabel={`${e.name}: ${label}`}
+                        onPress={() =>
+                          setReactions((r) => {
+                            // Tap again to take it back (none, not "okay").
+                            const next = { ...r };
+                            if (next[e.id] === v) delete next[e.id];
+                            else next[e.id] = v;
+                            return next;
+                          })
+                        }
+                        style={[styles.face, { backgroundColor: on ? colors.peach : colors.surfaceMuted, borderColor: on ? colors.peachText : "transparent" }]}
+                      >
+                        <Text style={styles.faceEmoji}>{v > 0 ? "😋" : v < 0 ? "🙅" : "🙂"}</Text>
+                      </PressableScale>
+                    );
+                  })}
                 </View>
               </View>
             ))}
+            <Text variant="caption" muted>
+              {t("finish.react.legend")}
+            </Text>
           </Card>
         </Enter>
       ) : null}
@@ -495,6 +518,10 @@ export function FinishSheet({
 }
 
 const styles = StyleSheet.create({
+  faceRow: { flexDirection: "row", alignItems: "center", gap: space.sm, minHeight: 56 },
+  faces: { flexDirection: "row", gap: space.sm },
+  face: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", borderWidth: 2 },
+  faceEmoji: { fontSize: 26, lineHeight: 32 },
   top: { alignItems: "center", gap: space.sm, paddingTop: space.md },
   center: { textAlign: "center" },
   photo: { height: 220, borderRadius: radius.cardLg, overflow: "hidden", alignItems: "center", justifyContent: "center" },

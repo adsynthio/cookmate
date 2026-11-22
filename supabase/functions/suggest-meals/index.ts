@@ -1,7 +1,8 @@
 // suggest-meals (KIT-040/041/042/043/046): "Tonight, decided". One hero pick and two alternates for the meal slot.
 // The rules (../_shared/ranking.ts, the same code the app runs in mock mode) rank every recipe and drop anything that
 // breaks a diet, allergy, fast or leftover rule. Claude Haiku reads a free-text craving; then the chef step (./chef.ts)
-// lets Claude Sonnet choose tonight's three from the rules' best eight, say why, and name one new dish idea. Every
+// lets Claude Sonnet choose tonight's three from the rules' best eight, say why, and name two or three new dishes
+// this kitchen can make beyond Cookmate's recipes, avoiding what Home showed lately (sent by the app). Every
 // model step falls back to the rules. Every batch is stored in recommendations with its score breakdown (and who
 // chose it) so a pick can always be explained.
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
@@ -12,7 +13,7 @@ import { z } from "npm:zod@4.6.5";
 import { timedAiCall } from "../_shared/aiLog.ts";
 import { type Craving, type Ranked, reasonFor } from "../_shared/ranking.ts";
 import { totalTime } from "../_shared/recipes.ts";
-import { acceptChef, acceptNewDish, CHEF_POOL, chefBrief, type ChefOut } from "./chef.ts";
+import { acceptChef, acceptIdeas, CHEF_POOL, chefBrief, type ChefIdea, type ChefOut } from "./chef.ts";
 import { calendarSummary, checkQuestion, type Kitchen, loadKitchen, rank } from "./engine.ts";
 import { localeFor, mergeCraving } from "./logic.ts";
 import { checkQuota, quotaResponse } from "../_shared/quota.ts";
@@ -42,7 +43,15 @@ type Body = {
   who_eating?: string[];
   focus?: string[];
   language_code?: string;
+  /** Recipe ids Home showed in the last few days, so tonight's picks change. */
+  shown_lately?: string[];
+  /** New dish ideas Home showed in the last few days, so new ones come. */
+  ideas_lately?: string[];
 };
+
+/** A short list of short strings from the request, or []. */
+const shortList = (x: unknown, max: number) =>
+  Array.isArray(x) ? x.filter((v): v is string => typeof v === "string" && v.length > 0 && v.length <= 60).slice(0, max) : [];
 
 // --- model helpers (optional) ----------------------------------------------------------------------------------
 
@@ -78,7 +87,7 @@ tags: only from ${KNOWN_TAGS.join(", ")}. max_time_min: only if they mention tim
 
 const ChefOutSchema = z.object({
   picks: z.array(z.object({ id: z.string(), reason: z.string() })),
-  new_dish: z.object({ name: z.string(), why: z.string() }).nullable(),
+  ideas: z.array(z.object({ name: z.string(), why: z.string(), uses: z.array(z.string()) })),
 });
 
 const CHEF_SYSTEM = `You are the cook's friend in an Indian family kitchen, choosing what to make for one meal.
@@ -91,6 +100,8 @@ Choose three, best first, the way a thoughtful home cook would:
 - Use what is going off soon (days_left 0 to 2) before it spoils.
 - Fit the people eating: the children, the spice level, what they like; nothing from "avoid".
 - Not the same dish as the last few days; three different kinds of dish (not three paneer dishes).
+- Something new each time: prefer candidates that are not shown_lately; pick a shown_lately one only when it is
+  clearly the best tonight (it uses leftovers or something about to go off).
 - Fit the meal, the time asked for, the season (warming food in winter, light food in summer, monsoon snacks) and
   any festival today.
 - Prefer dishes with nothing to buy.
@@ -99,21 +110,30 @@ For each pick write one warm line (at most 90 characters) saying the real reason
 person or number it rests on. Write in the language given: Hindi in Devanagari for hi-IN, Hinglish in Latin script
 for hi-Latn-IN, Indian English for en-IN. No health, nutrition or weight claims. No emoji.
 
-new_dish: optionally, one everyday Indian home dish that is NOT among the candidates' titles and that this kitchen
-can make with at most two things to buy (e.g. "Aloo Methi", "Tomato Rice"), with one line on why it suits tonight.
-Only dishes that fit everyone's diet. Null if nothing good comes to mind.`;
+ideas: two or three dishes this kitchen can make tonight that are NOT among the candidates' titles and not in
+ideas_lately. Think like a creative Indian home cook who can make almost anything from what is in "kitchen" plus
+everyday staples (salt, oil, ghee, spices, onion, tomato, atta, rice, dals), swapping by job (Eno for baking soda, curd
+for cream, besan to bind) and buying at most two small things. Make them exciting and different from each other:
+mix regions and styles (Punjabi, South Indian, Gujarati, Bengali, Maharashtrian, Indo-Chinese, street food, a
+restaurant favourite made at home, a festive or weekend special), and build at least one around leftovers or what
+goes off soon. Real dishes with their real names (e.g. "Pav Bhaji", "Masala Dosa", "Paneer Tikka Masala", "Veg Hakka
+Noodles", "Dahi Vada", "Stuffed Capsicum", "Besan ke Gatte", "Aloo Tikki Chaat"), right for the meal, the season and
+the time asked for. Every idea fits everyone's diet, any fast today and nothing from "avoid". "why": one warm line, at
+most 90 characters, naming what in the kitchen it uses; "uses": those kitchen items. Same language rules as the
+reasons; no health claims, no emoji.`;
 
 async function modelChef(client: Anthropic, householdId: string, language: string, brief: unknown) {
-  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@1" }, () => client.messages.parse(
+  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@2" }, () => client.messages.parse(
     {
       model: CHEF_MODEL,
-      max_tokens: 800,
+      max_tokens: 1400,
       ...thinkingOff(CHEF_MODEL),
       output_config: { effort: "low", format: zodOutputFormat(ChefOutSchema) },
       system: [{ type: "text", cache_control: { type: "ephemeral" }, text: CHEF_SYSTEM }],
       messages: [{ role: "user", content: `Language: ${language}\n${JSON.stringify(brief)}` }],
     },
-    { timeout: 6000, maxRetries: 0 },
+    // Ideas make the answer longer; Home shows the breathing placeholder meanwhile and keeps the picks 30 minutes.
+    { timeout: 12_000, maxRetries: 0 },
   ));
   return r.stop_reason === "refusal" ? null : (r.parsed_output as ChefOut | null);
 }
@@ -193,7 +213,9 @@ Deno.serve(async (req) => {
   // Without a model, or when its answer fails the checks, the rules' picks and reasons stand.
   let picks = ranking.picks;
   let reasons = templates;
-  let newDish: { name: string; why: string } | null = null;
+  let ideas: ChefIdea[] = [];
+  const shownLately = new Set(shortList(body.shown_lately, 30));
+  const ideasLately = shortList(body.ideas_lately, 30);
   let chose: "model" | "rules" = "rules";
   const anchorsOf = (p: Ranked, t: string) => [
     ...p.match.items.filter((m) => m.entry?.daysLeft !== null && (m.entry?.daysLeft ?? 9) <= 2).map((m) => nameOf(m.key)),
@@ -215,6 +237,8 @@ Deno.serve(async (req) => {
         craving,
         cravingText: body.craving ?? null,
         nameOf,
+        shownLately,
+        ideasLately,
       });
       const out = await modelChef(client, householdId, body.language_code ?? "en-IN", brief);
       const accepted = acceptChef(out, pool, ranking.picks, templateOf, anchorsOf);
@@ -223,7 +247,7 @@ Deno.serve(async (req) => {
         reasons = accepted.reasons;
         chose = "model";
       }
-      newDish = acceptNewDish(out?.new_dish ?? null, kitchen.docs.map((d) => d.title));
+      ideas = acceptIdeas(out, kitchen.docs.map((d) => d.title), { avoid: ctx.avoid, lately: ideasLately });
     } catch (err) {
       console.error("pick_chef failed", err instanceof Error ? err.message : err);
     }
@@ -260,7 +284,9 @@ Deno.serve(async (req) => {
     check,
     calendar: calendarSummary(kitchen),
     chosen_by: chose,
-    new_dish: newDish,
+    ideas,
+    // Older app versions read one idea.
+    new_dish: ideas[0] ? { name: ideas[0].name, why: ideas[0].why } : null,
     picks: picks.map((p, i) => {
       const d = docById.get(p.recipe.id)!;
       return {

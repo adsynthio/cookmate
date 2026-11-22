@@ -2,8 +2,11 @@
 // The rules rank every recipe and drop anything that breaks a diet, allergy, fast, leftover or equipment rule. The
 // model then sees the best few that are left (never the dropped ones) with the facts behind them: leftovers, what is
 // going off, who is eating and what they like, what was cooked lately, the season and today's festivals. It chooses
-// tonight's three, writes why, and may name one dish that is not in Cookmate's recipes yet. Its answer is checked
-// here; anything that fails falls back to the rules' order and reasons.
+// tonight's three, writes why, and names two or three new dishes this kitchen can make that are not in Cookmate's
+// recipes (22 Nov 2026: Cookmate has 19 recipes, so without ideas Home showed the same three every day). It also sees
+// what Home showed lately, so the picks change. Its answer is checked here; anything that fails falls back to the
+// rules' order and reasons.
+import { avoids } from "../_shared/invent.ts";
 import { type Craving, type Eater, type MealSlot, type Ranked, type RankContext } from "../_shared/ranking.ts";
 import { acceptReason } from "./logic.ts";
 
@@ -26,6 +29,8 @@ export type ChefCandidate = {
   uses: { item: string; days_left?: number }[];
   to_buy: string[];
   cooked_days_ago?: number;
+  /** Home showed it in the last few days and it wasn't cooked: pick something else unless it is clearly best. */
+  shown_lately?: true;
   rules_rank: number;
   draft_reason: string;
 };
@@ -41,8 +46,18 @@ export function chefBrief(a: {
   craving: Craving;
   cravingText?: string | null;
   nameOf: (key: string) => string;
+  /** Recipe ids Home showed in the last few days (sent by the app). */
+  shownLately?: Set<string>;
+  /** New dish ideas Home showed in the last few days (sent by the app). */
+  ideasLately?: string[];
 }) {
   const recent = new Map(a.ctx.recent.map((r) => [r.recipeId, r.daysAgo]));
+  // Everything in the kitchen the cook can use, what goes off first at the top, for the new ideas.
+  const kitchen = a.ctx.pantry
+    .filter((p) => !p.out && p.confidence >= 0.5)
+    .sort((x, y) => (x.daysLeft ?? 99) - (y.daysLeft ?? 99))
+    .slice(0, 80)
+    .map((p) => (p.daysLeft !== null && p.daysLeft <= 3 ? `${a.nameOf(p.key)} (${Math.max(0, p.daysLeft)} days left)` : a.nameOf(p.key)));
   const candidates: ChefCandidate[] = a.ranked.slice(0, CHEF_POOL).map((r, i) => ({
     id: r.recipe.id,
     title: r.recipe.title,
@@ -52,6 +67,7 @@ export function chefBrief(a: {
       .map((m) => ({ item: a.nameOf(m.key), ...(m.entry!.daysLeft !== null && m.entry!.daysLeft <= 3 ? { days_left: m.entry!.daysLeft } : {}) })),
     to_buy: r.match.items.filter((m) => m.status === "missing").map((m) => a.nameOf(m.key)),
     ...(recent.has(r.recipe.id) ? { cooked_days_ago: recent.get(r.recipe.id) } : {}),
+    ...(a.shownLately?.has(r.recipe.id) ? { shown_lately: true as const } : {}),
     rules_rank: i + 1,
     draft_reason: a.templates.get(r.recipe.id) ?? "",
   }));
@@ -64,16 +80,23 @@ export function chefBrief(a: {
     likes: a.ctx.like.map(a.nameOf),
     avoid: a.ctx.avoid.map(a.nameOf),
     leftovers_ready: a.ctx.alreadyCooked ?? [],
+    kitchen,
+    ...(a.ideasLately?.length ? { ideas_lately: a.ideasLately } : {}),
     ...(a.cravingText ? { asked_for: a.cravingText } : {}),
     ...(a.craving.maxTimeMin ? { max_minutes: a.craving.maxTimeMin } : {}),
     candidates,
   };
 }
 
+export type ChefIdea = { name: string; why: string; uses?: string[] };
 export type ChefOut = {
   picks: { id: string; reason: string }[];
-  new_dish: { name: string; why: string } | null;
+  /** Dishes beyond Cookmate's recipes that this kitchen can make. */
+  ideas?: ChefIdea[] | null;
+  /** The older single idea (pick_chef@1); still read. */
+  new_dish?: { name: string; why: string } | null;
 };
+export const MAX_IDEAS = 3;
 
 const BANNED = /\b(healthy|health|cure|weight|calorie|diabet|immunity|detox)/i;
 
@@ -122,4 +145,30 @@ export function acceptNewDish(d: ChefOut["new_dish"], knownTitles: string[]): { 
   const low = name.toLowerCase();
   if (knownTitles.some((t) => t.toLowerCase() === low)) return null;
   return { name, why };
+}
+
+/**
+ * The new dish ideas to show, at most MAX_IDEAS: each passes acceptNewDish, isn't one shown lately, doesn't name
+ * something the family avoids, and isn't a repeat. "uses" keeps only short plain item names.
+ */
+export function acceptIdeas(
+  out: ChefOut | null | undefined,
+  knownTitles: string[],
+  opts: { avoid?: string[]; lately?: string[] } = {},
+): ChefIdea[] {
+  const raw = out?.ideas?.length ? out.ideas : out?.new_dish ? [out.new_dish] : [];
+  const lately = new Set((opts.lately ?? []).map((x) => x.trim().toLowerCase()));
+  const seen = new Set<string>();
+  const ideas: ChefIdea[] = [];
+  for (const d of raw) {
+    const ok = acceptNewDish(d, knownTitles);
+    if (!ok) continue;
+    const low = ok.name.toLowerCase();
+    if (seen.has(low) || lately.has(low) || avoids(opts.avoid ?? [], low)) continue;
+    seen.add(low);
+    const uses = ((d as ChefIdea).uses ?? []).map((u) => String(u).trim()).filter((u) => u && u.length <= 40).slice(0, 8);
+    ideas.push(uses.length ? { ...ok, uses } : ok);
+    if (ideas.length === MAX_IDEAS) break;
+  }
+  return ideas;
 }

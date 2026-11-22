@@ -456,6 +456,9 @@ const QUIET_UNTIL = ["06:00", "07:00", "08:00"];
  */
 function DailyPick({ householdId }: { householdId: string }) {
   const qc = useQueryClient();
+  const { colors } = useTheme();
+  // U40: dinner time and the reminder are set once; folded to one line until tapped (like Kitchen tools).
+  const [open, setOpen] = useState(false);
   const memberId = useSession((s) => s.memberId);
   const [note, setNote] = useState<StringKey | null>(null);
   const key = ["notifySettings", householdId];
@@ -477,6 +480,8 @@ function DailyPick({ householdId }: { householdId: string }) {
   });
   const s = settings.data;
   if (!s || !memberId) return null;
+  const leadLabel = (n: number) => (n === 60 ? t("you.notify.leadHour") : n === 90 ? t("you.notify.leadHours") : t("you.notify.leadMin", { n }));
+  const summary = `${t("you.notify.time")} ${clock(s.dinnerTime)} · ${t("you.notify.lead")}: ${leadLabel(s.leadMinutes)}`;
   const times = (values: string[], current: string, field: keyof NotificationSettings, label: (v: string) => string) => (
     <View style={styles.chips}>
       {values.map((v) => (
@@ -499,28 +504,41 @@ function DailyPick({ householdId }: { householdId: string }) {
             onPress={() => save.mutate({ dailyPick: !s.dailyPick })}
           />
         </View>
-        <Text variant="label" muted>
-          {t("you.notify.time")}
-        </Text>
-        {times(DINNER_TIMES, s.dinnerTime, "dinnerTime", (v) => clock(v))}
-        <Text variant="label" muted>
-          {t("you.notify.lead")}
-        </Text>
-        <View style={styles.chips}>
-          {LEADS.map((n) => (
-            <Chip
-              key={n}
-              label={n === 60 ? t("you.notify.leadHour") : n === 90 ? t("you.notify.leadHours") : t("you.notify.leadMin", { n })}
-              selected={s.leadMinutes === n}
-              onPress={() => !save.isPending && save.mutate({ leadMinutes: n })}
-            />
-          ))}
-        </View>
-        {s.dailyPick ? (
+        <PressableScale
+          accessibilityRole="button"
+          accessibilityState={{ expanded: open }}
+          accessibilityLabel={`${t("you.notify.title")}: ${summary}`}
+          onPress={() => setOpen((o) => !o)}
+          style={styles.foldHead}
+        >
+          <Text variant="label" muted style={{ flex: 1 }}>
+            {summary}
+          </Text>
+          <Icon name={open ? "minus" : "edit"} size={18} color={colors.primaryText} />
+        </PressableScale>
+        {open ? (
           <>
-            <Text variant="caption" muted>
-              {t("you.notify.when", { time: clock(nudgeTime(s.dinnerTime, s.leadMinutes)) })}
+            <Text variant="label" muted>
+              {t("you.notify.time")}
             </Text>
+            {times(DINNER_TIMES, s.dinnerTime, "dinnerTime", (v) => clock(v))}
+            <Text variant="label" muted>
+              {t("you.notify.lead")}
+            </Text>
+            <View style={styles.chips}>
+              {LEADS.map((n) => (
+                <Chip key={n} label={leadLabel(n)} selected={s.leadMinutes === n} onPress={() => !save.isPending && save.mutate({ leadMinutes: n })} />
+              ))}
+            </View>
+          </>
+        ) : null}
+        {s.dailyPick ? (
+          <Text variant="caption" muted>
+            {t("you.notify.when", { time: clock(nudgeTime(s.dinnerTime, s.leadMinutes)) })}
+          </Text>
+        ) : null}
+        {open && s.dailyPick ? (
+          <>
             <Text variant="label" muted>
               {t("you.notify.quiet")}
             </Text>

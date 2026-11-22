@@ -59,7 +59,7 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
           {tabW && active >= 0 ? (
             <Animated.View
               pointerEvents="none"
-              style={[styles.pill, { width: tabW - 6, backgroundColor: colors.primary }, pill]}
+              style={[styles.pill, { width: tabW - 2, backgroundColor: colors.primary }, pill]}
             />
           ) : null}
           {visible.map((route) => {
@@ -84,7 +84,12 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
                 style={styles.tab}
               >
                 <Icon name={ICONS[route.name] ?? "home"} size={22} color={fg} />
-                <Text variant="overline" color={fg} numberOfLines={1} style={[styles.label, count > 5 && styles.labelTight]}>
+                <Text
+                  variant="overline"
+                  color={fg}
+                  numberOfLines={1}
+                  style={[styles.label, (count > 5 || label.length > 8) && styles.labelTight]}
+                >
                   {label}
                 </Text>
               </Pressable>
@@ -100,9 +105,9 @@ const styles = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 0, alignItems: "center", paddingHorizontal: space.lg },
   bar: { width: "100%", maxWidth: 420, borderRadius: radius.pill, borderWidth: 1, padding: 4 },
   row: { flexDirection: "row" },
-  pill: { position: "absolute", left: 3, top: 0, bottom: 0, borderRadius: radius.pill },
+  pill: { position: "absolute", left: 1, top: 0, bottom: 0, borderRadius: radius.pill },
   tab: { flex: 1, alignItems: "center", justifyContent: "center", gap: 2, minHeight: 56, paddingVertical: 6 },
   label: { letterSpacing: 0, textTransform: "none", maxWidth: "100%" },
-  // Six tabs (Drinks on): a touch smaller so every name fits.
+  // Six tabs (Drinks on), or a long name like "Community" or "ಅಡುಗೆಮನೆ": a touch smaller so it sits inside the pill.
   labelTight: { fontSize: 9, letterSpacing: -0.1 },
 });

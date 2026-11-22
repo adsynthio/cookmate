@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import { DEFAULT_WEIGHTS, NO_CRAVING, rankRecipes, type RankContext } from "./ranking.ts";
+import { DEFAULT_WEIGHTS, NO_CRAVING, rankRecipes, type RankContext, missingMain } from "./ranking.ts";
 import { cueSenses, familyBranches, localDoc, localStep, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, stepCuesFromJson, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
 
 const docs = JSON.parse(readFileSync(new URL("../data/recipes.json", import.meta.url), "utf8")) as RecipeDoc[];
@@ -106,9 +106,11 @@ test("ranking over the real recipes: dinner picks for a veg family use what's th
     weights: DEFAULT_WEIGHTS,
   };
   const ranked = rankRecipes(docs.map(toRankRecipe), ctx);
-  assert.ok(ranked.length >= 3);
+  assert.ok(ranked.length >= 2);
   assert.ok(ranked.every((r) => r.recipe.diet !== "nonveg" && r.recipe.diet !== "eggetarian"));
   assert.equal(ranked[0]!.recipe.slug, "jeera-aloo");
+  assert.ok(ranked.every((r) => !missingMain(r)), "nothing whose main ingredient isn't here (no rajma, no paneer)");
+  assert.ok(!ranked.some((r) => ["rajma", "matar-paneer"].includes(r.recipe.slug)));
 });
 
 test("database rows map back to the same document the app bundles", () => {

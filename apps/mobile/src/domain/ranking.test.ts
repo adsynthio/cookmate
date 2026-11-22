@@ -12,6 +12,8 @@ import {
   equipmentFactor,
   excludedBecause,
   interpretCraving,
+  mainIngredients,
+  missingMain,
   NO_CRAVING,
   noveltyFactor,
   pantryCheck,
@@ -255,9 +257,9 @@ test("pantry check: the item that spoils first is asked about first", () => {
 
 test("dishes you can make now come before dishes that need shopping, whatever else scores higher", () => {
   const ready = recipe({ id: "aloo", ingredients: [ing("potato", { role: "base" }), ing("salt", { role: "spice" })] });
-  // Loved, quick and matching the craving, but two things short.
-  const short = recipe({ id: "palak", tags: ["comforting"], ingredients: [ing("spinach", { role: "base" }), ing("paneer", { role: "protein" }), ing("potato")] });
-  const ranked = rankRecipes([short, ready], ctx({ pantry: [item("potato")], like: ["spinach", "paneer"] }));
+  // Loved, quick and matching the craving, but two side things short (its spinach is here).
+  const short = recipe({ id: "palak", tags: ["comforting"], ingredients: [ing("spinach", { role: "base" }), ing("garlic", { role: "aromatic" }), ing("ginger", { role: "aromatic" }), ing("potato")] });
+  const ranked = rankRecipes([short, ready], ctx({ pantry: [item("potato"), item("spinach")], like: ["spinach", "paneer"] }));
   assert.deepEqual(ranked.map((r) => r.recipe.id), ["aloo", "palak"]);
   assert.equal(shoppingTier(ranked[0]!.match), 0);
   assert.equal(shoppingTier(ranked[1]!.match), 1);
@@ -286,4 +288,30 @@ test("family reactions: a dish someone eating loved rises and says so; one they 
   // Someone not eating today doesn't count.
   assert.equal(tasteFactor(r, { ...base, reactions: [{ memberId: "z", recipeId: "r1", polarity: -1 }] }), plain);
   assert.equal(reactionsFor("r1", { eaters, reactions: [{ memberId: "a", recipeId: "r1", polarity: 1 }] }).loved[0]!.name, "Aarav");
+});
+
+test("a dish missing its main ingredient isn't suggested: no rajma, no Rajma", () => {
+  const rajma = recipe({
+    id: "rajma",
+    ingredients: [ing("kidney beans", { role: "base" }), ing("onion", { role: "aromatic" }), ing("tomato"), ing("ginger", { role: "aromatic" }), ing("salt", { role: "spice" })],
+  });
+  const aloo = recipe({ id: "jeera-aloo", ingredients: [ing("potato", { role: "base" }), ing("cumin seeds", { role: "spice" }), ing("salt", { role: "spice" })] });
+  const kitchen = ctx({ pantry: [item("onion"), item("tomato"), item("ginger"), item("potato")] });
+  assert.deepEqual(mainIngredients(rajma), ["kidney beans"]);
+  const ranked = rankRecipes([rajma, aloo], kitchen);
+  assert.deepEqual(ranked.map((r) => r.recipe.id), ["jeera-aloo"], "aloo is missing only cumin; rajma is missing the rajma");
+  assert.deepEqual(rankRecipes([rajma, aloo], { ...kitchen, craving: { ...NO_CRAVING, ingredients: ["kidney beans"] } }).map((r) => r.recipe.id).sort(), ["jeera-aloo", "rajma"], "asked for: shown");
+  const withRajma = rankRecipes([rajma, aloo], { ...kitchen, pantry: [...kitchen.pantry, item("kidney beans")] });
+  assert.ok(withRajma.some((r) => r.recipe.id === "rajma"), "with rajma in the kitchen it's back");
+  assert.ok(!missingMain(withRajma.find((r) => r.recipe.id === "rajma")!));
+  const unsure = rankRecipes([rajma, aloo], { ...kitchen, pantry: [...kitchen.pantry, item("kidney beans", { confidence: 0.2 })] });
+  assert.ok(!unsure.some((r) => r.recipe.id === "rajma"), "a guess that rajma might be there isn't enough");
+  assert.deepEqual(rankRecipes([rajma], kitchen).map((r) => r.recipe.id), ["rajma"], "when nothing else is left, show it rather than nothing");
+});
+
+test("a missing side ingredient still leaves the dish on the list", () => {
+  const kadhi = recipe({ id: "kadhi", ingredients: [ing("curd", { role: "base" }), ing("gram flour", { role: "base" }), ing("ginger", { role: "aromatic" }), ing("green chilli", { role: "heat" })] });
+  const ranked = rankRecipes([kadhi], ctx({ pantry: [item("curd"), item("gram flour")] }));
+  assert.deepEqual(ranked.map((r) => r.recipe.id), ["kadhi"]);
+  assert.equal(missingMain(ranked[0]!), false, "ginger and chilli are not what kadhi is made of");
 });

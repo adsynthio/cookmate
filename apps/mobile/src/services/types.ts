@@ -113,7 +113,11 @@ export type PickBatch = {
   newDish?: { name: string; why: string } | null;
   /** Two or three new dishes beyond Cookmate's recipes that this kitchen can make; tap one to have it written out. */
   ideas?: { name: string; why: string; uses?: string[] }[];
+  /** Dishes to plan for a later meal because they need soaking or marinating hours ahead (never "cook now"). */
+  ahead?: AheadDish[];
 };
+
+export type AheadDish = { recipeId: string; slug: string; title: string; titles?: EventNames; hours: number };
 
 export type PantryQuestion = { itemId: string; name: string; ifYes: string | null; ifNo: string | null };
 
@@ -162,6 +166,8 @@ export type PickInput = {
   /** What Home showed lately (recipe ids and idea names), so the next picks change. */
   shownLately?: string[];
   ideasLately?: string[];
+  /** Recipe ids whose soaking or marinating is done, so they can be cooked now. */
+  prepped?: string[];
 };
 
 export type RecipeSummary = {

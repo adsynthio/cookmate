@@ -16,13 +16,16 @@ import { leadHours, nextDay, planMoment, prepNeeds, type PrepNeed } from "@/doma
 import { localHour } from "@/domain/ranking";
 import { recipeTitle, type RecipeDoc } from "@/domain/recipes";
 import { getLocale, t, type StringKey } from "@/i18n";
-import { services, type PantryItem, type Pick } from "@/services";
+import { services, type PantryItem } from "@/services";
+
+/** A dish Home could plan: tonight's picks, and first the ones that need soaking or marinating ahead. */
+export type PlanCandidate = { recipeId: string; slug: string; title: string };
 import { usePlan } from "@/state/plan";
 
 const TZ = "Asia/Kolkata";
 export const localDate = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
 
-export function PlanCard({ picks, kitchen, onOpen, now = new Date() }: { picks: Pick[]; kitchen: PantryItem[]; onOpen: (recipeId: string) => void; now?: Date }) {
+export function PlanCard({ picks, kitchen, onOpen, now = new Date() }: { picks: PlanCandidate[]; kitchen: PantryItem[]; onOpen: (recipeId: string) => void; now?: Date }) {
   const { colors } = useTheme();
   const locale = getLocale();
   const { plan, skipped, setPlan, markPrepDone, skip } = usePlan();

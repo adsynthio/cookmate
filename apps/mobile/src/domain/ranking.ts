@@ -26,6 +26,8 @@ export type RankRecipe = {
   ingredients: RankIngredient[];
   /** Equipment a variation rule can do without, e.g. no pressure cooker -> boil. */
   equipmentFallbacks: string[];
+  /** Hours of hands-off work before cooking can start (rajma soaked 8 hours); 0 or absent when none. */
+  aheadHours?: number;
 };
 
 export type PantryEntry = {
@@ -96,6 +98,8 @@ export type RankContext = {
   weights: Weights;
   /** "Use these first" from the Use Soon strip: only recipes using at least one of these. */
   focus?: string[];
+  /** Dishes whose ahead-of-time work (soaking, marinating) is done, so they can be cooked now. */
+  prepped?: string[];
   /** Names of cooked food already in the kitchen ("Kadhi Pakora leftovers", "leftover dal"): the same dish is not
    * suggested again, since there is some ready to eat. */
   alreadyCooked?: string[];
@@ -127,7 +131,7 @@ const SLOT_COURSES: Record<MealSlot, Partial<Record<Course, number>>> = {
   snack: { snack: 1, breakfast: 0.7, tiffin: 0.7 },
 };
 
-export type FilterReason = "course" | "diet" | "avoid" | "time" | "equipment" | "focus" | "leftover";
+export type FilterReason = "course" | "diet" | "avoid" | "time" | "equipment" | "focus" | "leftover" | "ahead";
 
 // --- dishes already cooked ----------------------------------------------------------------------------------------
 
@@ -172,6 +176,9 @@ export function excludedBecause(r: RankRecipe, ctx: RankContext): FilterReason |
   if (equipmentFactor(r, ctx.equipment) === 0) return "equipment";
   if (ctx.focus?.length && !r.ingredients.some((i) => ctx.focus!.includes(i.key))) return "focus";
   if (alreadyCooked(r, ctx.alreadyCooked)) return "leftover";
+  // Rajma soaks 8 hours first: not a dish to cook now, unless the soaking is done or the cook asked for it. It goes
+  // to "plan ahead" instead (rankAhead).
+  if ((r.aheadHours ?? 0) > 0 && !ctx.prepped?.includes(r.id) && !mainIngredients(r).some((k) => ctx.craving.ingredients.includes(k))) return "ahead";
   return null;
 }
 
@@ -357,6 +364,19 @@ export function rankRecipes(recipes: RankRecipe[], ctx: RankContext): Ranked[] {
   // when the cook asks for it, or nothing else is left, is a dish missing its main ingredient shown.
   const cookable = ranked.filter((r) => !missingMain(r, ctx.craving.ingredients));
   return cookable.length ? cookable : ranked;
+}
+
+/**
+ * Dishes worth planning for a later meal because they need work hours ahead (soak the rajma tonight): everything
+ * else about them fits and their main ingredient is in the kitchen. Best first.
+ */
+export function rankAhead(recipes: RankRecipe[], ctx: RankContext, n = 2): Ranked[] {
+  return recipes
+    .filter((r) => excludedBecause(r, ctx) === "ahead")
+    .map((r) => scoreRecipe(r, ctx))
+    .filter((r) => !missingMain(r))
+    .sort((a, b) => shoppingTier(a.match) - shoppingTier(b.match) || b.score - a.score || a.recipe.slug.localeCompare(b.recipe.slug))
+    .slice(0, n);
 }
 
 /** What the dish is made of (role base or protein): rajma in Rajma, paneer in Matar Paneer, besan in Kadhi. */

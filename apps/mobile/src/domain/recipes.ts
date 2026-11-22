@@ -75,6 +75,14 @@ export type RecipeDoc = {
   variation_rules?: VariationRuleDoc[];
 };
 
+/**
+ * Hours of hands-off work before the cooking can start: an opening step (of the first two) of 2 hours or more, like
+ * soaking rajma 8 hours or marinating chicken overnight. 0 when there is none. Same rule as prepAhead.ts.
+ */
+export function aheadHours(doc: Pick<RecipeDoc, "steps">): number {
+  return doc.steps.slice(0, 2).reduce((m, s) => ((s.minutes ?? 0) >= 120 ? Math.max(m, Math.ceil((s.minutes ?? 0) / 60)) : m), 0);
+}
+
 export function totalTime(doc: Pick<RecipeDoc, "prep_time_min" | "cook_time_min">): number {
   return (doc.prep_time_min ?? 0) + (doc.cook_time_min ?? 0);
 }
@@ -107,6 +115,7 @@ export function toRankRecipe(doc: RecipeDoc): RankRecipe {
     equipment: doc.equipment ?? [],
     tags: doc.tags ?? [],
     flavor: doc.flavor_profile ?? {},
+    aheadHours: aheadHours(doc),
     ingredients: doc.ingredients.map((i) => ({
       key: i.ingredient,
       // S6: garnishes like kasuri methi never hold a dish back; kitchen swaps follow the recipe's own substitutes.

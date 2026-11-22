@@ -5,7 +5,8 @@ import "expo-sqlite/localStorage/install";
 import { create } from "zustand";
 
 const KEY = "cookmate.plan";
-export type Plan = { recipeId: string; slug: string; title: string; forDate: string; prepDone: boolean };
+/** `readyAt`: when the soaking or marinating started from the cook screen will be done (ms); until then it isn't cooked. */
+export type Plan = { recipeId: string; slug: string; title: string; forDate: string; prepDone: boolean; readyAt?: number };
 type Saved = { plan: Plan | null; skipped: string | null };
 
 function load(): Saved {

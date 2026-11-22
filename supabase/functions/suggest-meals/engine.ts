@@ -16,6 +16,7 @@ import {
   type MealSlot,
   type PantryCheck,
   pantryCheck,
+  rankAhead,
   rankRecipes,
   type Ranked,
   type RankContext,
@@ -53,6 +54,8 @@ export type PickRequest = {
   chips?: string[];
   whoEating?: string[];
   focus?: string[];
+  /** Dishes whose soaking or marinating is done (the app's plan), so they can be cooked now. */
+  prepped?: string[];
   locale: Locale;
 };
 
@@ -71,7 +74,7 @@ export type Kitchen = {
   nameOf: (key: string) => string;
 };
 
-export type Ranking = Kitchen & { picks: Ranked[]; templates: string[]; ranked: Ranked[] };
+export type Ranking = Kitchen & { picks: Ranked[]; templates: string[]; ranked: Ranked[]; ahead: Ranked[] };
 
 /**
  * Load everything the ranking needs. `admin` (service role) reads feature flags; when `sb` is itself the service
@@ -181,6 +184,7 @@ export async function loadKitchen(
     timeBudgetMin: defaultBudget(slot),
     weights: weightsFrom(weightsRules),
     focus: req.focus?.filter((f) => typeof f === "string").slice(0, 10),
+    prepped: req.prepped?.filter((f) => typeof f === "string").slice(0, 10),
   };
 
   const names = new Map(invRows.filter((r) => r.ingredients).map((r) => [r.ingredients!.canonical_name, r.ingredients!.names]));
@@ -195,7 +199,9 @@ export async function loadKitchen(
 export function rank(k: Kitchen, locale: Locale): Ranking {
   const ranked = rankRecipes(k.recipes, k.ctx);
   const picks = choosePicks(ranked);
-  return { ...k, picks, ranked, templates: picks.map((p) => reasonFor(p, k.ctx, locale, k.nameOf)) };
+  // Dishes that need soaking or marinating hours ahead: for Home's "plan ahead", never as tonight's "cook now".
+  const ahead = rankAhead(k.recipes, k.ctx);
+  return { ...k, picks, ranked, ahead, templates: picks.map((p) => reasonFor(p, k.ctx, locale, k.nameOf)) };
 }
 
 /** The one check question for today, if any (KIT-035): proposed here, capped and remembered by the database. */

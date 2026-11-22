@@ -190,7 +190,7 @@
   "recipe.ingredients": "सामग्री",
   "recipe.steps": "बनाने का तरीका",
   "recipe.have": "आपकी रसोई में",
-  "recipe.assumed": "आमतौर पर रसोई में रहता है",
+  "recipe.assumed": "आमतौर पर घर में",
   "recipe.useInstead": "इसकी जगह आपका {item}",
   "recipe.missing": "खरीदना होगा",
   "recipe.orUse": "या {item}",

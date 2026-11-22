@@ -6,7 +6,7 @@ import { Image, type ImageSourcePropType, Pressable, StyleSheet, View } from "re
 
 import { catalogEntry } from "@/data/catalog";
 import { FoodPhoto } from "@/design-system/FoodPhoto";
-import { Icon, type IconName } from "@/design-system/icons";
+import { Icon } from "@/design-system/icons";
 import { Celebrate, Enter, PressableScale } from "@/design-system/motion";
 import { illustrations } from "@/design-system/media";
 import { Badge, Button, Card, Chip, Field, Text } from "@/design-system/primitives";
@@ -22,7 +22,8 @@ import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { services, type DeductionAdjustment, type DeductionLine, type Rating, type StapleLevel } from "@/services";
 
 const RATINGS: Rating[] = ["loved", "good", "meh", "bad"];
-const RATING_ICON: Record<Rating, IconName> = { loved: "heart", good: "check", meh: "minus", bad: "close" };
+// U30: faces, like the per-person row below, rather than line icons.
+const RATING_FACE: Record<Rating, string> = { loved: "😍", good: "😊", meh: "😐", bad: "😕" };
 const TAGS = ["too_spicy", "not_spicy_enough", "too_salty", "too_oily", "more_garlic", "took_too_long"] as const;
 const LEVELS: StapleLevel[] = ["full", "low", "out"];
 const LEFTOVER_KATORI = [0, 1, 2, 4];
@@ -234,7 +235,9 @@ export function FinishSheet({
                   onPress={() => setRating(on ? null : r)}
                   style={[styles.rating, { backgroundColor: on ? colors.peach : colors.surfaceMuted, borderColor: on ? colors.accent : "transparent" }]}
                 >
-                  <Icon name={RATING_ICON[r]} size={22} color={on ? colors.accentText : colors.inkSecondary} />
+                  <Text style={[styles.ratingFace, !on && rating ? { opacity: 0.45 } : null]} accessible={false}>
+                    {RATING_FACE[r]}
+                  </Text>
                   <Text variant="label" color={on ? colors.accentText : colors.inkSecondary} numberOfLines={1}>
                     {t(`finish.rating.${r}` as StringKey)}
                   </Text>
@@ -522,6 +525,7 @@ const styles = StyleSheet.create({
   faces: { flexDirection: "row", gap: space.sm },
   face: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", borderWidth: 2 },
   faceEmoji: { fontSize: 26, lineHeight: 32 },
+  ratingFace: { fontSize: 28, lineHeight: 34 },
   top: { alignItems: "center", gap: space.sm, paddingTop: space.md },
   center: { textAlign: "center" },
   photo: { height: 220, borderRadius: radius.cardLg, overflow: "hidden", alignItems: "center", justifyContent: "center" },

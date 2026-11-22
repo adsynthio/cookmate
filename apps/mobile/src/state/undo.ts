@@ -3,11 +3,12 @@ import { create } from "zustand";
 
 export const UNDO_MS = 5000;
 
-type Pending = { id: number; message: string; undo: () => Promise<void> };
+type Pending = { id: number; message: string; undo?: () => Promise<void> };
 
 type UndoState = {
   pending: Pending | null;
-  offer: (message: string, undo: () => Promise<void>) => void;
+  /** Without `undo` it's a plain confirmation (U45: "9 things added"). */
+  offer: (message: string, undo?: () => Promise<void>) => void;
   clear: (id: number) => void;
 };
 

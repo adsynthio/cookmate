@@ -17,13 +17,14 @@ import { Enter, Layout, PressableScale } from "@/design-system/motion";
 import { Badge, Button, Card, Chip, Field, IconButton, Screen, Text } from "@/design-system/primitives";
 import { useTheme } from "@/design-system/theme";
 import { radius, space } from "@/design-system/tokens";
-import { needsCheck, parseQuantity, readBackText } from "@/domain/kitchen";
+import { formatQuantity, needsCheck, parseQuantity, readBackText } from "@/domain/kitchen";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
-import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { getAppLocale, getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type AddedVia, type DraftItem, type FlavorRole, type LocationKind } from "@/services";
 import { useScan } from "@/state/scan";
 import { toDraft } from "@/services/drafts";
 import { useSession } from "@/state/session";
+import { useUndo } from "@/state/undo";
 import { KeyboardSafe } from "@/design-system/KeyboardSafe";
 import { SeenTools } from "@/components/tools/SeenTools";
 import type { ToolKey } from "@/domain/tools";
@@ -74,6 +75,7 @@ export default function AddItemsScreen() {
     onSuccess: (r) => showItems(r.items),
   });
   const kitchen = useQuery({ queryKey: ["kitchen", householdId], queryFn: () => services.kitchen.getKitchen(householdId) });
+  const toast = useUndo((s) => s.offer);
   const add = useMutation({
     mutationFn: async (items: DraftItem[]) => {
       const toAdd = items.filter((d) => !d.out);
@@ -101,8 +103,14 @@ export default function AddItemsScreen() {
         await services.kitchen.addToList(householdId, ranOut.map((d) => ({ name: d.ingredientKey ?? d.said, reason: "running_low" as const })));
       }
     },
-    onSuccess: async () => {
+    onSuccess: async (_, items) => {
       Speech.stop();
+      // U45: back on Kitchen, a line saying what just went in ("9 things added: Potato, Egg, Paneer…").
+      const added = items.filter((d) => !d.out);
+      if (added.length) {
+        const names = added.slice(0, 3).map(draftName).join(", ") + (added.length > 3 ? "…" : "");
+        toast(t("kitchen.addedToast", { n: added.length, items: names }));
+      }
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["kitchen", householdId] }),
         queryClient.invalidateQueries({ queryKey: ["useSoon", householdId] }),
@@ -286,7 +294,8 @@ function DraftCard({
   const custom = draft.ingredientKey === null || draft.state === "homemade";
 
   if (!open) {
-    const amount = draft.quantity !== null ? `${draft.quantity}${draft.unit ? ` ${draft.unit}` : ""}` : null;
+    // "12", not "12 piece"; "2 kg", in the app's language.
+    const amount = draft.quantity !== null ? formatQuantity(draft.quantity, draft.unit, getAppLocale()) : null;
     const summary = [amount, t(`kitchen.location.${place}` as StringKey)].filter(Boolean).join(" · ");
     return (
       <PressableScale

@@ -1526,5 +1526,6 @@
   "list.movedMany": "{n} cheezein aapki rasoi mein aa gayi",
   "list.allIn": "Sab rasoi mein aa gaya 🎉",
   "list.allInBody": "Aapki list poori hui. Dekhiye ab isse kya bana sakte hain.",
-  "list.cookNow": "Dekhein kya bana sakte hain"
+  "list.cookNow": "Dekhein kya bana sakte hain",
+  "kitchen.addedToast": "{n} cheezein judi: {items}"
 }

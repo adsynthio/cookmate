@@ -1526,5 +1526,6 @@
   "list.movedMany": "{n} thing{n|s} went into your kitchen",
   "list.allIn": "All in your kitchen 🎉",
   "list.allInBody": "Your list is done. See what you can cook with it now.",
-  "list.cookNow": "See what you can cook"
+  "list.cookNow": "See what you can cook",
+  "kitchen.addedToast": "{n} thing{n|s} added: {items}"
 }

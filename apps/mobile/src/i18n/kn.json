@@ -199,7 +199,7 @@
   "recipe.ingredients": "ಪದಾರ್ಥಗಳು",
   "recipe.steps": "ಹಂತಗಳು",
   "recipe.have": "ನಿಮ್ಮ ಅಡುಗೆಮನೆಯಲ್ಲಿ",
-  "recipe.assumed": "ಸಾಮಾನ್ಯವಾಗಿ ನಿಮ್ಮ ಅಡುಗೆಮನೆಯಲ್ಲಿ ಇರುತ್ತದೆ",
+  "recipe.assumed": "ಸಾಮಾನ್ಯವಾಗಿ ಮನೆಯಲ್ಲಿ",
   "recipe.useInstead": "ಬದಲಿಗೆ ನಿಮ್ಮ {item} ಬಳಸಿ",
   "recipe.missing": "ಖರೀದಿಸಬೇಕು",
   "recipe.orUse": "ಅಥವಾ {item} ಬಳಸಿ",

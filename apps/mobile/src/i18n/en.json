@@ -194,7 +194,7 @@
   "recipe.ingredients": "Ingredients",
   "recipe.steps": "Steps",
   "recipe.have": "In your kitchen",
-  "recipe.assumed": "Usually in your kitchen",
+  "recipe.assumed": "Usually at home",
   "recipe.useInstead": "Use your {item} instead",
   "recipe.missing": "Need to buy",
   "recipe.orUse": "or use {item}",

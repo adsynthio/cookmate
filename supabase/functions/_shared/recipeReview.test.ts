@@ -29,3 +29,13 @@ Deno.test("the reviewer can only block: safe with nothing listed passes, anythin
 Deno.test("no client (no key, local run): no objection, the rules decide", async () => {
   assertEquals(await reviewRecipe(null, doc, { householdId: "h" }), []);
 });
+
+Deno.test("a review that must happen and can't blocks; otherwise the rules alone decide", async () => {
+  const doc = { title: "x", ingredients: [], steps: [] } as unknown as Parameters<typeof reviewRecipe>[1];
+  assertEquals(await reviewRecipe(null, doc, { householdId: "h" }), []);
+  assertEquals((await reviewRecipe(null, doc, { householdId: "h", failClosed: true })).length, 1);
+});
+
+Deno.test("the reviewer is told what not to block for", () => {
+  for (const w of ["creative", "Eno for baking soda", "sugar, ghee, oil, butter or chilli", "reuse frying oil"]) assert(REVIEW_SYSTEM.includes(w), w);
+});

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import catalogJson from "../data/catalog.json" with { type: "json" };
-import { avoids, type CatalogEntry, type InventItem, planInvention, templateInvention, validateInvention } from "./invent.ts";
+import { avoids, type CatalogEntry, type InventItem, planInvention, templateInvention, toBuyFor, validateInvention } from "./invent.ts";
 
 const catalog = new Map((catalogJson as CatalogEntry[]).map((c) => [c.name, c]));
 const item = (key: string, extra: Partial<InventItem> = {}): InventItem => ({
@@ -53,16 +53,16 @@ test("the validator refuses unsafe or impossible dishes", () => {
   const noReheat = { ...ok, steps: ok.steps.map((s) => ({ ...s, safety: undefined })) };
   assert.ok(validateInvention(noReheat, plan, { catalog, diet: "veg", have }).some((p) => p.includes("steaming hot")));
 
+  // Cooking from the kitchen is the aim, not a rule: a thing to buy, a new ingredient or an odd and end left out is fine.
   const shopping = { ...ok, ingredients: [...ok.ingredients, { ingredient: "mushroom", qty: 100, unit: "g", role: "vegetable" }] };
-  assert.ok(validateInvention(shopping, plan, { catalog, diet: "veg", have }).includes("mushroom isn't in the kitchen"));
-
+  assert.deepEqual(validateInvention(shopping, plan, { catalog, diet: "veg", have }), []);
+  assert.deepEqual(toBuyFor(shopping, have, catalog), ["mushroom"]);
   const unknown = { ...ok, ingredients: [...ok.ingredients, { ingredient: "dragon fruit", qty: 1, unit: "piece", role: "fruit" }] };
-  assert.ok(validateInvention(unknown, plan, { catalog, diet: "veg", have }).includes("unknown ingredient dragon fruit"));
-
+  assert.deepEqual(validateInvention(unknown, plan, { catalog, diet: "veg", have }), []);
   const skipped = { ...ok, ingredients: ok.ingredients.filter((i) => i.ingredient !== "spinach") };
-  assert.ok(validateInvention(skipped, plan, { catalog, diet: "veg", have }).includes("doesn't use spinach"));
+  assert.ok(!validateInvention(skipped, plan, { catalog, diet: "veg", have }).some((p) => p.includes("spinach")));
 
-  const shortcut = { ...ok, steps: [...ok.steps, { text: "No need to reheat the rice, just mix it in." }] };
+  const shortcut = { ...ok, steps: [...ok.steps, { text: "Leave the rice out overnight and mix it in tomorrow." }] };
   assert.ok(validateInvention(shortcut, plan, { catalog, diet: "veg", have }).some((p) => p.startsWith("unsafe instruction")));
 
   const meatPlan = planInvention(kitchen, catalog, "nonveg")!;

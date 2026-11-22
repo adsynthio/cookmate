@@ -142,7 +142,7 @@ Deno.serve(async (req) => {
       const refused = r.stop_reason === "refusal";
       const cleaned = !refused && r.parsed_output ? cleanReply(r.parsed_output, knownSlugs) : null;
       await logAiRequest({
-        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@2`,
+        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@3`,
         status: refused ? "refused" : cleaned ? "ok" : "invalid_output", latencyMs: Date.now() - started, usage: r.usage,
       });
       if (cleaned) {
@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
       }
     } catch (err) {
       await logAiRequest({
-        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@2`,
+        householdId, task: TASK, model: MODEL, promptVersion: `${TASK}@3`,
         status: err instanceof Anthropic.APIConnectionTimeoutError ? "timeout" : "error", latencyMs: Date.now() - started,
         error: err instanceof Error ? err.message : String(err),
       });

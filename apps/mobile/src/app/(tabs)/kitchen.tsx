@@ -534,7 +534,8 @@ function StapleRow({ item, householdId }: { item: PantryItem; householdId: strin
     <View style={[styles.item, shadow.card, { backgroundColor: colors.surface }]}>
       <View style={styles.itemMain}>
         <FoodPhoto name={item.ingredientKey ?? item.name} category={entry?.category} size={44} radius={radius.tag} />
-        <Text variant="bodyStrong" style={{ flex: 1 }} numberOfLines={1}>
+        {/* U28: two lines, so "Whole wheat flour" isn't cut to "Whole wheat fl…" beside Full / Low / Out. */}
+        <Text variant="bodyStrong" style={{ flex: 1 }} numberOfLines={2}>
           {itemName(item)}
         </Text>
         <View style={[styles.levels, { backgroundColor: colors.surfaceMuted }]} accessibilityRole="radiogroup">

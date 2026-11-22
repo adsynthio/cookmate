@@ -79,8 +79,9 @@ export default function ListScreen() {
   return (
     <Screen header={<AppHeader title={t("list.title")} />}>
       <Enter style={{ gap: space.xs }}>
+        {/* U25: the header already says "Shopping list"; the page says what it's for. */}
         <Text variant="heading" accessibilityRole="header">
-          {t("list.title")}
+          {t("list.heading")}
         </Text>
         <Text muted>{count === 1 ? t("list.subOne") : count ? t("list.sub", { n: count }) : t("list.subEmpty")}</Text>
       </Enter>
@@ -219,12 +220,10 @@ export default function ListScreen() {
           ))}
 
           <View style={[styles.summary, shadow.float, { backgroundColor: colors.surface }]}>
-            <View style={{ gap: 2 }}>
-              <Text variant="title">{count}</Text>
-              <Text variant="caption" muted>
-                {count === 1 ? t("list.leftOne") : t("list.left", { n: count })}
-              </Text>
-            </View>
+            {/* U25: the count once ("5 still to buy"), not a big 5 and then the same 5 again. */}
+            <Text variant="subheading" style={{ textAlign: "center" }}>
+              {count === 1 ? t("list.leftOne") : t("list.left", { n: count })}
+            </Text>
             <Button kind="accent" stretch size="cook" icon="checkCircle" label={t("list.allBought")} disabled={busy} onPress={() => buy.mutate(undefined)} />
             <Text variant="caption" muted style={{ textAlign: "center" }}>
               {t("list.allBoughtBody")}

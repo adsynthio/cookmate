@@ -33,7 +33,7 @@ ingredients:
   - {name: tomato, hi: टमाटर, latn: tamatar, aliases: [tamater, tamaatar, tameta], category: vegetable, location: counter, life: {counter: 4, fridge: 10}, measures: {piece: 100, katori: 150}, groups: [sabzi]}
   - {name: garlic, hi: लहसुन, latn: lahsun, aliases: [lehsun, lasun, lassan, lehsan], category: vegetable, location: pantry, life: {pantry: 60, counter: 30}, measures: {clove: 4, piece: 35, chammach: 9}, groups: [], flags: [jain_avoid]}
   - {name: ginger, hi: अदरक, latn: adrak, aliases: [adrakh, aadu, ale], category: vegetable, location: fridge, life: {fridge: 21, counter: 7}, measures: {inch: 8, chammach: 8}, groups: [], flags: [jain_avoid]}
-  - {name: green chilli, hi: हरी मिर्च, latn: hari mirch, aliases: [mirchi, hari mirchi, green chili, lili mirchi], category: vegetable, location: fridge, life: {fridge: 10, counter: 3}, measures: {piece: 3}, groups: []}
+  - {name: green chilli, hi: हरी मिर्च, latn: hari mirch, aliases: [mirchi, hari mirchi, green chili, lili mirchi, chilli, chillies, green chillies, green chilies], category: vegetable, location: fridge, life: {fridge: 10, counter: 3}, measures: {piece: 3}, groups: []}
   - {name: cauliflower, hi: फूलगोभी, latn: phool gobhi, aliases: [gobhi, gobi, phoolgobi, flower], category: vegetable, location: fridge, life: {fridge: 5, counter: 2}, measures: {piece: 600, katori: 100}, groups: [sabzi]}
   - {name: cabbage, hi: पत्तागोभी, latn: patta gobhi, aliases: [band gobhi, bandh gobi, kobi], category: vegetable, location: fridge, life: {fridge: 10, counter: 3}, measures: {piece: 700, katori: 70}, groups: [sabzi]}
   - {name: green peas, hi: मटर, latn: matar, aliases: [mattar, peas, vatana], category: vegetable, location: fridge, life: {fridge: 3, freezer: 180}, measures: {katori: 145, cup: 145, mutthi: 30}, groups: [sabzi]}
@@ -74,7 +74,7 @@ ingredients:
   - {name: amaranth leaves, hi: चौलाई, latn: chaulai, aliases: [lal saag, cholai, rajgira saag], category: vegetable, unit: bunch, location: fridge, life: {fridge: 3}, measures: {bunch: 200}, groups: [greens]}
 
   # --- Herbs ----------------------------------------------------------------------------------
-  - {name: coriander leaves, hi: हरा धनिया, latn: hara dhaniya, aliases: [dhaniya, dhania, cilantro, kothmir, kothimbir, dhaniya patta], category: herb, unit: bunch, location: fridge, life: {fridge: 5}, measures: {bunch: 100, mutthi: 10, chammach: 2}, groups: []}
+  - {name: coriander leaves, hi: हरा धनिया, latn: hara dhaniya, aliases: [dhaniya, dhania, cilantro, kothmir, kothimbir, dhaniya patta, coriander, fresh coriander, hara dhania], category: herb, unit: bunch, location: fridge, life: {fridge: 5}, measures: {bunch: 100, mutthi: 10, chammach: 2}, groups: []}
   - {name: mint leaves, hi: पुदीना, latn: pudina, aliases: [podina, phudina, mint], category: herb, unit: bunch, location: fridge, life: {fridge: 5}, measures: {bunch: 60, mutthi: 8}, groups: []}
   - {name: curry leaves, hi: करी पत्ता, latn: kadi patta, aliases: [kadhi patta, curry patta, meetha neem, karuveppilai], category: herb, location: fridge, life: {fridge: 10, freezer: 60}, measures: {piece: 0.3, mutthi: 4}, groups: []}
   - {name: dill leaves, hi: सोआ, latn: soya, aliases: [suva, shepu, dill], category: herb, unit: bunch, location: fridge, life: {fridge: 4}, measures: {bunch: 100}, groups: [greens]}
@@ -165,6 +165,7 @@ ingredients:
   - {name: red chilli powder, hi: लाल मिर्च पाउडर, latn: lal mirch, aliases: [lal mirchi, mirchi powder, chilli powder, tikhat], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5, chammach: 8, chutki: 0.3}, groups: []}
   - {name: kashmiri chilli powder, hi: कश्मीरी लाल मिर्च, latn: kashmiri mirch, aliases: [kashmiri lal mirch, degi mirch, deggi mirch], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5, chammach: 8}, groups: []}
   - {name: coriander powder, hi: धनिया पाउडर, latn: dhaniya powder, aliases: [pisa dhaniya, dhania powder, dhane pood], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
+  - {name: coriander seeds, hi: साबुत धनिया, latn: sabut dhaniya, aliases: [whole coriander, dhaniya beej, dhania seeds, dhaniya seeds], category: spice, location: staples, life: {staples: 365}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
   - {name: cumin seeds, hi: जीरा, latn: jeera, aliases: [zeera, jira, jeerige, cumin], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2, chammach: 6, chutki: 0.3}, groups: []}
   - {name: roasted cumin powder, hi: भुना जीरा पाउडर, latn: bhuna jeera, aliases: [jeera powder, bhuna jeera powder, cumin powder], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
   - {name: garam masala, hi: गरम मसाला, latn: garam masala, aliases: [garam masaala], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2, chammach: 6}, groups: []}
@@ -181,7 +182,7 @@ ingredients:
   - {name: black cardamom, hi: बड़ी इलायची, latn: badi elaichi, aliases: [kali elaichi, moti elaichi], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 1.2}, groups: []}
   - {name: cinnamon, hi: दालचीनी, latn: dalchini, aliases: [dalcheeni, taj], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {inch: 1}, groups: []}
   - {name: bay leaf, hi: तेज पत्ता, latn: tej patta, aliases: [tejpatta, tamalpatra], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.2}, groups: []}
-  - {name: dry red chilli, hi: साबुत लाल मिर्च, latn: sabut lal mirch, aliases: [sukhi lal mirch, whole red chilli, boriya mirch], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.5}, groups: []}
+  - {name: dry red chilli, hi: साबुत लाल मिर्च, latn: sabut lal mirch, aliases: [sukhi lal mirch, whole red chilli, boriya mirch, red chilli, red chillies, dry chilli], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {piece: 0.5}, groups: []}
   - {name: chaat masala, hi: चाट मसाला, latn: chaat masala, aliases: [chat masala], category: spice, location: staples, staple: true, life: {staples: 180}, measures: {chhota_chammach: 2.5}, groups: []}
   - {name: nigella seeds, hi: कलौंजी, latn: kalonji, aliases: [mangrail, kalaunji, onion seeds], category: spice, location: staples, staple: true, life: {staples: 365}, measures: {chhota_chammach: 2.5}, groups: []}
   - {name: nutmeg, hi: जायफल, latn: jaiphal, aliases: [jayphal], category: spice, location: staples, staple: true, life: {staples: 730}, measures: {chutki: 0.2}, groups: []}
@@ -194,7 +195,7 @@ ingredients:
   # --- Oils and fats --------------------------------------------------------------------------
   - {name: mustard oil, hi: सरसों का तेल, latn: sarson ka tel, aliases: [sarson tel, kachi ghani], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: [], allergens: [mustard]}
   - {name: groundnut oil, hi: मूंगफली का तेल, latn: moongphali tel, aliases: [peanut oil, singdana tel, kadalai ennai], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: [], allergens: [peanut]}
-  - {name: refined oil, hi: रिफाइंड तेल, latn: refined tel, aliases: [refined, sunflower oil, vegetable oil, cooking oil, tel], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: []}
+  - {name: refined oil, hi: रिफाइंड तेल, latn: refined tel, aliases: [refined, sunflower oil, vegetable oil, cooking oil, tel, oil], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6, katori: 140}, groups: []}
   - {name: coconut oil, hi: नारियल तेल, latn: nariyal tel, aliases: [khobrel tel, velichenna], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6}, groups: []}
   - {name: sesame oil, hi: तिल का तेल, latn: til ka tel, aliases: [gingelly oil, nallennai, til tel], category: oil_fat, unit: ml, location: staples, staple: true, life: {staples: 365}, measures: {chammach: 14, chhota_chammach: 4.6}, groups: [], allergens: [sesame]}
 

@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { DishPhoto, FoodPhoto } from "@/design-system/FoodPhoto";
 import { illustrations } from "@/design-system/media";
 import { Icon } from "@/design-system/icons";
 import { Button, Card, IconButton, Screen, StateView, Text } from "@/design-system/primitives";
@@ -84,15 +85,28 @@ export default function InventScreen() {
       ) : result?.recipeId ? (
         <>
           <Card hero style={{ gap: space.sm }}>
-            <View style={[styles.badge, { backgroundColor: colors.surface }]}>
-              <Text variant="caption">{t("invent.badge")}</Text>
+            {/* U35: the new dish gets a face (its emoji) and what it uses shows as pictures, not a line of names. */}
+            <View style={styles.head}>
+              <View style={{ flex: 1, gap: space.sm }}>
+                <View style={[styles.badge, { backgroundColor: colors.surface }]}>
+                  <Text variant="caption">{t("invent.badge")}</Text>
+                </View>
+                <Text variant="title">{(l === "hi" ? result.titles?.hi : l === "hinglish" ? result.titles?.["hi-Latn"] : null) ?? result.title}</Text>
+              </View>
+              <DishPhoto slug={null} name={result.title} size={64} round />
             </View>
-            <Text variant="title">{(l === "hi" ? result.titles?.hi : l === "hinglish" ? result.titles?.["hi-Latn"] : null) ?? result.title}</Text>
             <Text>{result.description}</Text>
             {result.uses.length ? (
-              <Text variant="label" muted>
-                {t("invent.uses", { items: result.uses.map((k) => displayName(catalogEntry(k), k, l)).join(", ") })}
-              </Text>
+              <View style={styles.uses} accessible accessibilityLabel={t("invent.uses", { items: result.uses.map((k) => displayName(catalogEntry(k), k, l)).join(", ") })}>
+                {result.uses.map((k) => (
+                  <View key={k} style={[styles.use, { backgroundColor: colors.surface }]}>
+                    <FoodPhoto name={k} category={catalogEntry(k)?.category} size={22} round />
+                    <Text variant="label" weight={600}>
+                      {displayName(catalogEntry(k), k, l)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             ) : null}
             {/* M3: what stands in for what, the job it keeps, and how close it comes. */}
             {result.swaps?.length ? (
@@ -153,4 +167,7 @@ export default function InventScreen() {
 const styles = StyleSheet.create({
   top: { flexDirection: "row", justifyContent: "flex-end" },
   badge: { alignSelf: "flex-start", borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 2 },
+  head: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
+  uses: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
+  use: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: radius.pill, paddingLeft: 3, paddingRight: space.md, paddingVertical: 3 },
 });

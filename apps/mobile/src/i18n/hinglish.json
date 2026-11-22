@@ -1521,5 +1521,6 @@
   "lang.hi": "हिन्दी",
   "lang.hinglish": "Hinglish",
   "lang.en": "English",
-  "tools.gasBurners": "Gas chulha, {n} burner"
+  "tools.gasBurners": "Gas chulha, {n} burner",
+  "kitchen.addedToast": "{n} cheezein judi: {items}"
 }

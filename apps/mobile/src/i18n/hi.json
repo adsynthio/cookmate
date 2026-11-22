@@ -1521,5 +1521,6 @@
   "lang.hi": "हिन्दी",
   "lang.hinglish": "Hinglish",
   "lang.en": "English",
-  "tools.gasBurners": "गैस चूल्हा, {n} बर्नर"
+  "tools.gasBurners": "गैस चूल्हा, {n} बर्नर",
+  "kitchen.addedToast": "{n} चीज़ें जुड़ीं: {items}"
 }

@@ -28,7 +28,7 @@ import { eventEmoji } from "@/domain/calendar";
 import { LANGUAGE_CODES } from "@/domain/onboarding";
 import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
-import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick } from "@/services";
+import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick, type PickBatch } from "@/services";
 import { rememberShown, seenLately } from "@/state/seen";
 import { useSession } from "@/state/session";
 import { useSettled } from "@/state/settled";
@@ -82,8 +82,9 @@ export default function HomeScreen() {
     () => JSON.parse(askKey) as { mealSlot: MealSlot; chips: string[]; craving: string; whoEating: typeof whoEating; focusKey: string | null },
     [askKey],
   );
+  const picksKey = ["picks", householdId, ask.mealSlot, ask.chips, ask.craving, ask.whoEating, ask.focusKey, getLocale(), notified];
   const picks = useQuery({
-    queryKey: ["picks", householdId, ask.mealSlot, ask.chips, ask.craving, ask.whoEating, ask.focusKey, getLocale(), notified],
+    queryKey: picksKey,
     queryFn: async () =>
       (notified ? await services.recipe.getBatch(householdId!, notified).catch(() => null) : null) ??
       services.recipe.getPicks({
@@ -106,6 +107,31 @@ export default function HomeScreen() {
     gcTime: 60 * 60_000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
+  });
+  // "Not this one": the next dish takes its place at once (the AI's fresh picks can take seconds), and the dismissal
+  // is saved behind it; if saving fails, the dish comes back with a message. Fresh picks are asked for only when
+  // nothing is left to show.
+  const dismiss = useMutation({
+    mutationFn: ({ pick, reason }: { pick: Pick; reason: DismissReason }) => services.recipe.respondToPick(pick.recommendationId, "dismissed", reason),
+    onMutate: async ({ pick, reason }) => {
+      setAsking(false);
+      setRememberedNote(false);
+      setDisliked(reason === "dont_like" ? pick : null);
+      await queryClient.cancelQueries({ queryKey: picksKey });
+      const before = queryClient.getQueryData<PickBatch>(picksKey);
+      if (before) {
+        const rest = [before.hero, ...before.alternates].filter((p): p is Pick => !!p && p.recipeId !== pick.recipeId);
+        queryClient.setQueryData<PickBatch>(picksKey, { ...before, hero: rest[0] ?? null, alternates: rest.slice(1) });
+      }
+      return { before };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.before) queryClient.setQueryData(picksKey, context.before);
+      setDisliked(null);
+    },
+    onSuccess: () => {
+      if (!queryClient.getQueryData<PickBatch>(picksKey)?.hero) void queryClient.invalidateQueries({ queryKey: ["picks"] });
+    },
   });
   const { isStale: picksStale, refetch: refetchPicks } = picks;
   // Remember what was shown, so the next picks (after 30 minutes, or "Something different") bring new ones.
@@ -156,15 +182,6 @@ export default function HomeScreen() {
   const [asking, setAsking] = useState(false);
   const [disliked, setDisliked] = useState<Pick | null>(null);
   const [rememberedNote, setRememberedNote] = useState(false);
-  const dismiss = useMutation({
-    mutationFn: ({ pick, reason }: { pick: Pick; reason: DismissReason }) => services.recipe.respondToPick(pick.recommendationId, "dismissed", reason),
-    onSuccess: (_, { pick, reason }) => {
-      setAsking(false);
-      setRememberedNote(false);
-      if (reason === "dont_like") setDisliked(pick);
-      void queryClient.invalidateQueries({ queryKey: ["picks"] });
-    },
-  });
   const rememberDislike = useMutation({
     mutationFn: (pick: Pick) =>
       services.preference.saveMemory({
@@ -180,7 +197,6 @@ export default function HomeScreen() {
       setDisliked(null);
       setRememberedNote(true);
       void queryClient.invalidateQueries({ queryKey: ["memories"] });
-      void queryClient.invalidateQueries({ queryKey: ["picks"] });
     },
   });
 
@@ -352,21 +368,6 @@ export default function HomeScreen() {
         </View>
       ) : null}
 
-      {disliked ? (
-        <Card>
-          <Text variant="bodyStrong">{t("home.rememberDislike", { dish: recipeTitle(disliked, getLocale()) })}</Text>
-          <View style={styles.reasons}>
-            <Button label={t("home.rememberYes")} kind="secondary" disabled={rememberDislike.isPending} onPress={() => rememberDislike.mutate(disliked)} />
-            <Button label={t("home.rememberNo")} kind="quiet" onPress={() => setDisliked(null)} />
-          </View>
-          {rememberDislike.isError ? <Text>{t("state.error.body")}</Text> : null}
-        </Card>
-      ) : rememberedNote ? (
-        <Text variant="label" muted accessibilityLiveRegion="polite">
-          {t("home.remembered")}
-        </Text>
-      ) : null}
-
       {picks.data?.calendar ? (
         <CalendarNote
           calendar={picks.data.calendar}
@@ -426,6 +427,24 @@ export default function HomeScreen() {
         />
       ) : (
         <>
+          {/* After "Don't like it": the question sits where the cook just tapped, not at the top of Home. */}
+          {disliked ? (
+            <Enter>
+              <Card>
+                <Text variant="bodyStrong">{t("home.rememberDislike", { dish: recipeTitle(disliked, getLocale()) })}</Text>
+                <View style={styles.reasons}>
+                  <Button label={t("home.rememberYes")} kind="secondary" disabled={rememberDislike.isPending} onPress={() => rememberDislike.mutate(disliked)} />
+                  <Button label={t("home.rememberNo")} kind="quiet" onPress={() => setDisliked(null)} />
+                </View>
+                {rememberDislike.isError ? <Text>{t("state.error.body")}</Text> : null}
+              </Card>
+            </Enter>
+          ) : rememberedNote ? (
+            <Text variant="label" muted accessibilityLiveRegion="polite">
+              {t("home.remembered")}
+            </Text>
+          ) : null}
+          {dismiss.isError ? <Text accessibilityLiveRegion="polite">{t("state.error.body")}</Text> : null}
           {/* U4: "Not this one" sits right under the dish it turns down, on the right like a card action. */}
           <View style={{ gap: space.xs }}>
             <PickCard pick={hero} hero index={0} onOpen={() => open(hero)} onCook={() => cook(hero)} />
@@ -443,7 +462,6 @@ export default function HomeScreen() {
                     />
                   ))}
                 </View>
-                {dismiss.isError ? <Text>{t("state.error.body")}</Text> : null}
               </Enter>
             ) : (
               <View style={{ alignSelf: "flex-end" }}>

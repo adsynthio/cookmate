@@ -16,6 +16,7 @@ import { radius, shadow, space } from "@/design-system/tokens";
 import { dishEmoji } from "@/domain/foodEmoji";
 import { drinkMatch, kitchenHas, drinksFor, say, type DrinkFilter } from "@/domain/drinks";
 import { getLocale, t, useLocale } from "@/i18n";
+import { minutesText } from "@/i18n/duration";
 import { services } from "@/services";
 import { STAPLES } from "@/services/picks";
 import { useDrinks } from "@/state/drinks";
@@ -120,7 +121,7 @@ function DrinkCard({ drink, index, locale, have, onOpen }: { drink: Drink; index
             {say(drink.about, locale)}
           </Text>
           <Text variant="caption" weight={600} color={m.missing.length ? colors.accentText : colors.primaryText}>
-            {t("home.minutes", { min: drink.minutes })} · {m.missing.length ? t("drinks.have", { have: m.have, total: m.total }) : t("drinks.haveAll")}
+            {minutesText(drink.minutes)} · {m.missing.length ? t("drinks.have", { have: m.have, total: m.total }) : t("drinks.haveAll")}
           </Text>
         </View>
       </PressableScale>

@@ -19,8 +19,9 @@ import { radius, shadow, space } from "@/design-system/tokens";
 import { Image, StyleSheet } from "react-native";
 import { recipeDocs } from "@/data/recipes";
 import { GuestsCard } from "@/components/cook/GuestsCard";
-import { recipeTitle, totalTime } from "@/domain/recipes";
+import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale } from "@/i18n";
+import { minutesText, recipeTimeText } from "@/i18n/duration";
 import { services } from "@/services";
 import { useSession } from "@/state/session";
 import { useTimers } from "@/state/timers";
@@ -138,7 +139,7 @@ export default function CookTab() {
                       <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
                       {d.totalTimeMin ? (
                         <Text variant="caption" muted>
-                          {t("home.minutes", { min: d.totalTimeMin })}
+                          {minutesText(d.totalTimeMin)}
                         </Text>
                       ) : null}
                     </View>
@@ -172,7 +173,7 @@ export default function CookTab() {
                     <View style={{ flex: 1, gap: 2 }}>
                       <Text variant="bodyStrong">{recipeTitle(d, getLocale())}</Text>
                       <Text variant="caption" muted>
-                        {t("home.minutes", { min: totalTime(d) })}
+                        {recipeTimeText(d)}
                       </Text>
                     </View>
                     <Icon name="forward" size={20} color={colors.inkSecondary} />

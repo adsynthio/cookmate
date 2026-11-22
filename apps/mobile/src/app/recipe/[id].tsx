@@ -42,6 +42,7 @@ import {
   type RecipeIngredientDoc,
 } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { minutesText, recipeTimeText } from "@/i18n/duration";
 import { services, type Member } from "@/services";
 import { pantryEntries, STAPLES } from "@/services/picks";
 import { useSession } from "@/state/session";
@@ -316,7 +317,7 @@ function RecipeBody({
         <View style={[styles.stats, { backgroundColor: colors.surfaceMuted }]}>
           <Stat
             icon="timer"
-            value={yours ? t("home.minutes", { min: yours }) : time ? t("home.minutes", { min: time }) : "–"}
+            value={yours ? minutesText(yours) : time ? recipeTimeText(doc) : "–"}
             label={yours ? t("recipe.yourTime") : t("recipe.totalTime")}
           />
           <Stat icon="skillet" value={t(`recipe.level.${level}` as StringKey)} label={t("recipe.difficulty")} highlight />
@@ -375,7 +376,7 @@ function RecipeBody({
 
       {baseCuts.length ? (
         <Card tint={colors.primaryPale} style={{ gap: space.xs }}>
-          <Text variant="subheading">{t("bases.title", { min: minutesSaved(baseCuts) >= 120 ? t("bases.overnight") : t("home.minutes", { min: minutesSaved(baseCuts) }) })}</Text>
+          <Text variant="subheading">{t("bases.title", { min: minutesSaved(baseCuts) >= 120 ? t("bases.overnight") : minutesText(minutesSaved(baseCuts)) })}</Text>
           {baseCuts.map((c) => (
             <Text key={c.base}>
               {t(`bases.line.${c.base}`, { steps: c.steps.join(", "), pulse: c.pulse ? nameOf(c.pulse) : "" })}

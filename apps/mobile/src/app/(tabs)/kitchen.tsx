@@ -23,8 +23,8 @@ import { radius, shadow, space } from "@/design-system/tokens";
 import { expiryInfo, formatQuantity, LOW_CONFIDENCE, type ExpiryInfo } from "@/domain/kitchen";
 import { dishesWithin } from "@/domain/kitchenSetup";
 import type { Diet } from "@/domain/onboarding";
-import { totalTime } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
+import { recipeTimeText } from "@/i18n/duration";
 import { services, type LocationKind, type PantryItem, type StapleLevel } from "@/services";
 import { useSession } from "@/state/session";
 
@@ -301,7 +301,7 @@ export default function KitchenScreen() {
                       <View style={styles.row}>
                         <Icon name="clock" size={14} color={colors.inkTertiary} />
                         <Text variant="caption" muted>
-                          {t("kitchen.min", { n: totalTime(suggestion.doc) })}
+                          {recipeTimeText(suggestion.doc)}
                         </Text>
                       </View>
                     </View>

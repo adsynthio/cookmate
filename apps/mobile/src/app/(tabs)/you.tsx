@@ -99,6 +99,8 @@ export default function YouScreen() {
   return (
     <Screen header={<AppHeader title={t("you.title")} />}>
       <ProfileCard me={me} members={members.data ?? []} />
+      {/* U6: who you cook for, right under you. */}
+      {householdId && members.data ? <FamilyCard householdId={householdId} members={members.data} selfId={memberId} /> : null}
       <SaveKitchenCard />
       <StatGrid
         stats={[
@@ -109,8 +111,7 @@ export default function YouScreen() {
         ]}
       />
       {householdId ? <CreditsCard householdId={householdId} /> : null}
-      {members.data ? <TasteCard members={members.data} prefs={prefs} /> : null}
-      {householdId && members.data ? <FamilyCard householdId={householdId} members={members.data} selfId={memberId} /> : null}
+      <TasteCard prefs={prefs} />
       {householdId ? <WeekCard householdId={householdId} /> : null}
       {householdId ? <PlateCard householdId={householdId} /> : null}
       {householdId ? <ToolsCard householdId={householdId} /> : null}

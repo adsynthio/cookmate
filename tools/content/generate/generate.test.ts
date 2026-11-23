@@ -2,7 +2,7 @@
 // deno test --allow-read tools/content/generate/generate.test.ts
 import { assertEquals } from "jsr:@std/assert@1";
 
-import { draftProblems, toDoc } from "./generate.ts";
+import { draftProblems, parseDraft, toDoc } from "./generate.ts";
 
 const say = (text: string, safety: string | null = null) => ({ text, safety, look: null, sound: null, smell: null, touch: null });
 const step = (text: string, extra: Record<string, unknown> = {}) => ({
@@ -48,4 +48,20 @@ Deno.test("a draft with an unknown ingredient or no hot-oil note is sent back", 
   assertEquals(problems.some((p) => p.includes("Hindi is missing look")), true);
   assertEquals(problems.some((p) => p.includes("not a catalog name")), true);
   assertEquals(problems.some((p) => p.includes("hot-oil")), true);
+});
+
+Deno.test("the model's JSON answer is read, fences and all; a broken one comes back as problems", () => {
+  const ok = parseDraft("```json\n" + JSON.stringify(boondiLadoo) + "\n```");
+  assertEquals("draft" in ok && ok.draft.title, "Boondi Ladoo");
+  assertEquals(parseDraft("Sorry, I can't."), { problems: ["the answer was not a JSON object"] });
+  const notJson = parseDraft("{ title: Boondi }");
+  assertEquals("problems" in notJson && notJson.problems[0]!.startsWith("the JSON did not parse"), true);
+  const wrong = structuredClone(boondiLadoo) as Record<string, unknown>;
+  wrong.course = "pudding";
+  delete wrong.title_hi;
+  const bad = parseDraft(JSON.stringify(wrong));
+  assertEquals("problems" in bad, true);
+  const lines = "problems" in bad ? bad.problems : [];
+  assertEquals(lines.some((l) => l.startsWith("course:")), true);
+  assertEquals(lines.some((l) => l.startsWith("title_hi:")), true);
 });

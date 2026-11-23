@@ -1,16 +1,17 @@
 // Plan ahead (D1): what a dish needs done hours before cooking, worked out from the recipe and the kitchen.
-//   * a long hands-off first step (rajma soaked 8 hours, chicken marinated) -> do it ahead;
+//   * long hands-off opening steps (rajma soaked 8 hours, chicken marinated, dosa batter soaked, ground and
+//     fermented) -> do them ahead;
 //   * the dish uses curd, there's none but there is milk -> set curd the night before;
 //   * something it uses is in the freezer -> move it to the fridge to thaw.
 // Home uses this to offer tomorrow's dish in the evening ("Rajma tomorrow? Soak it tonight") and to show tonight's
 // plan during the day. No React, no network.
-import type { RecipeDoc } from "./recipes";
+import { aheadHours, aheadSpan, type RecipeDoc } from "./recipes.ts";
+
+export { AHEAD_MINUTES } from "./recipes.ts";
 
 export type PrepKind = "soak" | "marinate" | "rest" | "set_curd" | "defrost";
 export type PrepNeed = { kind: PrepKind; /** Hours before cooking it should start. */ hours: number; /** Catalog key it's about. */ item?: string; step?: number };
 
-/** A first step at least this long, hands-off, is something to do ahead rather than while cooking. */
-export const AHEAD_MINUTES = 120;
 const CURD_HOURS = 8;
 const DEFROST_HOURS = 10;
 
@@ -18,15 +19,17 @@ export type KitchenItem = { key: string | null; location?: string | null; out?: 
 
 export function prepNeeds(doc: Pick<RecipeDoc, "steps" | "ingredients">, kitchen: KitchenItem[]): PrepNeed[] {
   const needs: PrepNeed[] = [];
-  // Only the opening steps: a long simmer in the middle of the recipe is cooking, not prep.
-  doc.steps.slice(0, 2).forEach((s, i) => {
-    const minutes = s.minutes ?? 0;
-    if (minutes < AHEAD_MINUTES) return;
+  // Only the opening steps before the stove goes on: a long simmer in the middle of the recipe is cooking, not prep.
+  // One need for the whole stretch, named after its first step: dosa is "soak the rice, about 16 hours", because the
+  // soak, the grind and the overnight ferment all come before the tawa.
+  const span = aheadSpan(doc.steps);
+  if (span) {
+    const s = doc.steps[span[0]]!;
     const kind: PrepKind = /soak/i.test(s.text) ? "soak" : /marinat/i.test(s.text) ? "marinate" : "rest";
     // What gets soaked or marinated: the dish's main ingredient (rajma, chicken).
     const item = (doc.ingredients.find((ing) => ing.role === "base" || ing.role === "protein") ?? doc.ingredients[0])?.ingredient;
-    needs.push({ kind, hours: Math.ceil(minutes / 60), item, step: i + 1 });
-  });
+    needs.push({ kind, hours: aheadHours(doc), item, step: span[0] + 1 });
+  }
   const have = new Map(kitchen.filter((k) => k.key && !k.out).map((k) => [k.key!, k]));
   const uses = new Set(doc.ingredients.filter((i) => !i.optional).map((i) => i.ingredient));
   if (uses.has("curd") && !have.has("curd") && have.has("milk")) needs.push({ kind: "set_curd", hours: CURD_HOURS, item: "curd" });

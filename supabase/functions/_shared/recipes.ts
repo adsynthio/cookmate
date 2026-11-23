@@ -76,12 +76,37 @@ export type RecipeDoc = {
   variation_rules?: VariationRuleDoc[];
 };
 
+/** A hands-off opening step at least this long is something to start ahead rather than while cooking. */
+export const AHEAD_MINUTES = 120;
+// Opening steps that only prepare or wait, with no stove: soaking, grinding a batter and leaving it to ferment,
+// marinating, kneading and resting a dough.
+const PREP_TECHNIQUES = new Set(["soak", "batter", "ferment", "marinate", "knead", "shape", "rest"]);
+
 /**
- * Hours of hands-off work before the cooking can start: an opening step (of the first two) of 2 hours or more, like
- * soaking rajma 8 hours or marinating chicken overnight. 0 when there is none. Same rule as prepAhead.ts.
+ * The work to start hours before cooking, as step indexes [from, to]: the opening steps before the stove goes on, from
+ * the first one of 2 hours or more to the last. Rajma: the 8-hour soak. Dosa: soak 6 hours, grind, ferment 9 hours, all
+ * before the tawa. A long simmer once cooking has started is cooking, not prep. Null when there is none.
  */
+export function aheadSpan(steps: RecipeStepDoc[]): [number, number] | null {
+  let from = -1;
+  let to = -1;
+  for (let i = 0; i < steps.length; i++) {
+    const s = steps[i]!;
+    if (s.heat || s.whistles || (s.technique && !PREP_TECHNIQUES.has(s.technique))) break;
+    if ((s.minutes ?? 0) >= AHEAD_MINUTES) {
+      if (from < 0) from = i;
+      to = i;
+    }
+  }
+  return from < 0 ? null : [from, to];
+}
+
+/** Hours of that hands-off work (rajma 8, dosa 16), 0 when there is none. Home's plan-ahead uses the same span. */
 export function aheadHours(doc: Pick<RecipeDoc, "steps">): number {
-  return doc.steps.slice(0, 2).reduce((m, s) => ((s.minutes ?? 0) >= 120 ? Math.max(m, Math.ceil((s.minutes ?? 0) / 60)) : m), 0);
+  const span = aheadSpan(doc.steps);
+  if (!span) return 0;
+  const minutes = doc.steps.slice(span[0], span[1] + 1).reduce((sum, s) => sum + (s.minutes ?? 0), 0);
+  return Math.ceil(minutes / 60);
 }
 
 export function totalTime(doc: Pick<RecipeDoc, "prep_time_min" | "cook_time_min">): number {

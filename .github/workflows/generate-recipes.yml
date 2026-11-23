@@ -22,7 +22,7 @@ concurrency:
   group: library-batch
   cancel-in-progress: false
 
-# Writes a branch and opens a pull request; nothing else.
+# Writes a branch and opens a pull request (the drafts are also kept with the run); nothing else.
 permissions:
   contents: write
   pull-requests: write
@@ -76,20 +76,21 @@ jobs:
           python3 tools/content/build.py
           python3 tools/media/sync.py
           cd apps/mobile && npm ci && node --test --experimental-strip-types src/domain/recipeSafety.test.ts src/domain/recipeSafety.cases.test.ts
-      - name: Open the pull request
+      - name: Commit the drafts
+        id: commit
         if: steps.key.outputs.ok == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           if [ -z "$(git status --porcelain content/recipes)" ]; then
             echo "::notice::No drafts passed; see the report above."
+            echo "has=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           branch="library/batch-${{ github.run_number }}"
           git checkout -b "$branch"
           git -c user.name=Gaurav -c user.email=adsynthio@users.noreply.github.com add content/recipes supabase/seed.sql apps/mobile/src/data apps/mobile/src/design-system/media.ts supabase/functions/_shared/catalog.json
           git -c user.name=Gaurav -c user.email=adsynthio@users.noreply.github.com commit -q -m "Library batch ${{ github.run_number }}: draft recipes for review"
-          git push -q -u origin "$branch"
+          # The batch as one patch, kept with the run: if the push below fails, `git am batch.patch` on main restores it.
+          git format-patch -1 --stdout > batch.patch
           {
             echo "Draft recipes written by the library generator (docs/AI_RECIPES_PLAN.md, Phase 1)."
             echo
@@ -98,6 +99,33 @@ jobs:
             echo
             cat report.md
           } > body.md
+          echo "has=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+      # Kept before the push, so a dropped connection can't lose a batch the API has already been paid for.
+      - name: Keep the drafts with the run
+        if: steps.commit.outputs.has == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: library-batch-${{ github.run_number }}
+          path: |
+            batch.patch
+            body.md
+          retention-days: 30
+      - name: Push and open the pull request
+        if: steps.commit.outputs.has == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.commit.outputs.branch }}
+        run: |
+          # A push can fail on a network blip: four tries, waiting 10, 20, 40 seconds between them.
+          for wait in 10 20 40 0; do
+            git push -q -u origin "$BRANCH" && break
+            if [ "$wait" = 0 ]; then
+              echo "::error::Couldn't push $BRANCH. The drafts are kept with this run (library-batch-${{ github.run_number }}): apply batch.patch on main with git am."
+              exit 1
+            fi
+            sleep "$wait"
+          done
           # If the repository doesn't let Actions open pull requests, the branch is still pushed: open it by hand.
-          gh pr create --base main --head "$branch" --title "Library batch ${{ github.run_number }}: draft recipes for review" --body-file body.md \
-            || echo "::notice::The drafts are on branch $branch. Open the pull request: https://github.com/${{ github.repository }}/pull/new/$branch"
+          gh pr create --base main --head "$BRANCH" --title "Library batch ${{ github.run_number }}: draft recipes for review" --body-file body.md \
+            || echo "::notice::The drafts are on branch $BRANCH. Open the pull request: https://github.com/${{ github.repository }}/pull/new/$BRANCH"

@@ -14,9 +14,9 @@ descriptions:
     garam parosein.
 cuisine_region: north_indian
 course: breakfast
-diet: veg
+diet: vegan
 base_servings: 4
-prep_time_min: 200
+prep_time_min: 20
 cook_time_min: 25
 difficulty: 2
 spice_level: 2

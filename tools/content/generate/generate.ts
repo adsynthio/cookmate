@@ -87,6 +87,13 @@ Hinglish (Latin script), read aloud while cooking, and checked by food-safety ru
 - hi and hinglish: everything the English step says, in Hindi (Devanagari) and Hinglish (Latin): the text, every
   cue you gave (look, sound, smell, touch) and the safety note. Natural kitchen language, masculine first person if any.
 - Difficulty and spice 1 to 5. Diet must match the ingredients. No health or nutrition claims. No brand promotion.
+- title: the dish's everyday name, as a cook says it ("Kala Chana Masala", "Varan", "Sambar"), never an explanation in
+  brackets; the same for title_hi and title_hinglish. The description says what it is.
+- flavor: each of rich, heat, acid, crunch, starch, sweet from 0 to 1 in steps of 0.1 (dal tadka is about rich 0.5,
+  heat 0.3, acid 0.3, crunch 0, starch 0.4, sweet 0; rasam is acid 0.8).
+- tags: "basics" only for a foundation a beginner learns first (roti, plain rice, plain dal), not for full dishes.
+- Use everyday refined oil or ghee unless the dish truly needs a particular oil (mustard oil in a Bengali or Bihari
+  dish); a speciality oil like groundnut oil adds an allergy for families who avoid it.
 ${SAFETY_RULES_PROMPT}
 
 Answer with one JSON object and nothing else (no markdown, no notes), matching this JSON Schema exactly:
@@ -132,7 +139,12 @@ export function toDoc(slug: string, d: Draft): RecipeDoc & Record<string, unknow
     spice_level: clamp(d.spice_level, 1, 5),
     equipment: [...new Set(d.equipment)],
     tags: [...new Set(d.tags)],
-    flavor_profile: Object.fromEntries(Object.entries(d.flavor).map(([k, v]) => [k, Math.max(0, Math.min(1, Math.round(v * 10) / 10))])),
+    // 0 to 1. Batch 2 came back on a 1-5 scale and every score clipped to 1, so a scale above 1 is brought down.
+    flavor_profile: (() => {
+      const top = Math.max(0, ...Object.values(d.flavor));
+      const scale = top > 5 ? 10 : top > 1 ? 5 : 1;
+      return Object.fromEntries(Object.entries(d.flavor).map(([k, v]) => [k, Math.max(0, Math.min(1, Math.round((v / scale) * 10) / 10))]));
+    })(),
     food_groups: [...new Set(d.food_groups)],
     review_status: "in_review",
     ingredients: d.ingredients.map((i) => ({

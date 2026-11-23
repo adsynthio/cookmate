@@ -1,0 +1,277 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: dal-palak
+title: Dal Palak
+titles:
+  hi: दाल पालक
+  hi-Latn: Dal Palak
+description: Everyday toor dal cooked with fresh spinach, onion, tomato and garlic, finished with a ghee and red chilli tadka.
+  Serve with rice or roti.
+descriptions:
+  hi: रोज़ की अरहर दाल, ताज़े पालक, प्याज़, टमाटर और लहसुन के साथ पकी हुई, ऊपर से घी और लाल मिर्च का तड़का। चावल या रोटी के
+    साथ परोसें।
+  hi-Latn: Roz ki arhar dal, taaze palak, pyaaz, tamatar aur lahsun ke saath paki hui, upar se ghee aur laal mirch ka tadka.
+    Chawal ya roti ke saath parosein.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 30
+difficulty: 2
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+flavor_profile:
+  rich: 0.4
+  heat: 0.3
+  acid: 0.2
+  crunch: 0
+  starch: 0.4
+  sweet: 0
+food_groups:
+- dal
+- greens
+review_status: in_review
+ingredients:
+- ingredient: toor dal
+  qty: 150
+  unit: g
+  local: 3/4 katori arhar dal
+  role: base
+  group: dal
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+  group: dal
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach namak
+  role: spice
+  group: dal
+- ingredient: spinach
+  qty: 250
+  unit: g
+  local: 1 bada guccha palak
+  role: vegetable
+  group: masala
+- ingredient: ghee
+  qty: 20
+  unit: g
+  local: 1.5 bada chammach ghee
+  role: fat
+  group: masala
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: masala
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki hing
+  role: aromatic
+  group: masala
+- ingredient: garlic
+  qty: 15
+  unit: g
+  local: 6-7 kali lahsun
+  role: aromatic
+  group: masala
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+  group: masala
+- ingredient: green chilli
+  qty: 6
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: masala
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 medium pyaaz
+  role: aromatic
+  group: masala
+- ingredient: tomato
+  qty: 120
+  unit: g
+  local: 1 bada tamatar
+  role: acid
+  group: masala
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach laal mirch powder
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+  group: masala
+- ingredient: ghee
+  qty: 10
+  unit: g
+  local: 1 chhota chammach ghee
+  role: fat
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: g
+  local: 2 sookhi laal mirch
+  role: heat
+  group: tadka
+- ingredient: lemon
+  qty: 15
+  unit: ml
+  local: aadha nimbu
+  role: acid
+  group: finish
+  optional: true
+steps:
+- text: Wash the toor dal 2 to 3 times and soak it in water for 15 minutes.
+  technique: soak
+  minutes: 15
+  timer: true
+  cues:
+    look: The washing water runs almost clear.
+  say:
+    hi:
+      text: अरहर दाल को 2 से 3 बार धोकर 15 मिनट पानी में भिगो दें।
+      look: धोने का पानी लगभग साफ़ दिखने लगे।
+    hi-Latn:
+      text: Arhar dal ko 2 se 3 baar dhokar 15 minute paani mein bhigo dein.
+      look: Dhone ka paani lagbhag saaf dikhne lage.
+- text: Drain the dal, put it in the pressure cooker with 3 cups water, the turmeric and half the salt, and cook for 3 whistles
+    on medium heat.
+  technique: pressure_cook
+  minutes: 12
+  whistles: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The dal is fully soft and breaks down when stirred.
+    touch: A grain mashes easily between your fingers.
+  safety: Let the pressure drop on its own before you open the lid.
+  say:
+    hi:
+      text: दाल का पानी निकालकर कुकर में 3 कप पानी, हल्दी और आधा नमक डालें और मध्यम आंच पर 3 सीटी आने दें।
+      look: दाल पूरी नरम हो और चलाने पर घुल जाए।
+      touch: दाल का दाना उंगलियों के बीच आसानी से मसल जाए।
+      safety: ढक्कन खोलने से पहले प्रेशर अपने आप निकलने दें।
+    hi-Latn:
+      text: Dal ka paani nikaalkar cooker mein 3 cup paani, haldi aur aadha namak daalein aur medium aanch par 3 seeti aane
+        dein.
+      look: Dal poori naram ho aur chalane par ghul jaaye.
+      touch: Dal ka daana ungliyon ke beech aasaani se masal jaaye.
+      safety: Dhakkan kholne se pehle pressure apne aap nikalne dein.
+- text: While the dal cooks, wash the spinach in a big bowl of water 2 to 3 times and chop it roughly.
+  cues:
+    look: No mud or grit is left at the bottom of the bowl.
+  say:
+    hi:
+      text: दाल पकने तक पालक को बड़े बर्तन में पानी में 2 से 3 बार धोएं और मोटा-मोटा काट लें।
+      look: बर्तन की तली में मिट्टी या रेत न बचे।
+    hi-Latn:
+      text: Dal pakne tak palak ko bade bartan mein paani mein 2 se 3 baar dhoyein aur mota-mota kaat lein.
+      look: Bartan ki tali mein mitti ya ret na bache.
+- text: Heat the ghee in a kadai, add cumin and hing, then the chopped garlic, ginger, green chilli and onion, and fry until
+    the onion turns golden.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and golden at the edges.
+    sound: The cumin crackles as soon as it hits the ghee.
+    smell: The garlic smells nutty, not raw.
+  say:
+    hi:
+      text: कढ़ाई में घी गरम करें, जीरा और हींग डालें, फिर कटा लहसुन, अदरक, हरी मिर्च और प्याज़ डालकर प्याज़ सुनहरा होने तक
+        भूनें।
+      look: प्याज़ नरम और किनारों से सुनहरा हो जाए।
+      sound: घी में डालते ही जीरा चटकने लगे।
+      smell: लहसुन की कच्ची नहीं, भुनी हुई खुशबू आए।
+    hi-Latn:
+      text: Kadai mein ghee garam karein, jeera aur hing daalein, phir kata lahsun, adrak, hari mirch aur pyaaz daalkar pyaaz
+        sunehra hone tak bhunein.
+      look: Pyaaz naram aur kinaaron se sunehra ho jaaye.
+      sound: Ghee mein daalte hi jeera chatakne lage.
+      smell: Lahsun ki kachchi nahin, bhuni hui khushboo aaye.
+- text: Add the chopped tomato, red chilli powder and coriander powder and cook until the tomato is mushy.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Ghee starts showing at the edges of the masala.
+  say:
+    hi:
+      text: कटा टमाटर, लाल मिर्च पाउडर और धनिया पाउडर डालें और टमाटर गलने तक पकाएं।
+      look: मसाले के किनारों पर घी दिखने लगे।
+    hi-Latn:
+      text: Kata tamatar, laal mirch powder aur dhaniya powder daalein aur tamatar galne tak pakaayein.
+      look: Masale ke kinaaron par ghee dikhne lage.
+- text: Add the spinach and stir until it wilts.
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The spinach shrinks and turns a deep green.
+  say:
+    hi:
+      text: पालक डालें और मुरझाने तक चलाते रहें।
+      look: पालक सिकुड़कर गहरा हरा हो जाए।
+    hi-Latn:
+      text: Palak daalein aur murjhaane tak chalaate rahein.
+      look: Palak sikudkar gehra hara ho jaaye.
+- text: Whisk the cooked dal lightly, pour it into the kadai with the rest of the salt and about 1 cup water, and simmer for
+    8 minutes.
+  technique: simmer
+  minutes: 8
+  timer: true
+  heat: low
+  cues:
+    look: The dal is thick but still pours from the ladle.
+  safety: Keep the lid half on, because thick dal splutters.
+  say:
+    hi:
+      text: पकी दाल को हल्का घोंट लें, बचा नमक और करीब 1 कप पानी के साथ कढ़ाई में डालें और 8 मिनट धीमी आंच पर उबालें।
+      look: दाल गाढ़ी हो पर कलछी से बहती रहे।
+      safety: ढक्कन आधा ढक कर रखें, क्योंकि गाढ़ी दाल छींटे मारती है।
+    hi-Latn:
+      text: Paki dal ko halka ghont lein, bacha namak aur kareeb 1 cup paani ke saath kadai mein daalein aur 8 minute dheemi
+        aanch par ubaalein.
+      look: Dal gaadhi ho par kalchhi se behti rahe.
+      safety: Dhakkan aadha dhak kar rakhein, kyunki gaadhi dal chheente maarti hai.
+- text: For the tadka, heat the remaining ghee in a small pan, add the broken dry red chillies, and pour it over the dal;
+    squeeze in lemon off the heat if you like.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The chillies darken slightly but do not turn black.
+    sound: The tadka sizzles loudly as it hits the dal.
+  say:
+    hi:
+      text: तड़के के लिए छोटे बर्तन में बचा घी गरम करें, टूटी सूखी लाल मिर्च डालें और दाल पर डाल दें; पसंद हो तो गैस बंद करके
+        नींबू निचोड़ें।
+      look: मिर्च हल्की गहरी हो, पर काली न पड़े।
+      sound: दाल पर डालते ही तड़का ज़ोर से छनके।
+    hi-Latn:
+      text: Tadke ke liye chhote bartan mein bacha ghee garam karein, tooti sookhi laal mirch daalein aur dal par daal dein;
+        pasand ho to gas band karke nimbu nichodein.
+      look: Mirch halki gehri ho, par kaali na pade.
+      sound: Dal par daalte hi tadka zor se chhanke.

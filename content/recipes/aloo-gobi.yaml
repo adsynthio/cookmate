@@ -1,0 +1,236 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: aloo-gobi
+title: Aloo Gobi
+titles:
+  hi: आलू गोभी
+  hi-Latn: Aloo Gobi
+description: A dry, homestyle sabzi of cauliflower florets and potato cubes cooked in their own steam with onion, tomato and
+  everyday masalas, finished with a squeeze of tang from amchur. Goes with roti, paratha or dal-chawal.
+descriptions:
+  hi: गोभी के फूल और आलू के टुकड़ों की सूखी, घर जैसी सब्ज़ी। इसे प्याज़, टमाटर और रोज़ के मसालों के साथ अपनी ही भाप में पकाया
+    जाता है और आख़िर में अमचूर की हल्की खटास डाली जाती है। रोटी, पराठे या दाल-चावल के साथ खाएँ।
+  hi-Latn: Gobi ke phool aur aloo ke tukdon ki sookhi, ghar jaisi sabzi. Ise pyaaz, tamatar aur roz ke masalon ke saath apni
+    hi bhaap mein pakaya jaata hai aur aakhir mein amchur ki halki khatas daali jaati hai. Roti, parathe ya dal-chawal ke
+    saath khaayein.
+cuisine_region: north_indian_punjabi_
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 25
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- comforting
+- tiffin
+- kids_friendly
+- one_pot
+flavor_profile:
+  rich: 0.3
+  heat: 0.4
+  acid: 0.2
+  crunch: 0.2
+  starch: 0.7
+  sweet: 0
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: cauliflower
+  qty: 500
+  unit: g
+  local: 1 medium gobi
+  role: vegetable
+- ingredient: potato
+  qty: 300
+  unit: g
+  local: 2-3 medium aloo
+  role: vegetable
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 medium pyaaz
+  role: aromatic
+- ingredient: tomato
+  qty: 120
+  unit: g
+  local: 1 bada tamatar
+  role: acid
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: refined oil
+  qty: 40
+  unit: ml
+  local: 3 bade chammach tel
+  role: fat
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach lal mirch
+  role: heat
+- ingredient: coriander powder
+  qty: 6
+  unit: g
+  local: 2 chhote chammach dhaniya powder
+  role: spice
+- ingredient: salt
+  qty: 7
+  unit: g
+  local: 1 chhota chammach + thoda namak
+  role: spice
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+- ingredient: dry mango powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach amchur
+  role: acid
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Cut the cauliflower into medium florets and soak them in warm salted water for 5 minutes, then drain; peel the potatoes
+    and cut them into cubes the same size as the florets.
+  technique: soak
+  minutes: 5
+  timer: true
+  cues:
+    look: Florets and potato pieces are roughly the same size.
+  safety: Check the florets for small insects after soaking and rinse well.
+  say:
+    hi:
+      text: गोभी को मध्यम फूलों में काटकर 5 मिनट गुनगुने नमक वाले पानी में भिगोएँ, फिर पानी निकाल दें। आलू छीलकर गोभी के फूलों
+        जितने ही टुकड़ों में काटें।
+      look: गोभी के फूल और आलू के टुकड़े लगभग एक जितने बड़े हों।
+      safety: भिगोने के बाद गोभी में छोटे कीड़े देख लें और अच्छे से धो लें।
+    hi-Latn:
+      text: Gobi ko medium phoolon mein kaatkar 5 minute gungune namak waale paani mein bhigoyein, phir paani nikaal dein.
+        Aloo chheelkar gobi ke phoolon jitne hi tukdon mein kaatein.
+      look: Gobi ke phool aur aloo ke tukde lagbhag ek jitne bade hon.
+      safety: Bhigone ke baad gobi mein chhote keede dekh lein aur achhe se dho lein.
+- text: Heat the oil in a kadai and add the cumin seeds.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The cumin turns a shade darker.
+    sound: The seeds crackle.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करें और जीरा डालें।
+      look: जीरे का रंग थोड़ा गहरा हो जाए।
+      sound: जीरा चटकने लगे।
+    hi-Latn:
+      text: Kadai mein tel garam karein aur jeera daalein.
+      look: Jeere ka rang thoda gehra ho jaaye.
+      sound: Jeera chatakne lage.
+- text: Add the chopped onion, grated ginger and slit green chillies and fry until the onion turns light golden.
+  technique: saute_onion
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The onion is soft and light golden at the edges.
+    smell: The raw smell of ginger goes away.
+  say:
+    hi:
+      text: कटा प्याज़, कसा हुआ अदरक और बीच से चिरी हरी मिर्च डालें और प्याज़ हल्का सुनहरा होने तक भूनें।
+      look: प्याज़ नरम हो और किनारों से हल्का सुनहरा दिखे।
+      smell: अदरक की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Kata pyaaz, kasa hua adrak aur beech se chiri hari mirch daalein aur pyaaz halka sunehra hone tak bhunein.
+      look: Pyaaz naram ho aur kinaaron se halka sunehra dikhe.
+      smell: Adrak ki kachchi mehek chali jaaye.
+- text: Add the chopped tomato, turmeric, red chilli powder, coriander powder and a little salt, and cook the masala until
+    the tomato is mushy.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Oil starts to separate at the sides of the masala.
+    touch: The tomato mashes easily with the back of the spoon.
+  say:
+    hi:
+      text: कटा टमाटर, हल्दी, लाल मिर्च, धनिया पाउडर और थोड़ा नमक डालें और टमाटर गलने तक मसाला भूनें।
+      look: मसाले के किनारों से तेल अलग होने लगे।
+      touch: टमाटर कलछी के पीछे से आसानी से मसल जाए।
+    hi-Latn:
+      text: Kata tamatar, haldi, laal mirch, dhaniya powder aur thoda namak daalein aur tamatar galne tak masala bhunein.
+      look: Masale ke kinaaron se tel alag hone lage.
+      touch: Tamatar kalchhi ke peechhe se aasaani se masal jaaye.
+- text: Add the potatoes and cauliflower with the rest of the salt and toss until every piece is coated in masala.
+  minutes: 2
+  heat: medium
+  cues:
+    look: Every piece looks yellow and coated in masala.
+  say:
+    hi:
+      text: आलू और गोभी के साथ बाकी नमक डालें और हर टुकड़े पर मसाला लगने तक अच्छे से मिलाएँ।
+      look: हर टुकड़ा पीला और मसाले में लिपटा दिखे।
+    hi-Latn:
+      text: Aloo aur gobi ke saath baaki namak daalein aur har tukde par masala lagne tak achhe se milaayein.
+      look: Har tukda peela aur masale mein lipta dikhe.
+- text: Cover and cook without adding water, stirring gently every 5 minutes, until the potatoes are cooked through.
+  minutes: 15
+  timer: true
+  heat: low
+  cues:
+    look: The florets are tender but still hold their shape.
+    touch: A knife goes through the potato cubes easily.
+  say:
+    hi:
+      text: ढककर बिना पानी डाले पकाएँ और हर 5 मिनट में हल्के हाथ से चलाते रहें, जब तक आलू पूरे पक न जाएँ।
+      look: गोभी नरम हो जाए पर टूटे नहीं।
+      touch: चाकू आलू के टुकड़ों में आसानी से घुस जाए।
+    hi-Latn:
+      text: Dhakkar bina paani daale pakaayein aur har 5 minute mein halke haath se chalaate rahein, jab tak aloo poore pak
+        na jaayein.
+      look: Gobi naram ho jaaye par toote nahin.
+      touch: Chaaku aloo ke tukdon mein aasaani se ghus jaaye.
+- text: Uncover, sprinkle the garam masala and amchur, and cook for 2 to 3 minutes to dry off any moisture, then garnish with
+    coriander leaves.
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The sabzi is dry with a few lightly browned edges.
+    smell: The garam masala smells fragrant.
+  say:
+    hi:
+      text: ढक्कन हटाकर गरम मसाला और अमचूर छिड़कें और 2-3 मिनट पकाकर नमी सुखा दें, फिर हरा धनिया डालें।
+      look: सब्ज़ी सूखी हो और कुछ किनारे हल्के भूरे हों।
+      smell: गरम मसाले की ख़ुशबू आने लगे।
+    hi-Latn:
+      text: Dhakkan hataakar garam masala aur amchur chhidkein aur 2-3 minute pakaakar nami sukha dein, phir hara dhaniya
+        daalein.
+      look: Sabzi sookhi ho aur kuchh kinaare halke bhoore hon.
+      smell: Garam masale ki khushboo aane lage.

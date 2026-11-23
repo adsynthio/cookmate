@@ -1,0 +1,237 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: kala-chana
+title: Kala Chana Masala
+titles:
+  hi: काला चना मसाला
+  hi-Latn: Kala Chana Masala
+description: Soaked black chickpeas pressure-cooked soft, then simmered in an onion-tomato masala until the gravy turns thick
+  and earthy. A weekday dal-style curry for rice or roti.
+descriptions:
+  hi: भीगे हुए काले चने कुकर में नरम पकाकर प्याज़-टमाटर के मसाले में तब तक पकाए जाते हैं जब तक ग्रेवी गाढ़ी और सोंधी न हो
+    जाए। रोज़ के खाने के लिए, चावल या रोटी के साथ।
+  hi-Latn: Bhige hue kale chane cooker mein naram pakakar pyaaz-tamatar ke masale mein tab tak pakaye jaate hain jab tak gravy
+    gaadhi aur sondhi na ho jaaye. Roz ke khaane ke liye, chawal ya roti ke saath.
+cuisine_region: north_indian_punjabi_home_style_
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 45
+difficulty: 2
+spice_level: 3
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- high_protein
+flavor_profile:
+  rich: 0.5
+  heat: 0.5
+  acid: 0.4
+  crunch: 0.1
+  starch: 0.6
+  sweet: 0
+food_groups:
+- dal
+- protein
+review_status: in_review
+ingredients:
+- ingredient: black chickpeas
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: protein
+  group: chana
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+- ingredient: mustard oil
+  qty: 30
+  unit: ml
+  local: 2 bada chammach
+  role: fat
+  group: masala
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: masala
+- ingredient: bay leaf
+  qty: 1
+  unit: piece
+  local: 1 tej patta
+  role: aromatic
+  group: masala
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 medium pyaaz, bareek kate
+  role: base
+  group: masala
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, kasa hua
+  role: aromatic
+  group: masala
+- ingredient: garlic
+  qty: 12
+  unit: g
+  local: 5-6 lehsun ki kaliyan, kuti hui
+  role: aromatic
+  group: masala
+- ingredient: green chilli
+  qty: 6
+  unit: g
+  local: 1-2 hari mirch, kati
+  role: heat
+  group: masala
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 2 medium tamatar, bareek kate
+  role: base
+  group: masala
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 5
+  unit: g
+  local: 2 chhota chammach
+  role: spice
+  group: masala
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: finish
+- ingredient: dry mango powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach amchur
+  role: acid
+  group: finish
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya, kata
+  role: garnish
+  group: finish
+  optional: true
+steps:
+- text: Wash the black chickpeas and soak them in plenty of water for 8 hours or overnight, then drain and rinse.
+  technique: soak
+  minutes: 480
+  timer: true
+  cues:
+    look: The chana swell to almost double their size.
+  say:
+    hi:
+      text: काले चने धोकर भरपूर पानी में 8 घंटे या रात भर भिगो दो, फिर पानी निकालकर एक बार धो लो।
+      look: चने फूलकर लगभग दुगने हो जाते हैं।
+    hi-Latn:
+      text: Kale chane dhokar bharpoor paani mein 8 ghante ya raat bhar bhigo do, phir paani nikaal kar ek baar dho lo.
+      look: Chane phoolkar lagbhag dugne ho jaate hain.
+- text: Pressure-cook the chana with 600 ml water, half the salt and the turmeric for 6 to 7 whistles on medium heat, then
+    let the pressure drop on its own.
+  technique: pressure_cook
+  minutes: 30
+  whistles: 7
+  timer: true
+  heat: medium
+  cues:
+    touch: A chana presses flat easily between two fingers.
+  safety: Open the cooker only after all the pressure has released.
+  say:
+    hi:
+      text: चनों को 600 ml पानी, आधा नमक और हल्दी के साथ कुकर में मध्यम आँच पर 6 से 7 सीटी तक पकाओ, फिर प्रेशर अपने आप उतरने
+        दो।
+      touch: एक चना दो उंगलियों के बीच आसानी से दब जाता है।
+      safety: सारा प्रेशर निकल जाने के बाद ही कुकर खोलो।
+    hi-Latn:
+      text: Chanon ko 600 ml paani, aadha namak aur haldi ke saath cooker mein medium aanch par 6 se 7 seeti tak pakao, phir
+        pressure apne aap utarne do.
+      touch: Ek chana do ungliyon ke beech aasaani se dab jaata hai.
+      safety: Saara pressure nikal jaane ke baad hi cooker kholo.
+- text: Heat mustard oil in a kadai until it smokes lightly, add cumin seeds and bay leaf, then the onion, and fry until golden
+    brown.
+  technique: saute_onion
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns an even golden brown.
+    sound: The cumin crackles as soon as it hits the oil.
+  say:
+    hi:
+      text: कढ़ाई में सरसों का तेल हल्का धुआँ आने तक गरम करो, जीरा और तेज पत्ता डालो, फिर प्याज़ डालकर सुनहरा भूरा होने तक
+        भूनो।
+      look: प्याज़ एक जैसा सुनहरा भूरा हो जाता है।
+      sound: तेल में डालते ही जीरा चटकने लगता है।
+    hi-Latn:
+      text: Kadai mein sarson ka tel halka dhuaan aane tak garam karo, jeera aur tej patta daalo, phir pyaaz daalkar sunehra
+        bhoora hone tak bhuno.
+      look: Pyaaz ek jaisa sunehra bhoora ho jaata hai.
+      sound: Tel mein daalte hi jeera chatakne lagta hai.
+- text: Add ginger, garlic and green chilli for a minute, then the tomato, red chilli powder, coriander powder and remaining
+    salt, and cook until the masala is soft and the oil separates.
+  technique: bhuna
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: Oil shows at the edges of the masala.
+    smell: The raw garlic smell turns sweet and roasted.
+  say:
+    hi:
+      text: अदरक, लहसुन और हरी मिर्च एक मिनट भूनो, फिर टमाटर, लाल मिर्च, धनिया पाउडर और बचा नमक डालकर मसाला नरम होने और तेल
+        छोड़ने तक पकाओ।
+      look: मसाले के किनारों पर तेल दिखने लगता है।
+      smell: लहसुन की कच्ची महक सोंधी हो जाती है।
+    hi-Latn:
+      text: Adrak, lehsun aur hari mirch ek minute bhuno, phir tamatar, laal mirch, dhaniya powder aur bacha namak daalkar
+        masala naram hone aur tel chhodne tak pakao.
+      look: Masale ke kinaron par tel dikhne lagta hai.
+      smell: Lehsun ki kachchi mehak sondhi ho jaati hai.
+- text: Tip in the cooked chana with their cooking water, mash a few against the side, and simmer until the gravy thickens.
+  technique: simmer
+  minutes: 10
+  timer: true
+  heat: low
+  cues:
+    look: The gravy turns thick and dark brown and coats the chana.
+  say:
+    hi:
+      text: पके हुए चने उनके पानी के साथ डालो, कुछ चने किनारे पर दबाकर मसल दो, और ग्रेवी गाढ़ी होने तक धीमी आँच पर पकाओ।
+      look: ग्रेवी गाढ़ी और गहरी भूरी होकर चनों पर लिपट जाती है।
+    hi-Latn:
+      text: Pake hue chane unke paani ke saath daalo, kuch chane kinaare par dabaakar masal do, aur gravy gaadhi hone tak
+        dheemi aanch par pakao.
+      look: Gravy gaadhi aur gehri bhoori hokar chanon par lipat jaati hai.
+- text: Stir in garam masala and amchur, switch off the heat, scatter coriander leaves and serve hot with rice or roti.
+  minutes: 1
+  cues:
+    smell: The garam masala smells warm and fragrant.
+  say:
+    hi:
+      text: गरम मसाला और अमचूर मिलाओ, गैस बंद करो, हरा धनिया डालकर चावल या रोटी के साथ गरमागरम परोसो।
+      smell: गरम मसाले की गरम, खुशबूदार महक आती है।
+    hi-Latn:
+      text: Garam masala aur amchur milao, gas band karo, hara dhaniya daalkar chawal ya roti ke saath garmagaram paroso.
+      smell: Garam masale ki garam, khushboodar mehak aati hai.

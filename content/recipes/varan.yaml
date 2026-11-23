@@ -1,0 +1,164 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: varan
+title: Varan
+titles:
+  hi: वरण
+  hi-Latn: Varan
+description: A gentle, smooth toor dal cooked with just turmeric, asafoetida and salt, with a hint of jaggery. It is served
+  hot over rice with a spoon of ghee as everyday varan bhaat.
+descriptions:
+  hi: हल्दी, हींग और नमक के साथ पकी सादी और मुलायम तूर दाल, जिसमें थोड़ा सा गुड़ भी पड़ता है। इसे गरम चावल पर एक चम्मच घी
+    डालकर रोज़ के वरण भात की तरह परोसा जाता है।
+  hi-Latn: Haldi, hing aur namak ke saath paki saadi aur mulayam toor dal, jismein thoda sa gud bhi padta hai. Ise garam chawal
+    par ek chammach ghee daalkar roz ke varan bhaat ki tarah parosa jaata hai.
+cuisine_region: maharashtra
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 25
+cook_time_min: 25
+difficulty: 1
+spice_level: 1
+equipment:
+- pressure_cooker
+- gas_stove
+tags:
+- comforting
+- kids_friendly
+- one_pot
+flavor_profile:
+  rich: 0.4
+  heat: 0
+  acid: 0.1
+  crunch: 0
+  starch: 0.5
+  sweet: 0.1
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: toor dal
+  qty: 150
+  unit: g
+  local: 3/4 katori
+  role: base
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: aadha chhota chammach
+  role: spice
+- ingredient: asafoetida
+  qty: 1
+  unit: g
+  local: 1 badi chutki
+  role: aromatic
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: jaggery
+  qty: 10
+  unit: g
+  local: 1 chhota tukda
+  role: sweet
+  optional: true
+- ingredient: ghee
+  qty: 20
+  unit: g
+  local: 4 chhote chammach (serving ke liye)
+  role: fat
+  group: serving
+- ingredient: lemon
+  qty: 0.5
+  unit: piece
+  local: aadha nimbu
+  role: acid
+  group: serving
+  optional: true
+steps:
+- text: Wash the toor dal in water 3 times and soak it in fresh water for 20 minutes, then drain.
+  technique: soak
+  minutes: 20
+  timer: true
+  cues:
+    look: The rinse water turns almost clear.
+    touch: The soaked grains feel slightly swollen.
+  say:
+    hi:
+      text: तूर दाल को पानी में 3 बार धोकर साफ़ पानी में 20 मिनट भिगो दो, फिर पानी निकाल दो।
+      look: धोने का पानी लगभग साफ़ हो जाता है।
+      touch: भीगे दाने थोड़े फूले हुए लगते हैं।
+    hi-Latn:
+      text: Toor dal ko paani mein 3 baar dhokar saaf paani mein 20 minute bhigo do, phir paani nikaal do.
+      look: Dhone ka paani lagbhag saaf ho jaata hai.
+      touch: Bheege daane thode phoole hue lagte hain.
+- text: Put the dal in the pressure cooker with 500 ml water, the turmeric and the asafoetida, and cook for 4 whistles on
+    medium heat.
+  technique: pressure_cook
+  minutes: 15
+  whistles: 4
+  timer: true
+  heat: medium
+  cues:
+    sound: You hear 4 clear whistles.
+  safety: Let the pressure drop on its own before you open the lid.
+  say:
+    hi:
+      text: दाल को प्रेशर कुकर में 500 ml पानी, हल्दी और हींग के साथ डालो और मध्यम आँच पर 4 सीटी आने तक पकाओ।
+      sound: 4 साफ़ सीटियाँ सुनाई देती हैं।
+      safety: ढक्कन खोलने से पहले प्रेशर अपने आप उतरने दो।
+    hi-Latn:
+      text: Dal ko pressure cooker mein 500 ml paani, haldi aur hing ke saath daalo aur medium aanch par 4 seeti aane tak
+        pakao.
+      sound: 4 saaf seetiyan sunaai deti hain.
+      safety: Dhakkan kholne se pehle pressure apne aap utarne do.
+- text: Open the cooker and whisk or mash the dal with a ladle until completely smooth.
+  minutes: 2
+  cues:
+    look: No whole grains are left and the dal looks creamy yellow.
+    touch: The dal feels silky with no lumps.
+  say:
+    hi:
+      text: कुकर खोलो और दाल को मथनी या करछी से तब तक घोटो जब तक वह पूरी तरह चिकनी न हो जाए।
+      look: कोई साबुत दाना नहीं बचता और दाल मलाईदार पीली दिखती है।
+      touch: दाल बिना गुठलियों के मुलायम लगती है।
+    hi-Latn:
+      text: Cooker kholo aur dal ko mathni ya karchhi se tab tak ghoto jab tak woh poori tarah chikni na ho jaaye.
+      look: Koi saabut daana nahin bachta aur dal malaidaar peeli dikhti hai.
+      touch: Dal bina guthliyon ke mulayam lagti hai.
+- text: Add about 200 ml hot water, the salt and the jaggery, and simmer on low-medium heat for 5 minutes, stirring now and
+    then.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The dal is thick but pourable, like a smooth soup.
+    sound: Gentle, slow bubbling.
+  safety: Simmering dal can spit, so stir with a long ladle.
+  say:
+    hi:
+      text: लगभग 200 ml गरम पानी, नमक और गुड़ डालो और बीच-बीच में चलाते हुए धीमी-मध्यम आँच पर 5 मिनट उबालो।
+      look: दाल गाढ़ी है पर बहने लायक है, चिकने सूप जैसी।
+      sound: धीमी, हल्की बुदबुदाहट।
+      safety: उबलती दाल छींटे मारती है, इसलिए लंबी करछी से चलाओ।
+    hi-Latn:
+      text: Lagbhag 200 ml garam paani, namak aur gud daalo aur beech-beech mein chalaate hue dheemi-medium aanch par 5 minute
+        ubaalo.
+      look: Dal gaadhi hai par behne laayak hai, chikne soup jaisi.
+      sound: Dheemi, halki budbudaahat.
+      safety: Ubalti dal chheente maarti hai, isliye lambi karchhi se chalao.
+- text: Serve the varan hot over steamed rice with a spoon of ghee on top and a squeeze of lemon if you like.
+  cues:
+    look: The ghee melts into a golden pool on the dal.
+    smell: The warm ghee smells nutty and fragrant.
+  say:
+    hi:
+      text: वरण को गरम चावल पर ऊपर से एक चम्मच घी डालकर गरमागरम परोसो, चाहो तो थोड़ा नींबू निचोड़ लो।
+      look: घी दाल पर सुनहरा होकर पिघल जाता है।
+      smell: गरम घी की सौंधी, अच्छी खुशबू आती है।
+    hi-Latn:
+      text: Varan ko garam chawal par upar se ek chammach ghee daalkar garamagaram parosो, chaaho to thoda nimbu nichod lo.
+      look: Ghee dal par sunehra hokar pighal jaata hai.
+      smell: Garam ghee ki saundhi, achhi khushboo aati hai.

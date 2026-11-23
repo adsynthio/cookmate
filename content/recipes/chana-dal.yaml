@@ -1,0 +1,255 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: chana-dal
+title: Chana Dal Tadka
+titles:
+  hi: चना दाल तड़का
+  hi-Latn: Chana Dal Tadka
+description: Everyday North Indian chana dal. The split Bengal gram is soaked, pressure-cooked soft, then simmered in a ghee
+  tadka of cumin, onion, tomato and ginger-garlic. Thick, nutty and homely with rice or roti.
+descriptions:
+  hi: रोज़ की उत्तर भारतीय चना दाल। भीगी हुई चना दाल को प्रेशर कुकर में नरम पकाकर घी में जीरा, प्याज़, टमाटर और अदरक-लहसुन
+    के तड़के के साथ उबाला जाता है। गाढ़ी, हल्की सोंधी और घर जैसी, चावल या रोटी के साथ।
+  hi-Latn: Roz ki North Indian chana dal. Bhigi hui chana dal ko pressure cooker mein naram pakakar ghee mein jeera, pyaaz,
+    tamatar aur adrak-lehsun ke tadke ke saath ubaala jaata hai. Gaadhi, halki sondhi aur ghar jaisi, chawal ya roti ke saath.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 70
+cook_time_min: 35
+difficulty: 2
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+flavor_profile:
+  rich: 0.5
+  heat: 0.4
+  acid: 0.3
+  crunch: 0
+  starch: 0.5
+  sweet: 0
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: chana dal
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: base
+  group: dal
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: dal
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: dal
+- ingredient: ghee
+  qty: 30
+  unit: g
+  local: 2 bade chammach
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: aromatic
+  group: tadka
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 bada pyaaz, bareek kata
+  role: aromatic
+  group: tadka
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, kasa hua
+  role: aromatic
+  group: tadka
+- ingredient: garlic
+  qty: 10
+  unit: g
+  local: 4-5 lehsun ki kaliyan, bareek kati
+  role: aromatic
+  group: tadka
+- ingredient: green chilli
+  qty: 6
+  unit: g
+  local: 1-2 hari mirch, kati
+  role: heat
+  group: tadka
+- ingredient: tomato
+  qty: 120
+  unit: g
+  local: 2 medium tamatar, bareek kate
+  role: acid
+  group: tadka
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: heat
+  group: tadka
+- ingredient: coriander powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: garam masala
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach
+  role: spice
+  group: finish
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi, kata hua
+  role: garnish
+  group: finish
+  optional: true
+- ingredient: lemon
+  qty: 15
+  unit: g
+  local: 1/2 nimbu ka ras
+  role: acid
+  group: finish
+  optional: true
+steps:
+- text: Wash the chana dal 3 to 4 times, then soak it in plenty of water for 1 hour.
+  technique: soak
+  minutes: 60
+  timer: true
+  cues:
+    look: The washing water runs almost clear.
+  say:
+    hi:
+      text: चना दाल को 3-4 बार धो लें, फिर भरपूर पानी में 1 घंटे भिगो दें।
+      look: धोने का पानी लगभग साफ़ दिखने लगे।
+    hi-Latn:
+      text: Chana dal ko 3-4 baar dho lein, phir bharpoor paani mein 1 ghante bhigo dein.
+      look: Dhone ka paani lagbhag saaf dikhne lage.
+- text: Drain the dal and add it to the pressure cooker with 750 ml water, the turmeric and the salt. Cook on medium heat
+    for 4 whistles, then let the pressure drop on its own.
+  technique: pressure_cook
+  minutes: 15
+  whistles: 4
+  timer: true
+  heat: medium
+  cues:
+    touch: A grain mashes easily between your fingers but still keeps its shape.
+  safety: Open the lid only after all the pressure has released by itself.
+  say:
+    hi:
+      text: दाल का पानी निकालकर उसे प्रेशर कुकर में 750 मि.ली. पानी, हल्दी और नमक के साथ डालें। मध्यम आँच पर 4 सीटी लगाएँ,
+        फिर प्रेशर अपने आप उतरने दें।
+      touch: दाना उंगलियों में आसानी से मसल जाए, पर अपना आकार बनाए रखे।
+      safety: ढक्कन तभी खोलें जब सारा प्रेशर अपने आप निकल जाए।
+    hi-Latn:
+      text: Dal ka paani nikaalkar use pressure cooker mein 750 ml paani, haldi aur namak ke saath daalein. Medium aanch par
+        4 seeti lagayein, phir pressure apne aap utarne dein.
+      touch: Daana ungliyon mein aasani se masal jaaye, par apna shape banaye rakhe.
+      safety: Dhakkan tabhi kholein jab saara pressure apne aap nikal jaaye.
+- text: Heat the ghee in a kadai on medium heat, then add the cumin seeds and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles.
+    smell: It smells toasty.
+  say:
+    hi:
+      text: कड़ाही में मध्यम आँच पर घी गरम करें, फिर जीरा और हींग डालें।
+      sound: जीरा चटकने लगे।
+      smell: भुनी हुई खुशबू आए।
+    hi-Latn:
+      text: Kadai mein medium aanch par ghee garam karein, phir jeera aur hing daalein.
+      sound: Jeera chatakne lage.
+      smell: Bhuni hui khushboo aaye.
+- text: Add the onion, ginger, garlic and green chilli, and sauté until the onion turns golden.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The onion is golden at the edges.
+    smell: The raw smell of the garlic goes away.
+  say:
+    hi:
+      text: प्याज़, अदरक, लहसुन और हरी मिर्च डालें और प्याज़ सुनहरा होने तक भूनें।
+      look: प्याज़ किनारों से सुनहरा हो जाए।
+      smell: लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Pyaaz, adrak, lehsun aur hari mirch daalein aur pyaaz sunehra hone tak bhunein.
+      look: Pyaaz kinaaron se sunehra ho jaaye.
+      smell: Lehsun ki kachchi mehak chali jaaye.
+- text: Add the tomato, red chilli powder and coriander powder, and cook until the tomato turns soft.
+  technique: bhuna
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Ghee shows at the edges of the masala.
+    touch: The tomato mashes under the spoon.
+  say:
+    hi:
+      text: टमाटर, लाल मिर्च पाउडर और धनिया पाउडर डालें और टमाटर नरम होने तक पकाएँ।
+      look: मसाले के किनारों पर घी दिखने लगे।
+      touch: टमाटर चम्मच से दबाने पर मसल जाए।
+    hi-Latn:
+      text: Tamatar, laal mirch powder aur dhaniya powder daalein aur tamatar naram hone tak pakaayein.
+      look: Masale ke kinaaron par ghee dikhne lage.
+      touch: Tamatar chammach se dabane par masal jaaye.
+- text: Pour in the cooked dal with its water, adding a little hot water if it is too thick. Simmer on low heat for 5 minutes,
+    stirring now and then.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: The dal is thick and coats the spoon.
+    sound: It bubbles gently.
+  safety: Thick dal can splutter, so stir with a long spoon.
+  say:
+    hi:
+      text: पकी हुई दाल पानी समेत डालें, ज़्यादा गाढ़ी हो तो थोड़ा गरम पानी मिलाएँ। धीमी आँच पर 5 मिनट उबालें, बीच-बीच में
+        चलाते रहें।
+      look: दाल गाढ़ी हो जाए और चम्मच पर चढ़ने लगे।
+      sound: हल्के-हल्के बुलबुले उठें।
+      safety: गाढ़ी दाल छींटे मार सकती है, लंबे चम्मच से चलाएँ।
+    hi-Latn:
+      text: Paki hui dal paani samet daalein, zyada gaadhi ho to thoda garam paani milaayein. Dheemi aanch par 5 minute ubaalein,
+        beech-beech mein chalaate rahein.
+      look: Dal gaadhi ho jaaye aur chammach par chadhne lage.
+      sound: Halke-halke bulbule uthein.
+      safety: Gaadhi dal chheente maar sakti hai, lambe chammach se chalaayein.
+- text: Stir in the garam masala and switch off the heat. Finish with coriander leaves and a squeeze of lemon, and serve hot.
+  cues:
+    smell: The garam masala smells fragrant.
+  say:
+    hi:
+      text: गरम मसाला मिलाएँ और आँच बंद कर दें। ऊपर से हरा धनिया और नींबू का रस डालें और गरमागरम परोसें।
+      smell: गरम मसाले की खुशबू आए।
+    hi-Latn:
+      text: Garam masala milaayein aur aanch band kar dein. Upar se hara dhaniya aur nimbu ka ras daalein aur garamagaram
+        parosein.
+      smell: Garam masale ki khushboo aaye.

@@ -1,0 +1,213 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: lobia
+title: Lobia Masala
+titles:
+  hi: लोबिया मसाला
+  hi-Latn: Lobia Masala
+description: Soft black eyed peas simmered in a homestyle onion-tomato masala, a simple weekday dal to eat with roti or rice.
+descriptions:
+  hi: प्याज़-टमाटर के घर जैसे मसाले में पकी नरम लोबिया, रोटी या चावल के साथ खाने वाली रोज़ की सादी दाल।
+  hi-Latn: Pyaaz-tamatar ke ghar jaise masale mein paki naram lobia, roti ya chawal ke saath khaane wali roz ki saadi dal.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 40
+difficulty: 2
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- high_protein
+flavor_profile:
+  rich: 0.5
+  heat: 0.4
+  acid: 0.4
+  crunch: 0
+  starch: 0.6
+  sweet: 0
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: black eyed peas
+  qty: 200
+  unit: g
+  local: 1 badi katori lobia
+  role: protein
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 pyaaz, baarik kate
+  role: aromatic
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 2-3 tamatar, kate hue
+  role: acid
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: aromatic
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1-2 hari mirch
+  role: heat
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+- ingredient: bay leaf
+  qty: 1
+  unit: piece
+  local: 1 tej patta
+  role: spice
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach laal mirch
+  role: heat
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1 1/2 chhota chammach namak, swaad anusaar
+  role: spice
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Rinse the lobia and soak it in plenty of water for 6 to 8 hours, then drain and rinse again.
+  technique: soak
+  minutes: 360
+  timer: true
+  cues:
+    look: The beans swell to about double their size.
+  say:
+    hi:
+      text: लोबिया धोकर भरपूर पानी में 6 से 8 घंटे भिगो दें, फिर पानी निकालकर दोबारा धो लें।
+      look: दाने फूलकर लगभग दोगुने हो जाते हैं।
+    hi-Latn:
+      text: Lobia dhokar bharpoor paani mein 6 se 8 ghante bhigo dein, phir paani nikaalkar dobara dho lein.
+      look: Daane phoolkar lagbhag dugne ho jaate hain.
+- text: Put the lobia in the pressure cooker with about 3 cups fresh water, half the salt and the turmeric, and cook on medium
+    heat for 4 whistles; let the pressure drop on its own.
+  technique: pressure_cook
+  minutes: 15
+  whistles: 4
+  timer: true
+  heat: medium
+  cues:
+    touch: A bean mashes easily between your fingers.
+  say:
+    hi:
+      text: लोबिया को कुकर में लगभग 3 कप ताज़ा पानी, आधा नमक और हल्दी के साथ डालें और मध्यम आँच पर 4 सीटी लगाएँ; प्रेशर अपने
+        आप उतरने दें।
+      touch: एक दाना उँगलियों में आसानी से मसल जाता है।
+    hi-Latn:
+      text: Lobia ko cooker mein lagbhag 3 cup taaza paani, aadha namak aur haldi ke saath daalein aur medium aanch par 4
+        seeti lagayein; pressure apne aap utarne dein.
+      touch: Ek daana ungliyon mein aasani se masal jaata hai.
+- text: Heat oil in a kadai on medium heat and add cumin seeds and the bay leaf.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles.
+  say:
+    hi:
+      text: कड़ाही में मध्यम आँच पर तेल गरम करें और जीरा व तेज पत्ता डालें।
+      sound: जीरा चटकने लगता है।
+    hi-Latn:
+      text: Kadai mein medium aanch par tel garam karein aur jeera va tej patta daalein.
+      sound: Jeera chatakne lagta hai.
+- text: Add the chopped onion and fry, stirring often, until golden.
+  technique: saute_onion
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns golden brown at the edges.
+  say:
+    hi:
+      text: कटा प्याज़ डालें और बार-बार चलाते हुए सुनहरा होने तक भूनें।
+      look: प्याज़ किनारों से सुनहरा भूरा हो जाता है।
+    hi-Latn:
+      text: Kata pyaaz daalein aur baar-baar chalaate hue sunehra hone tak bhunein.
+      look: Pyaaz kinaaron se sunehra bhoora ho jaata hai.
+- text: Add ginger garlic paste and slit green chilli and stir for a minute.
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw garlic smell goes away.
+  say:
+    hi:
+      text: अदरक लहसुन पेस्ट और चीरी हुई हरी मिर्च डालकर एक मिनट चलाएँ।
+      smell: लहसुन की कच्ची महक चली जाती है।
+    hi-Latn:
+      text: Adrak lahsun paste aur cheeri hui hari mirch daalkar ek minute chalaayein.
+      smell: Lahsun ki kachchi mehak chali jaati hai.
+- text: Add tomato, red chilli powder, coriander powder and the rest of the salt, and cook until the masala is soft.
+  technique: bhuna
+  minutes: 7
+  timer: true
+  heat: medium
+  cues:
+    look: Oil shows at the sides of the masala.
+  say:
+    hi:
+      text: टमाटर, लाल मिर्च, धनिया पाउडर और बाकी नमक डालें और मसाला नरम होने तक भूनें।
+      look: मसाले के किनारों पर तेल दिखने लगता है।
+    hi-Latn:
+      text: Tamatar, laal mirch, dhaniya powder aur baaki namak daalein aur masala naram hone tak bhunein.
+      look: Masale ke kinaaron par tel dikhne lagta hai.
+- text: Add the cooked lobia with its cooking water, mash a few beans with the ladle and simmer on low heat until thick.
+  technique: simmer
+  minutes: 10
+  timer: true
+  heat: low
+  cues:
+    look: The gravy turns thick and coats the beans.
+  say:
+    hi:
+      text: पकी लोबिया उसके पानी समेत डालें, कलछी से कुछ दाने मसल दें और धीमी आँच पर गाढ़ा होने तक पकाएँ।
+      look: ग्रेवी गाढ़ी होकर दानों पर लिपटने लगती है।
+    hi-Latn:
+      text: Paki lobia uske paani samet daalein, kalchhi se kuch daane masal dein aur dheemi aanch par gaadha hone tak pakaayein.
+      look: Gravy gaadhi hokar daanon par lipatne lagti hai.
+- text: Stir in garam masala, switch off the heat, top with coriander leaves and serve hot.
+  minutes: 1
+  say:
+    hi:
+      text: गरम मसाला मिलाएँ, आँच बंद करें, हरा धनिया डालें और गरमागरम परोसें।
+    hi-Latn:
+      text: Garam masala milaayein, aanch band karein, hara dhaniya daalein aur garmagaram parosein.

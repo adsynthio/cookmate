@@ -1,0 +1,229 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: chole
+title: Punjabi Chole
+titles:
+  hi: पंजाबी छोले
+  hi-Latn: Punjabi Chole
+description: Soft, slow-simmered chickpeas in a thick, tangy onion-tomato masala. This is the everyday home-style chole that
+  goes with rice, roti or bhature.
+descriptions:
+  hi: प्याज़-टमाटर के गाढ़े, चटपटे मसाले में धीमी आँच पर पके नरम छोले। रोज़ के घर वाले छोले, जो चावल, रोटी या भटूरे के साथ
+    खूब जमते हैं।
+  hi-Latn: Pyaaz-tamatar ke gaadhe, chatpate masale mein dheemi aanch par pake naram chhole. Roz ke ghar wale chhole, jo chawal,
+    roti ya bhature ke saath khoob jamte hain.
+cuisine_region: punjabi
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 50
+difficulty: 2
+spice_level: 3
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- high_protein
+flavor_profile:
+  rich: 0.6
+  heat: 0.5
+  acid: 0.5
+  crunch: 0
+  starch: 0.6
+  sweet: 0
+food_groups:
+- dal
+- protein
+review_status: in_review
+ingredients:
+- ingredient: chickpeas
+  qty: 250
+  unit: g
+  local: 1 badi katori kabuli chana
+  role: protein
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 pyaaz, baarik kati
+  role: base
+- ingredient: tomato
+  qty: 250
+  unit: g
+  local: 3 tamatar, kadoos kiye ya baarik kate
+  role: base
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach adrak lehsun paste
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch, kati
+  role: heat
+- ingredient: refined oil
+  qty: 45
+  unit: ml
+  local: 3 bade chammach tel
+  role: fat
+- ingredient: cumin seeds
+  qty: 5
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+- ingredient: bay leaf
+  qty: 1
+  unit: g
+  local: 1 tej patta
+  role: aromatic
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: red chilli powder
+  qty: 5
+  unit: g
+  local: 1 chhota chammach laal mirch
+  role: heat
+- ingredient: coriander powder
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach dhaniya powder
+  role: spice
+- ingredient: chole masala
+  qty: 15
+  unit: g
+  local: 1.5 bada chammach chhole masala
+  role: spice
+- ingredient: dry mango powder
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach amchur
+  role: acid
+- ingredient: garam masala
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+- ingredient: salt
+  qty: 10
+  unit: g
+  local: 1.5 chhota chammach namak, swaad anusaar
+  role: spice
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach hara dhaniya, kata
+  role: garnish
+  optional: true
+steps:
+- text: Wash the chickpeas and soak them in plenty of water for 8 hours or overnight.
+  technique: soak
+  minutes: 480
+  timer: true
+  cues:
+    look: The chickpeas swell to about double their size.
+  say:
+    hi:
+      text: छोले धोकर खूब सारे पानी में 8 घंटे या रात भर भिगो दें।
+      look: छोले फूलकर लगभग दोगुने हो जाते हैं।
+    hi-Latn:
+      text: Chhole dhokar khoob saare paani mein 8 ghante ya raat bhar bhigo dein.
+      look: Chhole phoolkar lagbhag doguna ho jaate hain.
+- text: Drain the chickpeas and put them in the pressure cooker with 900 ml fresh water and half the salt. Cook for 5 whistles
+    on medium heat, then let the pressure drop on its own.
+  technique: pressure_cook
+  minutes: 25
+  whistles: 5
+  timer: true
+  heat: medium
+  cues:
+    touch: A chickpea mashes easily between two fingers.
+  safety: Open the cooker only after the pressure has fully dropped by itself.
+  say:
+    hi:
+      text: छोलों का पानी निकाल दें। प्रेशर कुकर में 900 ml ताज़ा पानी और आधा नमक डालकर छोले डालें। मध्यम आँच पर 5 सीटी लगाएँ,
+        फिर प्रेशर अपने आप उतरने दें।
+      touch: एक छोला दो उँगलियों के बीच आसानी से मसल जाता है।
+      safety: प्रेशर पूरी तरह अपने आप उतरने के बाद ही कुकर खोलें।
+    hi-Latn:
+      text: Chhole ka paani nikaal dein. Pressure cooker mein 900 ml taaza paani aur aadha namak daalkar chhole daalein. Medium
+        aanch par 5 seeti lagayein, phir pressure apne aap utarne dein.
+      touch: Ek chhola do ungliyon ke beech aasani se masal jaata hai.
+      safety: Pressure poori tarah apne aap utarne ke baad hi cooker kholein.
+- text: Heat oil in a kadai and add cumin seeds and the bay leaf. Then add the onion and fry until golden brown.
+  technique: saute_onion
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns an even golden brown.
+    sound: The cumin crackles as soon as it hits the oil.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करें, जीरा और तेज पत्ता डालें। फिर प्याज़ डालकर सुनहरा भूरा होने तक भूनें।
+      look: प्याज़ एक जैसा सुनहरा भूरा हो जाता है।
+      sound: तेल में डालते ही जीरा चटकने लगता है।
+    hi-Latn:
+      text: Kadai mein tel garam karein, jeera aur tej patta daalein. Phir pyaaz daalkar sunehra bhoora hone tak bhoonein.
+      look: Pyaaz ek jaisa sunehra bhoora ho jaata hai.
+      sound: Tel mein daalte hi jeera chatakne lagta hai.
+- text: Add the ginger garlic paste and green chilli and stir for a minute.
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw garlic smell goes away.
+  say:
+    hi:
+      text: अदरक लहसुन पेस्ट और हरी मिर्च डालकर एक मिनट चलाएँ।
+      smell: लहसुन की कच्ची महक चली जाती है।
+    hi-Latn:
+      text: Adrak lehsun paste aur hari mirch daalkar ek minute chalayein.
+      smell: Lehsun ki kachchi mehak chali jaati hai.
+- text: Add the tomato, turmeric, red chilli powder, coriander powder and chole masala with a splash of water. Cook the masala
+    until it thickens.
+  technique: bhuna
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: The masala turns dark and oil separates at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च, धनिया पाउडर और छोले मसाला थोड़े पानी के साथ डालें। मसाला गाढ़ा होने तक भूनें।
+      look: मसाला गहरा हो जाता है और किनारों पर तेल छोड़ने लगता है।
+    hi-Latn:
+      text: Tamatar, haldi, laal mirch, dhaniya powder aur chhole masala thode paani ke saath daalein. Masala gaadha hone
+        tak bhoonein.
+      look: Masala gehra ho jaata hai aur kinaron par tel chhodne lagta hai.
+- text: Add the cooked chickpeas with their water and the remaining salt. Mash a few chickpeas against the side, cover, and
+    simmer.
+  technique: simmer
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    look: The gravy turns thick and coats the spoon.
+  say:
+    hi:
+      text: पके छोले उनके पानी के साथ और बचा हुआ नमक डालें। कुछ छोले कड़ाही की दीवार पर मसल दें, ढककर धीमी आँच पर पकाएँ।
+      look: ग्रेवी गाढ़ी होकर चम्मच पर लिपटने लगती है।
+    hi-Latn:
+      text: Pake chhole unke paani ke saath aur bacha hua namak daalein. Kuch chhole kadai ki deewar par masal dein, dhakkar
+        dheemi aanch par pakayein.
+      look: Gravy gaadhi hokar chammach par lipatne lagti hai.
+- text: Stir in the dry mango powder and garam masala, top with coriander leaves, and serve hot.
+  minutes: 1
+  heat: low
+  cues:
+    smell: A warm, tangy spice aroma rises from the pan.
+  say:
+    hi:
+      text: अमचूर और गरम मसाला मिलाएँ, ऊपर से हरा धनिया डालें और गरम परोसें।
+      smell: कड़ाही से गरम, खट्टी मसालेदार खुशबू उठती है।
+    hi-Latn:
+      text: Amchur aur garam masala milayein, upar se hara dhaniya daalein aur garam parosein.
+      smell: Kadai se garam, khatti masaledaar khushboo uthti hai.

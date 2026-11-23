@@ -13,6 +13,9 @@ export function simplerLeaveOut(doc: Pick<RecipeDoc, "ingredients" | "steps">): 
     const key = i.ingredient;
     if (NEVER.has(key) || out.includes(key)) continue;
     if (!(i.optional || i.role === "garnish")) continue;
+    // Butter on top of dal makhani is an extra, the butter in its masala is not: an ingredient the dish also needs
+    // elsewhere is never left out.
+    if (doc.ingredients.some((o) => o.ingredient === key && !(o.optional || o.role === "garnish"))) continue;
     if (safety.includes(key)) continue;
     out.push(key);
   }

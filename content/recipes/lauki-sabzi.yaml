@@ -1,0 +1,205 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: lauki-sabzi
+title: Lauki Sabzi
+titles:
+  hi: लौकी की सब्ज़ी
+  hi-Latn: Lauki ki Sabzi
+description: A simple everyday North Indian sabzi of soft bottle gourd cooked in its own juices with jeera, hing, tomato and
+  light spices. Serve hot with roti or dal-chawal.
+descriptions:
+  hi: रोज़ की सादी उत्तर भारतीय सब्ज़ी। नरम लौकी अपने ही पानी में जीरा, हींग, टमाटर और हल्के मसालों के साथ पकती है। गरम रोटी
+    या दाल-चावल के साथ परोसें।
+  hi-Latn: Roz ki saadi North Indian sabzi. Naram lauki apne hi paani mein jeera, hing, tamatar aur halke masalon ke saath
+    pakti hai. Garam roti ya dal-chawal ke saath parosein.
+cuisine_region: north_indian
+course: main
+diet: vegan
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 25
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- comforting
+- light
+- tiffin
+- quick
+flavor_profile:
+  rich: 0.2
+  heat: 0.2
+  acid: 0.3
+  crunch: 0
+  starch: 0.2
+  sweet: 0.1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: bottle gourd
+  qty: 750
+  unit: g
+  local: 1 medium lauki
+  role: vegetable
+- ingredient: tomato
+  qty: 150
+  unit: g
+  local: 2 tamatar
+  role: acid
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 1
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+  group: masala
+- ingredient: coriander powder
+  qty: 6
+  unit: g
+  local: 2 chhote chammach dhaniya powder
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach laal mirch
+  role: heat
+  group: masala
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+  group: masala
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Peel the lauki, taste a tiny raw piece from the cut end, then cut it into 1 cm cubes; chop the tomatoes, ginger and
+    green chillies.
+  minutes: 8
+  timer: true
+  safety: If the lauki tastes bitter, spit it out and throw the whole lauki away; do not cook it.
+  say:
+    hi:
+      text: लौकी छीलें, कटे सिरे से एक छोटा कच्चा टुकड़ा चखें, फिर उसे 1 सेमी के टुकड़ों में काटें; टमाटर, अदरक और हरी मिर्च
+        बारीक काट लें।
+      safety: अगर लौकी कड़वी लगे तो टुकड़ा थूक दें और पूरी लौकी फेंक दें; उसे न पकाएँ।
+    hi-Latn:
+      text: Lauki chheelein, kate sire se ek chhota kachcha tukda chakhein, phir use 1 cm ke tukdon mein kaatein; tamatar,
+        adrak aur hari mirch baareek kaat lein.
+      safety: Agar lauki kadvi lage to tukda thook dein aur poori lauki phenk dein; use na pakayein.
+- text: Heat the oil in a kadai, then add cumin seeds and hing.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The cumin turns a shade darker.
+    sound: The cumin sizzles and crackles.
+    smell: A warm, nutty jeera smell rises.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करें, फिर जीरा और हींग डालें।
+      look: जीरे का रंग थोड़ा गहरा हो जाता है।
+      sound: जीरा चटकने और तड़तड़ाने लगता है।
+      smell: जीरे की गरम, भुनी हुई खुशबू आती है।
+    hi-Latn:
+      text: Kadai mein tel garam karein, phir jeera aur hing daalein.
+      look: Jeere ka rang thoda gehra ho jaata hai.
+      sound: Jeera chatakne aur tadtadane lagta hai.
+      smell: Jeere ki garam, bhuni hui khushboo aati hai.
+- text: Add ginger and green chillies, stir for 30 seconds, then add tomatoes, turmeric, coriander powder, red chilli powder
+    and salt and cook until mushy.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The tomatoes break down and oil shows at the edges.
+    smell: The raw masala smell turns rich and cooked.
+  say:
+    hi:
+      text: अदरक और हरी मिर्च डालकर 30 सेकंड चलाएँ, फिर टमाटर, हल्दी, धनिया पाउडर, लाल मिर्च और नमक डालकर टमाटर गलने तक पकाएँ।
+      look: टमाटर गल जाते हैं और किनारों पर तेल दिखने लगता है।
+      smell: कच्चे मसाले की महक पकी हुई खुशबू में बदल जाती है।
+    hi-Latn:
+      text: Adrak aur hari mirch daalkar 30 second chalayein, phir tamatar, haldi, dhaniya powder, laal mirch aur namak daalkar
+        tamatar galne tak pakayein.
+      look: Tamatar gal jaate hain aur kinaron par tel dikhne lagta hai.
+      smell: Kachche masale ki mehak paki hui khushboo mein badal jaati hai.
+- text: Add the lauki, mix well, cover and cook, stirring every 5 minutes; sprinkle 2 tablespoons of water only if it starts
+    sticking.
+  technique: simmer
+  minutes: 15
+  timer: true
+  heat: low
+  cues:
+    look: The lauki turns translucent and gives out its own water.
+    touch: A cube crushes easily when pressed with the spoon.
+  say:
+    hi:
+      text: लौकी डालकर अच्छी तरह मिलाएँ, ढककर पकाएँ और हर 5 मिनट में चलाएँ; अगर चिपकने लगे तभी 2 बड़े चम्मच पानी छिड़कें।
+      look: लौकी पारदर्शी सी हो जाती है और अपना पानी छोड़ती है।
+      touch: चम्मच से दबाने पर टुकड़ा आसानी से दब जाता है।
+    hi-Latn:
+      text: Lauki daalkar achchhi tarah milayein, dhakkar pakayein aur har 5 minute mein chalayein; agar chipakne lage tabhi
+        2 bade chammach paani chhidkein.
+      look: Lauki transparent si ho jaati hai aur apna paani chhodti hai.
+      touch: Chammach se dabane par tukda aasaani se dab jaata hai.
+- text: Uncover and cook until the extra water dries up, then stir in the garam masala if using.
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The masala clings to the lauki pieces with just a little gravy left.
+  say:
+    hi:
+      text: ढक्कन हटाकर अतिरिक्त पानी सूखने तक पकाएँ, फिर चाहें तो गरम मसाला मिलाएँ।
+      look: मसाला लौकी के टुकड़ों पर लिपट जाता है और थोड़ी सी ग्रेवी बचती है।
+    hi-Latn:
+      text: Dhakkan hatakar extra paani sookhne tak pakayein, phir chahein to garam masala milayein.
+      look: Masala lauki ke tukdon par lipat jaata hai aur thodi si gravy bachti hai.
+- text: Turn off the heat, sprinkle chopped coriander leaves and serve hot with roti.
+  say:
+    hi:
+      text: आँच बंद करें, ऊपर से कटा हरा धनिया डालें और गरम रोटी के साथ परोसें।
+    hi-Latn:
+      text: Aanch band karein, upar se kata hara dhaniya daalein aur garam roti ke saath parosein.

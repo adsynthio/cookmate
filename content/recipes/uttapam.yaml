@@ -1,0 +1,193 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: uttapam
+title: Uttapam
+titles:
+  hi: उत्तपम
+  hi-Latn: Uttapam
+description: Thick, soft South Indian pancakes made from fermented idli dosa batter and topped with onion, tomato, green chilli
+  and coriander. They are cooked on a tawa until golden underneath and served hot with chutney or sambar.
+descriptions:
+  hi: इडली डोसा बैटर से बने मोटे, नरम दक्षिण भारतीय उत्तपम, जिन पर प्याज़, टमाटर, हरी मिर्च और हरा धनिया डाला जाता है। इन्हें
+    तवे पर नीचे से सुनहरा होने तक सेंका जाता है और गरमागरम चटनी या सांबर के साथ परोसा जाता है।
+  hi-Latn: Idli dosa batter se bane mote, naram South Indian uttapam, jin par pyaaz, tamatar, hari mirch aur hara dhaniya
+    daala jaata hai. Inhe tawe par neeche se sunehra hone tak senka jaata hai aur garamagaram chutney ya sambar ke saath parosa
+    jaata hai.
+cuisine_region: south_indian
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 30
+difficulty: 2
+spice_level: 2
+equipment:
+- tawa
+- gas_stove
+tags:
+- comforting
+- kids_friendly
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.3
+  crunch: 0.2
+  starch: 0.7
+  sweet: 0.1
+food_groups:
+- grain
+- dal
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: idli dosa batter
+  qty: 800
+  unit: g
+  local: 4 katori
+  role: base
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 pyaaz
+  role: vegetable
+  group: topping
+- ingredient: tomato
+  qty: 150
+  unit: g
+  local: 2 tamatar
+  role: vegetable
+  group: topping
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: topping
+- ingredient: carrot
+  qty: 60
+  unit: g
+  local: 1 gajar
+  role: vegetable
+  group: topping
+  optional: true
+- ingredient: coriander leaves
+  qty: 15
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  group: topping
+- ingredient: salt
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+- ingredient: refined oil
+  qty: 40
+  unit: ml
+  local: 3 bade chammach
+  role: fat
+steps:
+- text: Finely chop the onion, tomato, green chilli and coriander, grate the carrot if using, and mix them in a bowl with
+    a pinch of the salt.
+  minutes: 10
+  timer: true
+  say:
+    hi:
+      text: प्याज़, टमाटर, हरी मिर्च और हरा धनिया बारीक काट लो। गाजर डाल रहे हो तो उसे कद्दूकस कर लो। सबको एक कटोरे में थोड़े
+        से नमक के साथ मिला लो।
+    hi-Latn:
+      text: Pyaaz, tamatar, hari mirch aur hara dhaniya baareek kaat lo. Gajar daal rahe ho to use kaddukas kar lo. Sabko
+        ek katore mein thode se namak ke saath mila lo.
+- text: Stir the batter well, and add the rest of the salt only if your batter is unsalted.
+  cues:
+    look: The batter is thick but pours slowly from the ladle.
+    smell: It smells pleasantly sour.
+  say:
+    hi:
+      text: बैटर को अच्छे से चला लो। अगर बैटर में नमक नहीं है, तभी बाकी नमक डालना।
+      look: बैटर गाढ़ा हो, पर करछी से धीरे-धीरे गिरे।
+      smell: हल्की खट्टी, अच्छी खुशबू आए।
+    hi-Latn:
+      text: Batter ko achhe se chala lo. Agar batter mein namak nahi hai, tabhi baaki namak daalna.
+      look: Batter gaadha ho, par karchhi se dheere-dheere gire.
+      smell: Halki khatti, achhi khushboo aaye.
+- text: Heat the tawa on medium and grease it lightly with a few drops of oil.
+  technique: tawa_cook
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The oil shimmers on the tawa.
+    touch: Your palm held above the tawa feels clear heat.
+  say:
+    hi:
+      text: तवा मध्यम आँच पर गरम करो और कुछ बूँद तेल से हल्का चिकना कर लो।
+      look: तवे पर तेल चमकने लगे।
+      touch: तवे के ऊपर हथेली रखो तो साफ़ गरमी महसूस हो।
+    hi-Latn:
+      text: Tawa medium aanch par garam karo aur kuch boond tel se halka chikna kar lo.
+      look: Tawe par tel chamakne lage.
+      touch: Tawe ke upar hatheli rakho to saaf garmi mehsoos ho.
+- text: Pour one ladle of batter in the centre and spread it gently into a thick round about the size of a small plate.
+  technique: tawa_cook
+  heat: medium
+  cues:
+    look: The round stays thick, not thin like a dosa.
+    sound: The batter gives a soft sizzle as it touches the tawa.
+  say:
+    hi:
+      text: बीच में एक करछी बैटर डालो और हल्के से फैलाकर छोटी प्लेट जितना मोटा गोल बना लो।
+      look: उत्तपम मोटा ही रहे, डोसे जैसा पतला नहीं।
+      sound: बैटर तवे पर पड़ते ही हल्का छन्न करे।
+    hi-Latn:
+      text: Beech mein ek karchhi batter daalo aur halke se phailakar chhoti plate jitna mota gol bana lo.
+      look: Uttapam mota hi rahe, dose jaisa patla nahi.
+      sound: Batter tawe par padte hi halka chhann kare.
+- text: Scatter a handful of the vegetable mix on top and press it lightly into the batter with the back of the ladle.
+  heat: medium
+  say:
+    hi:
+      text: ऊपर से एक मुट्ठी सब्ज़ी का मिश्रण फैलाओ और करछी के पिछले हिस्से से हल्का दबा दो।
+    hi-Latn:
+      text: Upar se ek mutthi sabzi ka mishran phailao aur karchhi ke pichhle hisse se halka daba do.
+- text: Drizzle a teaspoon of oil around the edge, cover and cook until the base is golden.
+  technique: tawa_cook
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The top is no longer wet and the edges turn golden and lift.
+    smell: It smells toasty.
+  say:
+    hi:
+      text: किनारों पर एक छोटा चम्मच तेल डालो, ढककर नीचे से सुनहरा होने तक सेंको।
+      look: ऊपर का हिस्सा गीला न रहे और किनारे सुनहरे होकर उठने लगें।
+      smell: सिंकने की अच्छी खुशबू आए।
+    hi-Latn:
+      text: Kinaron par ek chhota chammach tel daalo, dhakkar neeche se sunehra hone tak senko.
+      look: Upar ka hissa geela na rahe aur kinare sunehre hokar uthne lagein.
+      smell: Sinkne ki achhi khushboo aaye.
+- text: Flip the uttapam and cook the topping side until the onions are lightly browned.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    sound: The vegetables sizzle against the tawa.
+  safety: Flip away from you so hot oil does not splash on your hand.
+  say:
+    hi:
+      text: उत्तपम पलटो और सब्ज़ी वाली तरफ़ प्याज़ हल्का भूरा होने तक सेंको।
+      sound: सब्ज़ियाँ तवे पर छनछनाएँ।
+      safety: अपने से दूर की तरफ़ पलटना, ताकि गरम तेल हाथ पर न छिटके।
+    hi-Latn:
+      text: Uttapam palto aur sabzi wali taraf pyaaz halka bhoora hone tak senko.
+      sound: Sabziyaan tawe par chhanchhanayein.
+      safety: Apne se door ki taraf palatna, taaki garam tel haath par na chhitke.
+- text: Serve hot with chutney or sambar, and repeat with the rest of the batter, greasing the tawa each time.
+  heat: medium
+  say:
+    hi:
+      text: गरमागरम चटनी या सांबर के साथ परोसो। बाकी बैटर से भी इसी तरह बनाओ, हर बार तवा चिकना करते रहना।
+    hi-Latn:
+      text: Garamagaram chutney ya sambar ke saath paroso. Baaki batter se bhi isi tarah banao, har baar tawa chikna karte
+        rehna.

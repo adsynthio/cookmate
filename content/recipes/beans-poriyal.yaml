@@ -1,0 +1,188 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: beans-poriyal
+title: Beans Poriyal
+titles:
+  hi: बीन्स पोरियल
+  hi-Latn: Beans Poriyal
+description: A South Indian dry stir-fry of finely chopped french beans. They are tempered with mustard seeds, urad dal and
+  curry leaves and finished with fresh grated coconut. It goes with rice and sambar or rasam.
+descriptions:
+  hi: बारीक कटी फ्रेंच बीन्स की दक्षिण भारतीय सूखी सब्ज़ी। इसमें राई, उड़द दाल और करी पत्ते का तड़का लगता है और ऊपर से ताज़ा
+    कसा नारियल डलता है। चावल के साथ सांभर या रसम के संग परोसें।
+  hi-Latn: Baarik kati french beans ki South Indian sookhi sabzi. Isme rai, urad dal aur curry patte ka tadka lagta hai aur
+    upar se taaza kasa nariyal padta hai. Chawal ke saath sambar ya rasam ke sang parosein.
+cuisine_region: tamil_nadu
+course: side
+diet: vegan
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 15
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- light
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.2
+  acid: 0
+  crunch: 0.4
+  starch: 0.1
+  sweet: 0.1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: french beans
+  qty: 400
+  unit: g
+  local: 400 gram beans
+  role: vegetable
+- ingredient: onion
+  qty: 60
+  unit: g
+  local: 1 chhota pyaaz
+  role: aromatic
+  optional: true
+- ingredient: coconut
+  qty: 50
+  unit: g
+  local: half katori kasa nariyal
+  role: garnish
+- ingredient: refined oil
+  qty: 15
+  unit: ml
+  local: 1 bada chammach tel
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: urad dal
+  qty: 8
+  unit: g
+  local: 2 chhote chammach urad dal
+  role: spice
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: piece
+  local: 2 sookhi laal mirch
+  role: heat
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 10-12 curry patte
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: chauthai chhota chammach haldi
+  role: spice
+- ingredient: salt
+  qty: 5
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+steps:
+- text: Wash the beans, trim both ends and chop them finely into small rounds. Chop the onion finely if you are using it.
+  say:
+    hi:
+      text: बीन्स धोकर दोनों सिरे काट दें और बारीक छोटे टुकड़ों में काट लें। प्याज़ डाल रहे हैं तो उसे भी बारीक काट लें।
+    hi-Latn:
+      text: Beans dhokar dono sire kaat dein aur baarik chhote tukdon mein kaat lein. Pyaaz daal rahe hain to use bhi baarik
+        kaat lein.
+- text: Heat oil in a kadai and add the mustard seeds. When they splutter, add the urad dal and fry until golden. Then add
+    the dry red chillies, curry leaves and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The urad dal turns light golden.
+    sound: The mustard seeds crackle.
+    smell: The curry leaves smell fragrant.
+  safety: Curry leaves spit in hot oil, so stand back when you add them.
+  say:
+    hi:
+      text: कढ़ाई में तेल गरम करें और राई डालें। राई चटकने लगे तो उड़द दाल डालकर सुनहरी होने तक भूनें। फिर सूखी लाल मिर्च,
+        करी पत्ते और हींग डालें।
+      look: उड़द दाल हल्की सुनहरी हो जाती है।
+      sound: राई चटकती है।
+      smell: करी पत्तों की खुशबू आती है।
+      safety: गरम तेल में करी पत्ते छिटकते हैं, इसलिए डालते समय थोड़ा पीछे रहें।
+    hi-Latn:
+      text: Kadai mein tel garam karein aur rai daalein. Rai chatakne lage to urad dal daalkar sunehri hone tak bhunein. Phir
+        sookhi laal mirch, curry patte aur hing daalein.
+      look: Urad dal halki sunehri ho jaati hai.
+      sound: Rai chatakti hai.
+      smell: Curry patton ki khushboo aati hai.
+      safety: Garam tel mein curry patte chhitakte hain, isliye daalte samay thoda peeche rahein.
+- text: Add the onion and sauté until it is soft.
+  technique: saute_onion
+  minutes: 2
+  heat: medium
+  cues:
+    look: The onion turns soft and translucent.
+  say:
+    hi:
+      text: प्याज़ डालें और नरम होने तक भूनें।
+      look: प्याज़ नरम और पारदर्शी हो जाता है।
+    hi-Latn:
+      text: Pyaaz daalein aur naram hone tak bhunein.
+      look: Pyaaz naram aur transparent ho jaata hai.
+- text: Add the beans, turmeric and salt and mix well. Sprinkle 3 to 4 tablespoons of water, cover and cook on low heat. Stir
+    once in between.
+  technique: simmer
+  minutes: 10
+  timer: true
+  heat: low
+  cues:
+    touch: A bean presses easily but still has a slight bite.
+  say:
+    hi:
+      text: बीन्स, हल्दी और नमक डालकर अच्छे से मिलाएँ। 3 से 4 बड़े चम्मच पानी छिड़कें, ढककर धीमी आँच पर पकाएँ। बीच में एक
+        बार चलाएँ।
+      touch: बीन्स दबाने पर आसानी से दबती है पर हल्की कुरकुरी रहती है।
+    hi-Latn:
+      text: Beans, haldi aur namak daalkar achhe se milayein. 3 se 4 bade chammach paani chhidkein, dhakkar dheemi aanch par
+        pakayein. Beech mein ek baar chalayein.
+      touch: Beans dabane par aasani se dabti hai par halki kurkuri rehti hai.
+- text: Uncover the kadai and stir until any leftover water dries up.
+  minutes: 2
+  heat: medium
+  cues:
+    look: No water is left at the bottom of the kadai.
+  say:
+    hi:
+      text: ढक्कन हटाएँ और बचा हुआ पानी सूखने तक चलाते रहें।
+      look: कढ़ाई के तले में पानी नहीं बचता।
+    hi-Latn:
+      text: Dhakkan hatayein aur bacha hua paani sookhne tak chalate rahein.
+      look: Kadai ke tale mein paani nahi bachta.
+- text: Add the grated coconut and mix for a minute, then switch off the heat. Serve hot.
+  minutes: 1
+  heat: low
+  cues:
+    smell: It smells of toasted coconut.
+  say:
+    hi:
+      text: कसा नारियल डालकर एक मिनट मिलाएँ, फिर गैस बंद कर दें। गरम परोसें।
+      smell: हल्के भुने नारियल की खुशबू आती है।
+    hi-Latn:
+      text: Kasa nariyal daalkar ek minute milayein, phir gas band kar dein. Garam parosein.
+      smell: Halke bhune nariyal ki khushboo aati hai.

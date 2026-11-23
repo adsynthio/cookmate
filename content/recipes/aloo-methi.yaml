@@ -1,0 +1,195 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: aloo-methi
+title: Aloo Methi
+titles:
+  hi: आलू मेथी
+  hi-Latn: Aloo Methi
+description: A dry North Indian sabzi of potato cubes cooked with fresh fenugreek leaves, garlic and cumin. It is slightly
+  bitter, garlicky and goes well with roti or paratha.
+descriptions:
+  hi: आलू के टुकड़ों और ताज़ी मेथी की पत्तियों से बनी सूखी उत्तर भारतीय सब्ज़ी, जिसमें लहसुन और जीरा पड़ता है। हल्की कड़वाहट
+    और लहसुन के स्वाद वाली यह सब्ज़ी रोटी या पराठे के साथ अच्छी लगती है।
+  hi-Latn: Aloo ke tukdon aur taazi methi ki pattiyon se bani sookhi North Indian sabzi, jismein lehsun aur jeera padta hai.
+    Halki kadwahat aur lehsun ke swaad wali yeh sabzi roti ya parathe ke saath achhi lagti hai.
+cuisine_region: north_indian
+course: main
+diet: vegan
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 20
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- tiffin
+- comforting
+flavor_profile:
+  rich: 0.3
+  heat: 0.4
+  acid: 0.1
+  crunch: 0.1
+  starch: 0.6
+  sweet: 0
+food_groups:
+- sabzi
+- greens
+review_status: in_review
+ingredients:
+- ingredient: potato
+  qty: 400
+  unit: g
+  local: 3 medium aloo
+  role: base
+- ingredient: fenugreek leaves
+  qty: 250
+  unit: g
+  local: 2 gaddi methi
+  role: vegetable
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+- ingredient: cumin seeds
+  qty: 5
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+- ingredient: garlic
+  qty: 15
+  unit: g
+  local: 6-7 kali lehsun
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach lal mirch
+  role: heat
+- ingredient: coriander powder
+  qty: 5
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: dry mango powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach amchur
+  role: acid
+  optional: true
+steps:
+- text: Pick the methi leaves, wash them well in plenty of water and chop finely. Mix in a pinch of the salt, keep aside for
+    10 minutes, then squeeze out the bitter water.
+  minutes: 10
+  timer: true
+  cues:
+    look: Water collects at the bottom when you squeeze the leaves.
+  safety: Wash the leaves 2-3 times, because methi often holds mud.
+  say:
+    hi:
+      text: मेथी की पत्तियाँ तोड़कर खूब पानी में अच्छे से धोइए और बारीक काट लीजिए। इसमें नमक में से एक चुटकी मिलाकर 10 मिनट
+        रख दीजिए, फिर कड़वा पानी निचोड़कर निकाल दीजिए।
+      look: पत्तियाँ निचोड़ने पर नीचे पानी इकट्ठा हो जाता है।
+      safety: पत्तियों को 2-3 बार धोइए, क्योंकि मेथी में अक्सर मिट्टी रहती है।
+    hi-Latn:
+      text: Methi ki pattiyan todkar khoob paani mein achhe se dhoiye aur baareek kaat lijiye. Isme namak mein se ek chutki
+        milakar 10 minute rakh dijiye, phir kadwa paani nichodkar nikaal dijiye.
+      look: Pattiyan nichodne par neeche paani ikattha ho jaata hai.
+      safety: Pattiyon ko 2-3 baar dhoiye, kyunki methi mein aksar mitti rehti hai.
+- text: Peel the potatoes and cut them into small cubes. Finely chop the garlic and slit the green chillies.
+  minutes: 5
+  timer: true
+  say:
+    hi:
+      text: आलू छीलकर छोटे टुकड़ों में काट लीजिए। लहसुन बारीक काटिए और हरी मिर्च बीच से चीर लीजिए।
+    hi-Latn:
+      text: Aloo chheelkar chhote tukdon mein kaat lijiye. Lehsun baareek kaatiye aur hari mirch beech se cheer lijiye.
+- text: Heat the oil in a kadai on medium heat, add the cumin and let it crackle, then add the garlic and green chillies and
+    fry until the garlic turns light golden.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    look: The garlic turns light golden.
+    sound: The cumin crackles.
+    smell: The garlic smells nutty.
+  say:
+    hi:
+      text: कड़ाही में मध्यम आँच पर तेल गरम कीजिए, जीरा डालकर चटकने दीजिए, फिर लहसुन और हरी मिर्च डालकर लहसुन हल्का सुनहरा
+        होने तक भूनिए।
+      look: लहसुन हल्का सुनहरा हो जाता है।
+      sound: जीरा चटकता है।
+      smell: लहसुन की सोंधी खुशबू आती है।
+    hi-Latn:
+      text: Kadai mein medium aanch par tel garam kijiye, jeera daalkar chatakne dijiye, phir lehsun aur hari mirch daalkar
+        lehsun halka sunehra hone tak bhuniye.
+      look: Lehsun halka sunehra ho jaata hai.
+      sound: Jeera chatakta hai.
+      smell: Lehsun ki sondhi khushboo aati hai.
+- text: Add the potato cubes, turmeric and the remaining salt and mix well. Cover and cook on low heat for 10-12 minutes,
+    stirring now and then, until the potatoes are almost soft.
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    touch: A knife goes into a potato cube with little resistance.
+  say:
+    hi:
+      text: आलू के टुकड़े, हल्दी और बचा हुआ नमक डालकर अच्छे से मिलाइए। ढककर धीमी आँच पर 10-12 मिनट पकाइए, बीच-बीच में चलाते
+        रहिए, जब तक आलू लगभग गल न जाएँ।
+      touch: चाकू आलू के टुकड़े में थोड़ी सी रुकावट के साथ चला जाता है।
+    hi-Latn:
+      text: Aloo ke tukde, haldi aur bacha hua namak daalkar achhe se milaiye. Dhakkar dheemi aanch par 10-12 minute pakaiye,
+        beech-beech mein chalaate rahiye, jab tak aloo lagbhag gal na jaayein.
+      touch: Chaaku aloo ke tukde mein thodi si rukaawat ke saath chala jaata hai.
+- text: Add the squeezed methi, red chilli powder and coriander powder. Cook uncovered on medium heat for 5-6 minutes, stirring,
+    until the methi wilts and the sabzi looks dry.
+  technique: bhuna
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The methi shrinks, turns dark green and coats the potatoes.
+    smell: The bitter-sweet smell of cooked methi rises.
+  say:
+    hi:
+      text: निचोड़ी हुई मेथी, लाल मिर्च और धनिया पाउडर डालिए। बिना ढके मध्यम आँच पर 5-6 मिनट चलाते हुए पकाइए, जब तक मेथी नरम
+        न हो जाए और सब्ज़ी सूखी न दिखने लगे।
+      look: मेथी सिकुड़कर गहरी हरी हो जाती है और आलू पर लिपट जाती है।
+      smell: पकी मेथी की हल्की कड़वी-मीठी खुशबू आने लगती है।
+    hi-Latn:
+      text: Nichodi hui methi, laal mirch aur dhaniya powder daaliye. Bina dhake medium aanch par 5-6 minute chalaate hue
+        pakaiye, jab tak methi naram na ho jaaye aur sabzi sookhi na dikhne lage.
+      look: Methi sikudkar gehri hari ho jaati hai aur aloo par lipat jaati hai.
+      smell: Paki methi ki halki kadwi-meethi khushboo aane lagti hai.
+- text: Check that the potatoes are fully soft, sprinkle the amchur if using, mix and switch off the heat. Serve hot with
+    roti or paratha.
+  minutes: 1
+  heat: low
+  cues:
+    touch: A potato cube breaks easily when pressed with the spoon.
+  say:
+    hi:
+      text: देख लीजिए कि आलू पूरी तरह गल गए हैं, अगर डाल रहे हैं तो अमचूर छिड़किए, मिलाकर आँच बंद कर दीजिए। रोटी या पराठे
+        के साथ गरम परोसिए।
+      touch: चम्मच से दबाने पर आलू का टुकड़ा आसानी से टूट जाता है।
+    hi-Latn:
+      text: Dekh lijiye ki aloo poori tarah gal gaye hain, agar daal rahe hain to amchur chhidakiye, milakar aanch band kar
+        dijiye. Roti ya parathe ke saath garam parosiye.
+      touch: Chammach se dabaane par aloo ka tukda aasaani se toot jaata hai.

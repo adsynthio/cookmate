@@ -1,0 +1,224 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: upma
+title: Upma
+titles:
+  hi: उपमा
+  hi-Latn: Upma
+description: A soft, savoury South Indian breakfast of roasted semolina cooked in water with a mustard seed, dal and curry
+  leaf tadka, onion, ginger and green chilli, finished with lemon and coriander.
+descriptions:
+  hi: भुनी हुई सूजी से बना नरम, नमकीन दक्षिण भारतीय नाश्ता। इसमें राई, दाल और करी पत्ते का तड़का, प्याज़, अदरक और हरी मिर्च
+    पड़ती है, और ऊपर से नींबू और हरा धनिया।
+  hi-Latn: Bhuni hui suji se bana naram, namkeen South Indian nashta. Isme rai, dal aur curry patte ka tadka, pyaaz, adrak
+    aur hari mirch padti hai, aur upar se nimbu aur hara dhaniya.
+cuisine_region: south_indian
+course: breakfast
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 20
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- comforting
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.2
+  crunch: 0.2
+  starch: 0.8
+  sweet: 0
+food_groups:
+- grain
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: semolina
+  qty: 200
+  unit: g
+  local: 1 bada katori suji
+  role: base
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: urad dal
+  qty: 8
+  unit: g
+  local: 2 chhote chammach urad dal
+  role: spice
+  group: tadka
+- ingredient: chana dal
+  qty: 8
+  unit: g
+  local: 2 chhote chammach chana dal
+  role: spice
+  group: tadka
+- ingredient: curry leaves
+  qty: 3
+  unit: g
+  local: 10-12 curry patte
+  role: aromatic
+  group: tadka
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch, kati hui
+  role: heat
+  group: tadka
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, barik kata
+  role: aromatic
+  group: tadka
+- ingredient: onion
+  qty: 120
+  unit: g
+  local: 1 bada pyaaz, barik kata
+  role: vegetable
+- ingredient: salt
+  qty: 7
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: ghee
+  qty: 10
+  unit: g
+  local: 2 chhote chammach ghee
+  role: fat
+  optional: true
+- ingredient: lemon
+  qty: 15
+  unit: ml
+  local: aadha nimbu
+  role: acid
+  group: finish
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach hara dhaniya, kata
+  role: garnish
+  group: finish
+steps:
+- text: Dry roast the semolina in a kadai on low heat, stirring often, then tip it onto a plate.
+  technique: dry_roast
+  minutes: 6
+  timer: true
+  heat: low
+  cues:
+    look: The grains look dry, separate and just turn pale cream.
+    smell: It smells lightly nutty.
+  say:
+    hi:
+      text: कड़ाही में सूजी को धीमी आँच पर लगातार चलाते हुए सूखा भूनें, फिर प्लेट में निकाल लें।
+      look: दाने सूखे, अलग-अलग और हल्के क्रीम रंग के दिखने लगें।
+      smell: हल्की सौंधी खुशबू आने लगे।
+    hi-Latn:
+      text: Kadai me suji ko dheemi aanch par lagatar chalate hue sookha bhunein, phir plate me nikaal lein.
+      look: Daane sookhe, alag-alag aur halke cream rang ke dikhne lagein.
+      smell: Halki saundhi khushboo aane lage.
+- text: Heat the oil on medium, add mustard seeds, then urad dal and chana dal, and fry till the dals turn golden; add curry
+    leaves, green chilli and ginger.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    look: The dals turn golden brown.
+    sound: The mustard seeds crackle and pop.
+  safety: Curry leaves splutter in hot oil, so stand back as you add them.
+  say:
+    hi:
+      text: मध्यम आँच पर तेल गरम करें, राई डालें, फिर उड़द दाल और चना दाल डालकर सुनहरा होने तक भूनें; फिर करी पत्ते, हरी मिर्च
+        और अदरक डालें।
+      look: दालें सुनहरी भूरी हो जाएँ।
+      sound: राई चटकने लगे।
+      safety: गरम तेल में करी पत्ते चटकते हैं, डालते समय थोड़ा पीछे रहें।
+    hi-Latn:
+      text: Medium aanch par tel garam karein, rai daalein, phir urad dal aur chana dal daalkar sunehra hone tak bhunein;
+        phir curry patte, hari mirch aur adrak daalein.
+      look: Dalein sunehri bhoori ho jayein.
+      sound: Rai chatakne lage.
+      safety: Garam tel me curry patte chatakte hain, daalte samay thoda peeche rahein.
+- text: Add the onion and sauté till soft.
+  technique: saute_onion
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and see-through, not brown.
+  say:
+    hi:
+      text: प्याज़ डालें और नरम होने तक भूनें।
+      look: प्याज़ नरम और पारदर्शी हो जाए, भूरा नहीं।
+    hi-Latn:
+      text: Pyaaz daalein aur naram hone tak bhunein.
+      look: Pyaaz naram aur transparent ho jaye, bhoora nahi.
+- text: Pour in 3 cups (about 600 ml) of water, add the salt and bring it to a rolling boil.
+  minutes: 4
+  timer: true
+  heat: high
+  cues:
+    look: Big bubbles rise all over the surface.
+  safety: Pour the water slowly as it hisses and steams on the hot oil.
+  say:
+    hi:
+      text: 3 कप (लगभग 600 ml) पानी डालें, नमक डालें और तेज़ उबाल आने दें।
+      look: पूरी सतह पर बड़े बुलबुले उठने लगें।
+      safety: पानी धीरे डालें, गरम तेल पर यह भाप के साथ सनसनाता है।
+    hi-Latn:
+      text: 3 cup (lagbhag 600 ml) paani daalein, namak daalein aur tez ubaal aane dein.
+      look: Poori satah par bade bulbule uthne lagein.
+      safety: Paani dheere daalein, garam tel par yeh bhaap ke saath sansanata hai.
+- text: Turn the heat to low and add the roasted semolina in a thin stream with one hand while stirring non-stop with the
+    other.
+  minutes: 2
+  heat: low
+  cues:
+    look: It thickens smoothly with no lumps.
+  safety: The thickening upma bubbles and spits, so use a long spoon and keep your hand away from the top.
+  say:
+    hi:
+      text: आँच धीमी करें और एक हाथ से भुनी सूजी पतली धार में डालें, दूसरे हाथ से लगातार चलाते रहें।
+      look: बिना गुठलियों के एकसार गाढ़ा हो जाए।
+      safety: गाढ़ा होता उपमा उछलता है, लंबी कलछी लें और हाथ ऊपर से दूर रखें।
+    hi-Latn:
+      text: Aanch dheemi karein aur ek haath se bhuni suji patli dhaar me daalein, doosre haath se lagatar chalate rahein.
+      look: Bina guthliyon ke ekasaar gaadha ho jaye.
+      safety: Gaadha hota upma uchhalta hai, lambi kalchhi lein aur haath upar se door rakhein.
+- text: Cover and cook on low, then stir in the ghee if using.
+  technique: simmer
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: All the water is absorbed and the upma looks fluffy.
+    touch: The grains feel soft, not gritty, when pressed with the spoon.
+  say:
+    hi:
+      text: ढककर धीमी आँच पर पकाएँ, फिर चाहें तो घी मिला दें।
+      look: सारा पानी सोख लिया जाए और उपमा फूला-फूला दिखे।
+      touch: कलछी से दबाने पर दाने नरम लगें, किरकिरे नहीं।
+    hi-Latn:
+      text: Dhakkar dheemi aanch par pakayein, phir chahein to ghee mila dein.
+      look: Saara paani sokh liya jaye aur upma phoola-phoola dikhe.
+      touch: Kalchhi se dabane par daane naram lagein, kirkire nahi.
+- text: Turn off the heat, squeeze in the lemon, mix in the coriander leaves and serve hot.
+  say:
+    hi:
+      text: गैस बंद करें, नींबू निचोड़ें, हरा धनिया मिलाएँ और गरमागरम परोसें।
+    hi-Latn:
+      text: Gas band karein, nimbu nichodein, hara dhaniya milayein aur garmagaram parosein.

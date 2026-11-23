@@ -1,0 +1,249 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: dum-aloo
+title: Dum Aloo
+titles:
+  hi: दम आलू
+  hi-Latn: Dum Aloo
+description: Small boiled potatoes, lightly fried and slow-cooked on low heat in a thick onion, tomato and curd gravy. A Punjabi-style
+  weekday sabzi that goes with roti, paratha or rice.
+descriptions:
+  hi: छोटे उबले आलू, हल्के तले हुए और प्याज़, टमाटर और दही की गाढ़ी ग्रेवी में धीमी आँच पर पकाए हुए। रोटी, पराठे या चावल के
+    साथ खाई जाने वाली पंजाबी अंदाज़ की रोज़ की सब्ज़ी।
+  hi-Latn: Chhote uble aloo, halke tale hue aur pyaaz, tamatar aur dahi ki gaadhi gravy mein dheemi aanch par pakaye hue.
+    Roti, paratha ya chawal ke saath khayi jaane wali Punjabi andaaz ki roz ki sabzi.
+cuisine_region: punjabi_north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 40
+difficulty: 2
+spice_level: 3
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+flavor_profile:
+  rich: 0.6
+  heat: 0.4
+  acid: 0.3
+  crunch: 0
+  starch: 0.7
+  sweet: 0.1
+food_groups:
+- sabzi
+- dairy
+review_status: in_review
+ingredients:
+- ingredient: potato
+  qty: 500
+  unit: g
+  local: 12-15 chhote aloo
+  role: base
+- ingredient: refined oil
+  qty: 45
+  unit: ml
+  local: 3 bade chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: bay leaf
+  qty: 1
+  unit: piece
+  local: 1 tej patta
+  role: aromatic
+  group: tadka
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 pyaaz, baarik kati
+  role: aromatic
+  group: gravy
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: aromatic
+  group: gravy
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 2 tamatar, pees ke
+  role: acid
+  group: gravy
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: gravy
+- ingredient: kashmiri chilli powder
+  qty: 6
+  unit: g
+  local: 2 chhote chammach
+  role: heat
+  group: gravy
+- ingredient: coriander powder
+  qty: 6
+  unit: g
+  local: 2 chhote chammach
+  role: spice
+  group: gravy
+- ingredient: curd
+  qty: 150
+  unit: g
+  local: 3/4 katori, phenta hua
+  role: base
+  group: gravy
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1 1/2 chhota chammach, swaad anusaar
+  role: spice
+- ingredient: garam masala
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: finish
+- ingredient: dried fenugreek leaves
+  qty: 2
+  unit: g
+  local: 1 chhota chammach kasuri methi
+  role: aromatic
+  group: finish
+  optional: true
+- ingredient: fresh cream
+  qty: 30
+  unit: ml
+  local: 2 bade chammach malai
+  role: fat
+  group: finish
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  group: finish
+  optional: true
+steps:
+- text: Pressure-cook the washed potatoes with enough water to cover for 2 whistles, let the pressure drop on its own, then
+    peel them.
+  technique: pressure_cook
+  whistles: 2
+  heat: medium
+  cues:
+    touch: A knife should go in easily but the potato should still hold its shape.
+  safety: Open the cooker only after the pressure has fully dropped.
+  say:
+    hi:
+      text: धुले हुए आलू को डूबने लायक पानी के साथ कुकर में 2 सीटी तक पकाएँ, प्रेशर अपने आप उतरने दें, फिर छील लें।
+      touch: चाकू आसानी से जाए पर आलू टूटे नहीं।
+      safety: कुकर प्रेशर पूरी तरह उतरने के बाद ही खोलें।
+    hi-Latn:
+      text: Dhule hue aloo ko doobne laayak paani ke saath cooker mein 2 seeti tak pakayein, pressure apne aap utarne dein,
+        phir chheel lein.
+      touch: Chaaku aasaani se jaaye par aloo toote nahi.
+      safety: Cooker pressure poori tarah utarne ke baad hi kholein.
+- text: Prick each potato with a fork and fry them in the hot oil in a kadai, turning often, until golden in patches, then
+    lift them out.
+  technique: shallow_fry
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Golden-brown spots all over the potatoes.
+  safety: Dry the potatoes well so the oil does not splutter.
+  say:
+    hi:
+      text: हर आलू में काँटे से छेद करें और कड़ाही में गरम तेल में बार-बार पलटते हुए सुनहरा होने तक तलें, फिर निकाल लें।
+      look: आलू पर चारों तरफ़ सुनहरे-भूरे धब्बे आ जाएँ।
+      safety: आलू अच्छे से सुखा लें ताकि तेल न उछले।
+    hi-Latn:
+      text: Har aloo mein kaante se chhed karein aur kadai mein garam tel mein baar-baar palatte hue sunehra hone tak talein,
+        phir nikaal lein.
+      look: Aloo par chaaron taraf sunehre-bhure dhabbe aa jaayein.
+      safety: Aloo achhe se sukha lein taaki tel na uchhle.
+- text: In the same oil, add cumin seeds and bay leaf, then add the onion and fry until golden brown.
+  technique: saute_onion
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: Onions turn an even golden brown.
+    sound: Cumin seeds crackle as soon as they hit the oil.
+  say:
+    hi:
+      text: उसी तेल में जीरा और तेज पत्ता डालें, फिर प्याज़ डालकर सुनहरा भूरा होने तक भूनें।
+      look: प्याज़ एक जैसे सुनहरे भूरे हो जाएँ।
+      sound: तेल में डालते ही जीरा चटकने लगे।
+    hi-Latn:
+      text: Usi tel mein jeera aur tej patta daalein, phir pyaaz daalkar sunehra bhura hone tak bhoonein.
+      look: Pyaaz ek jaise sunehre bhure ho jaayein.
+      sound: Tel mein daalte hi jeera chatakne lage.
+- text: Add ginger garlic paste, then the tomato, turmeric, chilli powder and coriander powder, and cook the masala until
+    oil separates.
+  technique: bhuna
+  minutes: 7
+  timer: true
+  heat: medium
+  cues:
+    look: Oil shows at the edges of the masala.
+    smell: The raw smell of ginger garlic is gone.
+  say:
+    hi:
+      text: अदरक-लहसुन का पेस्ट डालें, फिर टमाटर, हल्दी, मिर्च पाउडर और धनिया पाउडर डालकर मसाले को तेल छोड़ने तक भूनें।
+      look: मसाले के किनारों पर तेल दिखने लगे।
+      smell: अदरक-लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak-lehsun ka paste daalein, phir tamatar, haldi, mirch powder aur dhaniya powder daalkar masale ko tel chhodne
+        tak bhoonein.
+      look: Masale ke kinaaron par tel dikhne lage.
+      smell: Adrak-lehsun ki kachchi mehak chali jaaye.
+- text: Turn the heat to low and add the whisked curd a little at a time, stirring all the while, and cook for 3 minutes.
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: The gravy turns smooth and creamy, with no white specks.
+  say:
+    hi:
+      text: आँच धीमी करें और फेंटा हुआ दही थोड़ा-थोड़ा करके लगातार चलाते हुए डालें, 3 मिनट पकाएँ।
+      look: ग्रेवी चिकनी और मलाईदार हो जाए, कोई सफ़ेद दाने न दिखें।
+    hi-Latn:
+      text: Aanch dheemi karein aur phenta hua dahi thoda-thoda karke lagaataar chalaate hue daalein, 3 minute pakayein.
+      look: Gravy chikni aur malaidaar ho jaaye, koi safed daane na dikhein.
+- text: Add the fried potatoes, salt and about 1 cup of hot water, stir, cover tightly and cook on low heat.
+  technique: dum
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    look: The gravy thickens and coats the potatoes.
+  say:
+    hi:
+      text: तले हुए आलू, नमक और लगभग 1 कप गरम पानी डालें, मिलाएँ, ढक्कन कसकर लगाएँ और धीमी आँच पर पकाएँ।
+      look: ग्रेवी गाढ़ी होकर आलू पर लिपट जाए।
+    hi-Latn:
+      text: Tale hue aloo, namak aur lagbhag 1 cup garam paani daalein, milaayein, dhakkan kaskar lagaayein aur dheemi aanch
+        par pakayein.
+      look: Gravy gaadhi hokar aloo par lipat jaaye.
+- text: Stir in garam masala, crushed kasuri methi and cream, switch off the heat and garnish with coriander leaves.
+  minutes: 1
+  heat: low
+  cues:
+    smell: A warm smell of methi and garam masala rises.
+  say:
+    hi:
+      text: गरम मसाला, मसली हुई कसूरी मेथी और मलाई मिलाएँ, आँच बंद करें और हरा धनिया डालकर सजाएँ।
+      smell: मेथी और गरम मसाले की खुशबू उठने लगे।
+    hi-Latn:
+      text: Garam masala, masli hui kasuri methi aur malai milaayein, aanch band karein aur hara dhaniya daalkar sajaayein.
+      smell: Methi aur garam masale ki khushboo uthne lage.

@@ -1,0 +1,237 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: kadai-paneer
+title: Kadai Paneer
+titles:
+  hi: कड़ाही पनीर
+  hi-Latn: Kadai Paneer
+description: A semi-dry North Indian paneer sabzi. Paneer, capsicum and onion cubes are tossed in a thick tomato masala with
+  freshly crushed coriander seeds and dry red chillies.
+descriptions:
+  hi: उत्तर भारत की अधसूखी पनीर सब्ज़ी। पनीर, शिमला मिर्च और प्याज़ के टुकड़े गाढ़े टमाटर मसाले में, ताज़े कुटे धनिये और सूखी
+    लाल मिर्च के साथ भूने जाते हैं।
+  hi-Latn: North Indian semi-dry paneer sabzi. Paneer, shimla mirch aur pyaaz ke tukde gaadhe tamatar masale mein, taaze kute
+    dhaniye aur sookhi laal mirch ke saath bhune jaate hain.
+cuisine_region: north_indian_punjabi_
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 25
+difficulty: 2
+spice_level: 3
+equipment:
+- kadai
+- gas_stove
+- mixer_grinder
+tags:
+- comforting
+- high_protein
+flavor_profile:
+  rich: 0.6
+  heat: 0.5
+  acid: 0.4
+  crunch: 0.3
+  starch: 0.1
+  sweet: 0.1
+food_groups:
+- dairy
+- sabzi
+- protein
+review_status: in_review
+ingredients:
+- ingredient: paneer
+  qty: 250
+  unit: g
+  local: 250 gram paneer
+  role: protein
+- ingredient: capsicum
+  qty: 200
+  unit: g
+  local: 2 shimla mirch
+  role: vegetable
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 pyaaz (1 baarik, 1 tukdon mein)
+  role: aromatic
+- ingredient: tomato
+  qty: 300
+  unit: g
+  local: 3 tamatar
+  role: base
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: coriander seeds
+  qty: 10
+  unit: g
+  local: 1 bada chammach sabut dhaniya
+  role: spice
+  group: kadai masala
+- ingredient: dry red chilli
+  qty: 4
+  unit: g
+  local: 3 sookhi laal mirch
+  role: heat
+  group: kadai masala
+- ingredient: refined oil
+  qty: 45
+  unit: ml
+  local: 3 bade chammach tel
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: kashmiri chilli powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+- ingredient: dried fenugreek leaves
+  qty: 2
+  unit: g
+  local: 1 chhota chammach kasuri methi
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak, swaad anusaar
+  role: spice
+- ingredient: fresh cream
+  qty: 30
+  unit: ml
+  local: 2 bade chammach malai
+  role: fat
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+steps:
+- text: Dry roast the coriander seeds and dry red chillies in the kadai on low heat, then coarsely crush them in the mixer.
+  technique: dry_roast
+  minutes: 2
+  heat: low
+  cues:
+    smell: The coriander smells toasty and fragrant.
+  say:
+    hi:
+      text: कड़ाही में धीमी आँच पर साबुत धनिया और सूखी लाल मिर्च सूखा भूनें, फिर मिक्सर में दरदरा पीस लें।
+      smell: धनिये से भुनी हुई खुशबू आने लगे।
+    hi-Latn:
+      text: Kadai mein dheemi aanch par sabut dhaniya aur sookhi laal mirch sookha bhunein, phir mixer mein dardara pees lein.
+      smell: Dhaniye se bhuni hui khushboo aane lage.
+- text: Cut the paneer, capsicum and one onion into bite-size cubes, finely chop the other onion, slit the green chillies
+    and blend the tomatoes to a puree.
+  say:
+    hi:
+      text: पनीर, शिमला मिर्च और एक प्याज़ के चौकोर टुकड़े काटें, दूसरा प्याज़ बारीक काटें, हरी मिर्च चीरें और टमाटर की प्यूरी
+        बना लें।
+    hi-Latn:
+      text: Paneer, shimla mirch aur ek pyaaz ke chaukor tukde kaatein, doosra pyaaz baarik kaatein, hari mirch cheerein aur
+        tamatar ki puree bana lein.
+- text: Heat 1 tablespoon oil and toss the capsicum and onion cubes on high heat, then take them out.
+  minutes: 2
+  heat: high
+  cues:
+    look: The edges are lightly charred but the pieces are still crunchy.
+  say:
+    hi:
+      text: 1 बड़ा चम्मच तेल गरम करके शिमला मिर्च और प्याज़ के टुकड़े तेज़ आँच पर उलटें-पलटें, फिर निकाल लें।
+      look: किनारे हल्के जले हुए दिखें पर टुकड़े अब भी कुरकुरे हों।
+    hi-Latn:
+      text: 1 bada chammach tel garam karke shimla mirch aur pyaaz ke tukde tez aanch par ulte-palte, phir nikaal lein.
+      look: Kinaare halke jale hue dikhein par tukde ab bhi kurkure hon.
+- text: Add the remaining oil to the same kadai, add cumin seeds, then cook the chopped onion until golden on medium heat.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns golden brown.
+    sound: The cumin crackles as soon as it hits the oil.
+  safety: Stand back, hot oil can splutter when the cumin goes in.
+  say:
+    hi:
+      text: उसी कड़ाही में बचा तेल डालें, जीरा डालें, फिर बारीक प्याज़ मध्यम आँच पर सुनहरा होने तक भूनें।
+      look: प्याज़ सुनहरा भूरा हो जाए।
+      sound: तेल में पड़ते ही जीरा चटकने लगे।
+      safety: पीछे हटकर रहें, जीरा डालते ही गरम तेल छिटक सकता है।
+    hi-Latn:
+      text: Usi kadai mein bacha tel daalein, jeera daalein, phir baarik pyaaz medium aanch par sunehra hone tak bhunein.
+      look: Pyaaz sunehra bhoora ho jaaye.
+      sound: Tel mein padte hi jeera chatakne lage.
+      safety: Peeche hatkar rahein, jeera daalte hi garam tel chhitak sakta hai.
+- text: Add the ginger garlic paste and green chillies and stir until the raw smell is gone.
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw garlic smell is gone.
+  say:
+    hi:
+      text: अदरक लहसुन का पेस्ट और हरी मिर्च डालकर कच्ची महक जाने तक चलाएं।
+      smell: लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak lehsun ka paste aur hari mirch daalkar kachchi mehak jaane tak chalaayein.
+      smell: Lehsun ki kachchi mehak chali jaaye.
+- text: Add the tomato puree, turmeric, kashmiri chilli powder, salt and half the crushed kadai masala, and cook the masala,
+    stirring often.
+  technique: bhuna
+  minutes: 9
+  timer: true
+  heat: medium
+  cues:
+    look: The masala thickens and oil separates at the sides.
+  say:
+    hi:
+      text: टमाटर प्यूरी, हल्दी, कश्मीरी लाल मिर्च, नमक और आधा कुटा कड़ाही मसाला डालें, और बार-बार चलाते हुए मसाला भूनें।
+      look: मसाला गाढ़ा हो जाए और किनारों से तेल अलग होने लगे।
+    hi-Latn:
+      text: Tamatar puree, haldi, kashmiri laal mirch, namak aur aadha kuta kadai masala daalein, aur baar-baar chalaate hue
+        masala bhunein.
+      look: Masala gaadha ho jaaye aur kinaaron se tel alag hone lage.
+- text: Add the paneer, the tossed capsicum and onion, the rest of the kadai masala, garam masala, crushed kasuri methi and
+    cream if using, and toss gently on low heat.
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: Every piece is coated in the masala.
+    touch: The paneer feels soft and warmed through.
+  say:
+    hi:
+      text: पनीर, भुनी शिमला मिर्च और प्याज़, बचा कड़ाही मसाला, गरम मसाला, मसली हुई कसूरी मेथी और चाहें तो मलाई डालें, और
+        धीमी आँच पर हल्के हाथ से मिलाएं।
+      look: हर टुकड़े पर मसाला लिपट जाए।
+      touch: पनीर नरम लगे और अंदर तक गरम हो जाए।
+    hi-Latn:
+      text: Paneer, bhuni shimla mirch aur pyaaz, bacha kadai masala, garam masala, masli hui kasuri methi aur chahein to
+        malai daalein, aur dheemi aanch par halke haath se milaayein.
+      look: Har tukde par masala lipat jaaye.
+      touch: Paneer naram lage aur andar tak garam ho jaaye.
+- text: Sprinkle chopped coriander leaves and serve hot with roti or paratha.
+  say:
+    hi:
+      text: ऊपर से कटा हरा धनिया डालें और रोटी या पराठे के साथ गरम परोसें।
+    hi-Latn:
+      text: Upar se kata hara dhaniya daalein aur roti ya paranthe ke saath garam parosein.

@@ -1,0 +1,219 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: aloo-poha
+title: Aloo Poha
+titles:
+  hi: आलू पोहा
+  hi-Latn: Aloo Poha
+description: Soft flattened rice tossed with potato, onion, mustard seeds and curry leaves, tinted yellow with turmeric and
+  finished with lemon, coriander and crunchy peanuts. A quick weekday breakfast from Maharashtra and Madhya Pradesh.
+descriptions:
+  hi: मुलायम पोहा, आलू, प्याज़, राई और करी पत्ते के साथ, हल्दी से पीला रंग, ऊपर से नींबू, हरा धनिया और कुरकुरी मूंगफली। महाराष्ट्र
+    और मध्य प्रदेश का झटपट रोज़ का नाश्ता।
+  hi-Latn: Mulayam poha, aloo, pyaaz, rai aur curry patte ke saath, haldi se peela rang, upar se nimbu, hara dhaniya aur kurkuri
+    moongphali. Maharashtra aur Madhya Pradesh ka jhatpat roz ka naashta.
+cuisine_region: maharashtra_madhya_pradesh
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 20
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- comforting
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.3
+  crunch: 0.4
+  starch: 0.7
+  sweet: 0.2
+food_groups:
+- grain
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: poha
+  qty: 250
+  unit: g
+  local: 2.5 katori mota poha
+  role: base
+- ingredient: potato
+  qty: 200
+  unit: g
+  local: 2 medium aloo
+  role: vegetable
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 medium pyaaz
+  role: vegetable
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 3 hari mirch
+  role: heat
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 12-15 curry patte
+  role: aromatic
+  group: tadka
+- ingredient: mustard seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: cumin seeds
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: sugar
+  qty: 8
+  unit: g
+  local: 2 chhota chammach cheeni
+  role: sweet
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bada chammach tel
+  role: fat
+- ingredient: peanuts
+  qty: 50
+  unit: g
+  local: 1/3 katori moongphali
+  role: component
+  optional: true
+- ingredient: lemon
+  qty: 40
+  unit: g
+  local: 1 nimbu
+  role: acid
+  group: finish
+- ingredient: coriander leaves
+  qty: 15
+  unit: g
+  local: 2 bada chammach kata hara dhaniya
+  role: garnish
+  group: finish
+steps:
+- text: Rinse the poha in a strainer under running water 2 to 3 times, drain well, mix in the sugar and half the salt and
+    let it rest.
+  technique: soak
+  minutes: 10
+  timer: true
+  cues:
+    touch: Each flake presses soft between fingers but the grains stay separate, not mushy.
+  say:
+    hi:
+      text: पोहे को छलनी में बहते पानी में 2-3 बार धोएं, पानी अच्छे से निकाल दें, उसमें चीनी और आधा नमक मिलाकर रख दें।
+      touch: हर दाना उंगलियों में दबाने पर नरम हो, पर दाने अलग-अलग रहें, गीले-चिपचिपे नहीं।
+    hi-Latn:
+      text: Poha ko chhalni mein behte paani mein 2-3 baar dhoyein, paani achhe se nikaal dein, usmein cheeni aur aadha namak
+        milakar rakh dein.
+      touch: Har daana ungliyon mein dabane par naram ho, par daane alag-alag rahein, geele-chipchipe nahin.
+- text: Heat the oil in a kadai, fry the peanuts until golden and crunchy, then lift them out onto a plate.
+  technique: shallow_fry
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: Peanuts turn golden with darker spots.
+    sound: They crackle softly in the oil.
+  safety: Hot oil can spit; keep your face away.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करें, मूंगफली सुनहरी और कुरकुरी होने तक तलें, फिर प्लेट में निकाल लें।
+      look: मूंगफली सुनहरी हो जाए, कहीं-कहीं गहरे दाग दिखें।
+      sound: तेल में हल्की चटचट आवाज़ आए।
+      safety: गरम तेल छिटक सकता है; चेहरा दूर रखें।
+    hi-Latn:
+      text: Kadai mein tel garam karein, moongphali sunehri aur kurkuri hone tak talein, phir plate mein nikaal lein.
+      look: Moongphali sunehri ho jaaye, kahin-kahin gehre daag dikhein.
+      sound: Tel mein halki chatchat aawaaz aaye.
+      safety: Garam tel chhitak sakta hai; chehra door rakhein.
+- text: In the same oil add mustard seeds; once they splutter add cumin, curry leaves and slit green chillies.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: Mustard seeds pop and crackle.
+    smell: Curry leaves smell fresh and toasty.
+  safety: Curry leaves spatter when they hit the oil; stand back.
+  say:
+    hi:
+      text: उसी तेल में राई डालें; चटकने लगे तो जीरा, करी पत्ते और बीच से चीरी हरी मिर्च डालें।
+      sound: राई चटक-चटक कर फूटे।
+      smell: करी पत्तों की ताज़ी भुनी खुशबू आए।
+      safety: करी पत्ते तेल में डालते ही छिटकते हैं; थोड़ा पीछे हटें।
+    hi-Latn:
+      text: Usi tel mein rai daalein; chatakne lage to jeera, curry patte aur beech se cheeri hari mirch daalein.
+      sound: Rai chatak-chatak kar phoote.
+      smell: Curry patton ki taazi bhuni khushboo aaye.
+      safety: Curry patte tel mein daalte hi chhitakte hain; thoda peeche hatein.
+- text: Add the chopped onion and sauté until soft and translucent.
+  technique: saute_onion
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: Onion turns see-through and glossy, not brown.
+  say:
+    hi:
+      text: कटा प्याज़ डालें और नरम व पारदर्शी होने तक भूनें।
+      look: प्याज़ पारदर्शी और चमकदार हो जाए, भूरा नहीं।
+    hi-Latn:
+      text: Kata pyaaz daalein aur naram va paardarshi hone tak bhoonein.
+      look: Pyaaz paardarshi aur chamakdaar ho jaaye, bhoora nahin.
+- text: Add the small potato cubes, turmeric and the rest of the salt, stir, cover and cook until the potatoes are tender.
+  minutes: 8
+  timer: true
+  heat: low
+  cues:
+    touch: A potato cube breaks easily when pressed with the spatula.
+  say:
+    hi:
+      text: छोटे टुकड़ों में कटे आलू, हल्दी और बचा नमक डालें, चलाएं, ढककर आलू नरम होने तक पकाएं।
+      touch: करछी से दबाने पर आलू का टुकड़ा आसानी से टूट जाए।
+    hi-Latn:
+      text: Chhote tukdon mein kate aloo, haldi aur bacha namak daalein, chalaayein, dhakkar aloo naram hone tak pakaayein.
+      touch: Karchhi se dabaane par aloo ka tukda aasaani se toot jaaye.
+- text: Add the rested poha, fold gently to mix, cover and let it steam.
+  technique: steam
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: Poha is evenly yellow and steam rises when you lift the lid.
+  say:
+    hi:
+      text: रखा हुआ पोहा डालें, हल्के हाथ से मिलाएं, ढककर भाप में पकने दें।
+      look: पोहा एक जैसा पीला हो और ढक्कन हटाने पर भाप उठे।
+    hi-Latn:
+      text: Rakha hua poha daalein, halke haath se milaayein, dhakkar bhaap mein pakne dein.
+      look: Poha ek jaisa peela ho aur dhakkan hataane par bhaap uthe.
+- text: Turn off the heat, squeeze in the lemon, add coriander and the fried peanuts, toss and serve hot.
+  say:
+    hi:
+      text: आंच बंद करें, नींबू निचोड़ें, हरा धनिया और तली मूंगफली डालें, मिलाएं और गरम-गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, nimbu nichodein, hara dhaniya aur tali moongphali daalein, milaayein aur garam-garam parosein.

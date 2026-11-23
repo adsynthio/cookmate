@@ -1,0 +1,195 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: dosa
+title: Dosa
+titles:
+  hi: डोसा
+  hi-Latn: Dosa
+description: A thin, crisp South Indian crepe made from a fermented rice and urad dal batter, cooked on a hot tawa with a
+  little oil. Serve with sambar and chutney.
+descriptions:
+  hi: चावल और उड़द दाल के खमीर वाले घोल से बना पतला, कुरकुरा दक्षिण भारतीय डोसा, जो गरम तवे पर थोड़े तेल में सेंका जाता है।
+    सांबर और चटनी के साथ परोसें।
+  hi-Latn: Chawal aur urad dal ke khameer wale ghol se bana patla, kurkura South Indian dosa, jo garam tawe par thode tel
+    mein senka jaata hai. Sambar aur chutney ke saath parosein.
+cuisine_region: south_indian
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 30
+cook_time_min: 30
+difficulty: 3
+spice_level: 1
+equipment:
+- mixer_grinder
+- tawa
+- gas_stove
+tags:
+- kids_friendly
+- tiffin
+flavor_profile:
+  rich: 0.2
+  heat: 0
+  acid: 0.3
+  crunch: 0.6
+  starch: 0.8
+  sweet: 0
+food_groups:
+- grain
+- dal
+review_status: in_review
+ingredients:
+- ingredient: rice
+  qty: 300
+  unit: g
+  local: 1.5 katori chawal
+  role: base
+  group: batter
+- ingredient: urad dal
+  qty: 100
+  unit: g
+  local: half katori urad dal
+  role: base
+  group: batter
+- ingredient: fenugreek seeds
+  qty: 5
+  unit: g
+  local: 1 chhota chammach methi dana
+  role: spice
+  group: batter
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach namak
+  role: spice
+  group: batter
+- ingredient: refined oil
+  qty: 40
+  unit: ml
+  local: 3 bade chammach tel
+  role: fat
+  group: cooking
+steps:
+- text: Wash the rice, and separately wash the urad dal with the fenugreek seeds, then soak both in plenty of water for 5
+    to 6 hours.
+  technique: soak
+  minutes: 360
+  timer: true
+  cues:
+    look: The grains swell and the dal breaks easily when pressed.
+  say:
+    hi:
+      text: चावल धो लें, और अलग से उड़द दाल को मेथी दाने के साथ धो लें, फिर दोनों को भरपूर पानी में 5 से 6 घंटे भिगो दें।
+      look: दाने फूल जाते हैं और दाल दबाने पर आसानी से टूट जाती है।
+    hi-Latn:
+      text: Chawal dho lein, aur alag se urad dal ko methi dane ke saath dho lein, phir dono ko bharpoor paani mein 5 se 6
+        ghante bhigo dein.
+      look: Daane phool jaate hain aur dal dabane par aasaani se toot jaati hai.
+- text: Drain and grind the urad dal and fenugreek with a little cold water into a smooth, fluffy batter, then grind the rice
+    slightly grainy and mix both together.
+  technique: batter
+  minutes: 15
+  timer: true
+  cues:
+    touch: The urad dal batter feels light, airy and smooth between your fingers.
+  say:
+    hi:
+      text: पानी निकालकर उड़द दाल और मेथी को थोड़े ठंडे पानी के साथ चिकना और फूला हुआ पीस लें, फिर चावल को हल्का दरदरा पीसें
+        और दोनों को मिला लें।
+      touch: उड़द दाल का घोल उंगलियों में हल्का, फूला और चिकना लगता है।
+    hi-Latn:
+      text: Paani nikaal kar urad dal aur methi ko thode thande paani ke saath chikna aur phoola hua pees lein, phir chawal
+        ko halka dardara peesein aur dono ko mila lein.
+      touch: Urad dal ka ghol ungliyon mein halka, phoola aur chikna lagta hai.
+- text: Add the salt, mix well with your hand, cover and leave in a warm place overnight, 8 to 10 hours, to ferment.
+  technique: batter
+  minutes: 540
+  timer: true
+  cues:
+    look: The batter rises and is full of tiny bubbles.
+    smell: It smells pleasantly sour.
+  safety: Once fermented, keep the batter in the fridge and use it within 2 to 3 days.
+  say:
+    hi:
+      text: नमक डालें, हाथ से अच्छी तरह मिलाएं, ढककर रात भर 8 से 10 घंटे गरम जगह पर खमीर उठने के लिए रख दें।
+      look: घोल फूलकर ऊपर आ जाता है और छोटे-छोटे बुलबुलों से भर जाता है।
+      smell: हल्की खट्टी अच्छी खुशबू आती है।
+      safety: खमीर उठने के बाद घोल फ्रिज में रखें और 2 से 3 दिन में इस्तेमाल कर लें।
+    hi-Latn:
+      text: Namak daalein, haath se achhi tarah milayein, dhak kar raat bhar 8 se 10 ghante garam jagah par khameer uthne
+        ke liye rakh dein.
+      look: Ghol phool kar upar aa jaata hai aur chhote-chhote bulbulon se bhar jaata hai.
+      smell: Halki khatti achhi khushboo aati hai.
+      safety: Khameer uthne ke baad ghol fridge mein rakhein aur 2 se 3 din mein istemaal kar lein.
+- text: Stir the batter gently and add a little water to make it a thick pouring consistency.
+  cues:
+    look: It coats the ladle and flows slowly, like thick buttermilk.
+  say:
+    hi:
+      text: घोल को हल्के से चलाएं और थोड़ा पानी डालकर गाढ़ा बहने लायक बना लें।
+      look: घोल करछी पर चिपकता है और गाढ़ी छाछ की तरह धीरे बहता है।
+    hi-Latn:
+      text: Ghol ko halke se chalayein aur thoda paani daal kar gaadha behne laayak bana lein.
+      look: Ghol karchhi par chipakta hai aur gaadhi chhaachh ki tarah dheere behta hai.
+- text: Heat the tawa on medium-high, rub it with a few drops of oil, then sprinkle a little water and wipe it off.
+  technique: tawa_cook
+  minutes: 3
+  timer: true
+  heat: high
+  cues:
+    sound: The water sizzles and dries up at once.
+  safety: Stand back when sprinkling water on the hot tawa, as it spits steam.
+  say:
+    hi:
+      text: तवा तेज़-मध्यम आंच पर गरम करें, कुछ बूंद तेल लगाएं, फिर थोड़ा पानी छिड़ककर पोंछ दें।
+      sound: पानी छन्न से आवाज़ करके तुरंत सूख जाता है।
+      safety: गरम तवे पर पानी छिड़कते समय थोड़ा पीछे हटें, भाप उछलती है।
+    hi-Latn:
+      text: Tawa tez-medium aanch par garam karein, kuch boond tel lagayein, phir thoda paani chhidak kar ponchh dein.
+      sound: Paani chhann se awaaz karke turant sookh jaata hai.
+      safety: Garam tawe par paani chhidakte samay thoda peeche hatein, bhaap uchhalti hai.
+- text: Lower the heat to medium, pour a ladle of batter in the centre and quickly spread it in circles outward into a thin
+    round.
+  technique: tawa_cook
+  heat: medium
+  cues:
+    look: The batter sets thin with small holes all over.
+  say:
+    hi:
+      text: आंच मध्यम करें, बीच में एक करछी घोल डालें और जल्दी से गोल-गोल घुमाते हुए बाहर की ओर पतला फैला दें।
+      look: घोल पतला जम जाता है और ऊपर छोटे-छोटे छेद दिखते हैं।
+    hi-Latn:
+      text: Aanch medium karein, beech mein ek karchhi ghol daalein aur jaldi se gol-gol ghumate hue bahar ki or patla phaila
+        dein.
+      look: Ghol patla jam jaata hai aur upar chhote-chhote chhed dikhte hain.
+- text: Drizzle half a teaspoon of oil around the edges and on top, and cook for about 2 minutes until the base is golden
+    and crisp.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    look: The underside turns golden and the edges lift away from the tawa.
+    sound: The oil sizzles softly around the edges.
+    smell: A toasty roasted smell rises.
+  say:
+    hi:
+      text: किनारों पर और ऊपर आधा छोटा चम्मच तेल डालें और लगभग 2 मिनट तक सेंकें, जब तक नीचे से सुनहरा और कुरकुरा न हो जाए।
+      look: नीचे का हिस्सा सुनहरा हो जाता है और किनारे तवे से उठने लगते हैं।
+      sound: किनारों पर तेल हल्का छन-छन करता है।
+      smell: सिंकने की भुनी हुई खुशबू आती है।
+    hi-Latn:
+      text: Kinaron par aur upar aadha chhota chammach tel daalein aur lagbhag 2 minute tak senkein, jab tak neeche se sunehra
+        aur kurkura na ho jaaye.
+      look: Neeche ka hissa sunehra ho jaata hai aur kinare tawe se uthne lagte hain.
+      sound: Kinaron par tel halka chhan-chhan karta hai.
+      smell: Sikne ki bhuni hui khushboo aati hai.
+- text: Fold the dosa and serve hot, then sprinkle water and wipe the tawa before making the next one.
+  heat: medium
+  cues:
+    touch: The dosa feels crisp and stiff when lifted.
+  say:
+    hi:
+      text: डोसा मोड़कर गरम परोसें, फिर अगला बनाने से पहले तवे पर पानी छिड़ककर पोंछ लें।
+      touch: उठाने पर डोसा कुरकुरा और कड़क लगता है।
+    hi-Latn:
+      text: Dosa mod kar garam parosein, phir agla banane se pehle tawe par paani chhidak kar ponchh lein.
+      touch: Uthane par dosa kurkura aur kadak lagta hai.

@@ -1,0 +1,194 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: tori-sabzi
+title: Tori Sabzi
+titles:
+  hi: तोरी की सब्ज़ी
+  hi-Latn: Tori Sabzi
+description: A light North Indian everyday sabzi of ridge gourd cooked in its own juices with onion, tomato and simple spices.
+  It is eaten with roti or dal-chawal.
+descriptions:
+  hi: तोरी को प्याज़, टमाटर और सादे मसालों के साथ उसके अपने पानी में पकाई गई हल्की उत्तर भारतीय रोज़ की सब्ज़ी। इसे रोटी या
+    दाल-चावल के साथ खाते हैं।
+  hi-Latn: Tori ko pyaaz, tamatar aur saade masalon ke saath uske apne paani mein pakayi gayi halki North Indian roz ki sabzi.
+    Ise roti ya dal-chawal ke saath khaate hain.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 22
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- light
+- quick
+- comforting
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.2
+  crunch: 0
+  starch: 0.1
+  sweet: 0.1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: ridge gourd
+  qty: 500
+  unit: g
+  local: 3-4 tori (aadha kilo)
+  role: vegetable
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 bada pyaaz
+  role: aromatic
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 bada tamatar
+  role: acid
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1 hari mirch
+  role: heat
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: aadha chhota chammach
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: aadha chhota chammach
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: masala
+- ingredient: salt
+  qty: 5
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: garam masala
+  qty: 1
+  unit: g
+  local: 1 chutki
+  role: spice
+  optional: true
+- ingredient: coriander leaves
+  qty: 5
+  unit: g
+  local: 1 mutthi kati hari dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Scrape off the hard ridges of the ridge gourd, wash and cut it into small cubes; chop the onion, tomato and green
+    chilli.
+  say:
+    hi:
+      text: तोरी की सख़्त धारियाँ छील लो, धोकर छोटे टुकड़ों में काट लो; प्याज़, टमाटर और हरी मिर्च बारीक काट लो।
+    hi-Latn:
+      text: Tori ki sakht dhaariyan chheel lo, dhokar chhote tukdon mein kaat lo; pyaaz, tamatar aur hari mirch bareek kaat
+        lo.
+- text: Heat the oil in a kadai, add cumin seeds and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The cumin turns a shade darker.
+    sound: The cumin crackles.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करो, जीरा और हींग डालो।
+      look: जीरा थोड़ा गहरा हो जाए।
+      sound: जीरा चटकने लगे।
+    hi-Latn:
+      text: Kadai mein tel garam karo, jeera aur hing daalo.
+      look: Jeera thoda gehra ho jaaye.
+      sound: Jeera chatakne lage.
+- text: Add the onion and green chilli and fry until the onion turns light golden.
+  technique: saute_onion
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns light golden.
+  say:
+    hi:
+      text: प्याज़ और हरी मिर्च डालकर प्याज़ हल्का सुनहरा होने तक भूनो।
+      look: प्याज़ हल्का सुनहरा हो जाए।
+    hi-Latn:
+      text: Pyaaz aur hari mirch daalkar pyaaz halka sunehra hone tak bhuno.
+      look: Pyaaz halka sunehra ho jaaye.
+- text: Add the tomato, turmeric, red chilli powder and coriander powder, and cook until the tomato is soft.
+  technique: bhuna
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato turns mushy and oil shows at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च और धनिया पाउडर डालकर टमाटर नरम होने तक भूनो।
+      look: टमाटर गल जाए और किनारों पर तेल दिखे।
+    hi-Latn:
+      text: Tamatar, haldi, laal mirch aur dhaniya powder daalkar tamatar naram hone tak bhuno.
+      look: Tamatar gal jaaye aur kinaron par tel dikhe.
+- text: Add the ridge gourd and salt, mix, cover and cook in its own water without adding any water, stirring once or twice.
+  technique: simmer
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    look: The pieces turn soft and see-through.
+    touch: A piece mashes easily under the spoon.
+  say:
+    hi:
+      text: तोरी और नमक डालकर मिलाओ, ढककर बिना पानी डाले उसके अपने पानी में पकाओ, बीच में एक-दो बार चलाओ।
+      look: टुकड़े नरम और पारदर्शी हो जाएँ।
+      touch: चम्मच से टुकड़ा आसानी से दब जाए।
+    hi-Latn:
+      text: Tori aur namak daalkar milao, dhak kar bina paani daale uske apne paani mein pakao, beech mein ek-do baar chalao.
+      look: Tukde naram aur transparent ho jaayein.
+      touch: Chammach se tukda aasani se dab jaaye.
+- text: Uncover and cook until the extra water dries a little, then sprinkle garam masala and coriander leaves.
+  minutes: 2
+  heat: medium
+  cues:
+    look: Only a little thick gravy is left.
+  say:
+    hi:
+      text: ढक्कन हटाकर ज़्यादा पानी थोड़ा सूखने तक पकाओ, फिर गरम मसाला और हरा धनिया डालो।
+      look: बस थोड़ी गाढ़ी ग्रेवी बचे।
+    hi-Latn:
+      text: Dhakkan hatakar zyada paani thoda sookhne tak pakao, phir garam masala aur hara dhaniya daalo.
+      look: Bas thodi gaadhi gravy bache.

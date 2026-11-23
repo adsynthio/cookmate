@@ -1,0 +1,188 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: cabbage-sabzi
+title: Patta Gobhi Sabzi
+titles:
+  hi: पत्ता गोभी की सब्ज़ी
+  hi-Latn: Patta Gobhi Sabzi
+description: A dry North Indian stir-fry of finely shredded cabbage and green peas, cooked with cumin, ginger, green chilli
+  and everyday masalas. It is eaten with roti or dal-chawal.
+descriptions:
+  hi: बारीक कटी पत्ता गोभी और हरी मटर की सूखी उत्तर भारतीय सब्ज़ी, जो जीरा, अदरक, हरी मिर्च और रोज़ के मसालों के साथ बनती
+    है। इसे रोटी या दाल-चावल के साथ खाते हैं।
+  hi-Latn: Baarik kati patta gobhi aur hari matar ki sookhi North Indian sabzi, jo jeera, adrak, hari mirch aur roz ke masalon
+    ke saath banti hai. Ise roti ya dal-chawal ke saath khaate hain.
+cuisine_region: north_indian
+course: side
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 20
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- tiffin
+- light
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.2
+  crunch: 0.2
+  starch: 0.1
+  sweet: 0.1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: cabbage
+  qty: 500
+  unit: g
+  local: 1 chhoti patta gobhi
+  role: vegetable
+- ingredient: green peas
+  qty: 100
+  unit: g
+  local: 1 katori matar
+  role: vegetable
+  optional: true
+- ingredient: tomato
+  qty: 80
+  unit: g
+  local: 1 chhota tamatar
+  role: acid
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach lal mirch
+  role: heat
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach dhania powder
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhania
+  role: garnish
+  optional: true
+steps:
+- text: Wash the cabbage, shred it finely and let it drain in a colander; chop the tomato, ginger and green chillies.
+  say:
+    hi:
+      text: पत्ता गोभी धोकर बारीक काटें और छलनी में पानी निकलने दें; टमाटर, अदरक और हरी मिर्च काट लें।
+    hi-Latn:
+      text: Patta gobhi dhokar baarik kaatein aur chhalni mein paani nikalne dein; tamatar, adrak aur hari mirch kaat lein.
+- text: Heat the oil in a kadai on medium heat and add the cumin seeds.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles and sizzles.
+  say:
+    hi:
+      text: कढ़ाई में मध्यम आंच पर तेल गरम करें और जीरा डालें।
+      sound: जीरा चटकने और चड़चड़ाने लगे।
+    hi-Latn:
+      text: Kadai mein medium aanch par tel garam karein aur jeera daalein.
+      sound: Jeera chatakne aur chadchadane lage.
+- text: Add the ginger and green chillies and sauté for 30 seconds.
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw smell of ginger goes away.
+  say:
+    hi:
+      text: अदरक और हरी मिर्च डालकर 30 सेकंड भूनें।
+      smell: अदरक की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak aur hari mirch daalkar 30 second bhoonein.
+      smell: Adrak ki kachchi mahak chali jaaye.
+- text: Add the tomato, turmeric, red chilli powder, coriander powder and salt, and cook until the tomato turns soft.
+  technique: bhuna
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato turns mushy and the oil starts to show at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च, धनिया पाउडर और नमक डालें और टमाटर नरम होने तक पकाएं।
+      look: टमाटर गल जाए और किनारों से तेल दिखने लगे।
+    hi-Latn:
+      text: Tamatar, haldi, lal mirch, dhania powder aur namak daalein aur tamatar naram hone tak pakaayein.
+      look: Tamatar gal jaaye aur kinaaron se tel dikhne lage.
+- text: Add the cabbage and peas, mix well, cover and cook on low heat without adding water, stirring every few minutes.
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    look: The cabbage wilts and turns glossy.
+    touch: The cabbage is tender but still has a slight bite.
+  say:
+    hi:
+      text: पत्ता गोभी और मटर डालें, अच्छे से मिलाएं, ढककर धीमी आंच पर बिना पानी डाले पकाएं और बीच-बीच में चलाते रहें।
+      look: गोभी सिकुड़ जाए और चमकदार दिखने लगे।
+      touch: गोभी नरम हो जाए पर थोड़ी कुरकुरी रहे।
+    hi-Latn:
+      text: Patta gobhi aur matar daalein, achche se milaayein, dhakkar dheemi aanch par bina paani daale pakaayein aur beech-beech
+        mein chalaate rahein.
+      look: Gobhi sikud jaaye aur chamakdaar dikhne lage.
+      touch: Gobhi naram ho jaaye par thodi kurkuri rahe.
+- text: Uncover, raise the heat to medium and stir-fry until the extra moisture dries up, then sprinkle in the garam masala.
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: No water is left at the bottom of the kadai.
+  say:
+    hi:
+      text: ढक्कन हटाएं, आंच मध्यम करें और पानी सूखने तक भूनें, फिर गरम मसाला छिड़कें।
+      look: कढ़ाई के तले में पानी न बचे।
+    hi-Latn:
+      text: Dhakkan hataayein, aanch medium karein aur paani sookhne tak bhoonein, phir garam masala chhidkein.
+      look: Kadai ke tale mein paani na bache.
+- text: Turn off the heat, garnish with chopped coriander leaves and serve hot with roti.
+  say:
+    hi:
+      text: गैस बंद करें, कटा हरा धनिया डालें और रोटी के साथ गरम परोसें।
+    hi-Latn:
+      text: Gas band karein, kata hara dhania daalein aur roti ke saath garam parosein.

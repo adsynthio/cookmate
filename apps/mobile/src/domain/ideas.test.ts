@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import catalog from "../data/catalog.json" with { type: "json" };
-import { IDEAS, ideaFor, ideaRecipe } from "./ideas.ts";
+import { IDEAS, ideaFor, ideaRecipe, ideasFor } from "./ideas.ts";
 
 test("an idea is offered only when the kitchen has its key ingredients and it isn't already a recipe", () => {
   const have = new Set(["potato", "green peas", "tomato", "onion"]);
@@ -18,4 +18,12 @@ test("ideas are found by any of their names, and use only catalog ingredients", 
   assert.equal(ideaRecipe("biryani"), null);
   const names = new Set((catalog as { name: string }[]).map((c) => c.name));
   for (const i of IDEAS) for (const x of i.doc.ingredients) assert.ok(names.has(x.ingredient), x.ingredient);
+});
+
+test("ideas the cook asked to use come first; ones shown lately don't come back", () => {
+  const have = new Set(["potato", "whole wheat flour", "spinach", "paneer", "curd"]);
+  assert.deepEqual(ideasFor(have, [], "en", 3, [], ["curd"]).map((i) => i.name)[0], "Palak Raita");
+  assert.ok(!ideasFor(have, [], "en", 3, ["Palak Paneer"]).some((i) => i.name === "Palak Paneer"));
+  // All shown lately: they come back rather than an empty Home.
+  assert.equal(ideasFor(have, [], "en", 3, ["Palak Paneer", "Aloo Paratha", "Palak Raita"]).length, 3);
 });

@@ -115,6 +115,8 @@ export type PickBatch = {
   ideas?: { name: string; why: string; uses?: string[] }[];
   /** Dishes to plan for a later meal because they need soaking or marinating hours ahead (never "cook now"). */
   ahead?: AheadDish[];
+  /** Set by Home, not the server: the new ideas go above the library dish (domain/seen.ts ideasLead). */
+  ideasFirst?: boolean;
 };
 
 export type AheadDish = { recipeId: string; slug: string; title: string; titles?: EventNames; hours: number };

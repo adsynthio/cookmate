@@ -34,3 +34,12 @@ export function addSeen(s: Seen, shown: { recipeIds: string[]; ideas: string[] }
   for (const name of shown.ideas) if (name.trim()) ideas[name.trim()] = now;
   return { recipes, ideas };
 }
+
+/**
+ * Home leads with the new dishes from the kitchen when the library's best dish is one it showed in the last two days,
+ * or when no library dish fits at all (23 Nov 2026: with 19 recipes the top card was the same few dishes every day).
+ * `shownBefore` is what had been shown when the picks were asked for, not counting this batch.
+ */
+export function ideasLead(heroId: string | null | undefined, ideas: number, shownBefore: readonly string[]): boolean {
+  return ideas > 0 && (!heroId || shownBefore.includes(heroId));
+}

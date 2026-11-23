@@ -82,6 +82,11 @@ export function chefBrief(a: {
     leftovers_ready: a.ctx.alreadyCooked ?? [],
     kitchen,
     ...(a.ideasLately?.length ? { ideas_lately: a.ideasLately } : {}),
+    // "Use my paneer" on Home: the cook wants these used up, so the ideas are built around them (23 Nov 2026).
+    ...(a.ctx.focus?.length ? { use_first: a.ctx.focus.map(a.nameOf) } : {}),
+    // The mood chips tapped (comforting, quick, light...): the ideas fit them, not just the library's tags.
+    ...(a.craving.tags.length ? { mood: a.craving.tags } : {}),
+    ...(a.craving.ingredients.length ? { wants: a.craving.ingredients.map(a.nameOf) } : {}),
     ...(a.cravingText ? { asked_for: a.cravingText } : {}),
     ...(a.craving.maxTimeMin ? { max_minutes: a.craving.maxTimeMin } : {}),
     candidates,
@@ -158,17 +163,22 @@ export function acceptIdeas(
 ): ChefIdea[] {
   const raw = out?.ideas?.length ? out.ideas : out?.new_dish ? [out.new_dish] : [];
   const lately = new Set((opts.lately ?? []).map((x) => x.trim().toLowerCase()));
-  const seen = new Set<string>();
-  const ideas: ChefIdea[] = [];
-  for (const d of raw) {
-    const ok = acceptNewDish(d, knownTitles);
-    if (!ok) continue;
-    const low = ok.name.toLowerCase();
-    if (seen.has(low) || lately.has(low) || avoids(opts.avoid ?? [], low)) continue;
-    seen.add(low);
-    const uses = ((d as ChefIdea).uses ?? []).map((u) => String(u).trim()).filter((u) => u && u.length <= 40).slice(0, 8);
-    ideas.push(uses.length ? { ...ok, uses } : ok);
-    if (ideas.length === MAX_IDEAS) break;
-  }
-  return ideas;
+  const pass = (skipLately: boolean) => {
+    const seen = new Set<string>();
+    const ideas: ChefIdea[] = [];
+    for (const d of raw) {
+      const ok = acceptNewDish(d, knownTitles);
+      if (!ok) continue;
+      const low = ok.name.toLowerCase();
+      if (seen.has(low) || (skipLately && lately.has(low)) || avoids(opts.avoid ?? [], low)) continue;
+      seen.add(low);
+      const uses = ((d as ChefIdea).uses ?? []).map((u) => String(u).trim()).filter((u) => u && u.length <= 40).slice(0, 8);
+      ideas.push(uses.length ? { ...ok, uses } : ok);
+      if (ideas.length === MAX_IDEAS) break;
+    }
+    return ideas;
+  };
+  // New ones first; if the model only repeated ideas shown lately, those beat an empty Home (23 Nov 2026).
+  const fresh = pass(true);
+  return fresh.length ? fresh : pass(false);
 }

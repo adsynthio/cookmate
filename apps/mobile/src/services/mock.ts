@@ -769,15 +769,15 @@ const mocks: Services = {
       };
       for (const p of [batch.hero, ...batch.alternates]) if (p) shown.set(p.recommendationId, p.recipeId);
       batch.chosenBy = "rules";
-      batch.ideas = batch.hero
-        ? ideasFor(
-          new Set(pantry.filter((p) => p.ingredientKey && p.confidence >= 0.5).map((p) => p.ingredientKey!)),
-          recipeDocs.map((d) => d.title),
-          localeFromLanguageCode(input.languageCode) ?? "en",
-          3,
-          input.ideasLately ?? [],
-        )
-        : [];
+      // Like the live chef: new dishes even when no recipe fits, built around "Use my X" first.
+      batch.ideas = ideasFor(
+        new Set(pantry.filter((p) => p.ingredientKey && p.confidence >= 0.5).map((p) => p.ingredientKey!)),
+        recipeDocs.map((d) => d.title),
+        localeFromLanguageCode(input.languageCode) ?? "en",
+        3,
+        input.ideasLately ?? [],
+        input.focus ?? [],
+      );
       batch.newDish = batch.ideas[0] ?? null;
       batches.set(batch.batchId, batch);
       return batch;

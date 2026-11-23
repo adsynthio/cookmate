@@ -30,6 +30,7 @@ import { recipeTitle } from "@/domain/recipes";
 import { getLocale, t, useLocale, type StringKey } from "@/i18n";
 import { services, type CalendarToday, type EventNames, type MealSlot, type PantryItem, type PantryQuestion, type Pick, type PickBatch } from "@/services";
 import { usePlan } from "@/state/plan";
+import { ideasLead } from "@/domain/seen";
 import { rememberShown, seenLately } from "@/state/seen";
 import { useSession } from "@/state/session";
 import { useSettled } from "@/state/settled";
@@ -89,24 +90,27 @@ export default function HomeScreen() {
   const picksKey = ["picks", householdId, ask.mealSlot, ask.chips, ask.craving, ask.whoEating, ask.focusKey, getLocale(), notified, prepped.join()];
   const picks = useQuery({
     queryKey: picksKey,
-    queryFn: async () =>
-      (notified ? await services.recipe.getBatch(householdId!, notified).catch(() => null) : null) ??
-      services.recipe.getPicks({
-        householdId: householdId!,
-        memberId: memberId!,
-        mealSlot: ask.mealSlot,
-        chips: ask.chips,
-        craving: ask.craving || undefined,
-        whoEating: ask.whoEating ?? undefined,
-        focus: ask.focusKey ? [ask.focusKey] : undefined,
-        languageCode: LANGUAGE_CODES[getLocale()],
-        prepped,
-        // What Home showed lately, so the picks and ideas change each time (read when the request is made).
-        ...(() => {
-          const l = seenLately();
-          return { shownLately: l.recipes, ideasLately: l.ideas };
-        })(),
-      }),
+    queryFn: async () => {
+      // What Home showed lately, so the picks and ideas change each time (read when the request is made).
+      const l = seenLately();
+      const batch =
+        (notified ? await services.recipe.getBatch(householdId!, notified).catch(() => null) : null) ??
+        (await services.recipe.getPicks({
+          householdId: householdId!,
+          memberId: memberId!,
+          mealSlot: ask.mealSlot,
+          chips: ask.chips,
+          craving: ask.craving || undefined,
+          whoEating: ask.whoEating ?? undefined,
+          focus: ask.focusKey ? [ask.focusKey] : undefined,
+          languageCode: LANGUAGE_CODES[getLocale()],
+          prepped,
+          shownLately: l.recipes,
+          ideasLately: l.ideas,
+        }));
+      const ideaCount = batch.ideas?.length ? batch.ideas.length : batch.newDish ? 1 : 0;
+      return { ...batch, ideasFirst: ideasLead(batch.hero?.recipeId, ideaCount, l.recipes) };
+    },
     enabled: !!householdId && !!memberId,
     staleTime: 30 * 60_000,
     gcTime: 60 * 60_000,
@@ -149,6 +153,7 @@ export default function HomeScreen() {
     });
   }, [picks.data]);
   const ideas = picks.data?.ideas?.length ? picks.data.ideas : picks.data?.newDish ? [picks.data.newDish] : [];
+  const ideasFirst = !!picks.data?.ideasFirst || (!!picks.data && !picks.data.hero);
   useFocusEffect(
     useCallback(() => {
       if (picksStale) void refetchPicks();
@@ -262,6 +267,17 @@ export default function HomeScreen() {
   };
   const me = (members.data ?? []).find((m) => m.id === memberId);
   const hero = picks.data?.hero ?? null;
+  const ideasBlock = ideas.length ? (
+    <View style={{ gap: space.sm }}>
+      <SectionHeader title={t("home.newIdeas.title")} dot={undefined} />
+      <Text variant="caption" muted>
+        {t("home.newIdeas.body")}
+      </Text>
+      {ideas.map((d) => (
+        <NewDishCard key={d.name} dish={d} overline={false} onPress={() => router.push({ pathname: "/invent", params: { dish: d.name } })} />
+      ))}
+    </View>
+  ) : null;
   const scrollRef = useRef<Scroller>(null);
   const heroH = useRef(0);
   const ideasY = useRef(0);
@@ -409,7 +425,11 @@ export default function HomeScreen() {
       ) : null}
 
       <View style={{ gap: space.xs }} onLayout={(e) => (ideasY.current = e.nativeEvent.layout.y)}>
-        <SectionHeader title={t("home.ideas")} dot={undefined} note={hero ? t("home.ideasCount", { n: 1 + (picks.data?.alternates.length ?? 0) }) : undefined} />
+        <SectionHeader
+          title={t("home.ideas")}
+          dot={undefined}
+          note={hero || ideas.length ? t("home.ideasCount", { n: (hero ? 1 : 0) + (picks.data?.alternates.length ?? 0) + ideas.length }) : undefined}
+        />
         <Text variant="caption" muted>
           {t("home.ideasBody")}
         </Text>
@@ -425,7 +445,7 @@ export default function HomeScreen() {
           actionLabel={t("state.retry")}
           onAction={() => picks.refetch()}
         />
-      ) : !hero ? (
+      ) : !hero && !ideas.length ? (
         <StateView
           state="empty"
           illustration={illustrations.emptyPicks}
@@ -454,43 +474,36 @@ export default function HomeScreen() {
             </Text>
           ) : null}
           {dismiss.isError ? <Text accessibilityLiveRegion="polite">{t("state.error.body")}</Text> : null}
+          {ideasFirst ? ideasBlock : null}
           {/* U4: "Not this one" sits right under the dish it turns down, on the right like a card action. */}
-          <View style={{ gap: space.xs }}>
-            <PickCard pick={hero} hero index={0} onOpen={() => open(hero)} onCook={() => cook(hero)} />
-            {asking ? (
-              <Enter style={{ gap: space.sm }}>
-                <Text variant="label" muted>
-                  {t("home.whyNot")}
-                </Text>
-                <View style={styles.reasons}>
-                  {DISMISS_REASONS.map((r) => (
-                    <Chip
-                      key={r}
-                      label={t(`home.reason.${r}` as StringKey)}
-                      onPress={() => !dismiss.isPending && dismiss.mutate({ pick: hero, reason: r })}
-                    />
-                  ))}
+          {hero ? (
+            <View style={{ gap: space.xs }}>
+              <PickCard pick={hero} hero index={0} onOpen={() => open(hero)} onCook={() => cook(hero)} />
+              {asking ? (
+                <Enter style={{ gap: space.sm }}>
+                  <Text variant="label" muted>
+                    {t("home.whyNot")}
+                  </Text>
+                  <View style={styles.reasons}>
+                    {DISMISS_REASONS.map((r) => (
+                      <Chip
+                        key={r}
+                        label={t(`home.reason.${r}` as StringKey)}
+                        onPress={() => !dismiss.isPending && dismiss.mutate({ pick: hero, reason: r })}
+                      />
+                    ))}
+                  </View>
+                </Enter>
+              ) : (
+                <View style={{ alignSelf: "flex-end" }}>
+                  <Button kind="quiet" size="small" icon="close" label={t("home.notThis")} onPress={() => setAsking(true)} />
                 </View>
-              </Enter>
-            ) : (
-              <View style={{ alignSelf: "flex-end" }}>
-                <Button kind="quiet" size="small" icon="close" label={t("home.notThis")} onPress={() => setAsking(true)} />
-              </View>
-            )}
-          </View>
-          {/* New dishes beyond Cookmate's recipes, from this kitchen: right after the hero, so Home isn't the same
-              three library dishes every day. Tapping one has it written out for this kitchen. */}
-          {ideas.length ? (
-            <View style={{ gap: space.sm }}>
-              <SectionHeader title={t("home.newIdeas.title")} dot={undefined} />
-              <Text variant="caption" muted>
-                {t("home.newIdeas.body")}
-              </Text>
-              {ideas.map((d) => (
-                <NewDishCard key={d.name} dish={d} overline={false} onPress={() => router.push({ pathname: "/invent", params: { dish: d.name } })} />
-              ))}
+              )}
             </View>
           ) : null}
+          {/* New dishes beyond Cookmate's recipes, from this kitchen, so Home isn't the same three library dishes every
+              day: right after the hero, or above it when the hero is a dish Home showed lately (ideasLead). */}
+          {!ideasFirst ? ideasBlock : null}
           {picks.data.alternates.map((p, i) => (
             <PickCard key={p.recommendationId} pick={p} index={i + 1} onOpen={() => open(p)} />
           ))}

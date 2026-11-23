@@ -295,13 +295,19 @@ export function NewDishCard({ dish, onPress, overline = true }: { dish: { name: 
             </Text>
           </View>
         ) : null}
-        <View style={styles.row}>
-          {overline ? null : <Icon name="sparkle" size={16} color={colors.accentText} />}
-          <Text variant="subheading" style={{ flexShrink: 1 }}>{dish.name}</Text>
+        <View style={[styles.row, { alignItems: "flex-start", gap: space.md }]}>
+          {/* A food tile picked from the dish's name, so a new dish looks as inviting as a library one. */}
+          <DishPhoto slug={null} name={dish.name} size={64} round />
+          <View style={{ flex: 1, gap: 4 }}>
+            <View style={styles.row}>
+              {overline ? null : <Icon name="sparkle" size={16} color={colors.accentText} />}
+              <Text variant="subheading" style={{ flexShrink: 1 }}>{dish.name}</Text>
+            </View>
+            <Text variant="label" muted>
+              {dish.why}
+            </Text>
+          </View>
         </View>
-        <Text variant="label" muted>
-          {dish.why}
-        </Text>
         <View style={[styles.pickFoot, { backgroundColor: colors.surfaceMuted }]}>
           <Text variant="label" weight={600} style={{ flex: 1 }}>
             {t("home.newDish.action", { dish: dish.name })}

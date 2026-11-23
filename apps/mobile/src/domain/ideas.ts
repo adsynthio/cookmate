@@ -97,6 +97,84 @@ export const IDEAS: Idea[] = [
       ],
     },
   },
+  {
+    needs: ["spinach", "paneer"],
+    why: {
+      en: "The spinach needs using and there's paneer: palak paneer tonight.",
+      hi: "पालक इस्तेमाल करना है और पनीर है: आज पालक पनीर।",
+      hinglish: "Palak use karna hai aur paneer hai: aaj palak paneer.",
+    },
+    doc: {
+      slug: "idea-palak-paneer",
+      title: "Palak Paneer",
+      titles: { en: "Palak Paneer", hi: "पालक पनीर", "hi-Latn": "Palak Paneer" },
+      description: "Paneer in a smooth, garlicky spinach gravy.",
+      course: "main", diet: "veg", base_servings: 2, prep_time_min: 10, cook_time_min: 20, difficulty: 2, spice_level: 2,
+      tags: ["new_creation"], review_status: "draft",
+      ingredients: [
+        ing("spinach", 250, "g", "1 bunch"), ing("paneer", 200, "g", "1 packet"), ing("onion", 80, "g", "1 small"),
+        ing("garlic", 6, "g", "3 cloves"), ing("cumin seeds", 3, "g", "½ chammach"), ing("garam masala", 2, "g", "½ chammach"),
+        ing("salt", 4, "g", "¾ chammach"),
+      ],
+      steps: [
+        step("Wash the spinach well. Blanch it in boiling water for 2 minutes, cool and blend smooth.", 2),
+        step("Heat oil, add cumin, then the chopped onion and garlic; fry until golden.", 5, { cue: "The garlic smells sweet, not raw." }),
+        step("Add the spinach purée, salt and a splash of water. Simmer gently.", 5),
+        step("Add paneer cubes and garam masala, simmer 2 minutes so the paneer stays soft, and serve with roti.", 2),
+      ],
+    },
+  },
+  {
+    needs: ["potato", "whole wheat flour"],
+    why: {
+      en: "Potatoes and atta are here: hot aloo paratha with curd.",
+      hi: "आलू और आटा है: दही के साथ गरम आलू पराठा।",
+      hinglish: "Aloo aur atta hai: dahi ke saath garam aloo paratha.",
+    },
+    doc: {
+      slug: "idea-aloo-paratha",
+      title: "Aloo Paratha",
+      titles: { en: "Aloo Paratha", hi: "आलू पराठा", "hi-Latn": "Aloo Paratha" },
+      description: "Whole wheat flatbread stuffed with spiced mashed potato, cooked with ghee on the tawa.",
+      course: "breakfast", diet: "veg", base_servings: 2, prep_time_min: 20, cook_time_min: 20, difficulty: 2, spice_level: 1,
+      tags: ["new_creation"], review_status: "draft",
+      ingredients: [
+        ing("whole wheat flour", 200, "g", "2 katori"), ing("potato", 300, "g", "3 medium"), ing("onion", 40, "g", "½ small"),
+        ing("red chilli powder", 2, "g", "½ chammach"), ing("garam masala", 1, "g", "1 chutki"), ing("salt", 5, "g", "1 chammach"),
+        ing("ghee", 20, "g", "4 chammach"),
+      ],
+      steps: [
+        step("Boil the potatoes until soft, peel and mash them with the chopped onion, chilli, garam masala and salt.", 15, { cue: "A knife slides through the potato with no push." }),
+        step("Knead the atta with water and a pinch of salt into a soft dough; rest it 10 minutes.", 10),
+        step("Roll a small disc, put a ball of filling in the middle, close it up and roll it out gently.", undefined),
+        step("Cook on a hot tawa, then brush with ghee and cook both sides until golden spots appear.", 3, { cue: "Brown spots on both sides and it puffs in places." }),
+      ],
+    },
+  },
+  {
+    needs: ["spinach", "curd"],
+    why: {
+      en: "Spinach and curd make a cool palak raita on the side.",
+      hi: "पालक और दही से साथ में ठंडा पालक रायता।",
+      hinglish: "Palak aur dahi se saath mein thanda palak raita.",
+    },
+    doc: {
+      slug: "idea-palak-raita",
+      title: "Palak Raita",
+      titles: { en: "Palak Raita", hi: "पालक रायता", "hi-Latn": "Palak Raita" },
+      description: "Wilted spinach folded into whisked curd with roasted cumin.",
+      course: "side", diet: "veg", base_servings: 2, prep_time_min: 5, cook_time_min: 3, difficulty: 1, spice_level: 1,
+      tags: ["new_creation"], review_status: "draft",
+      ingredients: [
+        ing("spinach", 100, "g", "2 handfuls"), ing("curd", 250, "g", "1 katori"), ing("roasted cumin powder", 2, "g", "½ chammach"),
+        ing("salt", 2, "g", "½ chammach"),
+      ],
+      steps: [
+        step("Wash and chop the spinach. Wilt it in a pan with a spoon of water, then let it cool.", 3, { cue: "The leaves turn dark green and soft." }),
+        step("Whisk the curd smooth, fold in the spinach, roasted cumin and salt, and serve cool."),
+      ],
+    },
+  },
 ];
 
 export type IdeaLocale = "en" | "hi" | "hinglish";
@@ -106,14 +184,28 @@ export function ideaFor(have: ReadonlySet<string>, takenTitles: string[], locale
   return ideasFor(have, takenTitles, locale, 1)[0] ?? null;
 }
 
-/** Up to `max` ideas this kitchen can make, skipping taken titles and ones shown lately (preview mode). */
-export function ideasFor(have: ReadonlySet<string>, takenTitles: string[], locale: IdeaLocale, max = 3, lately: string[] = []): { name: string; why: string }[] {
-  const taken = new Set([...takenTitles, ...lately].map((t) => t.toLowerCase()));
-  return IDEAS.filter((i) => i.needs.every((k) => have.has(k)))
-    .map((i) => ({ name: locale === "hi" ? i.doc.titles?.hi ?? i.doc.title : i.doc.title, title: i.doc.title, why: i.why[locale] }))
-    .filter((i) => !taken.has(i.title.toLowerCase()) && !taken.has(i.name.toLowerCase()))
-    .slice(0, max)
-    .map(({ name, why }) => ({ name, why }));
+/** Up to `max` ideas this kitchen can make, skipping taken titles and ones shown lately; ones using `focus` first. */
+export function ideasFor(
+  have: ReadonlySet<string>,
+  takenTitles: string[],
+  locale: IdeaLocale,
+  max = 3,
+  lately: string[] = [],
+  focus: string[] = [],
+): { name: string; why: string }[] {
+  const usesFocus = (i: Idea) => (i.needs.some((k) => focus.includes(k)) ? 0 : 1);
+  const pick = (skip: string[]) => {
+    const taken = new Set(skip.map((t) => t.toLowerCase()));
+    return IDEAS.filter((i) => i.needs.every((k) => have.has(k)))
+      .sort((a, b) => usesFocus(a) - usesFocus(b))
+      .map((i) => ({ name: locale === "hi" ? i.doc.titles?.hi ?? i.doc.title : i.doc.title, title: i.doc.title, why: i.why[locale] }))
+      .filter((i) => !taken.has(i.title.toLowerCase()) && !taken.has(i.name.toLowerCase()))
+      .slice(0, max)
+      .map(({ name, why }) => ({ name, why }));
+  };
+  // New ones first; when every idea was shown lately, show them again rather than nothing (as the live chef does).
+  const fresh = pick([...takenTitles, ...lately]);
+  return fresh.length ? fresh : pick(takenTitles);
 }
 
 /** The written-out idea for a dish name (any of its titles), or null when the preview doesn't know that dish. */

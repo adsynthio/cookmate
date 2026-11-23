@@ -112,8 +112,12 @@ For each pick write one warm line (at most 90 characters) saying the real reason
 person or number it rests on. Write in the language given: Hindi in Devanagari for hi-IN, Hinglish in Latin script
 for hi-Latn-IN, Indian English for en-IN. No health, nutrition or weight claims. No emoji.
 
-ideas: two or three dishes this kitchen can make tonight that are NOT among the candidates' titles and not in
-ideas_lately. Think like a creative Indian home cook who can make almost anything from what is in "kitchen" plus
+candidates can be empty (none of Cookmate's recipes fits this meal): then return no picks, only ideas.
+
+ideas: three dishes this kitchen can make for this meal that are NOT among the candidates' titles and not in
+ideas_lately. If "use_first" is given, the cook tapped those to use up: every idea is built around at least one of
+them. If "mood" is given (comforting, quick, light, high_protein, kids_friendly, one_pot), every idea fits it; "wants"
+names ingredients the cook asked for. Think like a creative Indian home cook who can make almost anything from what is in "kitchen" plus
 everyday staples (salt, oil, ghee, spices, onion, tomato, atta, rice, dals), swapping by job (Eno for baking soda, curd
 for cream, besan to bind) and buying at most two small things. Make them exciting and different from each other:
 mix regions and styles (Punjabi, South Indian, Gujarati, Bengali, Maharashtrian, Indo-Chinese, street food, a
@@ -126,7 +130,7 @@ most 90 characters, naming what in the kitchen it uses; "uses": those kitchen it
 reasons; no health claims, no emoji.`;
 
 async function modelChef(client: Anthropic, householdId: string, language: string, brief: unknown) {
-  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@3" }, () => client.messages.parse(
+  const r = await timedAiCall({ householdId, task: "pick_chef", model: CHEF_MODEL, promptVersion: "pick_chef@4" }, () => client.messages.parse(
     {
       model: CHEF_MODEL,
       max_tokens: 1400,
@@ -226,8 +230,9 @@ Deno.serve(async (req) => {
     ...ctx.eaters.filter((e) => t.includes(e.name)).map((e) => e.name),
     ...(t.match(/\d+/g) ?? []),
   ];
-  // T1: out of AI credits, the rules' picks stand too.
-  if (client && ranking.ranked.length && (await creditsFor(sb, householdId)).allowed) {
+  // T1: out of AI credits, the rules' picks stand too. With no library dish for this meal (breakfast with no poha or
+  // besan) the chef still runs, for new dishes from the kitchen instead of "nothing fits" (23 Nov 2026).
+  if (client && (await creditsFor(sb, householdId)).allowed) {
     const pool = ranking.ranked.slice(0, CHEF_POOL);
     const templateOf = (p: Ranked) => reasonFor(p, ctx, locale, nameOf);
     try {

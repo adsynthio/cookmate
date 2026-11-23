@@ -118,3 +118,27 @@ Deno.test("ideas: up to three, real names, nothing avoided, nothing shown lately
   assertEquals(acceptIdeas({ picks: [], new_dish: { name: "Aloo Methi", why: "Methi is fresh." } }, []), [{ name: "Aloo Methi", why: "Methi is fresh." }], "the older single idea still counts");
   assertEquals(acceptIdeas(null, []), []);
 });
+
+Deno.test("the brief says what the cook wants used up and the mood tapped, even with no candidates", () => {
+  const ctx = {
+    slot: "breakfast", eaters: [], staples: [], equipment: null, avoid: [], like: [], prefer: [], recent: [],
+    craving: NO_CRAVING, timeBudgetMin: 45, weights: {} as RankContext["weights"], alreadyCooked: [], focus: ["paneer"],
+    pantry: [{ itemId: "1", key: "paneer", confidence: 1, daysLeft: 2, out: false }],
+  } as RankContext;
+  const craving = { ...NO_CRAVING, tags: ["comforting"], ingredients: ["spinach"] };
+  const b = chefBrief({ ranked: [], templates: new Map(), ctx, slot: "breakfast", today: "2026-11-23", festivals: [], craving, nameOf: (k) => k });
+  assertEquals(b.use_first, ["paneer"]);
+  assertEquals(b.mood, ["comforting"]);
+  assertEquals(b.wants, ["spinach"]);
+  assertEquals(b.candidates, []);
+  assertEquals(b.kitchen, ["paneer (2 days left)"]);
+  const plain = chefBrief({ ranked: pool, templates: new Map(), ctx: { ...ctx, focus: [] }, slot: "dinner", today: "2026-11-23", festivals: [], craving: NO_CRAVING, nameOf: (k) => k });
+  assertEquals("use_first" in plain || "mood" in plain || "wants" in plain, false);
+});
+
+Deno.test("ideas: when the model only repeats ideas shown lately, they still show rather than none", () => {
+  const out = { picks: [], ideas: [{ name: "Pav Bhaji", why: "The potatoes are here.", uses: ["potato"] }] };
+  assertEquals(acceptIdeas(out, [], { lately: ["Pav Bhaji"] }).map((i) => i.name), ["Pav Bhaji"]);
+  const mixed = { picks: [], ideas: [...out.ideas, { name: "Aloo Tikki", why: "The potatoes are here.", uses: ["potato"] }] };
+  assertEquals(acceptIdeas(mixed, [], { lately: ["Pav Bhaji"] }).map((i) => i.name), ["Aloo Tikki"]);
+});

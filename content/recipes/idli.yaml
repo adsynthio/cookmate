@@ -1,0 +1,177 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: idli
+title: Idli
+titles:
+  hi: इडली
+  hi-Latn: Idli
+description: Soft, fluffy steamed cakes made from a fermented batter of idli rava and urad dal, a South Indian breakfast served
+  with sambar and coconut chutney.
+descriptions:
+  hi: इडली रवा और उड़द दाल के खमीर उठे घोल से बनी नरम, फूली हुई भाप में पकी इडली। यह दक्षिण भारत का नाश्ता है, जिसे सांभर
+    और नारियल चटनी के साथ परोसा जाता है।
+  hi-Latn: Idli rava aur urad dal ke khameer uthe ghol se bani naram, phooli hui bhaap mein paki idli. Yeh South Indian nashta
+    hai, jise sambar aur nariyal chutney ke saath parosa jata hai.
+cuisine_region: south_indian
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 30
+cook_time_min: 25
+difficulty: 3
+spice_level: 1
+equipment:
+- pressure_cooker
+- mixer_grinder
+- gas_stove
+tags:
+- comforting
+- kids_friendly
+- light
+flavor_profile:
+  rich: 0.1
+  heat: 0
+  acid: 0.2
+  crunch: 0
+  starch: 0.7
+  sweet: 0
+food_groups:
+- grain
+- dal
+review_status: in_review
+ingredients:
+- ingredient: idli rava
+  qty: 300
+  unit: g
+  local: 2 katori
+  role: base
+- ingredient: urad dal
+  qty: 100
+  unit: g
+  local: half katori se thoda zyada
+  role: base
+- ingredient: fenugreek seeds
+  qty: 2
+  unit: g
+  local: half chhota chammach
+  role: spice
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: refined oil
+  qty: 10
+  unit: ml
+  local: 2 chhota chammach
+  role: fat
+steps:
+- text: Wash the urad dal with the fenugreek seeds and soak them in water for 5 hours. Soak the idli rava separately in water
+    for the same time.
+  technique: soak
+  minutes: 300
+  timer: true
+  cues:
+    look: The dal looks plump and pale.
+    touch: A dal grain breaks easily between your fingers.
+  say:
+    hi:
+      text: उड़द दाल और मेथी दाना धोकर 5 घंटे पानी में भिगो दो। इडली रवा को भी उतनी ही देर अलग पानी में भिगो दो।
+      look: दाल फूली हुई और हल्की सफ़ेद दिखती है।
+      touch: दाल का दाना उँगलियों में आसानी से टूट जाता है।
+    hi-Latn:
+      text: Urad dal aur methi dana dhokar 5 ghante paani mein bhigo do. Idli rava ko bhi utni hi der alag paani mein bhigo
+        do.
+      look: Dal phooli hui aur halki safed dikhti hai.
+      touch: Dal ka daana ungliyon mein aasani se toot jata hai.
+- text: Drain the dal and grind it in the mixer with a little cold water, adding it slowly, until you get a smooth, fluffy
+    batter.
+  technique: batter
+  minutes: 10
+  timer: true
+  cues:
+    look: The batter is white, smooth and airy.
+    touch: The batter feels light and fluffy, not gritty.
+  say:
+    hi:
+      text: दाल का पानी निकालो और मिक्सी में थोड़ा-थोड़ा ठंडा पानी डालते हुए चिकना, फूला हुआ घोल पीस लो।
+      look: घोल सफ़ेद, चिकना और हवादार दिखता है।
+      touch: घोल हल्का और फूला हुआ लगता है, दरदरा नहीं।
+    hi-Latn:
+      text: Dal ka paani nikalo aur mixie mein thoda-thoda thanda paani daalte hue chikna, phoola hua ghol pees lo.
+      look: Ghol safed, chikna aur hawadar dikhta hai.
+      touch: Ghol halka aur phoola hua lagta hai, dardara nahi.
+- text: Squeeze the water out of the idli rava with your hands and mix it into the dal batter with the salt. Cover and keep
+    it in a warm place for 8 to 12 hours to ferment.
+  technique: batter
+  minutes: 600
+  timer: true
+  cues:
+    look: The batter rises to about double and has small bubbles.
+    smell: It smells pleasantly sour.
+  say:
+    hi:
+      text: इडली रवा का पानी हाथ से निचोड़ो और उसे नमक के साथ दाल के घोल में मिला दो। ढककर 8 से 12 घंटे खमीर उठने के लिए गरम
+        जगह पर रख दो।
+      look: घोल लगभग दोगुना फूल जाता है और उसमें छोटे बुलबुले दिखते हैं।
+      smell: हल्की खट्टी अच्छी खुशबू आती है।
+    hi-Latn:
+      text: Idli rava ka paani haath se nichodo aur use namak ke saath dal ke ghol mein mila do. Dhakkar 8 se 12 ghante khameer
+        uthne ke liye garam jagah par rakh do.
+      look: Ghol lagbhag dugna phool jata hai aur usmein chhote bulbule dikhte hain.
+      smell: Halki khatti achhi khushboo aati hai.
+- text: Grease the idli moulds with oil and gently fill each cup about three-quarters full without stirring the batter too
+    much.
+  technique: shape
+  minutes: 5
+  timer: true
+  say:
+    hi:
+      text: इडली के साँचों पर तेल लगाओ और घोल को ज़्यादा चलाए बिना हर खाने को धीरे से तीन-चौथाई भर दो।
+    hi-Latn:
+      text: Idli ke saanchon par tel lagao aur ghol ko zyada chalaye bina har khaane ko dheere se teen-chauthai bhar do.
+- text: Pour 2 cups of water into the pressure cooker, place the stand inside and close the lid without the whistle. Steam
+    on medium heat for 12 minutes.
+  technique: steam
+  minutes: 12
+  timer: true
+  heat: medium
+  cues:
+    look: Steady steam comes out of the vent.
+  safety: Keep the whistle off so the steam can escape freely.
+  say:
+    hi:
+      text: प्रेशर कुकर में 2 कप पानी डालो, स्टैंड अंदर रखो और सीटी लगाए बिना ढक्कन बंद करो। मध्यम आँच पर 12 मिनट भाप में
+        पकाओ।
+      look: ढक्कन के छेद से लगातार भाप निकलती दिखती है।
+      safety: सीटी मत लगाओ, ताकि भाप आराम से निकलती रहे।
+    hi-Latn:
+      text: Pressure cooker mein 2 cup paani daalo, stand andar rakho aur seeti lagaye bina dhakkan band karo. Medium aanch
+        par 12 minute bhaap mein pakao.
+      look: Dhakkan ke chhed se lagatar bhaap nikalti dikhti hai.
+      safety: Seeti mat lagao, taaki bhaap aaram se nikalti rahe.
+- text: Turn off the heat and open the cooker only after the pressure has dropped by itself, about 5 minutes.
+  minutes: 5
+  timer: true
+  cues:
+    look: Steam has stopped coming out of the vent.
+  safety: Never force the lid open; wait until the pressure has dropped by itself.
+  say:
+    hi:
+      text: आँच बंद करो और प्रेशर अपने आप उतरने के बाद ही कुकर खोलो, लगभग 5 मिनट में।
+      look: छेद से भाप निकलना बंद हो जाता है।
+      safety: ढक्कन कभी ज़बरदस्ती मत खोलो। प्रेशर अपने आप उतरने तक रुको।
+    hi-Latn:
+      text: Aanch band karo aur pressure apne aap utarne ke baad hi cooker kholo, lagbhag 5 minute mein.
+      look: Chhed se bhaap nikalna band ho jata hai.
+      safety: Dhakkan kabhi zabardasti mat kholo. Pressure apne aap utarne tak ruko.
+- text: Let the moulds rest for 2 minutes, then scoop the idlis out with a wet spoon and serve hot.
+  minutes: 2
+  cues:
+    touch: A cooked idli springs back when pressed and does not stick to your finger.
+  say:
+    hi:
+      text: साँचों को 2 मिनट रहने दो, फिर गीले चम्मच से इडली निकालो और गरम परोसो।
+      touch: पकी इडली दबाने पर वापस उठ जाती है और उँगली पर नहीं चिपकती।
+    hi-Latn:
+      text: Saanchon ko 2 minute rehne do, phir geele chammach se idli nikalo aur garam paroso.
+      touch: Paki idli dabane par wapas uth jati hai aur ungli par nahi chipakti.

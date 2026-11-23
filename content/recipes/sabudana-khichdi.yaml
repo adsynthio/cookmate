@@ -1,0 +1,193 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: sabudana-khichdi
+title: Sabudana Khichdi
+titles:
+  hi: साबूदाना खिचड़ी
+  hi-Latn: Sabudana Khichdi
+description: 'A Maharashtrian breakfast and fast-day favourite: soaked sabudana pearls tossed in ghee with cumin, green chilli,
+  soft potato cubes and crushed roasted peanuts, finished with lemon and coriander.'
+descriptions:
+  hi: महाराष्ट्र का पसंदीदा नाश्ता और व्रत का खाना। भीगे साबूदाने को घी में जीरा, हरी मिर्च, नरम आलू और भुनी कुटी मूंगफली
+    के साथ हल्के हाथ से मिलाकर पकाया जाता है। ऊपर से नींबू और हरा धनिया डाला जाता है।
+  hi-Latn: Maharashtra ka pasandida nashta aur vrat ka khana. Bhige sabudane ko ghee mein jeera, hari mirch, naram aloo aur
+    bhuni kuti moongphali ke saath halke haath se milakar pakaya jata hai. Upar se nimbu aur hara dhaniya dala jata hai.
+cuisine_region: maharashtra
+course: breakfast
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 20
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+- mixer_grinder
+tags:
+- fasting
+- comforting
+- one_pot
+flavor_profile:
+  rich: 0.5
+  heat: 0.3
+  acid: 0.2
+  crunch: 0.3
+  starch: 0.8
+  sweet: 0.1
+food_groups:
+- grain
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: sabudana
+  qty: 300
+  unit: g
+  local: 1½ katori
+  role: base
+- ingredient: peanuts
+  qty: 100
+  unit: g
+  local: ½ katori
+  role: component
+- ingredient: potato
+  qty: 250
+  unit: g
+  local: 2 medium aloo
+  role: vegetable
+- ingredient: green chilli
+  qty: 15
+  unit: g
+  local: 3-4 hari mirch
+  role: heat
+- ingredient: ghee
+  qty: 40
+  unit: g
+  local: 3 bade chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: curry leaves
+  qty: 3
+  unit: g
+  local: 8-10 patte
+  role: aromatic
+  optional: true
+- ingredient: rock salt
+  qty: 7
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: sugar
+  qty: 5
+  unit: g
+  local: 1 chhota chammach
+  role: sweet
+- ingredient: lemon
+  qty: 50
+  unit: g
+  local: 1 nimbu
+  role: acid
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach kata hua
+  role: garnish
+  optional: true
+steps:
+- text: Rinse the sabudana 2-3 times, then soak it in water that just reaches the top of the pearls for 5-6 hours or overnight.
+  technique: soak
+  minutes: 300
+  timer: true
+  cues:
+    look: The pearls have swollen and the water is fully absorbed.
+    touch: A pearl squashes easily between two fingers with no hard centre.
+  say:
+    hi:
+      text: साबूदाने को 2-3 बार धो लें, फिर इतने पानी में 5-6 घंटे या रात भर भिगो दें कि पानी बस दानों के ऊपर तक आए।
+      look: दाने फूल गए हैं और सारा पानी सोख लिया है।
+      touch: दाना दो उंगलियों में आसानी से दब जाता है, बीच में सख्ती नहीं रहती।
+    hi-Latn:
+      text: Sabudane ko 2-3 baar dho lein, phir itne paani mein 5-6 ghante ya raat bhar bhigo dein ki paani bas daanon ke
+        upar tak aaye.
+      look: Daane phool gaye hain aur saara paani sokh liya hai.
+      touch: Daana do ungliyon mein aasani se dab jata hai, beech mein sakhti nahi rehti.
+- text: Dry roast the peanuts in a kadai, then cool, rub off the skins and crush them coarsely in the mixer.
+  technique: dry_roast
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The skins crack and the peanuts turn golden.
+    smell: A nutty roasted smell rises.
+  say:
+    hi:
+      text: कढ़ाई में मूंगफली सूखी भून लें, फिर ठंडी करके छिलके रगड़कर निकालें और मिक्सी में दरदरा कूट लें।
+      look: छिलके चटकने लगते हैं और मूंगफली सुनहरी हो जाती है।
+      smell: भुनी मूंगफली की खुशबू आने लगती है।
+    hi-Latn:
+      text: Kadai mein moongphali sookhi bhoon lein, phir thandi karke chhilke ragadkar nikalein aur mixie mein dardara koot
+        lein.
+      look: Chhilke chatakne lagte hain aur moongphali sunehri ho jati hai.
+      smell: Bhuni moongphali ki khushboo aane lagti hai.
+- text: Mix the crushed peanuts, rock salt and sugar into the soaked sabudana so every pearl is coated.
+  cues:
+    look: The pearls look separate and dusted, not lumpy.
+  say:
+    hi:
+      text: भीगे साबूदाने में कुटी मूंगफली, सेंधा नमक और चीनी मिला दें ताकि हर दाने पर लग जाए।
+      look: दाने अलग-अलग और मूंगफली से लिपटे दिखते हैं, गुठलियां नहीं होतीं।
+    hi-Latn:
+      text: Bhige sabudane mein kuti moongphali, sendha namak aur cheeni mila dein taaki har daane par lag jaye.
+      look: Daane alag-alag aur moongphali se lipte dikhte hain, gutthliyan nahi hotin.
+- text: Heat ghee in the kadai, add cumin seeds, slit green chillies and curry leaves.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles.
+  safety: Chillies and curry leaves spit in hot ghee, so keep your face back.
+  say:
+    hi:
+      text: कढ़ाई में घी गरम करें, जीरा, लंबी कटी हरी मिर्च और करी पत्ते डालें।
+      sound: जीरा चटकने लगता है।
+      safety: गरम घी में मिर्च और करी पत्ते छिटकते हैं, चेहरा दूर रखें।
+    hi-Latn:
+      text: Kadai mein ghee garam karein, jeera, lambi kati hari mirch aur curry patte daalein.
+      sound: Jeera chatakne lagta hai.
+      safety: Garam ghee mein mirch aur curry patte chhitakte hain, chehra door rakhein.
+- text: Add the peeled potato cubes, cover and cook until soft, stirring once or twice.
+  minutes: 7
+  timer: true
+  heat: low
+  cues:
+    touch: A knife tip goes through a cube easily.
+  say:
+    hi:
+      text: छिले हुए आलू के टुकड़े डालें, ढककर नरम होने तक पकाएं, बीच में एक-दो बार चलाएं।
+      touch: चाकू की नोक आलू में आसानी से घुस जाती है।
+    hi-Latn:
+      text: Chhile hue aloo ke tukde daalein, dhakkar naram hone tak pakayein, beech mein ek-do baar chalayein.
+      touch: Chaku ki nok aloo mein aasani se ghus jati hai.
+- text: Add the sabudana mix and toss gently, uncovered, until the pearls turn see-through.
+  minutes: 7
+  timer: true
+  heat: low
+  cues:
+    look: Most pearls turn translucent with no white centre; take it off before it turns sticky.
+  say:
+    hi:
+      text: साबूदाने का मिश्रण डालें और बिना ढके हल्के हाथ से चलाते हुए पकाएं जब तक दाने पारदर्शी न हो जाएं।
+      look: ज़्यादातर दाने पारदर्शी हो जाते हैं, बीच में सफेदी नहीं रहती; चिपचिपा होने से पहले उतार लें।
+    hi-Latn:
+      text: Sabudane ka mishran daalein aur bina dhake halke haath se chalate hue pakayein jab tak daane paardarshi na ho
+        jayein.
+      look: Zyadatar daane paardarshi ho jate hain, beech mein safedi nahi rehti; chipchipa hone se pehle utaar lein.
+- text: Turn off the heat, squeeze in lemon juice, scatter coriander and serve hot.
+  say:
+    hi:
+      text: आंच बंद करें, नींबू का रस निचोड़ें, हरा धनिया डालें और गरम-गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, nimbu ka ras nichodein, hara dhaniya daalein aur garam-garam parosein.

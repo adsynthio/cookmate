@@ -1,0 +1,176 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: masala-omelette
+title: Masala Omelette
+titles:
+  hi: मसाला ऑमलेट
+  hi-Latn: Masala Omelette
+description: A soft, fully cooked egg omelette loaded with chopped onion, tomato, green chilli and coriander, spiced with
+  turmeric and red chilli. It is the everyday Indian breakfast omelette, eaten hot with bread or roti.
+descriptions:
+  hi: प्याज़, टमाटर, हरी मिर्च और हरे धनिये से भरा, हल्दी और लाल मिर्च वाला नरम और पूरा पका अंडे का ऑमलेट। यह रोज़ का देसी
+    नाश्ता है, जिसे गरम-गरम ब्रेड या रोटी के साथ खाया जाता है।
+  hi-Latn: Pyaaz, tamatar, hari mirch aur hare dhaniye se bhara, haldi aur laal mirch wala naram aur poora paka ande ka omelette.
+    Yeh roz ka desi nashta hai, jise garam-garam bread ya roti ke saath khaya jaata hai.
+cuisine_region: pan_indian
+course: breakfast
+diet: eggetarian
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 15
+difficulty: 1
+spice_level: 2
+equipment:
+- tawa
+- gas_stove
+tags:
+- quick
+- high_protein
+flavor_profile:
+  rich: 0.4
+  heat: 0.3
+  acid: 0.1
+  crunch: 0.1
+  starch: 0
+  sweet: 0
+food_groups:
+- protein
+review_status: in_review
+ingredients:
+- ingredient: egg
+  qty: 8
+  unit: piece
+  local: 8 ande
+  role: protein
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 medium pyaaz
+  role: vegetable
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 medium tamatar
+  role: vegetable
+  optional: true
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: coriander leaves
+  qty: 15
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1 chutki haldi
+  role: spice
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach laal mirch
+  role: spice
+- ingredient: black pepper
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach kaali mirch powder
+  role: spice
+  optional: true
+- ingredient: salt
+  qty: 5
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+steps:
+- text: Finely chop the onion, tomato, green chillies and coriander leaves.
+  minutes: 5
+  timer: true
+  say:
+    hi:
+      text: प्याज़, टमाटर, हरी मिर्च और हरा धनिया बारीक काट लें।
+    hi-Latn:
+      text: Pyaaz, tamatar, hari mirch aur hara dhaniya bareek kaat lein.
+- text: Break the eggs into a bowl, add salt, turmeric, red chilli powder and black pepper, and whisk well with a fork.
+  technique: batter
+  minutes: 2
+  cues:
+    look: The egg turns an even yellow with a light froth on top.
+  say:
+    hi:
+      text: अंडे एक कटोरे में तोड़ें, नमक, हल्दी, लाल मिर्च और काली मिर्च डालें और काँटे से अच्छी तरह फेंटें।
+      look: अंडा एक-सा पीला हो जाए और ऊपर हल्का झाग आ जाए।
+    hi-Latn:
+      text: Ande ek katori mein todein, namak, haldi, laal mirch aur kaali mirch daalein aur kaante se achhi tarah phentein.
+      look: Anda ek-sa peela ho jaaye aur upar halka jhaag aa jaaye.
+- text: Stir the chopped vegetables into the egg and cook it soon after mixing.
+  safety: Do not leave the raw egg mixture standing out; cook it right away.
+  say:
+    hi:
+      text: कटी सब्ज़ियाँ अंडे में मिलाएँ और मिलाने के तुरंत बाद पकाएँ।
+      safety: कच्चे अंडे का घोल बाहर रखा न छोड़ें, तुरंत पकाएँ।
+    hi-Latn:
+      text: Kati sabziyaan ande mein milaayein aur milaane ke turant baad pakaayein.
+      safety: Kachche ande ka ghol bahar rakha na chhodein, turant pakaayein.
+- text: Heat the tawa on medium heat and spread about 2 teaspoons of oil over it.
+  minutes: 2
+  heat: medium
+  cues:
+    look: The oil shimmers and spreads easily.
+  say:
+    hi:
+      text: तवा मध्यम आँच पर गरम करें और उस पर लगभग 2 छोटे चम्मच तेल फैलाएँ।
+      look: तेल चमकने लगे और आसानी से फैल जाए।
+    hi-Latn:
+      text: Tawa medium aanch par garam karein aur us par lagbhag 2 chhote chammach tel failaayein.
+      look: Tel chamakne lage aur aasaani se fail jaaye.
+- text: Pour in a quarter of the egg mixture, tilt the tawa to spread it into a round, and cook on low-medium heat.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    look: The edges turn firm and the top is mostly set.
+    sound: A soft, steady sizzle.
+  say:
+    hi:
+      text: अंडे के घोल का चौथाई हिस्सा डालें, तवा घुमाकर गोल फैलाएँ और धीमी-मध्यम आँच पर पकाएँ।
+      look: किनारे सख़्त हो जाएँ और ऊपर का हिस्सा लगभग जम जाए।
+      sound: हल्की, लगातार छन-छन की आवाज़।
+    hi-Latn:
+      text: Ande ke ghol ka chauthai hissa daalein, tawa ghumaakar gol failaayein aur dheemi-medium aanch par pakaayein.
+      look: Kinaare sakht ho jaayein aur upar ka hissa lagbhag jam jaaye.
+      sound: Halki, lagaataar chhan-chhan ki aawaaz.
+- text: Flip the omelette with a spatula and cook the other side until it is set all the way through.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    look: Both sides have golden spots and no wet egg shows.
+    touch: The centre feels firm and springs back when pressed.
+  safety: Cook until the egg is fully set with no runny part inside.
+  say:
+    hi:
+      text: पलटे से ऑमलेट पलटें और दूसरी तरफ़ तब तक पकाएँ जब तक पूरा अंदर तक पक न जाए।
+      look: दोनों तरफ़ सुनहरे धब्बे हों और कहीं गीला अंडा न दिखे।
+      touch: बीच में दबाने पर सख़्त लगे और वापस उभर आए।
+      safety: अंडा पूरी तरह जमने तक पकाएँ, अंदर कुछ भी कच्चा या बहता न रहे।
+    hi-Latn:
+      text: Palte se omelette palatein aur doosri taraf tab tak pakaayein jab tak poora andar tak pak na jaaye.
+      look: Dono taraf sunehre dhabbe hon aur kahin geela anda na dikhe.
+      touch: Beech mein dabaane par sakht lage aur waapas ubhar aaye.
+      safety: Anda poori tarah jamne tak pakaayein, andar kuch bhi kachcha ya behta na rahe.
+- text: Repeat with the remaining mixture, adding a little oil each time, and serve hot.
+  minutes: 9
+  timer: true
+  heat: medium
+  say:
+    hi:
+      text: बाकी घोल से इसी तरह ऑमलेट बनाएँ, हर बार थोड़ा तेल डालें, और गरम परोसें।
+    hi-Latn:
+      text: Baaki ghol se isi tarah omelette banaayein, har baar thoda tel daalein, aur garam parosein.

@@ -1,0 +1,218 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: bread-upma
+title: Bread Upma
+titles:
+  hi: ब्रेड उपमा
+  hi-Latn: Bread Upma
+description: A quick South Indian style breakfast where cubes of bread are tossed in a tangy tomato-onion masala with a mustard
+  seed, dal and curry leaf tadka, finished with lemon and coriander.
+descriptions:
+  hi: झटपट बनने वाला दक्षिण भारतीय अंदाज़ का नाश्ता, जिसमें ब्रेड के टुकड़ों को राई, दाल और करी पत्ते के तड़के वाले खट्टे
+    टमाटर-प्याज़ मसाले में मिलाया जाता है और ऊपर से नींबू और धनिया डाला जाता है।
+  hi-Latn: Jhatpat banne wala South Indian style nashta, jismein bread ke tukdon ko rai, dal aur curry patte ke tadke wale
+    khatte tamatar-pyaaz masale mein milaya jaata hai aur upar se nimbu aur dhaniya daala jaata hai.
+cuisine_region: south_indian
+course: breakfast
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 15
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.4
+  acid: 0.4
+  crunch: 0.2
+  starch: 0.6
+  sweet: 0.1
+food_groups:
+- grain
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: bread
+  qty: 10
+  unit: piece
+  local: 10 bread slice
+  role: base
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bada chammach
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: urad dal
+  qty: 5
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: chana dal
+  qty: 5
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 10-12 patte
+  role: aromatic
+  group: tadka
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 pyaaz
+  role: vegetable
+  group: masala
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: masala
+- ingredient: ginger
+  qty: 8
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+  group: masala
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 2 tamatar
+  role: acid
+  group: masala
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: heat
+  group: masala
+- ingredient: salt
+  qty: 5
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: masala
+- ingredient: sugar
+  qty: 3
+  unit: g
+  local: 1 chutki se thoda zyada
+  role: sweet
+  group: masala
+  optional: true
+- ingredient: lemon
+  qty: 15
+  unit: ml
+  local: 1/2 nimbu
+  role: acid
+  group: finish
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bada chammach kata hua
+  role: garnish
+  group: finish
+steps:
+- text: Cut the bread slices into small bite-size cubes; finely chop the onion, tomato, green chilli and ginger.
+  minutes: 5
+  timer: true
+  say:
+    hi:
+      text: ब्रेड स्लाइस को छोटे-छोटे टुकड़ों में काट लें; प्याज़, टमाटर, हरी मिर्च और अदरक बारीक काट लें।
+    hi-Latn:
+      text: Bread slice ko chhote-chhote tukdon mein kaat lein; pyaaz, tamatar, hari mirch aur adrak bareek kaat lein.
+- text: Heat the oil in a kadai, add mustard seeds, then urad dal, chana dal and curry leaves.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    look: The dals turn light golden.
+    sound: The mustard seeds crackle and the curry leaves splutter.
+  safety: Curry leaves splutter in hot oil, so stand back when adding them.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करें, राई डालें, फिर उड़द दाल, चना दाल और करी पत्ते डालें।
+      look: दालें हल्की सुनहरी हो जाएँ।
+      sound: राई चटकने लगे और करी पत्ते छनछनाएँ।
+      safety: गरम तेल में करी पत्ते छिटकते हैं, डालते समय थोड़ा पीछे रहें।
+    hi-Latn:
+      text: Kadai mein tel garam karein, rai daalein, phir urad dal, chana dal aur curry patte daalein.
+      look: Dalein halki sunehri ho jaayein.
+      sound: Rai chatakne lage aur curry patte chhanchhanaayein.
+      safety: Garam tel mein curry patte chhitakte hain, daalte samay thoda peeche rahein.
+- text: Add the onion, green chilli and ginger and sauté until the onion is soft.
+  technique: saute_onion
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and translucent.
+    smell: The raw smell of ginger goes away.
+  say:
+    hi:
+      text: प्याज़, हरी मिर्च और अदरक डालकर प्याज़ नरम होने तक भूनें।
+      look: प्याज़ नरम और पारदर्शी हो जाए।
+      smell: अदरक की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Pyaaz, hari mirch aur adrak daalkar pyaaz naram hone tak bhunein.
+      look: Pyaaz naram aur transparent ho jaaye.
+      smell: Adrak ki kachchi mehak chali jaaye.
+- text: Add the tomato, turmeric, red chilli powder, salt and sugar, and cook until the tomato turns mushy.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato breaks down and oil shows at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च पाउडर, नमक और चीनी डालकर टमाटर गलने तक पकाएँ।
+      look: टमाटर गल जाए और किनारों पर तेल दिखने लगे।
+    hi-Latn:
+      text: Tamatar, haldi, lal mirch powder, namak aur cheeni daalkar tamatar galne tak pakaayein.
+      look: Tamatar gal jaaye aur kinaron par tel dikhne lage.
+- text: Sprinkle 2 to 3 tablespoons of water, add the bread cubes and toss gently until every piece is coated with masala.
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: The bread is evenly orange with masala.
+    touch: The cubes are soft inside but not soggy.
+  say:
+    hi:
+      text: 2-3 बड़े चम्मच पानी छिड़कें, ब्रेड के टुकड़े डालें और हल्के हाथ से मिलाएँ ताकि हर टुकड़े पर मसाला लग जाए।
+      look: ब्रेड पर एक जैसा नारंगी मसाला चढ़ जाए।
+      touch: टुकड़े अंदर से नरम हों पर गीले न हों।
+    hi-Latn:
+      text: 2-3 bade chammach paani chhidkein, bread ke tukde daalein aur halke haath se milaayein taaki har tukde par masala
+        lag jaaye.
+      look: Bread par ek jaisa orange masala chadh jaaye.
+      touch: Tukde andar se naram hon par geele na hon.
+- text: Turn off the heat, squeeze the lemon, add the coriander leaves, mix and serve hot.
+  minutes: 1
+  say:
+    hi:
+      text: आँच बंद करें, नींबू निचोड़ें, हरा धनिया डालें, मिलाएँ और गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, nimbu nichodein, hara dhaniya daalein, milaayein aur garam parosein.

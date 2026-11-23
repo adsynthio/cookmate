@@ -1,0 +1,207 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: rava-dosa
+title: Rava Dosa
+titles:
+  hi: रवा डोसा
+  hi-Latn: Rava Dosa
+description: A crisp, lacy South Indian dosa made from a thin batter of semolina, rice flour and a little refined flour, flecked
+  with onion, green chilli, ginger, cumin and curry leaves. It needs no grinding or fermenting. Serve hot with coconut chutney
+  or sambar.
+descriptions:
+  hi: सूजी, चावल के आटे और थोड़े मैदे के पतले घोल से बना कुरकुरा, जालीदार दक्षिण भारतीय डोसा। इसमें प्याज़, हरी मिर्च, अदरक,
+    जीरा और करी पत्ता पड़ता है। न पीसना है, न खमीर उठाना है। गरम-गरम नारियल चटनी या सांभर के साथ परोसें।
+  hi-Latn: Suji, chawal ke aate aur thode maide ke patle ghol se bana crispy, jaalidaar South Indian dosa. Isme pyaaz, hari
+    mirch, adrak, jeera aur curry patta padta hai. Na peesna hai, na khameer uthana hai. Garam-garam nariyal chutney ya sambar
+    ke saath parosein.
+cuisine_region: south_indian_karnataka_
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 30
+cook_time_min: 30
+difficulty: 3
+spice_level: 2
+equipment:
+- tawa
+- gas_stove
+tags:
+- quick
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0
+  crunch: 0.7
+  starch: 0.7
+  sweet: 0
+food_groups:
+- grain
+review_status: in_review
+ingredients:
+- ingredient: semolina
+  qty: 150
+  unit: g
+  local: 1 katori suji
+  role: base
+  group: batter
+- ingredient: rice flour
+  qty: 150
+  unit: g
+  local: 1 katori chawal ka aata
+  role: base
+  group: batter
+- ingredient: refined flour
+  qty: 40
+  unit: g
+  local: 4 bade chammach maida
+  role: binder
+  group: batter
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+  group: batter
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 bada pyaaz, baarik kata
+  role: vegetable
+  group: add-ins
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch, baarik kati
+  role: heat
+  group: add-ins
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, baarik kata
+  role: aromatic
+  group: add-ins
+- ingredient: cumin seeds
+  qty: 5
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: add-ins
+- ingredient: black pepper
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach kali mirch, dardari kuti
+  role: spice
+  group: add-ins
+- ingredient: curry leaves
+  qty: 3
+  unit: g
+  local: 10-12 curry patte, kate hue
+  role: aromatic
+  group: add-ins
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach hara dhaniya, baarik kata
+  role: garnish
+  group: add-ins
+- ingredient: refined oil
+  qty: 60
+  unit: ml
+  local: 4 bade chammach tel
+  role: fat
+steps:
+- text: In a big bowl, mix the semolina, rice flour, refined flour and salt, then whisk in about 800 ml water to make a thin,
+    lump-free batter. Rest it for 20 minutes.
+  technique: soak
+  minutes: 20
+  timer: true
+  cues:
+    look: The batter is watery, like thin buttermilk.
+  say:
+    hi:
+      text: एक बड़े बर्तन में सूजी, चावल का आटा, मैदा और नमक मिलाइए, फिर लगभग 800 ml पानी डालकर फेंटते हुए पतला, बिना गुठली
+        का घोल बनाइए। इसे 20 मिनट रख दीजिए।
+      look: घोल पानी जैसा पतला दिखे, पतली छाछ की तरह।
+    hi-Latn:
+      text: Ek bade bartan mein suji, chawal ka aata, maida aur namak milaiye, phir lagbhag 800 ml paani daalkar phentte hue
+        patla, bina guthli ka ghol banaiye. Ise 20 minute rakh dijiye.
+      look: Ghol paani jaisa patla dikhe, patli chhaachh ki tarah.
+- text: Stir in the onion, green chilli, ginger, cumin seeds, crushed pepper, curry leaves and coriander leaves. The semolina
+    soaks up water, so add a little more water if the batter has thickened.
+  cues:
+    look: It should still run freely off the ladle.
+  say:
+    hi:
+      text: इसमें प्याज़, हरी मिर्च, अदरक, जीरा, कुटी काली मिर्च, करी पत्ता और हरा धनिया मिलाइए। सूजी पानी सोख लेती है, इसलिए
+        घोल गाढ़ा हो गया हो तो थोड़ा पानी और डालिए।
+      look: घोल कलछी से आसानी से बहता रहे।
+    hi-Latn:
+      text: Isme pyaaz, hari mirch, adrak, jeera, kuti kali mirch, curry patta aur hara dhaniya milaiye. Suji paani sokh leti
+        hai, isliye ghol gaadha ho gaya ho to thoda paani aur daaliye.
+      look: Ghol kalchhi se aasaani se behta rahe.
+- text: Heat the tawa on high until it is very hot, then rub a few drops of oil over it and turn the heat to medium.
+  technique: tawa_cook
+  minutes: 3
+  timer: true
+  heat: high
+  cues:
+    sound: A few drops of water sprinkled on it sizzle away at once.
+  safety: Keep your hand away from the hot tawa surface.
+  say:
+    hi:
+      text: तवे को तेज़ आँच पर खूब गरम कीजिए, फिर उस पर कुछ बूँद तेल फैलाइए और आँच मध्यम कर दीजिए।
+      sound: पानी के कुछ छींटे डालने पर वे तुरंत छनछनाकर उड़ जाएँ।
+      safety: गरम तवे की सतह से हाथ दूर रखिए।
+    hi-Latn:
+      text: Tawe ko tez aanch par khoob garam kijiye, phir us par kuch boond tel phailaiye aur aanch medium kar dijiye.
+      sound: Paani ke kuch chheente daalne par ve turant chhanchhanakar ud jaayein.
+      safety: Garam tawe ki satah se haath door rakhiye.
+- text: Stir the batter from the bottom, then pour a ladleful from a little height in a circle, starting at the edge and moving
+    inward. Do not spread it. Lightly fill any very big gaps.
+  technique: tawa_cook
+  heat: medium
+  cues:
+    look: The dosa sets at once into a lacy net full of small holes.
+  say:
+    hi:
+      text: घोल को नीचे से चलाइए, फिर एक कलछी घोल थोड़ी ऊँचाई से गोल-गोल डालिए, किनारे से शुरू करके अंदर की ओर। इसे फैलाइए
+        मत। बहुत बड़े छेद हों तो उन्हें हल्का-सा भर दीजिए।
+      look: डोसा तुरंत जम जाए और छोटे-छोटे छेदों वाली जाली जैसा दिखे।
+    hi-Latn:
+      text: Ghol ko neeche se chalaiye, phir ek kalchhi ghol thodi oonchaai se gol-gol daaliye, kinaare se shuru karke andar
+        ki or. Ise phailaiye mat. Bahut bade chhed hon to unhe halka-sa bhar dijiye.
+      look: Dosa turant jam jaaye aur chhote-chhote chhedon waali jaali jaisa dikhe.
+- text: Drizzle about 1 teaspoon of oil around the edges and over the holes. Cook without flipping until the underside is
+    golden and crisp.
+  technique: tawa_cook
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The edges turn golden brown and lift away from the tawa.
+    sound: The oil sizzles steadily around the edges.
+    smell: It smells of roasted semolina and cumin.
+  say:
+    hi:
+      text: किनारों पर और छेदों पर लगभग 1 छोटा चम्मच तेल डालिए। बिना पलटे तब तक सेंकिए जब तक नीचे की सतह सुनहरी और कुरकुरी
+        न हो जाए।
+      look: किनारे सुनहरे-भूरे होकर तवे से उठने लगें।
+      sound: किनारों पर तेल लगातार छनछनाता रहे।
+      smell: भुनी सूजी और जीरे की खुशबू आए।
+    hi-Latn:
+      text: Kinaaron par aur chhedon par lagbhag 1 chhota chammach tel daaliye. Bina palte tab tak sekiye jab tak neeche ki
+        satah sunehri aur crispy na ho jaaye.
+      look: Kinaare sunehre-bhure hokar tawe se uthne lagein.
+      sound: Kinaaron par tel lagaataar chhanchhanaata rahe.
+      smell: Bhuni suji aur jeere ki khushboo aaye.
+- text: Fold the dosa and serve it hot. Stir the batter well before each dosa, adding a splash of water whenever it thickens.
+  heat: medium
+  cues:
+    touch: The dosa feels crisp and stiff when you lift it with the spatula.
+  say:
+    hi:
+      text: डोसे को मोड़कर गरम-गरम परोसिए। हर डोसे से पहले घोल अच्छी तरह चलाइए और गाढ़ा होने पर थोड़ा पानी मिलाते रहिए।
+      touch: पलटे से उठाने पर डोसा कड़क और कुरकुरा लगे।
+    hi-Latn:
+      text: Dose ko modkar garam-garam parosiye. Har dose se pehle ghol achhi tarah chalaiye aur gaadha hone par thoda paani
+        milaate rahiye.
+      touch: Palte se uthaane par dosa kadak aur crispy lage.

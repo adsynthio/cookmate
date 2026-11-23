@@ -1,0 +1,248 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: mix-veg
+title: Mix Veg
+titles:
+  hi: मिक्स वेज
+  hi-Latn: Mix Veg
+description: A dry-to-semi-dry North Indian sabzi of potato, carrot, beans, peas, cauliflower and capsicum cooked in an onion-tomato
+  masala. Good with roti or dal-chawal.
+descriptions:
+  hi: आलू, गाजर, बीन्स, मटर, गोभी और शिमला मिर्च की प्याज़-टमाटर मसाले में बनी सूखी सी उत्तर भारतीय सब्ज़ी। रोटी या दाल-चावल
+    के साथ बढ़िया लगती है।
+  hi-Latn: Aloo, gajar, beans, matar, gobhi aur shimla mirch ki pyaaz-tamatar masale mein bani sookhi si North Indian sabzi.
+    Roti ya dal-chawal ke saath badhiya lagti hai.
+cuisine_region: north_indian
+course: main
+diet: vegan
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 25
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- comforting
+- tiffin
+- kids_friendly
+flavor_profile:
+  rich: 0.4
+  heat: 0.4
+  acid: 0.3
+  crunch: 0.1
+  starch: 0.3
+  sweet: 0.1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: potato
+  qty: 150
+  unit: g
+  local: 1 bada aloo
+  role: vegetable
+  group: vegetables
+- ingredient: carrot
+  qty: 100
+  unit: g
+  local: 1 badi gajar
+  role: vegetable
+  group: vegetables
+- ingredient: french beans
+  qty: 100
+  unit: g
+  local: 10-12 beans
+  role: vegetable
+  group: vegetables
+- ingredient: green peas
+  qty: 80
+  unit: g
+  local: half katori matar
+  role: vegetable
+  group: vegetables
+- ingredient: cauliflower
+  qty: 150
+  unit: g
+  local: 1 katori gobhi ke phool
+  role: vegetable
+  group: vegetables
+- ingredient: capsicum
+  qty: 80
+  unit: g
+  local: 1 chhoti shimla mirch
+  role: vegetable
+  group: vegetables
+- ingredient: onion
+  qty: 120
+  unit: g
+  local: 1 bada pyaaz
+  role: aromatic
+  group: masala
+- ingredient: tomato
+  qty: 150
+  unit: g
+  local: 2 tamatar
+  role: acid
+  group: masala
+- ingredient: ginger garlic paste
+  qty: 10
+  unit: g
+  local: 1 chhota chammach
+  role: aromatic
+  group: masala
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1-2 hari mirch
+  role: heat
+  group: masala
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: spices
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: half chhota chammach
+  role: spice
+  group: spices
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+  group: spices
+- ingredient: coriander powder
+  qty: 5
+  unit: g
+  local: 2 chhote chammach
+  role: spice
+  group: spices
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: half chhota chammach
+  role: spice
+  group: spices
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: spices
+- ingredient: dried fenugreek leaves
+  qty: 1
+  unit: g
+  local: 1 chhota chammach kasuri methi
+  role: garnish
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+steps:
+- text: Cut potato, carrot, beans, cauliflower and capsicum into small even pieces, and finely chop onion, tomato and green
+    chilli.
+  minutes: 10
+  timer: true
+  say:
+    hi:
+      text: आलू, गाजर, बीन्स, गोभी और शिमला मिर्च को छोटे बराबर टुकड़ों में काटो, और प्याज़, टमाटर व हरी मिर्च बारीक काट लो।
+    hi-Latn:
+      text: Aloo, gajar, beans, gobhi aur shimla mirch ko chhote barabar tukdon mein kaato, aur pyaaz, tamatar va hari mirch
+        bareek kaat lo.
+- text: Heat oil in a kadai, add cumin seeds, then add onion and fry until golden.
+  technique: saute_onion
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Onion turns light golden.
+    sound: Cumin crackles as soon as it hits the oil.
+  say:
+    hi:
+      text: कढ़ाई में तेल गरम करो, जीरा डालो, फिर प्याज़ डालकर सुनहरा होने तक भूनो।
+      look: प्याज़ हल्का सुनहरा हो जाए।
+      sound: तेल में डालते ही जीरा चटकने लगे।
+    hi-Latn:
+      text: Kadai mein tel garam karo, jeera daalo, phir pyaaz daalkar sunehra hone tak bhuno.
+      look: Pyaaz halka sunehra ho jaaye.
+      sound: Tel mein daalte hi jeera chatakne lage.
+- text: Add ginger garlic paste and green chilli and stir for a minute.
+  technique: saute_onion
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw garlic smell goes away.
+  say:
+    hi:
+      text: अदरक लहसुन पेस्ट और हरी मिर्च डालकर एक मिनट चलाओ।
+      smell: लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak lahsun paste aur hari mirch daalkar ek minute chalao.
+      smell: Lahsun ki kachchi mehak chali jaaye.
+- text: Add tomato, turmeric, red chilli powder, coriander powder and salt, and cook the masala until soft.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Tomatoes turn mushy and oil shows at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च पाउडर, धनिया पाउडर और नमक डालो, और मसाला नरम होने तक भूनो।
+      look: टमाटर गल जाएं और किनारों पर तेल दिखने लगे।
+    hi-Latn:
+      text: Tamatar, haldi, laal mirch powder, dhaniya powder aur namak daalo, aur masala naram hone tak bhuno.
+      look: Tamatar gal jaayein aur kinaron par tel dikhne lage.
+- text: Add all the vegetables except capsicum, mix well with the masala, sprinkle about a quarter cup of water, cover and
+    cook, stirring now and then.
+  technique: simmer
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    touch: A knife goes easily through the potato and carrot.
+  say:
+    hi:
+      text: शिमला मिर्च छोड़कर सारी सब्ज़ियां डालो, मसाले में अच्छे से मिलाओ, लगभग चौथाई कप पानी छिड़को, ढककर पकाओ और बीच-बीच
+        में चलाते रहो।
+      touch: आलू और गाजर में चाकू आसानी से चला जाए।
+    hi-Latn:
+      text: Shimla mirch chhodkar saari sabziyaan daalo, masale mein achchhe se milao, lagbhag chauthai cup paani chhidko,
+        dhakkar pakao aur beech-beech mein chalate raho.
+      touch: Aloo aur gajar mein chaaku aasaani se chala jaaye.
+- text: Add capsicum and cook uncovered so it stays a little crisp.
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: Capsicum stays bright green.
+  say:
+    hi:
+      text: शिमला मिर्च डालो और बिना ढके पकाओ ताकि वह थोड़ी कुरकुरी रहे।
+      look: शिमला मिर्च चमकीली हरी रहे।
+    hi-Latn:
+      text: Shimla mirch daalo aur bina dhake pakao taaki woh thodi kurkuri rahe.
+      look: Shimla mirch chamkeeli hari rahe.
+- text: Stir in garam masala and crushed kasuri methi if using, switch off the heat and top with coriander leaves.
+  minutes: 1
+  heat: low
+  cues:
+    smell: A warm garam masala aroma comes up.
+  say:
+    hi:
+      text: गरम मसाला और चाहो तो मसली हुई कसूरी मेथी मिलाओ, गैस बंद करो और ऊपर से हरा धनिया डालो।
+      smell: गरम मसाले की खुशबू आने लगे।
+    hi-Latn:
+      text: Garam masala aur chaho to masli hui kasuri methi milao, gas band karo aur upar se hara dhaniya daalo.
+      smell: Garam masale ki khushboo aane lage.

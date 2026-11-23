@@ -1,0 +1,257 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: shahi-paneer
+title: Shahi Paneer
+titles:
+  hi: शाही पनीर
+  hi-Latn: Shahi Paneer
+description: Soft paneer cubes in a smooth, mildly spiced onion-tomato-cashew gravy finished with cream, a North Indian favourite
+  for roti or rice.
+descriptions:
+  hi: प्याज़, टमाटर और काजू की चिकनी, हल्की मसालेदार ग्रेवी में मुलायम पनीर के टुकड़े, ऊपर से क्रीम। रोटी या चावल के साथ उत्तर
+    भारत की पसंदीदा सब्ज़ी।
+  hi-Latn: Pyaaz, tamatar aur kaju ki smooth, halki masaledar gravy mein naram paneer ke tukde, upar se cream. Roti ya chawal
+    ke saath North India ki favourite sabzi.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 30
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- mixer_grinder
+- gas_stove
+tags:
+- comforting
+- kids_friendly
+- festive
+flavor_profile:
+  rich: 0.8
+  heat: 0.3
+  acid: 0.3
+  crunch: 0
+  starch: 0.1
+  sweet: 0.3
+food_groups:
+- dairy
+- protein
+review_status: in_review
+ingredients:
+- ingredient: paneer
+  qty: 250
+  unit: g
+  local: 250 gram paneer
+  role: protein
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 medium pyaaz
+  role: base
+  group: gravy
+- ingredient: tomato
+  qty: 250
+  unit: g
+  local: 3 medium tamatar
+  role: base
+  group: gravy
+- ingredient: cashews
+  qty: 20
+  unit: g
+  local: 12-15 kaju
+  role: base
+  group: gravy
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1 hari mirch
+  role: heat
+  group: gravy
+- ingredient: ghee
+  qty: 30
+  unit: g
+  local: 2 bade chammach ghee
+  role: fat
+- ingredient: bay leaf
+  qty: 1
+  unit: g
+  local: 1 tej patta
+  role: aromatic
+  group: whole spices
+- ingredient: green cardamom
+  qty: 1
+  unit: g
+  local: 2 hari elaichi
+  role: aromatic
+  group: whole spices
+- ingredient: cloves
+  qty: 1
+  unit: g
+  local: 2 laung
+  role: aromatic
+  group: whole spices
+- ingredient: cinnamon
+  qty: 1
+  unit: g
+  local: 1 chhota tukda dalchini
+  role: aromatic
+  group: whole spices
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach adrak lehsun paste
+  role: aromatic
+- ingredient: kashmiri chilli powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach kashmiri mirch
+  role: spice
+  group: powders
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+  group: powders
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: sugar
+  qty: 4
+  unit: g
+  local: 1 chhota chammach cheeni
+  role: sweet
+- ingredient: fresh cream
+  qty: 50
+  unit: ml
+  local: 3-4 bade chammach malai
+  role: fat
+- ingredient: dried fenugreek leaves
+  qty: 1
+  unit: g
+  local: 1 chhota chammach kasuri methi
+  role: aromatic
+- ingredient: coriander leaves
+  qty: 5
+  unit: g
+  local: thoda hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Put chopped onion, tomato, cashews and green chilli in a pan with half a cup of water, cover and boil until the onion
+    is soft, then let it cool.
+  technique: simmer
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: Onion turns soft and see-through.
+  say:
+    hi:
+      text: कटा प्याज़, टमाटर, काजू और हरी मिर्च आधा कप पानी के साथ पैन में डालें, ढककर प्याज़ नरम होने तक उबालें, फिर ठंडा
+        होने दें।
+      look: प्याज़ नरम और पारदर्शी हो जाए।
+    hi-Latn:
+      text: Kata pyaaz, tamatar, kaju aur hari mirch aadha cup paani ke saath pan mein daalein, dhak kar pyaaz naram hone
+        tak ubaalein, phir thanda hone dein.
+      look: Pyaaz naram aur transparent ho jaaye.
+- text: Grind the cooled mixture to a very smooth paste.
+  cues:
+    look: Paste is silky with no bits of cashew.
+  safety: Grind only once it has cooled; hot mixture can burst out of the jar.
+  say:
+    hi:
+      text: ठंडे मिश्रण को एकदम चिकना पीस लें।
+      look: पेस्ट मुलायम हो, काजू के टुकड़े न दिखें।
+      safety: ठंडा होने के बाद ही पीसें, गरम मिश्रण जार से उछल सकता है।
+    hi-Latn:
+      text: Thande mixture ko ekdum smooth pees lein.
+      look: Paste silky ho, kaju ke tukde na dikhein.
+      safety: Thanda hone ke baad hi peesein, garam mixture jar se uchhal sakta hai.
+- text: Heat ghee in a kadai and add bay leaf, cardamom, cloves and cinnamon.
+  technique: tadka
+  minutes: 1
+  heat: low
+  cues:
+    sound: Spices sizzle gently.
+    smell: Warm, sweet spice smell rises.
+  say:
+    hi:
+      text: कढ़ाई में घी गरम करें और तेज पत्ता, इलायची, लौंग और दालचीनी डालें।
+      sound: मसाले हल्के से चटकें।
+      smell: गरम मसालों की मीठी खुशबू आए।
+    hi-Latn:
+      text: Kadai mein ghee garam karein aur tej patta, elaichi, laung aur dalchini daalein.
+      sound: Masale halke se chatkein.
+      smell: Garam masalon ki meethi khushboo aaye.
+- text: Add ginger garlic paste and stir until the raw smell goes.
+  minutes: 1
+  heat: low
+  cues:
+    smell: Raw garlic smell turns mellow.
+  say:
+    hi:
+      text: अदरक लहसुन पेस्ट डालें और कच्ची महक जाने तक चलाएँ।
+      smell: लहसुन की कच्ची महक नरम हो जाए।
+    hi-Latn:
+      text: Adrak lehsun paste daalein aur kachchi mehak jaane tak chalayein.
+      smell: Lehsun ki kachchi mehak naram ho jaaye.
+- text: Add the ground paste, kashmiri chilli powder and coriander powder, and cook stirring until ghee separates at the sides.
+  technique: bhuna
+  minutes: 10
+  timer: true
+  heat: medium
+  cues:
+    look: Masala darkens slightly and ghee shines at the edges.
+  safety: The paste splutters; keep a lid half on and stir with a long spoon.
+  say:
+    hi:
+      text: पिसा पेस्ट, कश्मीरी मिर्च और धनिया पाउडर डालें, और किनारों पर घी अलग होने तक चलाते हुए भूनें।
+      look: मसाला थोड़ा गहरा हो जाए और किनारों पर घी चमके।
+      safety: पेस्ट उछलता है, ढक्कन आधा रखें और लंबे चम्मच से चलाएँ।
+    hi-Latn:
+      text: Pisa paste, kashmiri mirch aur dhaniya powder daalein, aur kinaron par ghee alag hone tak chalate hue bhunein.
+      look: Masala thoda gehra ho jaaye aur kinaron par ghee chamke.
+      safety: Paste uchhalta hai, dhakkan aadha rakhein aur lambe chammach se chalayein.
+- text: Pour in about one cup of water with salt and sugar, and simmer until the gravy is creamy.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Gravy coats the back of the spoon.
+  say:
+    hi:
+      text: लगभग एक कप पानी, नमक और चीनी डालें, और ग्रेवी गाढ़ी-मलाईदार होने तक पकाएँ।
+      look: ग्रेवी चम्मच के पीछे लिपटने लगे।
+    hi-Latn:
+      text: Lagbhag ek cup paani, namak aur cheeni daalein, aur gravy creamy hone tak pakayein.
+      look: Gravy chammach ke peeche lipatne lage.
+- text: Add paneer cubes, cream, crushed kasuri methi and garam masala, and cook gently without a hard boil.
+  technique: simmer
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    touch: Paneer stays soft when pressed with the spoon.
+  say:
+    hi:
+      text: पनीर के टुकड़े, क्रीम, मसली हुई कसूरी मेथी और गरम मसाला डालें, और तेज़ उबाल लाए बिना धीरे पकाएँ।
+      touch: चम्मच से दबाने पर पनीर नरम रहे।
+    hi-Latn:
+      text: Paneer ke tukde, cream, masli hui kasuri methi aur garam masala daalein, aur tez ubaal laaye bina dheere pakayein.
+      touch: Chammach se dabaane par paneer naram rahe.
+- text: Turn off the heat, sprinkle coriander leaves and serve hot with roti or rice.
+  say:
+    hi:
+      text: आँच बंद करें, ऊपर हरा धनिया डालें और रोटी या चावल के साथ गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, upar hara dhaniya daalein aur roti ya chawal ke saath garam serve karein.

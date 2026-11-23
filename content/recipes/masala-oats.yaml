@@ -1,0 +1,238 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: masala-oats
+title: Masala Oats
+titles:
+  hi: मसाला ओट्स
+  hi-Latn: Masala Oats
+description: A quick, savoury breakfast of rolled oats cooked with onion, tomato, carrot and peas in a cumin-mustard tadka
+  with everyday Indian spices, finished with coriander and a squeeze of lemon.
+descriptions:
+  hi: झटपट बनने वाला नमकीन नाश्ता, जिसमें रोल्ड ओट्स को प्याज़, टमाटर, गाजर और मटर के साथ जीरा-राई के तड़के और रोज़ के मसालों
+    में पकाया जाता है, ऊपर से हरा धनिया और नींबू।
+  hi-Latn: Jhatpat banne wala namkeen nashta, jisme rolled oats ko pyaaz, tamatar, gajar aur matar ke saath jeera-rai ke tadke
+    aur roz ke masalon mein pakaya jata hai, upar se hara dhaniya aur nimbu.
+cuisine_region: pan_indian
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 15
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- one_pot
+- light
+- tiffin
+flavor_profile:
+  rich: 0.2
+  heat: 0.3
+  acid: 0.3
+  crunch: 0.1
+  starch: 0.6
+  sweet: 0.1
+food_groups:
+- grain
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: rolled oats
+  qty: 160
+  unit: g
+  local: 2 katori
+  role: base
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 bada pyaaz
+  role: aromatic
+  group: vegetables
+- ingredient: tomato
+  qty: 120
+  unit: g
+  local: 1 bada tamatar
+  role: acid
+  group: vegetables
+- ingredient: carrot
+  qty: 80
+  unit: g
+  local: 1 gajar
+  role: vegetable
+  group: vegetables
+- ingredient: green peas
+  qty: 60
+  unit: g
+  local: half katori matar
+  role: vegetable
+  group: vegetables
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1 hari mirch
+  role: heat
+  group: vegetables
+- ingredient: ginger
+  qty: 5
+  unit: g
+  local: 1 chhota tukda adrak
+  role: aromatic
+  group: vegetables
+- ingredient: refined oil
+  qty: 15
+  unit: ml
+  local: 1 bada chammach tel
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 2
+  unit: g
+  local: half chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: cumin seeds
+  qty: 2
+  unit: g
+  local: half chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 8-10 kadi patta
+  role: aromatic
+  group: tadka
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: chutki bhar haldi
+  role: spice
+  group: spices
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: half chhota chammach laal mirch
+  role: heat
+  group: spices
+- ingredient: garam masala
+  qty: 1
+  unit: g
+  local: chauthai chhota chammach garam masala
+  role: spice
+  group: spices
+- ingredient: salt
+  qty: 5
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+  group: spices
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  group: finish
+- ingredient: lemon
+  qty: 20
+  unit: g
+  local: half nimbu
+  role: acid
+  group: finish
+  optional: true
+steps:
+- text: Finely chop the onion, tomato, green chilli and ginger, and dice the carrot small.
+  minutes: 5
+  timer: true
+  say:
+    hi:
+      text: प्याज़, टमाटर, हरी मिर्च और अदरक बारीक काट लो, और गाजर छोटे टुकड़ों में काट लो।
+    hi-Latn:
+      text: Pyaaz, tamatar, hari mirch aur adrak bareek kaat lo, aur gajar chhote tukdon mein kaat lo.
+- text: Heat the oil in a kadai, add mustard seeds, cumin seeds and curry leaves.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The mustard seeds crackle and pop.
+  safety: Curry leaves splutter, so keep your face back.
+  say:
+    hi:
+      text: कढ़ाई में तेल गरम करो, राई, जीरा और कढ़ी पत्ता डालो।
+      sound: राई चटकने लगे।
+      safety: कढ़ी पत्ता छिटकता है, चेहरा थोड़ा दूर रखो।
+    hi-Latn:
+      text: Kadai mein tel garam karo, rai, jeera aur kadi patta daalo.
+      sound: Rai chatakne lage.
+      safety: Kadi patta chhitakta hai, chehra thoda door rakho.
+- text: Add onion, green chilli and ginger and sauté until the onion turns soft and light pink.
+  technique: saute_onion
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: Onion is soft and translucent with light pink edges.
+  say:
+    hi:
+      text: प्याज़, हरी मिर्च और अदरक डालकर प्याज़ नरम और हल्का गुलाबी होने तक भूनो।
+      look: प्याज़ नरम और पारदर्शी हो, किनारे हल्के गुलाबी।
+    hi-Latn:
+      text: Pyaaz, hari mirch aur adrak daalkar pyaaz naram aur halka gulabi hone tak bhuno.
+      look: Pyaaz naram aur transparent ho, kinare halke gulabi.
+- text: Add carrot, peas, tomato, turmeric, red chilli powder and salt, and cook until the tomato turns mushy.
+  technique: bhuna
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: Tomato breaks down and oil shows at the edges.
+  say:
+    hi:
+      text: गाजर, मटर, टमाटर, हल्दी, लाल मिर्च और नमक डालो, और टमाटर गलने तक पकाओ।
+      look: टमाटर गल जाए और किनारों पर तेल दिखे।
+    hi-Latn:
+      text: Gajar, matar, tamatar, haldi, laal mirch aur namak daalo, aur tamatar galne tak pakao.
+      look: Tamatar gal jaaye aur kinaron par tel dikhe.
+- text: Pour in about 3 cups of water and bring it to a boil.
+  minutes: 3
+  timer: true
+  heat: high
+  cues:
+    look: Water is bubbling all over.
+  say:
+    hi:
+      text: लगभग 3 कप पानी डालो और उबाल आने दो।
+      look: पानी पूरा खदबदाने लगे।
+    hi-Latn:
+      text: Lagbhag 3 cup paani daalo aur ubaal aane do.
+      look: Paani poora khadbadane lage.
+- text: Stir in the oats and garam masala and simmer, stirring often, until the oats are soft and the mix is thick but still
+    loose.
+  technique: simmer
+  minutes: 4
+  timer: true
+  heat: low
+  cues:
+    look: Oats swell and the mix looks like a loose porridge.
+  safety: Hot oats splutter, so stir with a long spoon.
+  say:
+    hi:
+      text: ओट्स और गरम मसाला डालकर चलाते रहो और धीमी आंच पर पकाओ, जब तक ओट्स नरम हो जाएं और मिश्रण गाढ़ा पर थोड़ा ढीला रहे।
+      look: ओट्स फूल जाएं और मिश्रण ढीले दलिए जैसा दिखे।
+      safety: गरम ओट्स छिटकते हैं, लंबे चम्मच से चलाओ।
+    hi-Latn:
+      text: Oats aur garam masala daalkar chalate raho aur dheemi aanch par pakao, jab tak oats naram ho jaayein aur mixture
+        gaadha par thoda dheela rahe.
+      look: Oats phool jaayein aur mixture dheele daliye jaisa dikhe.
+      safety: Garam oats chhitakte hain, lambe chammach se chalao.
+- text: Turn off the heat, add chopped coriander and a squeeze of lemon, and serve hot.
+  cues:
+    smell: Fresh coriander and lemon smell comes up.
+  say:
+    hi:
+      text: आंच बंद करो, कटा हरा धनिया और नींबू निचोड़ो, और गरम परोसो।
+      smell: ताज़े धनिए और नींबू की खुशबू आए।
+    hi-Latn:
+      text: Aanch band karo, kata hara dhaniya aur nimbu nichodo, aur garam paroso.
+      smell: Taaze dhaniye aur nimbu ki khushboo aaye.

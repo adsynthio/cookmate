@@ -1,0 +1,197 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: karela-sabzi
+title: Karela Sabzi
+titles:
+  hi: करेले की सब्ज़ी
+  hi-Latn: Karela Sabzi
+description: A dry North Indian everyday sabzi of thin bitter gourd slices fried with onions until crisp-edged. It is spiced
+  with chilli, coriander and tangy amchur, with a little jaggery to round off the bitterness. Good with roti and dal.
+descriptions:
+  hi: रोज़ की सूखी उत्तर भारतीय सब्ज़ी। करेले के पतले टुकड़े प्याज़ के साथ किनारे कुरकुरे होने तक भूने जाते हैं। इसमें मिर्च,
+    धनिया और खट्टा अमचूर पड़ता है, और कड़वाहट संभालने के लिए थोड़ा गुड़। रोटी और दाल के साथ बढ़िया लगती है।
+  hi-Latn: Roz ki sookhi North Indian sabzi. Karele ke patle tukde pyaaz ke saath kinare kurkure hone tak bhune jaate hain.
+    Isme mirch, dhaniya aur khatta amchur padta hai, aur kadwahat sambhalne ke liye thoda gud. Roti aur dal ke saath badhiya
+    lagti hai.
+cuisine_region: north_indian
+course: side
+diet: vegan
+base_servings: 4
+prep_time_min: 30
+cook_time_min: 25
+difficulty: 2
+spice_level: 3
+equipment:
+- kadai
+- gas_stove
+tags:
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.4
+  acid: 0.3
+  crunch: 0.3
+  starch: 0.1
+  sweet: 0.2
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: bitter gourd
+  qty: 500
+  unit: g
+  local: 5-6 karele
+  role: base
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 pyaaz
+  role: vegetable
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+- ingredient: refined oil
+  qty: 45
+  unit: ml
+  local: 3 bada chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: aromatic
+  group: tadka
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: jaggery
+  qty: 10
+  unit: g
+  local: 1 chhota tukda gud
+  role: sweet
+- ingredient: dry mango powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach amchur
+  role: acid
+- ingredient: coriander leaves
+  qty: 5
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Lightly scrape the bitter gourds and cut them into thin rounds. Rub them with most of the salt and half the turmeric,
+    then leave them for 20 minutes.
+  minutes: 20
+  timer: true
+  cues:
+    look: Water beads appear on the slices.
+  say:
+    hi:
+      text: करेले हल्के से छील लें और पतले गोल टुकड़ों में काट लें। इनमें ज़्यादातर नमक और आधी हल्दी मलें, फिर 20 मिनट छोड़
+        दें।
+      look: टुकड़ों पर पानी की बूँदें दिखने लगती हैं।
+    hi-Latn:
+      text: Karele halke se chheel lein aur patle gol tukdon mein kaat lein. Inme zyaadatar namak aur aadhi haldi malein,
+        phir 20 minute chhod dein.
+      look: Tukdon par paani ki boondein dikhne lagti hain.
+- text: Squeeze the slices firmly by the handful and throw away the bitter water.
+  cues:
+    touch: The slices feel limp and fairly dry.
+  say:
+    hi:
+      text: मुट्ठी भर-भर के टुकड़ों को कस के निचोड़ें और कड़वा पानी फेंक दें।
+      touch: टुकड़े नरम और काफ़ी सूखे लगते हैं।
+    hi-Latn:
+      text: Mutthi bhar-bhar ke tukdon ko kas ke nichodein aur kadwa paani phenk dein.
+      touch: Tukde naram aur kaafi sookhe lagte hain.
+- text: Heat the oil in a kadai on medium heat. Add the cumin seeds and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles.
+  say:
+    hi:
+      text: कढ़ाई में मध्यम आँच पर तेल गरम करें। उसमें जीरा और हींग डालें।
+      sound: जीरा चटकने लगता है।
+    hi-Latn:
+      text: Kadai mein medium aanch par tel garam karein. Usme jeera aur hing daalein.
+      sound: Jeera chatakne lagta hai.
+- text: Add the squeezed bitter gourd and fry it uncovered, stirring now and then.
+  technique: shallow_fry
+  minutes: 12
+  timer: true
+  heat: medium
+  cues:
+    look: The slices shrink and the edges turn brown.
+  say:
+    hi:
+      text: निचोड़ा हुआ करेला डालें और बिना ढके भूनें, बीच-बीच में चलाते रहें।
+      look: टुकड़े सिकुड़ जाते हैं और किनारे भूरे हो जाते हैं।
+    hi-Latn:
+      text: Nichoda hua karela daalein aur bina dhake bhunein, beech-beech mein chalate rahein.
+      look: Tukde sikud jaate hain aur kinare bhoore ho jaate hain.
+- text: Add the sliced onions and cook them with the bitter gourd.
+  technique: saute_onion
+  minutes: 7
+  timer: true
+  heat: medium
+  cues:
+    look: The onions turn soft and golden.
+  say:
+    hi:
+      text: कटे प्याज़ डालें और करेले के साथ पकाएँ।
+      look: प्याज़ नरम और सुनहरा हो जाता है।
+    hi-Latn:
+      text: Kate pyaaz daalein aur karele ke saath pakayein.
+      look: Pyaaz naram aur sunehra ho jaata hai.
+- text: Lower the heat. Add the rest of the turmeric, the red chilli powder, coriander powder and jaggery. Taste first, then
+    add only a pinch of salt if needed, and stir-fry well.
+  technique: bhuna
+  minutes: 4
+  timer: true
+  heat: low
+  cues:
+    smell: The spices smell roasted.
+  say:
+    hi:
+      text: आँच धीमी करें। बची हुई हल्दी, लाल मिर्च पाउडर, धनिया पाउडर और गुड़ डालें। पहले चखें, ज़रूरत हो तो बस चुटकी भर
+        नमक डालें, और अच्छे से भूनें।
+      smell: मसालों की भुनी हुई खुशबू आने लगती है।
+    hi-Latn:
+      text: Aanch dheemi karein. Bachi hui haldi, laal mirch powder, dhaniya powder aur gud daalein. Pehle chakhein, zaroorat
+        ho to bas chutki bhar namak daalein, aur achhe se bhunein.
+      smell: Masalon ki bhuni hui khushboo aane lagti hai.
+- text: Sprinkle in the amchur, mix and cook for 2 minutes. Garnish with coriander leaves if you like, then serve.
+  minutes: 2
+  heat: low
+  cues:
+    look: The sabzi looks dry and glossy, and the masala coats every slice.
+  say:
+    hi:
+      text: अमचूर छिड़कें, मिलाएँ और 2 मिनट पकाएँ। चाहें तो हरा धनिया डालें, फिर परोसें।
+      look: सब्ज़ी सूखी और चमकदार दिखती है, और हर टुकड़े पर मसाला लिपटा होता है।
+    hi-Latn:
+      text: Amchur chhidkein, milayein aur 2 minute pakayein. Chahein to hara dhaniya daalein, phir parosein.
+      look: Sabzi sookhi aur chamakdaar dikhti hai, aur har tukde par masala lipta hota hai.

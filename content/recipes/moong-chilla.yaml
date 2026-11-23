@@ -1,0 +1,184 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: moong-chilla
+title: Moong Dal Chilla
+titles:
+  hi: मूंग दाल चीला
+  hi-Latn: Moong Dal Chilla
+description: Thin, savoury pancakes made from soaked and ground yellow moong dal, with onion, green chilli, ginger and coriander.
+  They are cooked on a tawa until golden and crisp at the edges. Serve hot with green chutney or ketchup.
+descriptions:
+  hi: भीगी और पिसी हुई पीली मूंग दाल से बने पतले, नमकीन चीले, जिनमें प्याज़, हरी मिर्च, अदरक और हरा धनिया पड़ता है। इन्हें
+    तवे पर सुनहरा होने तक सेका जाता है, किनारे कुरकुरे हो जाते हैं। हरी चटनी या केचप के साथ गरम परोसें।
+  hi-Latn: Bhigi aur pisi hui peeli moong dal se bane patle, namkeen chille, jinmein pyaaz, hari mirch, adrak aur hara dhaniya
+    padta hai. Inhe tawe par sunehra hone tak seka jata hai, kinaare kurkure ho jaate hain. Hari chutney ya ketchup ke saath
+    garam parosein.
+cuisine_region: north_indian
+course: breakfast
+diet: vegan
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 25
+difficulty: 2
+spice_level: 2
+equipment:
+- mixer_grinder
+- tawa
+- gas_stove
+tags:
+- high_protein
+- kids_friendly
+- tiffin
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.1
+  crunch: 0.3
+  starch: 0.4
+  sweet: 0
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: yellow moong dal
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: base
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch tukda
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: onion
+  qty: 120
+  unit: g
+  local: 1 bada pyaaz, baarik kata
+  role: vegetable
+- ingredient: tomato
+  qty: 60
+  unit: g
+  local: 1 chhota tamatar, baarik kata
+  role: vegetable
+  optional: true
+- ingredient: coriander leaves
+  qty: 15
+  unit: g
+  local: aadhi katori, kata hua
+  role: aromatic
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach
+  role: spice
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: refined oil
+  qty: 40
+  unit: ml
+  local: 4 bade chammach
+  role: fat
+steps:
+- text: Wash the moong dal two or three times and soak it in plenty of water for 3 hours.
+  technique: soak
+  minutes: 180
+  timer: true
+  cues:
+    look: The dal swells and breaks easily when pressed between your fingers.
+  say:
+    hi:
+      text: मूंग दाल को दो-तीन बार धोकर भरपूर पानी में 3 घंटे भिगो दें।
+      look: दाल फूल जाती है और उंगलियों से दबाने पर आसानी से टूट जाती है।
+    hi-Latn:
+      text: Moong dal ko do-teen baar dhokar bharpoor paani mein 3 ghante bhigo dein.
+      look: Dal phool jaati hai aur ungliyon se dabane par aasaani se toot jaati hai.
+- text: Drain the dal and grind it with ginger, green chilli and about half a cup of water into a smooth, thick batter.
+  technique: batter
+  minutes: 3
+  timer: true
+  cues:
+    touch: The batter feels smooth with no gritty bits when rubbed between your fingers.
+  say:
+    hi:
+      text: दाल का पानी निकाल दें और उसे अदरक, हरी मिर्च और लगभग आधा कप पानी के साथ पीसकर चिकना, गाढ़ा घोल बना लें।
+      touch: उंगलियों में रगड़ने पर घोल चिकना लगता है और उसमें दरदरापन नहीं होता।
+    hi-Latn:
+      text: Dal ka paani nikaal dein aur use adrak, hari mirch aur lagbhag aadha cup paani ke saath peeskar chikna, gaadha
+        ghol bana lein.
+      touch: Ungliyon mein ragadne par ghol chikna lagta hai aur usmein dardarapan nahi hota.
+- text: Stir in salt, turmeric, cumin seeds, asafoetida, onion, tomato if using, and coriander leaves, adding a little water
+    to make a pourable batter.
+  cues:
+    look: The batter flows slowly off the ladle, like dosa batter.
+  say:
+    hi:
+      text: घोल में नमक, हल्दी, जीरा, हींग, प्याज़, टमाटर (अगर डाल रहे हैं) और हरा धनिया मिलाएं, और थोड़ा पानी डालकर घोल को
+        बहने लायक बना लें।
+      look: घोल करछी से धीरे-धीरे गिरता है, डोसे के घोल जैसा।
+    hi-Latn:
+      text: Ghol mein namak, haldi, jeera, hing, pyaaz, tamatar (agar daal rahe hain) aur hara dhaniya milayein, aur thoda
+        paani daalkar ghol ko behne laayak bana lein.
+      look: Ghol karchhi se dheere-dheere girta hai, dose ke ghol jaisa.
+- text: Heat the tawa on medium heat and wipe it with a few drops of oil.
+  minutes: 2
+  heat: medium
+  cues:
+    sound: A few drops of water sprinkled on the tawa sizzle and vanish at once.
+  say:
+    hi:
+      text: तवे को मध्यम आंच पर गरम करें और उस पर कुछ बूंदें तेल लगाकर पोंछ दें।
+      sound: तवे पर पानी के छींटे मारने पर वे छनछनाकर तुरंत उड़ जाते हैं।
+    hi-Latn:
+      text: Tawe ko madhyam aanch par garam karein aur us par kuch boondein tel lagakar ponchh dein.
+      sound: Tawe par paani ke chheente maarne par woh chhanchhanakar turant ud jaate hain.
+- text: Pour a ladle of batter in the centre and spread it quickly into a thin circle, then drizzle a little oil around the
+    edges.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    look: The top turns dry, and the edges lift and turn golden.
+  say:
+    hi:
+      text: बीच में एक करछी घोल डालें और जल्दी से पतला गोल फैला दें, फिर किनारों पर थोड़ा तेल डालें।
+      look: ऊपर की सतह सूख जाती है और किनारे उठकर सुनहरे हो जाते हैं।
+    hi-Latn:
+      text: Beech mein ek karchhi ghol daalein aur jaldi se patla gol phaila dein, phir kinaaron par thoda tel daalein.
+      look: Upar ki satah sookh jaati hai aur kinaare uthkar sunehre ho jaate hain.
+- text: Flip the chilla and cook the other side until brown spots appear, then serve hot and make the rest the same way.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    look: Both sides have golden-brown spots.
+    smell: It smells of roasted dal.
+    touch: The chilla feels firm, not soft or sticky, when pressed in the centre.
+  say:
+    hi:
+      text: चीले को पलटें और दूसरी तरफ़ भूरे दाग आने तक सेकें, फिर गरम परोसें और बाकी चीले भी इसी तरह बनाएं।
+      look: दोनों तरफ़ सुनहरे-भूरे दाग आ जाते हैं।
+      smell: भुनी हुई दाल की खुशबू आती है।
+      touch: बीच में दबाने पर चीला सख़्त लगता है, नरम या चिपचिपा नहीं।
+    hi-Latn:
+      text: Chille ko palatein aur doosri taraf bhure daag aane tak sekein, phir garam parosein aur baaki chille bhi isi tarah
+        banayein.
+      look: Dono taraf sunehre-bhure daag aa jaate hain.
+      smell: Bhuni hui dal ki khushboo aati hai.
+      touch: Beech mein dabaane par chilla sakht lagta hai, naram ya chipchipa nahi.

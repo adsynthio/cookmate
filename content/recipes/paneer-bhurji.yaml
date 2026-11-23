@@ -1,0 +1,205 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: paneer-bhurji
+title: Paneer Bhurji
+titles:
+  hi: पनीर भुर्जी
+  hi-Latn: Paneer Bhurji
+description: Crumbled paneer tossed with onion, tomato and green chilli in a quick, soft, lightly spiced masala. It is ready
+  in about 20 minutes and goes well with roti, paratha or buttered pav.
+descriptions:
+  hi: मसला हुआ पनीर प्याज़, टमाटर और हरी मिर्च के हल्के मसाले में जल्दी से पकाया जाता है। करीब 20 मिनट में बन जाता है और रोटी,
+    पराठे या मक्खन लगे पाव के साथ बढ़िया लगता है।
+  hi-Latn: Masla hua paneer pyaaz, tamatar aur hari mirch ke halke masale mein jaldi se pakaya jaata hai. Kareeb 20 minute
+    mein ban jaata hai aur roti, parathe ya makhan lage pav ke saath badhiya lagta hai.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 15
+difficulty: 1
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- quick
+- high_protein
+flavor_profile:
+  rich: 0.6
+  heat: 0.4
+  acid: 0.3
+  crunch: 0.1
+  starch: 0
+  sweet: 0.1
+food_groups:
+- dairy
+- protein
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: paneer
+  qty: 300
+  unit: g
+  local: 300 gram paneer
+  role: protein
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 medium pyaaz, baarik kati
+  role: vegetable
+- ingredient: tomato
+  qty: 150
+  unit: g
+  local: 2 medium tamatar, baarik kate
+  role: vegetable
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch, baarik kati
+  role: heat
+- ingredient: ginger
+  qty: 8
+  unit: g
+  local: 1 inch adrak, kaddukas
+  role: aromatic
+- ingredient: refined oil
+  qty: 15
+  unit: ml
+  local: 1 bada chammach tel
+  role: fat
+  group: tadka
+- ingredient: butter
+  qty: 15
+  unit: g
+  local: 1 bada chammach makhan
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach haldi
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach laal mirch
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+  group: masala
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+  group: masala
+- ingredient: salt
+  qty: 5
+  unit: g
+  local: 1 chhota chammach namak, swaad anusaar
+  role: spice
+  group: masala
+- ingredient: milk
+  qty: 30
+  unit: ml
+  local: 2 bade chammach doodh
+  role: liquid
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya, kata
+  role: garnish
+steps:
+- text: Crumble the paneer with your fingers into small, uneven crumbs.
+  cues:
+    touch: The crumbs feel soft and there are no big lumps left.
+  say:
+    hi:
+      text: पनीर को उंगलियों से छोटे-छोटे टुकड़ों में मसल लो।
+      touch: टुकड़े नरम लगें और कोई बड़ी गांठ न बचे।
+    hi-Latn:
+      text: Paneer ko ungliyon se chhote-chhote tukdon mein masal lo.
+      touch: Tukde naram lagein aur koi badi gaanth na bache.
+- text: Heat the oil and butter in a kadai on medium heat, then add the cumin seeds.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles.
+    smell: The cumin smells toasty.
+  say:
+    hi:
+      text: कढ़ाई में तेल और मक्खन मध्यम आंच पर गरम करो, फिर जीरा डालो।
+      sound: जीरा चटकने लगे।
+      smell: जीरे की भुनी खुशबू आए।
+    hi-Latn:
+      text: Kadai mein tel aur makhan medium aanch par garam karo, phir jeera daalo.
+      sound: Jeera chatakne lage.
+      smell: Jeere ki bhuni khushboo aaye.
+- text: Add the onion, green chilli and ginger and sauté until the onion turns soft and light golden.
+  technique: saute_onion
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns light golden.
+  say:
+    hi:
+      text: प्याज़, हरी मिर्च और अदरक डालकर तब तक भूनो जब तक प्याज़ नरम और हल्का सुनहरा न हो जाए।
+      look: प्याज़ हल्का सुनहरा हो जाए।
+    hi-Latn:
+      text: Pyaaz, hari mirch aur adrak daalkar tab tak bhuno jab tak pyaaz naram aur halka sunehra na ho jaaye.
+      look: Pyaaz halka sunehra ho jaaye.
+- text: Add the tomato, salt, turmeric, red chilli powder and coriander powder, and cook until the tomato is mushy and the
+    oil shows at the sides.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato is mushy and oil shows at the sides.
+  say:
+    hi:
+      text: टमाटर, नमक, हल्दी, लाल मिर्च और धनिया पाउडर डालो, और तब तक पकाओ जब तक टमाटर गल न जाए और किनारों पर तेल न दिखे।
+      look: टमाटर गल जाए और किनारों पर तेल दिखे।
+    hi-Latn:
+      text: Tamatar, namak, haldi, laal mirch aur dhaniya powder daalo, aur tab tak pakao jab tak tamatar gal na jaaye aur
+        kinaron par tel na dikhe.
+      look: Tamatar gal jaaye aur kinaron par tel dikhe.
+- text: Lower the heat, add the crumbled paneer, garam masala and milk, and mix gently for 2 to 3 minutes so the paneer stays
+    soft.
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: The paneer is evenly coated in masala and looks moist.
+    touch: The paneer still feels soft, not rubbery.
+  say:
+    hi:
+      text: आंच धीमी करो, मसला हुआ पनीर, गरम मसाला और दूध डालो, और 2-3 मिनट हल्के हाथ से मिलाओ ताकि पनीर नरम रहे।
+      look: पनीर पर मसाला बराबर लग जाए और वह नम दिखे।
+      touch: पनीर अभी भी नरम लगे, रबड़ जैसा नहीं।
+    hi-Latn:
+      text: Aanch dheemi karo, masla hua paneer, garam masala aur doodh daalo, aur 2-3 minute halke haath se milao taaki paneer
+        naram rahe.
+      look: Paneer par masala barabar lag jaaye aur woh nam dikhe.
+      touch: Paneer abhi bhi naram lage, rubber jaisa nahi.
+- text: Turn off the heat, sprinkle the coriander leaves on top, and serve hot with roti or pav.
+  say:
+    hi:
+      text: गैस बंद करो, ऊपर से हरा धनिया डालो और रोटी या पाव के साथ गरम परोसो।
+    hi-Latn:
+      text: Gas band karo, upar se hara dhaniya daalo aur roti ya pav ke saath garam paroso.

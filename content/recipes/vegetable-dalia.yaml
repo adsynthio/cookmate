@@ -1,0 +1,194 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: vegetable-dalia
+title: Vegetable Dalia
+titles:
+  hi: वेजिटेबल दलिया
+  hi-Latn: Vegetable Dalia
+description: A savoury breakfast porridge of roasted broken wheat cooked in the pressure cooker with onion, tomato, carrot,
+  peas and beans, tempered with cumin in ghee.
+descriptions:
+  hi: भुने हुए दलिये का नमकीन नाश्ता, जो प्याज़, टमाटर, गाजर, मटर और बीन्स के साथ प्रेशर कुकर में पकता है और घी में जीरे का
+    तड़का लगता है।
+  hi-Latn: Bhune hue daliye ka namkeen naashta, jo pyaaz, tamatar, gaajar, matar aur beans ke saath pressure cooker mein pakta
+    hai aur ghee mein jeere ka tadka lagta hai.
+cuisine_region: north_indian
+course: breakfast
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 20
+difficulty: 1
+spice_level: 2
+equipment:
+- pressure_cooker
+- gas_stove
+tags:
+- comforting
+- one_pot
+- kids_friendly
+- light
+flavor_profile:
+  rich: 0.3
+  heat: 0.3
+  acid: 0.2
+  crunch: 0.1
+  starch: 0.7
+  sweet: 0.1
+food_groups:
+- grain
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: broken wheat
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: base
+- ingredient: ghee
+  qty: 20
+  unit: g
+  local: 1.5 bada chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 pyaaz
+  role: aromatic
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch
+  role: heat
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 tamatar
+  role: acid
+- ingredient: carrot
+  qty: 80
+  unit: g
+  local: 1 gaajar
+  role: vegetable
+- ingredient: green peas
+  qty: 70
+  unit: g
+  local: half katori matar
+  role: vegetable
+- ingredient: french beans
+  qty: 50
+  unit: g
+  local: 8-10 beans
+  role: vegetable
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: half chhota chammach
+  role: spice
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi
+  role: garnish
+- ingredient: lemon
+  qty: 20
+  unit: g
+  local: half nimbu
+  role: acid
+  optional: true
+steps:
+- text: Heat half the ghee in the pressure cooker and roast the broken wheat, stirring, until golden.
+  technique: dry_roast
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The grains turn light golden.
+    smell: It smells nutty and toasty.
+  say:
+    hi:
+      text: प्रेशर कुकर में आधा घी गरम करो और दलिये को चलाते हुए सुनहरा होने तक भूनो।
+      look: दाने हल्के सुनहरे हो जाते हैं।
+      smell: सौंधी, भुनी हुई खुशबू आती है।
+    hi-Latn:
+      text: Pressure cooker mein aadha ghee garam karo aur daliye ko chalate hue sunehra hone tak bhuno.
+      look: Daane halke sunehre ho jaate hain.
+      smell: Saundhi, bhuni hui khushboo aati hai.
+- text: Take the dalia out onto a plate, add the rest of the ghee and crackle the cumin seeds.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin sizzles and crackles.
+  say:
+    hi:
+      text: दलिया एक प्लेट में निकाल लो, बचा हुआ घी डालो और जीरा चटकाओ।
+      sound: जीरा चटकने लगता है।
+    hi-Latn:
+      text: Dalia ek plate mein nikaal lo, bacha hua ghee daalo aur jeera chatkao.
+      sound: Jeera chatakne lagta hai.
+- text: Add chopped onion, ginger and green chilli and sauté until the onion is soft.
+  technique: saute_onion
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and see-through.
+  say:
+    hi:
+      text: कटा प्याज़, अदरक और हरी मिर्च डालकर प्याज़ नरम होने तक भूनो।
+      look: प्याज़ नरम और पारदर्शी हो जाता है।
+    hi-Latn:
+      text: Kata pyaaz, adrak aur hari mirch daalkar pyaaz naram hone tak bhuno.
+      look: Pyaaz naram aur transparent ho jaata hai.
+- text: Add chopped tomato, carrot, peas, beans, turmeric and salt and cook until the tomato softens.
+  technique: bhuna
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato turns mushy.
+  say:
+    hi:
+      text: कटा टमाटर, गाजर, मटर, बीन्स, हल्दी और नमक डालकर टमाटर नरम होने तक पकाओ।
+      look: टमाटर गल जाता है।
+    hi-Latn:
+      text: Kata tamatar, gaajar, matar, beans, haldi aur namak daalkar tamatar naram hone tak pakao.
+      look: Tamatar gal jaata hai.
+- text: Add the roasted dalia and 4 cups of water, stir, close the lid and pressure-cook.
+  technique: pressure_cook
+  whistles: 3
+  heat: medium
+  safety: Let the pressure drop on its own before opening the cooker.
+  say:
+    hi:
+      text: भुना दलिया और 4 कप पानी डालो, चलाओ, ढक्कन बंद करो और प्रेशर कुकर में पकाओ।
+      safety: कुकर खोलने से पहले प्रेशर अपने आप निकलने दो।
+    hi-Latn:
+      text: Bhuna dalia aur 4 cup paani daalo, chalao, dhakkan band karo aur pressure cooker mein pakao.
+      safety: Cooker kholne se pehle pressure apne aap nikalne do.
+- text: Open the cooker, stir, add a little hot water if it is too thick, and finish with coriander leaves and a squeeze of
+    lemon.
+  cues:
+    look: The dalia is soft and porridge-like.
+  say:
+    hi:
+      text: कुकर खोलकर चलाओ, बहुत गाढ़ा हो तो थोड़ा गरम पानी डालो, और ऊपर से हरा धनिया और नींबू निचोड़ो।
+      look: दलिया नरम और दलिये जैसा गाढ़ा हो जाता है।
+    hi-Latn:
+      text: Cooker kholkar chalao, bahut gaadha ho to thoda garam paani daalo, aur upar se hara dhaniya aur nimbu nichodo.
+      look: Dalia naram aur porridge jaisa gaadha ho jaata hai.

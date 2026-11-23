@@ -1,0 +1,247 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: palak-paneer
+title: Palak Paneer
+titles:
+  hi: पालक पनीर
+  hi-Latn: Palak Paneer
+description: Soft paneer cubes in a smooth, mildly spiced spinach gravy, made the everyday home way and eaten with roti or
+  rice.
+descriptions:
+  hi: मुलायम पनीर के टुकड़े, हल्के मसाले वाली चिकनी पालक की ग्रेवी में। घर का रोज़ वाला तरीका, रोटी या चावल के साथ।
+  hi-Latn: Mulayam paneer ke tukde, halke masale wali chikni palak ki gravy mein. Ghar ka roz wala tareeka, roti ya chawal
+    ke saath.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 25
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- mixer_grinder
+- gas_stove
+tags:
+- comforting
+- kids_friendly
+flavor_profile:
+  rich: 0.5
+  heat: 0.3
+  acid: 0.2
+  crunch: 0
+  starch: 0.1
+  sweet: 0.1
+food_groups:
+- greens
+- dairy
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: spinach
+  qty: 500
+  unit: g
+  local: 2 gaddi palak
+  role: base
+  group: gravy
+- ingredient: paneer
+  qty: 200
+  unit: g
+  local: 200 gram paneer, tukdon mein kata
+  role: protein
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 medium pyaaz, bareek kata
+  role: aromatic
+  group: masala
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 medium tamatar, bareek kata
+  role: acid
+  group: masala
+- ingredient: garlic
+  qty: 15
+  unit: g
+  local: 6 kali lahsun
+  role: aromatic
+  group: gravy
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+  group: gravy
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: gravy
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach tel
+  role: fat
+  group: masala
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: masala
+- ingredient: kashmiri chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach kashmiri mirch
+  role: spice
+  group: masala
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+  group: masala
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1 chutki haldi
+  role: spice
+  group: masala
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+  group: finish
+- ingredient: dried fenugreek leaves
+  qty: 2
+  unit: g
+  local: 1 chhota chammach kasuri methi
+  role: spice
+  group: finish
+  optional: true
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak, swaad anusar
+  role: spice
+- ingredient: fresh cream
+  qty: 30
+  unit: ml
+  local: 2 bade chammach malai
+  role: garnish
+  group: finish
+  optional: true
+steps:
+- text: Wash the spinach well, boil it in a large pot of water for 2 minutes, then drain and put it straight into cold water.
+  minutes: 2
+  heat: high
+  cues:
+    look: Leaves turn bright green and go limp.
+  safety: Pour the boiling water away from you to avoid steam burns.
+  say:
+    hi:
+      text: पालक को अच्छे से धोकर बड़े बर्तन में उबलते पानी में 2 मिनट उबालें, फिर छानकर तुरंत ठंडे पानी में डाल दें।
+      look: पत्ते चमकीले हरे होकर नरम पड़ जाते हैं।
+      safety: उबलता पानी अपने से दूर की तरफ़ गिराएँ ताकि भाप से न जलें।
+    hi-Latn:
+      text: Palak ko achhe se dhokar bade bartan mein ubalte paani mein 2 minute ubaalein, phir chhaankar turant thande paani
+        mein daal dein.
+      look: Patte chamkile hare hokar naram pad jaate hain.
+      safety: Ubalta paani apne se door ki taraf giraayein taaki bhaap se na jalein.
+- text: Squeeze the spinach lightly and grind it with garlic, ginger and green chilli to a smooth puree.
+  minutes: 2
+  cues:
+    look: Puree is smooth and deep green.
+  say:
+    hi:
+      text: पालक को हल्का निचोड़कर लहसुन, अदरक और हरी मिर्च के साथ चिकना पीस लें।
+      look: प्यूरी चिकनी और गहरी हरी हो जाती है।
+    hi-Latn:
+      text: Palak ko halka nichodkar lahsun, adrak aur hari mirch ke saath chikna pees lein.
+      look: Puree chikni aur gehri hari ho jaati hai.
+- text: Heat oil in a kadai, add cumin seeds, then add the onion and fry until golden.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Onion turns soft and light golden.
+    sound: Cumin seeds crackle as soon as they hit the oil.
+  safety: 'Hot oil: never leave the kadai, keep children away, and keep water away from the oil.'
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करें, जीरा डालें, फिर प्याज़ डालकर सुनहरा होने तक भूनें।
+      look: प्याज़ नरम और हल्का सुनहरा हो जाता है।
+      sound: तेल में डालते ही जीरा चटकता है।
+      safety: 'गरम तेल: कड़ाही को अकेला न छोड़ें, बच्चों को दूर रखें और तेल के पास पानी न रखें।'
+    hi-Latn:
+      text: Kadai mein tel garam karein, jeera daalein, phir pyaaz daalkar sunehra hone tak bhunein.
+      look: Pyaaz naram aur halka sunehra ho jaata hai.
+      sound: Tel mein daalte hi jeera chatakta hai.
+      safety: 'Garam tel: kadai ko akela na chhodein, bachchon ko door rakhein aur tel ke paas paani na rakhein.'
+- text: Add tomato, turmeric, kashmiri chilli powder, coriander powder and salt, and cook until the tomato is mushy.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Oil starts to separate at the edges.
+    smell: Raw smell of spices goes away.
+  safety: Hot oil can splutter when the tomato goes in; add it gently and stand back.
+  say:
+    hi:
+      text: टमाटर, हल्दी, कश्मीरी मिर्च, धनिया पाउडर और नमक डालकर टमाटर गलने तक पकाएँ।
+      look: किनारों पर तेल छूटने लगता है।
+      smell: मसालों की कच्ची महक चली जाती है।
+      safety: टमाटर डालते समय गरम तेल छिटक सकता है; धीरे से डालें और थोड़ा पीछे रहें।
+    hi-Latn:
+      text: Tamatar, haldi, kashmiri mirch, dhaniya powder aur namak daalkar tamatar galne tak pakaayein.
+      look: Kinaaron par tel chhootne lagta hai.
+      smell: Masaalon ki kachchi mehak chali jaati hai.
+      safety: Tamatar daalte samay garam tel chhitak sakta hai; dheere se daalein aur thoda peeche rahein.
+- text: Add the spinach puree and about half a cup of water, then simmer, stirring now and then.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: Gravy thickens and stays green.
+    sound: Gravy bubbles gently.
+  safety: Thick gravy can splash; keep the lid half on while it simmers.
+  say:
+    hi:
+      text: पालक की प्यूरी और लगभग आधा कप पानी डालें, फिर बीच-बीच में चलाते हुए धीमी आँच पर पकाएँ।
+      look: ग्रेवी गाढ़ी होती है और हरी बनी रहती है।
+      sound: ग्रेवी धीरे-धीरे बुलबुले छोड़ती है।
+      safety: गाढ़ी ग्रेवी उछल सकती है; पकते समय ढक्कन आधा ढककर रखें।
+    hi-Latn:
+      text: Palak ki puree aur lagbhag aadha cup paani daalein, phir beech-beech mein chalaate hue dheemi aanch par pakaayein.
+      look: Gravy gaadhi hoti hai aur hari bani rehti hai.
+      sound: Gravy dheere-dheere bulbule chhodti hai.
+      safety: Gaadhi gravy uchhal sakti hai; pakte samay dhakkan aadha dhakkar rakhein.
+- text: Add paneer cubes, garam masala and crushed kasuri methi, and cook for 2 minutes.
+  technique: simmer
+  minutes: 2
+  heat: low
+  cues:
+    touch: Paneer feels soft when pressed with the spoon.
+  say:
+    hi:
+      text: पनीर के टुकड़े, गरम मसाला और मसली हुई कसूरी मेथी डालकर 2 मिनट पकाएँ।
+      touch: चम्मच से दबाने पर पनीर नरम लगता है।
+    hi-Latn:
+      text: Paneer ke tukde, garam masala aur masli hui kasuri methi daalkar 2 minute pakaayein.
+      touch: Chammach se dabaane par paneer naram lagta hai.
+- text: Turn off the heat, swirl in the cream if using, and serve hot.
+  cues:
+    look: Cream makes light white streaks on the green gravy.
+  say:
+    hi:
+      text: आँच बंद करें, चाहें तो मलाई डालकर हल्का मिलाएँ और गरम परोसें।
+      look: हरी ग्रेवी पर मलाई की हल्की सफ़ेद धारियाँ दिखती हैं।
+    hi-Latn:
+      text: Aanch band karein, chahein to malai daalkar halka milaayein aur garam parosein.
+      look: Hari gravy par malai ki halki safed dhaariyaan dikhti hain.

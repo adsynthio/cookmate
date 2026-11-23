@@ -1,0 +1,205 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: egg-paratha
+title: Egg Paratha
+titles:
+  hi: अंडा पराठा
+  hi-Latn: Anda Paratha
+description: Soft whole wheat parathas cooked on the tawa with a spiced egg, onion and green chilli layer stuck to one side.
+  A filling weekday breakfast or tiffin.
+descriptions:
+  hi: गेहूं के आटे के नरम पराठे, जिनकी एक तरफ तवे पर मसालेदार अंडा, प्याज़ और हरी मिर्च की परत सेंकी जाती है। रोज़ के नाश्ते
+    या टिफ़िन के लिए पेट भरने वाला पराठा।
+  hi-Latn: Gehun ke aate ke naram parathe, jinki ek taraf tawe par masaledaar anda, pyaaz aur hari mirch ki parat senki jaati
+    hai. Roz ke naashte ya tiffin ke liye pet bharne wala paratha.
+cuisine_region: north_indian
+course: breakfast
+diet: eggetarian
+base_servings: 4
+prep_time_min: 25
+cook_time_min: 20
+difficulty: 2
+spice_level: 2
+equipment:
+- tawa
+- gas_stove
+tags:
+- comforting
+- kids_friendly
+- tiffin
+- high_protein
+flavor_profile:
+  rich: 0.5
+  heat: 0.3
+  acid: 0.1
+  crunch: 0.2
+  starch: 0.7
+  sweet: 0
+food_groups:
+- grain
+- protein
+review_status: in_review
+ingredients:
+- ingredient: whole wheat flour
+  qty: 240
+  unit: g
+  local: 2 katori atta
+  role: base
+  group: dough
+- ingredient: salt
+  qty: 3
+  unit: g
+  local: half chhota chammach namak
+  role: spice
+  group: dough
+- ingredient: refined oil
+  qty: 5
+  unit: ml
+  local: 1 chhota chammach tel
+  role: fat
+  group: dough
+- ingredient: egg
+  qty: 4
+  unit: piece
+  local: 4 ande
+  role: protein
+  group: egg mixture
+- ingredient: onion
+  qty: 80
+  unit: g
+  local: 1 medium pyaaz, baareek kata
+  role: vegetable
+  group: egg mixture
+- ingredient: green chilli
+  qty: 6
+  unit: g
+  local: 2 hari mirch, baareek kati
+  role: heat
+  group: egg mixture
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach hara dhaniya, kata
+  role: aromatic
+  group: egg mixture
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: half chhota chammach laal mirch
+  role: spice
+  group: egg mixture
+- ingredient: salt
+  qty: 3
+  unit: g
+  local: half chhota chammach namak
+  role: spice
+  group: egg mixture
+- ingredient: ghee
+  qty: 40
+  unit: ml
+  local: 3 bade chammach ghee, sekne ke liye
+  role: fat
+  group: cooking
+- ingredient: tomato ketchup
+  qty: 60
+  unit: g
+  local: 4 bade chammach ketchup, saath mein
+  role: component
+  group: serving
+  optional: true
+steps:
+- text: Mix the flour, salt and oil, add about 150 ml water little by little and knead a soft dough, then cover and rest it
+    for 15 minutes.
+  technique: knead
+  minutes: 15
+  timer: true
+  cues:
+    touch: The dough feels soft and smooth and does not stick to your fingers.
+  say:
+    hi:
+      text: आटा, नमक और तेल मिलाएं, लगभग 150 मिली पानी थोड़ा-थोड़ा डालकर नरम आटा गूंध लें, फिर ढककर 15 मिनट रख दें।
+      touch: आटा नरम और चिकना लगे और उंगलियों पर न चिपके।
+    hi-Latn:
+      text: Atta, namak aur tel milayein, lagbhag 150 ml paani thoda-thoda daalkar naram atta goondh lein, phir dhakkar 15
+        minute rakh dein.
+      touch: Atta naram aur chikna lage aur ungliyon par na chipke.
+- text: Beat the eggs in a bowl with the onion, green chilli, coriander leaves, red chilli powder and salt until frothy.
+  cues:
+    look: The mixture looks evenly yellow and a little frothy on top.
+  say:
+    hi:
+      text: एक कटोरे में अंडे, प्याज़, हरी मिर्च, हरा धनिया, लाल मिर्च पाउडर और नमक डालकर झागदार होने तक फेंट लें।
+      look: मिश्रण एक जैसा पीला और ऊपर से थोड़ा झागदार दिखे।
+    hi-Latn:
+      text: Ek katori mein ande, pyaaz, hari mirch, hara dhaniya, laal mirch powder aur namak daalkar jhaagdaar hone tak phent
+        lein.
+      look: Mixture ek jaisa peela aur upar se thoda jhaagdaar dikhe.
+- text: Divide the dough into 4 balls and roll each one into a round about 7 inches wide, dusting with a little flour.
+  technique: shape
+  say:
+    hi:
+      text: आटे की 4 लोइयां बनाएं और थोड़ा सूखा आटा लगाकर हर लोई को लगभग 7 इंच का गोल बेल लें।
+    hi-Latn:
+      text: Aate ki 4 loiyan banayein aur thoda sookha atta lagakar har loi ko lagbhag 7 inch ka gol bel lein.
+- text: Cook one rolled paratha on a hot tawa on medium heat for about 1 minute on each side.
+  technique: tawa_cook
+  minutes: 2
+  heat: medium
+  cues:
+    look: Light brown spots appear and the paratha starts to puff in places.
+  say:
+    hi:
+      text: एक बेले हुए पराठे को गरम तवे पर मध्यम आंच पर हर तरफ लगभग 1 मिनट सेंकें।
+      look: हल्के भूरे धब्बे दिखें और पराठा जगह-जगह से फूलने लगे।
+    hi-Latn:
+      text: Ek bele hue parathe ko garam tawe par medium aanch par har taraf lagbhag 1 minute senkein.
+      look: Halke bhoore dhabbe dikhein aur paratha jagah-jagah se phoolne lage.
+- text: Lift the paratha off, spread a little ghee on the tawa, pour a quarter of the stirred egg mixture and spread it into
+    a round, then press the paratha on top at once.
+  minutes: 1
+  heat: medium
+  cues:
+    look: The egg sticks to the paratha and the edges start to set.
+    sound: The egg sizzles as it hits the tawa.
+  say:
+    hi:
+      text: पराठा उठा लें, तवे पर थोड़ा घी फैलाएं, अंडे के मिश्रण को चलाकर उसका चौथाई हिस्सा डालें और गोल फैला दें, फिर तुरंत
+        उसके ऊपर पराठा रखकर दबाएं।
+      look: अंडा पराठे से चिपक जाए और किनारे जमने लगें।
+      sound: तवे पर पड़ते ही अंडा छनछनाए।
+    hi-Latn:
+      text: Paratha utha lein, tawe par thoda ghee phailayein, ande ke mixture ko chalakar uska chauthai hissa daalein aur
+        gol phaila dein, phir turant uske upar paratha rakhkar dabayein.
+      look: Anda parathe se chipak jaaye aur kinare jamne lagein.
+      sound: Tawe par padte hi anda chhanchhanaye.
+- text: Flip so the egg side faces up, drizzle ghee around the edges and cook for 2 to 3 minutes, flipping once more, until
+    both sides are golden and the egg is fully cooked.
+  technique: shallow_fry
+  minutes: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The egg layer is golden with no wet or runny patches.
+    smell: It smells of browned ghee and cooked onion.
+    touch: The egg layer feels firm when pressed with the spatula.
+  safety: Cook until the egg is fully set all the way through, with no runny egg left.
+  say:
+    hi:
+      text: पलटें ताकि अंडे वाली तरफ ऊपर आए, किनारों पर घी डालें और 2 से 3 मिनट सेंकें, एक बार और पलटें, जब तक दोनों तरफ सुनहरा
+        न हो जाए और अंडा पूरा पक न जाए।
+      look: अंडे की परत सुनहरी हो और कहीं गीला या बहता हिस्सा न दिखे।
+      smell: भुने घी और पके प्याज़ की खुशबू आए।
+      touch: पलटे से दबाने पर अंडे की परत सख्त लगे।
+      safety: अंडे को अंदर तक पूरा जमने तक पकाएं, कहीं भी कच्चा या बहता अंडा न रहे।
+    hi-Latn:
+      text: Palatein taaki ande wali taraf upar aaye, kinaron par ghee daalein aur 2 se 3 minute senkein, ek baar aur palatein,
+        jab tak dono taraf sunehra na ho jaaye aur anda poora pak na jaaye.
+      look: Ande ki parat sunehri ho aur kahin geela ya behta hissa na dikhe.
+      smell: Bhune ghee aur pake pyaaz ki khushboo aaye.
+      touch: Palte se dabane par ande ki parat sakht lage.
+      safety: Ande ko andar tak poora jamne tak pakayein, kahin bhi kachcha ya behta anda na rahe.
+- text: Repeat with the remaining parathas and egg mixture, and serve hot with ketchup if you like.
+  say:
+    hi:
+      text: बाकी पराठे और अंडे का मिश्रण इसी तरह बनाएं और चाहें तो केचप के साथ गरमागरम परोसें।
+    hi-Latn:
+      text: Baaki parathe aur ande ka mixture isi tarah banayein aur chahein to ketchup ke saath garmagaram parosein.

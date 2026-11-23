@@ -1,0 +1,310 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: malai-kofta
+title: Malai Kofta
+titles:
+  hi: मलाई कोफ्ता
+  hi-Latn: Malai Kofta
+description: Soft fried paneer and potato balls served in a smooth, mildly sweet onion, tomato and cashew gravy finished with
+  cream. A North Indian favourite for a special lunch or dinner with roti, naan or jeera rice.
+descriptions:
+  hi: पनीर और आलू के नरम तले हुए कोफ्ते, प्याज़, टमाटर और काजू की चिकनी, हल्की मीठी ग्रेवी में, ऊपर से मलाई डालकर। रोटी, नान
+    या जीरा राइस के साथ खास दिन के खाने के लिए उत्तर भारत की पसंदीदा सब्ज़ी।
+  hi-Latn: Paneer aur aloo ke naram tale hue kofte, pyaaz, tamatar aur kaju ki smooth, halki meethi gravy mein, upar se malai
+    daal kar. Roti, naan ya jeera rice ke saath khaas din ke khaane ke liye North Indian favourite sabzi.
+cuisine_region: north_indian_mughlai_
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 25
+cook_time_min: 45
+difficulty: 3
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- mixer_grinder
+- gas_stove
+tags:
+- festive
+- comforting
+- kids_friendly
+flavor_profile:
+  rich: 0.8
+  heat: 0.2
+  acid: 0.3
+  crunch: 0.1
+  starch: 0.4
+  sweet: 0.3
+food_groups:
+- dairy
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: paneer
+  qty: 200
+  unit: g
+  local: 200 gram paneer
+  role: protein
+  group: kofta
+- ingredient: potato
+  qty: 200
+  unit: g
+  local: 2 medium aloo
+  role: base
+  group: kofta
+- ingredient: cornflour
+  qty: 20
+  unit: g
+  local: 2 bade chammach cornflour
+  role: binder
+  group: kofta
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach garam masala
+  role: spice
+  group: kofta
+- ingredient: refined oil
+  qty: 300
+  unit: ml
+  local: talne ke liye tel
+  role: fat
+  group: kofta
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach namak (kofta aur gravy mein baant ke)
+  role: spice
+- ingredient: butter
+  qty: 15
+  unit: g
+  local: 1 bada chammach makhan
+  role: fat
+  group: gravy
+- ingredient: cumin seeds
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach jeera
+  role: spice
+  group: gravy
+- ingredient: bay leaf
+  qty: 1
+  unit: g
+  local: 1 tej patta
+  role: aromatic
+  group: gravy
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 pyaaz
+  role: base
+  group: gravy
+- ingredient: ginger garlic paste
+  qty: 10
+  unit: g
+  local: 2 chhote chammach adrak lahsun paste
+  role: aromatic
+  group: gravy
+- ingredient: tomato
+  qty: 250
+  unit: g
+  local: 3 tamatar
+  role: acid
+  group: gravy
+- ingredient: cashews
+  qty: 30
+  unit: g
+  local: 15-20 kaju
+  role: component
+  group: gravy
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1 hari mirch
+  role: heat
+  group: gravy
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach haldi
+  role: spice
+  group: gravy
+- ingredient: kashmiri chilli powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach kashmiri mirch
+  role: spice
+  group: gravy
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach dhaniya powder
+  role: spice
+  group: gravy
+- ingredient: fresh cream
+  qty: 100
+  unit: ml
+  local: 1/2 katori malai/fresh cream
+  role: fat
+  group: gravy
+- ingredient: sugar
+  qty: 5
+  unit: g
+  local: 1 chhota chammach cheeni
+  role: sweet
+  group: gravy
+- ingredient: dried fenugreek leaves
+  qty: 2
+  unit: g
+  local: 1 chhota chammach kasuri methi
+  role: aromatic
+  group: gravy
+- ingredient: coriander leaves
+  qty: 5
+  unit: g
+  local: thoda hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Pressure-cook the potatoes with a little water, then peel and mash them while warm.
+  technique: pressure_cook
+  whistles: 3
+  heat: medium
+  cues:
+    touch: A knife goes through the potato easily.
+  safety: Open the cooker only after the pressure drops on its own.
+  say:
+    hi:
+      text: आलू को थोड़े पानी के साथ प्रेशर कुकर में पकाता हूँ, फिर छीलकर गरम-गरम मसल लेता हूँ।
+      touch: चाकू आलू में आसानी से घुस जाए।
+      safety: कुकर का प्रेशर अपने आप उतरने के बाद ही खोलें।
+    hi-Latn:
+      text: Aloo ko thode paani ke saath pressure cooker mein pakata hoon, phir chheel kar garam-garam masal leta hoon.
+      touch: Chaaku aloo mein aasaani se ghus jaaye.
+      safety: Cooker ka pressure apne aap utarne ke baad hi kholein.
+- text: Grate the paneer into the mashed potato, add cornflour, garam masala and a little salt, knead to a smooth dough and
+    shape 12 round balls.
+  technique: shape
+  cues:
+    touch: The balls feel smooth with no cracks on the surface.
+  say:
+    hi:
+      text: मसले आलू में पनीर कद्दूकस करता हूँ, कॉर्नफ्लोर, गरम मसाला और थोड़ा नमक डालकर चिकना गूंथता हूँ और 12 गोल कोफ्ते
+        बनाता हूँ।
+      touch: कोफ्ते चिकने लगें, ऊपर कोई दरार न हो।
+    hi-Latn:
+      text: Masle aloo mein paneer grate karta hoon, cornflour, garam masala aur thoda namak daal kar smooth goondhta hoon
+        aur 12 gol kofte banata hoon.
+      touch: Kofte smooth lagein, upar koi darar na ho.
+- text: Heat oil in a kadai and deep-fry the koftas a few at a time, turning gently, until golden all over.
+  technique: deep_fry
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Koftas turn evenly golden brown.
+  safety: Fry one kofta first to test; if it breaks, add a little more cornflour. Slide them in gently to avoid hot oil splashes.
+  say:
+    hi:
+      text: कड़ाही में तेल गरम करके थोड़े-थोड़े कोफ्ते डालता हूँ और धीरे-धीरे पलटते हुए सुनहरा होने तक तलता हूँ।
+      look: कोफ्ते चारों ओर से एक जैसे सुनहरे भूरे हो जाएँ।
+      safety: पहले एक कोफ्ता तलकर देखें; टूटे तो थोड़ा और कॉर्नफ्लोर मिलाएँ। गरम तेल के छींटों से बचने के लिए कोफ्ते धीरे
+        से डालें।
+    hi-Latn:
+      text: Kadai mein tel garam karke thode-thode kofte daalta hoon aur dheere-dheere palatte hue sunehra hone tak talta
+        hoon.
+      look: Kofte chaaron taraf se ek jaise sunehre brown ho jaayein.
+      safety: Pehle ek kofta tal kar dekhein; toote to thoda aur cornflour milaayein. Garam tel ke chheenton se bachne ke
+        liye kofte dheere se daalein.
+- text: In another pan heat 1 tablespoon oil with the butter, add cumin and bay leaf, then add sliced onion and sauté until
+    soft and light golden.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Onions turn soft and light golden.
+    sound: Cumin crackles as soon as it hits the fat.
+  say:
+    hi:
+      text: दूसरे बर्तन में 1 बड़ा चम्मच तेल और मक्खन गरम करता हूँ, जीरा और तेज पत्ता डालता हूँ, फिर कटा प्याज़ डालकर नरम
+        और हल्का सुनहरा होने तक भूनता हूँ।
+      look: प्याज़ नरम और हल्का सुनहरा हो जाए।
+      sound: जीरा डालते ही चटकने लगे।
+    hi-Latn:
+      text: Doosre bartan mein 1 bada chammach tel aur makhan garam karta hoon, jeera aur tej patta daalta hoon, phir kata
+        pyaaz daal kar naram aur halka sunehra hone tak bhoonta hoon.
+      look: Pyaaz naram aur halka sunehra ho jaaye.
+      sound: Jeera daalte hi chatakne lage.
+- text: Add ginger garlic paste, chopped tomato, cashews and green chilli, and cook until the tomatoes are completely mushy.
+  technique: bhuna
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: Tomatoes break down fully and oil shows at the edges.
+    smell: The raw smell of ginger garlic goes away.
+  say:
+    hi:
+      text: अदरक लहसुन पेस्ट, कटा टमाटर, काजू और हरी मिर्च डालकर टमाटर पूरी तरह गलने तक पकाता हूँ।
+      look: टमाटर पूरी तरह गल जाएँ और किनारों पर तेल दिखे।
+      smell: अदरक लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak lahsun paste, kata tamatar, kaju aur hari mirch daal kar tamatar poori tarah galne tak pakata hoon.
+      look: Tamatar poori tarah gal jaayein aur kinaaron par tel dikhe.
+      smell: Adrak lahsun ki kachchi mehak chali jaaye.
+- text: Remove the bay leaf, let the mixture cool a little and grind it to a very smooth paste with a splash of water.
+  cues:
+    look: The paste is silky with no cashew bits.
+  safety: Let it cool before grinding; hot mixture can push the mixer lid open.
+  say:
+    hi:
+      text: तेज पत्ता निकालकर मिश्रण थोड़ा ठंडा करता हूँ और थोड़ा पानी डालकर एकदम चिकना पीस लेता हूँ।
+      look: पेस्ट मुलायम हो, काजू के टुकड़े न दिखें।
+      safety: पीसने से पहले ठंडा करें; गरम मिश्रण से मिक्सर का ढक्कन खुल सकता है।
+    hi-Latn:
+      text: Tej patta nikaal kar mixture thoda thanda karta hoon aur thoda paani daal kar ekdum smooth pees leta hoon.
+      look: Paste silky ho, kaju ke tukde na dikhein.
+      safety: Peesne se pehle thanda karein; garam mixture se mixer ka dhakkan khul sakta hai.
+- text: Pour the paste back into the pan, add turmeric, kashmiri chilli powder, coriander powder and salt, then add about
+    a cup of water and simmer.
+  technique: simmer
+  minutes: 8
+  timer: true
+  heat: low
+  cues:
+    look: The gravy thickens and turns a deep orange.
+  safety: Cover partly; thick gravy can splutter.
+  say:
+    hi:
+      text: पेस्ट वापस बर्तन में डालता हूँ, हल्दी, कश्मीरी मिर्च, धनिया पाउडर और नमक डालकर लगभग एक कप पानी मिलाता हूँ और धीमी
+        आँच पर पकाता हूँ।
+      look: ग्रेवी गाढ़ी होकर गहरे नारंगी रंग की हो जाए।
+      safety: आधा ढककर पकाएँ; गाढ़ी ग्रेवी छींटे मारती है।
+    hi-Latn:
+      text: Paste wapas bartan mein daalta hoon, haldi, kashmiri mirch, dhaniya powder aur namak daal kar lagbhag ek cup paani
+        milaata hoon aur dheemi aanch par pakata hoon.
+      look: Gravy gaadhi hokar gehre naarangi rang ki ho jaaye.
+      safety: Aadha dhak kar pakaayein; gaadhi gravy chheente maarti hai.
+- text: Stir in the cream, sugar and crushed kasuri methi and warm through without boiling hard.
+  minutes: 2
+  heat: low
+  cues:
+    look: The gravy turns creamy and pale orange.
+    smell: Kasuri methi smells fragrant.
+  say:
+    hi:
+      text: मलाई, चीनी और मसली हुई कसूरी मेथी मिलाकर बिना तेज़ उबाले गरम करता हूँ।
+      look: ग्रेवी मलाईदार और हल्की नारंगी हो जाए।
+      smell: कसूरी मेथी की खुशबू आए।
+    hi-Latn:
+      text: Malai, cheeni aur masli hui kasuri methi mila kar bina tez ubaale garam karta hoon.
+      look: Gravy creamy aur halki naarangi ho jaaye.
+      smell: Kasuri methi ki khushboo aaye.
+- text: Place the koftas in a serving bowl and pour the hot gravy over them just before eating, garnished with coriander.
+  say:
+    hi:
+      text: कोफ्ते परोसने के बर्तन में रखता हूँ और खाने से ठीक पहले ऊपर से गरम ग्रेवी डालकर हरा धनिया सजाता हूँ।
+    hi-Latn:
+      text: Kofte serving bowl mein rakhta hoon aur khaane se theek pehle upar se garam gravy daal kar hara dhaniya sajaata
+        hoon.

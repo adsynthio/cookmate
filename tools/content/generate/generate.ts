@@ -1,7 +1,8 @@
 // Library batch generator (docs/AI_RECIPES_PLAN.md, Phase 1, L1–L2). Writes draft recipes for the next dishes in
 // content/dish_list.yaml that have no file in content/recipes yet. Each draft:
-//   1. is written by Claude in the exact recipe shape (English, Hindi, Hinglish, cues, safety notes, stove heat,
-//      household amounts, techniques);
+//   1. is written by Claude as one JSON object in the recipe shape (English, Hindi, Hinglish, cues, safety notes,
+//      stove heat, household amounts, techniques), checked against the Draft schema here. (The API's strict output
+//      format can't take a schema this big: run 1 on 23 Nov 2026 got "compiled grammar is too large" for every dish.)
 //   2. must pass the recipe safety gate (apps/mobile/src/domain/recipeSafety.ts, the same one the app and the Edge
 //      Functions use) and the catalog checks below; it gets one rewrite with the problems listed;
 //   3. is written to content/recipes/<slug>.json with review_status "in_review". to_yaml.py turns it into YAML.
@@ -10,7 +11,6 @@
 //   deno run --allow-read --allow-write --allow-env --allow-net tools/content/generate/generate.ts --size 25
 // Needs ANTHROPIC_API_KEY. Prints a report (markdown) for the pull request body.
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
-import { zodOutputFormat } from "npm:@anthropic-ai/sdk@1.3.0/helpers/zod";
 import { parse as parseYaml } from "jsr:@std/yaml@1";
 import { z } from "npm:zod@4.6.5";
 
@@ -87,7 +87,10 @@ Hinglish (Latin script), read aloud while cooking, and checked by food-safety ru
 - hi and hinglish: everything the English step says, in Hindi (Devanagari) and Hinglish (Latin): the text, every
   cue you gave (look, sound, smell, touch) and the safety note. Natural kitchen language, masculine first person if any.
 - Difficulty and spice 1 to 5. Diet must match the ingredients. No health or nutrition claims. No brand promotion.
-${SAFETY_RULES_PROMPT}`;
+${SAFETY_RULES_PROMPT}
+
+Answer with one JSON object and nothing else (no markdown, no notes), matching this JSON Schema exactly:
+${JSON.stringify(z.toJSONSchema(Draft))}`;
 
 type Dish = { slug: string; name: string; group: string };
 
@@ -181,22 +184,79 @@ export function draftProblems(doc: RecipeDoc): string[] {
   return [...new Set(out)];
 }
 
-async function write(client: Anthropic, dish: Dish, problems: string[]): Promise<Draft | null> {
-  const r = await client.messages.parse(
-    {
-      model: MODEL,
-      max_tokens: 16000,
-      output_config: { effort: "medium", format: zodOutputFormat(Draft) },
-      system: [{ type: "text", cache_control: { type: "ephemeral" }, text: SYSTEM }],
-      messages: [{
-        role: "user",
-        content: JSON.stringify({ dish: dish.name, kind: dish.group, ...(problems.length ? { fix_these_problems_from_your_last_draft: problems } : {}) }),
-      }],
-    },
-    { timeout: 600_000 },
-  );
-  if (r.stop_reason === "refusal" || r.stop_reason === "max_tokens") return null;
-  return (r.parsed_output as Draft | null) ?? null;
+/** The model's answer as a Draft, or what is wrong with it (sent back for the one rewrite). */
+export function parseDraft(text: string): { draft: Draft } | { problems: string[] } {
+  // Tolerate a code fence or a sentence around the object: take the outermost {...}.
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start < 0 || end <= start) return { problems: ["the answer was not a JSON object"] };
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text.slice(start, end + 1));
+  } catch (err) {
+    return { problems: [`the JSON did not parse: ${err instanceof Error ? err.message : String(err)}`] };
+  }
+  const r = Draft.safeParse(raw);
+  if (r.success) return { draft: r.data };
+  return { problems: r.error.issues.slice(0, 12).map((i) => `${i.path.join(".") || "(top)"}: ${i.message}`) };
+}
+
+async function write(client: Anthropic, dish: Dish, problems: string[]): Promise<{ draft: Draft } | { problems: string[] }> {
+  // Streamed: a full recipe in three languages is long, and streaming keeps the request from timing out.
+  const r = await client.messages
+    .stream(
+      {
+        model: MODEL,
+        max_tokens: 16000,
+        output_config: { effort: "medium" },
+        system: [{ type: "text", cache_control: { type: "ephemeral" }, text: SYSTEM }],
+        messages: [{
+          role: "user",
+          content: JSON.stringify({ dish: dish.name, kind: dish.group, ...(problems.length ? { fix_these_problems_from_your_last_draft: problems } : {}) }),
+        }],
+      },
+      { timeout: 600_000 },
+    )
+    .finalMessage();
+  if (r.stop_reason === "refusal") return { problems: ["the model declined this dish"] };
+  if (r.stop_reason === "max_tokens") return { problems: ["the answer was cut off; keep it shorter"] };
+  const text = r.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("");
+  return parseDraft(text);
+}
+
+/** One dish: a draft, checked, with one rewrite that lists the problems. */
+async function oneDish(client: Anthropic, dish: Dish): Promise<{ doc: RecipeDoc | null; problems: string[] }> {
+  let problems: string[] = [];
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const out = await write(client, dish, problems);
+      if ("problems" in out) {
+        problems = out.problems;
+        continue;
+      }
+      const candidate = toDoc(dish.slug, out.draft);
+      problems = draftProblems(candidate);
+      if (!problems.length) return { doc: candidate, problems };
+    } catch (err) {
+      problems = [`error: ${err instanceof Error ? err.message : String(err)}`];
+      // A request the API rejects outright will be rejected again: don't pay for a second try.
+      if (/\b4\d\d\b/.test(problems[0]!) && !/\b429\b/.test(problems[0]!)) break;
+    }
+  }
+  return { doc: null, problems };
+}
+
+/** Runs `fn` over `items`, at most `n` at a time, keeping the order of the results. */
+async function pool<T, R>(items: T[], n: number, fn: (x: T) => Promise<R>): Promise<R[]> {
+  const out: R[] = new Array(items.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i]!);
+    }
+  }));
+  return out;
 }
 
 if (import.meta.main) {
@@ -208,33 +268,21 @@ if (import.meta.main) {
   const client = new Anthropic();
   const rows: string[] = [];
   let written = 0;
-  for (const dish of nextDishes(size)) {
-    let problems: string[] = [];
-    let doc: RecipeDoc | null = null;
-    for (let attempt = 0; attempt < 2 && !doc; attempt++) {
-      try {
-        const d = await write(client, dish, problems);
-        if (!d) {
-          problems = ["no usable draft"];
-          continue;
-        }
-        const candidate = toDoc(dish.slug, d);
-        problems = draftProblems(candidate);
-        if (!problems.length) doc = candidate;
-      } catch (err) {
-        problems = [`error: ${err instanceof Error ? err.message : String(err)}`];
-      }
-    }
+  const dishes = nextDishes(size);
+  // Four at a time, so 25 dishes (each up to two long answers) fit in the workflow's two hours.
+  const results = await pool(dishes, 4, (dish) => oneDish(client, dish));
+  dishes.forEach((dish, i) => {
+    const { doc, problems } = results[i]!;
     if (!doc) {
       rows.push(`| ${dish.name} | not written | ${problems.slice(0, 3).join("; ").replace(/\|/g, "/")} |`);
-      continue;
+      return;
     }
     Deno.writeTextFileSync(new URL(`content/recipes/${dish.slug}.json`, ROOT), JSON.stringify(doc, null, 2));
     written++;
     const allergens = recipeAllergens(doc, CATALOG);
     const parts = blueprint(doc).map((p) => p.technique).join(" → ");
     rows.push(`| ${doc.title} (${doc.titles?.hi}) | ${doc.course}, ${doc.diet}, ${doc.steps.length} steps | ${parts}${allergens.length ? `; contains ${allergens.join(", ")}` : ""} |`);
-  }
+  });
   console.log(`Wrote ${written} draft recipes (review_status in_review). Each passed the content build and the recipe safety gate.\n`);
   console.log("| Dish | What | Parts and allergens |\n|---|---|---|");
   for (const r of rows) console.log(r);

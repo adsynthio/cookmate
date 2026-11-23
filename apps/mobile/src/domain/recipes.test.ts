@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import { DEFAULT_WEIGHTS, NO_CRAVING, rankRecipes, type RankContext, missingMain } from "./ranking.ts";
+import { DEFAULT_WEIGHTS, NO_CRAVING, pantryMatch, rankRecipes, type RankContext, missingMain } from "./ranking.ts";
 import { cueSenses, familyBranches, localDoc, localStep, inLocalUnits, prettyQty, recipeDocFromRow, recipeTitle, scaleQty, searchRecipes, stepCuesFromJson, toRankRecipe, totalTime, whyThisWorks, type RecipeDoc } from "./recipes.ts";
 
 const docs = JSON.parse(readFileSync(new URL("../data/recipes.json", import.meta.url), "utf8")) as RecipeDoc[];
@@ -195,4 +195,17 @@ test("in Hindi and Hinglish every step reads in that language, cues, safety and 
   assert.match(rajma.steps[1]!.safety!, /ज़हरीला/);
   // Every bundled step has both translations.
   for (const r of docs) for (const s of r.steps) assert.ok(s.say?.hi?.text && s.say?.["hi-Latn"]?.text, `${r.slug}: ${s.text}`);
+});
+
+test("green chilli and coriander never hold a dish back (23 Nov 2026)", () => {
+  // Besan chilla with besan, onion and tomato but no green chilli or coriander: nothing to buy.
+  const r = toRankRecipe(doc("besan-chilla"));
+  const skipped = r.ingredients.filter((i) => i.optional).map((i) => i.key);
+  assert.ok(skipped.includes("green chilli") && skipped.includes("coriander leaves"));
+  const have = ["gram flour", "onion", "tomato"].map((key) => ({ itemId: key, key, confidence: 1, daysLeft: null, out: false }));
+  const m = pantryMatch(r, have, ["salt", "refined oil", "turmeric powder", "red chilli powder", "carom seeds"]);
+  assert.deepEqual(m.items.filter((i) => i.status === "missing").map((i) => i.key), []);
+  // The dish's own ingredients still count: no besan, no chilla.
+  const noBesan = pantryMatch(r, have.slice(1), ["salt"]);
+  assert.ok(noBesan.items.some((i) => i.status === "missing" && i.key === "gram flour"));
 });

@@ -3,7 +3,7 @@
 // ranking input, servings scaling, local measures, family-plate branches and multilingual search (REC-08).
 // Pure TypeScript (imports only types and swaps.ts), so it is shared with the Edge Functions by scripts/sync-shared.py.
 import type { AgeGroup, Course, Diet, FlavorKey, Locale, RankRecipe } from "./ranking.ts";
-import { SKIPPABLE, withKitchenSwaps } from "./swaps.ts";
+import { canSkip, withKitchenSwaps } from "./swaps.ts";
 
 
 export type RecipeIngredientDoc = {
@@ -119,8 +119,9 @@ export function toRankRecipe(doc: RecipeDoc): RankRecipe {
     aheadHours: aheadHours(doc),
     ingredients: doc.ingredients.map((i) => ({
       key: i.ingredient,
-      // S6: garnishes like kasuri methi never hold a dish back; kitchen swaps follow the recipe's own substitutes.
-      optional: !!i.optional || SKIPPABLE.has(i.ingredient),
+      // S6: garnishes like kasuri methi never hold a dish back, nor does green chilli (23 Nov 2026); kitchen swaps
+      // follow the recipe's own substitutes.
+      optional: canSkip(i),
       role: i.role,
       substitutes: withKitchenSwaps(i.ingredient, (i.substitutes ?? []).map((s) => s.ingredient)),
     })),

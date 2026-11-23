@@ -128,7 +128,16 @@ export const SWAPS: Swap[] = [
 ];
 
 /** Ingredients a dish is fine without; picks don't hold a dish back for them. */
-export const SKIPPABLE = new Set(["dried fenugreek leaves", "saffron", "coriander leaves"]);
+export const SKIPPABLE = new Set(["dried fenugreek leaves", "saffron", "coriander leaves", "curry leaves", "bay leaf"]);
+
+/** Jobs a dish is fine without: a garnish on top, or extra heat (no green chilli? it is milder, or red chilli powder
+ * does the job). No Indian cook goes to the shop for these, so picks never say "need 1 more: green chilli". */
+export const SKIPPABLE_ROLES = new Set(["garnish", "heat"]);
+
+/** True when a dish can be cooked without this ingredient: marked optional, a garnish or heat, or in SKIPPABLE. */
+export function canSkip(i: { ingredient: string; role?: string | null; optional?: boolean | null }): boolean {
+  return !!i.optional || SKIPPABLE.has(i.ingredient) || (!!i.role && SKIPPABLE_ROLES.has(i.role));
+}
 
 const BY_FROM = new Map<string, Swap[]>();
 for (const x of SWAPS) BY_FROM.set(x.from, [...(BY_FROM.get(x.from) ?? []), x]);

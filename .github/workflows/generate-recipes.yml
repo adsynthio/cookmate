@@ -13,6 +13,10 @@ on:
         description: How many dishes (at most 25)
         required: false
         default: "25"
+      groups:
+        description: "Dish list groups to mix, e.g. breakfast,everyday_sabzi (empty: next in list order)"
+        required: false
+        default: ""
 
 concurrency:
   group: library-batch
@@ -59,9 +63,10 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SIZE: ${{ github.event.inputs.size }}
+          GROUPS: ${{ github.event.inputs.groups }}
         run: |
           size=$(( SIZE > 25 ? 25 : (SIZE < 1 ? 1 : SIZE) ))
-          deno run --allow-read --allow-write --allow-env --allow-net tools/content/generate/generate.ts --size "$size" > report.md
+          deno run --allow-read --allow-write --allow-env --allow-net tools/content/generate/generate.ts --size "$size" --groups "$GROUPS" > report.md
           cat report.md
       - name: YAML, content build and the safety gate on every recipe
         if: steps.key.outputs.ok == 'true'
@@ -93,4 +98,6 @@ jobs:
             echo
             cat report.md
           } > body.md
-          gh pr create --base main --head "$branch" --title "Library batch ${{ github.run_number }}: draft recipes for review" --body-file body.md
+          # If the repository doesn't let Actions open pull requests, the branch is still pushed: open it by hand.
+          gh pr create --base main --head "$branch" --title "Library batch ${{ github.run_number }}: draft recipes for review" --body-file body.md \
+            || echo "::notice::The drafts are on branch $branch. Open the pull request: https://github.com/${{ github.repository }}/pull/new/$branch"

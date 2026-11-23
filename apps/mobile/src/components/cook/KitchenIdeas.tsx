@@ -45,7 +45,8 @@ export function KitchenIdeas({ householdId }: { householdId: string }) {
 
   return (
     <View style={{ gap: space.sm }}>
-      <Text variant="subheading">{t(occasion === "festival" ? "ideas.titleFestive" : "ideas.title")}</Text>
+      {/* "Festival this week" only when a festival sweet or snack is what's offered. */}
+      <Text variant="subheading">{t(ideas[0]?.festive ? "ideas.titleFestive" : "ideas.title")}</Text>
       {ideas.map((i, n) => (
         <Enter key={i.doc.slug} index={n}>
           <PressableScale

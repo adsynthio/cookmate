@@ -8,7 +8,7 @@
 //   3. is written to content/recipes/<slug>.json with review_status "in_review". to_yaml.py turns it into YAML.
 // Nothing ships until Gaurav approves the batch's pull request.
 //
-//   deno run --allow-read --allow-write --allow-env --allow-net tools/content/generate/generate.ts --size 25
+//   deno run --allow-read --allow-write --allow-env --allow-net tools/content/generate/generate.ts --size 25 [--groups breakfast,everyday_sabzi]
 // Needs ANTHROPIC_API_KEY. Prints a report (markdown) for the pull request body.
 import Anthropic from "npm:@anthropic-ai/sdk@1.3.0";
 import { parse as parseYaml } from "jsr:@std/yaml@1";
@@ -101,23 +101,35 @@ ${JSON.stringify(z.toJSONSchema(Draft))}`;
 
 type Dish = { slug: string; name: string; group: string };
 
-function nextDishes(size: number): Dish[] {
-  const list = parseYaml(Deno.readTextFileSync(new URL("content/dish_list.yaml", ROOT))) as Record<string, [string, string][]>;
+/**
+ * The next dishes to write: ones with no recipe file yet, in list order. With `groups` (dish_list.yaml group names),
+ * only those groups, taken in turn so a batch mixes them (breakfast, sabzi, breakfast, sabzi...).
+ */
+export function pickDishes(list: Record<string, [string, string][]>, size: number, groups: string[], exists: (slug: string) => boolean): Dish[] {
+  const left = (group: string) => (list[group] ?? []).filter(([slug]) => !exists(slug)).map(([slug, name]) => ({ slug, name, group }));
+  if (!groups.length) return Object.keys(list).flatMap(left).slice(0, size);
+  const queues = groups.map(left);
   const out: Dish[] = [];
-  for (const [group, dishes] of Object.entries(list)) {
-    for (const [slug, name] of dishes) {
-      const exists = [".yaml", ".json"].some((ext) => {
-        try {
-          Deno.statSync(new URL(`content/recipes/${slug}${ext}`, ROOT));
-          return true;
-        } catch {
-          return false;
-        }
-      });
-      if (!exists) out.push({ slug, name, group });
-    }
+  while (out.length < size && queues.some((q) => q.length)) {
+    for (const q of queues) if (q.length && out.length < size) out.push(q.shift()!);
   }
-  return out.slice(0, size);
+  return out;
+}
+
+function nextDishes(size: number, groups: string[]): Dish[] {
+  const list = parseYaml(Deno.readTextFileSync(new URL("content/dish_list.yaml", ROOT))) as Record<string, [string, string][]>;
+  const unknown = groups.filter((g) => !(g in list));
+  if (unknown.length) throw new Error(`unknown group(s): ${unknown.join(", ")}; the groups are ${Object.keys(list).join(", ")}`);
+  const exists = (slug: string) =>
+    [".yaml", ".json"].some((ext) => {
+      try {
+        Deno.statSync(new URL(`content/recipes/${slug}${ext}`, ROOT));
+        return true;
+      } catch {
+        return false;
+      }
+    });
+  return pickDishes(list, size, groups, exists);
 }
 
 /** The draft as the app's recipe document, for the safety gate and the YAML file. */
@@ -273,6 +285,8 @@ async function pool<T, R>(items: T[], n: number, fn: (x: T) => Promise<R>): Prom
 
 if (import.meta.main) {
   const size = Number(Deno.args[Deno.args.indexOf("--size") + 1] ?? 25) || 25;
+  const gi = Deno.args.indexOf("--groups");
+  const groups = gi >= 0 ? (Deno.args[gi + 1] ?? "").split(",").map((g) => g.trim()).filter(Boolean) : [];
   if (!Deno.env.get("ANTHROPIC_API_KEY")) {
     console.error("ANTHROPIC_API_KEY is not set; nothing written.");
     Deno.exit(1);
@@ -280,7 +294,7 @@ if (import.meta.main) {
   const client = new Anthropic();
   const rows: string[] = [];
   let written = 0;
-  const dishes = nextDishes(size);
+  const dishes = nextDishes(size, groups);
   // Four at a time, so 25 dishes (each up to two long answers) fit in the workflow's two hours.
   const results = await pool(dishes, 4, (dish) => oneDish(client, dish));
   dishes.forEach((dish, i) => {

@@ -2,7 +2,7 @@
 // deno test --allow-read tools/content/generate/generate.test.ts
 import { assertEquals } from "jsr:@std/assert@1";
 
-import { draftProblems, parseDraft, toDoc } from "./generate.ts";
+import { draftProblems, parseDraft, pickDishes, toDoc } from "./generate.ts";
 
 const say = (text: string, safety: string | null = null) => ({ text, safety, look: null, sound: null, smell: null, touch: null });
 const step = (text: string, extra: Record<string, unknown> = {}) => ({
@@ -72,4 +72,17 @@ Deno.test("taste scores on a 1-5 or 1-10 scale are brought to 0-1", () => {
   const ten = toDoc("boondi-ladoo", { ...boondiLadoo, flavor: { rich: 6, heat: 0, acid: 0, crunch: 2, starch: 4, sweet: 10 } } as never);
   assertEquals(ten.flavor_profile, { rich: 0.6, heat: 0, acid: 0, crunch: 0.2, starch: 0.4, sweet: 1 });
   assertEquals(toDoc("boondi-ladoo", boondiLadoo as never).flavor_profile, boondiLadoo.flavor);
+});
+
+Deno.test("dishes come in list order, or mixed from the groups asked for", () => {
+  const list = {
+    dal: [["dal-fry", "Dal fry"], ["sambar", "Sambar"]],
+    breakfast: [["upma", "Upma"], ["idli", "Idli"], ["dosa", "Dosa"]],
+    sabzi: [["aloo-gobi", "Aloo gobi"], ["palak-paneer", "Palak paneer"]],
+  } as Record<string, [string, string][]>;
+  const done = new Set(["dal-fry", "aloo-gobi"]);
+  const has = (s: string) => done.has(s);
+  assertEquals(pickDishes(list, 3, [], has).map((d) => d.slug), ["sambar", "upma", "idli"]);
+  assertEquals(pickDishes(list, 4, ["breakfast", "sabzi"], has).map((d) => d.slug), ["upma", "palak-paneer", "idli", "dosa"]);
+  assertEquals(pickDishes(list, 10, ["sabzi"], has).map((d) => d.slug), ["palak-paneer"]);
 });

@@ -8,6 +8,8 @@ import { jobOf, type Swap, swapBetween } from "./swaps.ts";
 
 export type Idea = {
   doc: RecipeDoc;
+  /** A sweet or snack for the festival coming up (only near a festival). */
+  festive?: boolean;
   /** Everything is here, or one thing needs a swap the kitchen can make. */
   kind: "ready" | "one_swap";
   /** For one_swap: the swap, with the job it keeps. */
@@ -46,6 +48,9 @@ export function kitchenIdeas(
   const no = new Set(avoid);
   const out: (Idea & { score: number })[] = [];
   for (const doc of docs) {
+    // Roti, puri, a base masala: every kitchen can make them, so they are not ideas (23 Nov 2026: "Festival this week:
+    // your kitchen can make these" listed Plain Paratha, Puri and Roti). "Learn the basics" teaches them instead.
+    if (doc.course === "component") continue;
     if (doc.ingredients.some((i) => no.has(i.ingredient))) continue;
     if (opts.occasion === "fast" && !doc.tags?.includes("fasting")) continue;
     const m = pantryMatch(toRankRecipe(doc), pantry, staples, avoid);
@@ -61,9 +66,9 @@ export function kitchenIdeas(
     }
     if (!idea) continue;
     const festive = opts.occasion === "festival" && FESTIVE_COURSES.has(doc.course) ? 0 : 1;
-    // A meal before a side, a side before a component (roti, a base masala): ideas are things to cook tonight.
-    const course = doc.course === "component" ? 30 : doc.course === "side" || doc.course === "chutney_pickle" ? 20 : 0;
-    out.push({ ...idea, score: festive * 100 + (idea.kind === "ready" ? 0 : 50) + course + idea.parts });
+    // A meal before a side: ideas are things to cook tonight.
+    const course = doc.course === "side" || doc.course === "chutney_pickle" ? 20 : 0;
+    out.push({ ...idea, ...(festive === 0 ? { festive: true } : {}), score: festive * 100 + (idea.kind === "ready" ? 0 : 50) + course + idea.parts });
   }
   return out
     .sort((a, b) => a.score - b.score || a.doc.slug.localeCompare(b.doc.slug))

@@ -38,3 +38,12 @@ test("occasions: a festival this week, a fast today, or nothing", () => {
   assert.equal(occasionOn(events, "2026-11-20"), "fast");
   assert.equal(occasionOn(events, "2026-12-01"), null);
 });
+
+test("roti, puri and other basics are never offered as ideas; festive only marks festival sweets and snacks", () => {
+  // Atta, oil and salt alone make roti, puri and paratha: that is not an idea.
+  const ideas = kitchenIdeas(library, ["whole wheat flour", "refined oil", "salt", "semolina"].map(entry), STAPLES, { occasion: "festival" });
+  assert.ok(ideas.every((i) => i.doc.course !== "component"), ideas.map((i) => i.doc.slug).join(","));
+  assert.ok(ideas.every((i) => !i.festive || ["dessert", "snack"].includes(i.doc.course)));
+  const dal = kitchenIdeas(library, ["toor dal", "onion", "tomato", "garlic", "ginger"].map(entry), STAPLES, { occasion: "festival" });
+  assert.ok(dal.length >= 1 && dal.every((i) => !i.festive), "a dal near a festival isn't called a festival dish");
+});

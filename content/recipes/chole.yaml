@@ -26,14 +26,13 @@ equipment:
 tags:
 - comforting
 - high_protein
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.6
+  heat: 0.5
+  acid: 0.5
+  crunch: 0
+  starch: 0.6
+  sweet: 0
 food_groups:
 - dal
 - protein

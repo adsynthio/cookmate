@@ -18,7 +18,7 @@ export const onboarding: Record<"producePile" | "leafPalak" | "leafMethi" | "lea
   leafCoriander: require("../../assets/media/onboarding/leaf-coriander.png") as ImageSourcePropType,
 };
 
-export const dishes: Record<"aloo-gobi" | "aloo-matar" | "baingan-bharta" | "besan-chilla" | "bhatura" | "bhindi-masala" | "boiled-chana" | "chana-dal" | "chicken-curry" | "chole" | "dal-dhokli" | "dal-fry" | "dal-makhani" | "dal-palak" | "dal-tadka" | "egg-bhurji" | "gujarati-dal" | "jeera-aloo" | "jeera-rice" | "kadhi" | "kadhi-pakora" | "kala-chana" | "kanda-poha" | "kulcha" | "lauki-sabzi" | "lobia" | "masoor-dal" | "matar-paneer" | "moong-dal" | "moong-dal-khichdi" | "moth-dal" | "onion-tomato-masala" | "panchmel-dal" | "paratha" | "plain-dal" | "puri" | "rajma" | "rajma-masala-quick" | "rasam" | "roti" | "sambar" | "sprouts-usal" | "varan" | "whole-moong", ImageSourcePropType | null> = {
+export const dishes: Record<"aloo-gobi" | "aloo-matar" | "baingan-bharta" | "besan-chilla" | "bhatura" | "bhindi-masala" | "boiled-chana" | "chana-dal" | "chicken-curry" | "chole" | "dal-dhokli" | "dal-fry" | "dal-makhani" | "dal-palak" | "dal-tadka" | "egg-bhurji" | "gujarati-dal" | "jeera-aloo" | "jeera-rice" | "kadhi" | "kadhi-pakora" | "kala-chana" | "kanda-poha" | "kulcha" | "lauki-sabzi" | "lobia" | "masoor-dal" | "matar-paneer" | "moong-dal" | "moong-dal-khichdi" | "moth-dal" | "onion-tomato-masala" | "panchmel-dal" | "paratha" | "plain-dal" | "puri" | "rajma" | "rasam" | "roti" | "sambar" | "sprouts-usal" | "varan" | "whole-moong", ImageSourcePropType | null> = {
   "aloo-gobi": null,
   "aloo-matar": null,
   "baingan-bharta": null,
@@ -56,7 +56,6 @@ export const dishes: Record<"aloo-gobi" | "aloo-matar" | "baingan-bharta" | "bes
   "plain-dal": null,
   "puri": null,
   "rajma": require("../../assets/media/dishes/rajma.png") as ImageSourcePropType,
-  "rajma-masala-quick": null,
   "rasam": null,
   "roti": null,
   "sambar": null,
@@ -351,7 +350,7 @@ export const categoryPhotos: Record<"beverage" | "condiment" | "dairy" | "egg" |
   "vegetable": null,
 };
 
-export const stepPhotos: Record<"aloo-gobi/2" | "aloo-gobi/3" | "aloo-gobi/4" | "aloo-gobi/5" | "aloo-gobi/6" | "aloo-gobi/7" | "aloo-matar/2" | "aloo-matar/4" | "aloo-matar/5" | "aloo-matar/7" | "baingan-bharta/1" | "baingan-bharta/3" | "baingan-bharta/4" | "baingan-bharta/5" | "baingan-bharta/6" | "besan-chilla/3" | "besan-chilla/4" | "bhatura/3" | "bhatura/4" | "bhindi-masala/2" | "bhindi-masala/3" | "bhindi-masala/5" | "bhindi-masala/6" | "chana-dal/4" | "chana-dal/5" | "chana-dal/6" | "chicken-curry/2" | "chicken-curry/3" | "chicken-curry/4" | "chicken-curry/5" | "chole/3" | "chole/5" | "chole/6" | "dal-dhokli/1" | "dal-dhokli/4" | "dal-dhokli/7" | "dal-fry/5" | "dal-fry/7" | "dal-fry/8" | "dal-makhani/4" | "dal-makhani/5" | "dal-makhani/6" | "dal-palak/2" | "dal-palak/4" | "dal-palak/5" | "dal-palak/6" | "dal-palak/7" | "dal-palak/8" | "dal-tadka/3" | "dal-tadka/4" | "egg-bhurji/2" | "egg-bhurji/4" | "gujarati-dal/4" | "gujarati-dal/6" | "jeera-aloo/3" | "jeera-aloo/4" | "jeera-rice/3" | "kadhi-pakora/2" | "kadhi-pakora/3" | "kadhi-pakora/5" | "kadhi-pakora/7" | "kadhi/2" | "kadhi/3" | "kadhi/4" | "kala-chana/3" | "kala-chana/4" | "kala-chana/5" | "kanda-poha/2" | "kanda-poha/3" | "kanda-poha/4" | "kulcha/4" | "lauki-sabzi/2" | "lauki-sabzi/3" | "lauki-sabzi/4" | "lauki-sabzi/5" | "lobia/4" | "lobia/6" | "lobia/7" | "masoor-dal/4" | "masoor-dal/5" | "masoor-dal/6" | "masoor-dal/7" | "matar-paneer/2" | "matar-paneer/3" | "moong-dal/4" | "moong-dal/5" | "moong-dal/6" | "moong-dal/7" | "moth-dal/4" | "moth-dal/5" | "moth-dal/6" | "onion-tomato-masala/2" | "onion-tomato-masala/3" | "panchmel-dal/4" | "panchmel-dal/5" | "panchmel-dal/6" | "paratha/3" | "plain-dal/2" | "plain-dal/3" | "puri/2" | "puri/3" | "rajma-masala-quick/4" | "rajma-masala-quick/6" | "rajma-masala-quick/7" | "rajma/3" | "rajma/4" | "rajma/5" | "rasam/1" | "rasam/4" | "rasam/5" | "roti/4" | "roti/5" | "sambar/1" | "sambar/3" | "sambar/5" | "sprouts-usal/3" | "sprouts-usal/4" | "sprouts-usal/6" | "varan/4" | "whole-moong/2" | "whole-moong/3" | "whole-moong/4" | "whole-moong/5" | "whole-moong/6", ImageSourcePropType | null> = {
+export const stepPhotos: Record<"aloo-gobi/2" | "aloo-gobi/3" | "aloo-gobi/4" | "aloo-gobi/5" | "aloo-gobi/6" | "aloo-gobi/7" | "aloo-matar/2" | "aloo-matar/4" | "aloo-matar/5" | "aloo-matar/7" | "baingan-bharta/1" | "baingan-bharta/3" | "baingan-bharta/4" | "baingan-bharta/5" | "baingan-bharta/6" | "besan-chilla/3" | "besan-chilla/4" | "bhatura/3" | "bhatura/4" | "bhindi-masala/2" | "bhindi-masala/3" | "bhindi-masala/5" | "bhindi-masala/6" | "chana-dal/4" | "chana-dal/5" | "chana-dal/6" | "chicken-curry/2" | "chicken-curry/3" | "chicken-curry/4" | "chicken-curry/5" | "chole/3" | "chole/5" | "chole/6" | "dal-dhokli/1" | "dal-dhokli/4" | "dal-dhokli/7" | "dal-fry/5" | "dal-fry/7" | "dal-fry/8" | "dal-makhani/4" | "dal-makhani/5" | "dal-makhani/6" | "dal-palak/2" | "dal-palak/4" | "dal-palak/5" | "dal-palak/6" | "dal-palak/7" | "dal-palak/8" | "dal-tadka/3" | "dal-tadka/4" | "egg-bhurji/2" | "egg-bhurji/4" | "gujarati-dal/4" | "gujarati-dal/6" | "jeera-aloo/3" | "jeera-aloo/4" | "jeera-rice/3" | "kadhi-pakora/2" | "kadhi-pakora/3" | "kadhi-pakora/5" | "kadhi-pakora/7" | "kadhi/2" | "kadhi/3" | "kadhi/4" | "kala-chana/3" | "kala-chana/4" | "kala-chana/5" | "kanda-poha/2" | "kanda-poha/3" | "kanda-poha/4" | "kulcha/4" | "lauki-sabzi/2" | "lauki-sabzi/3" | "lauki-sabzi/4" | "lauki-sabzi/5" | "lobia/4" | "lobia/6" | "lobia/7" | "masoor-dal/4" | "masoor-dal/5" | "masoor-dal/6" | "masoor-dal/7" | "matar-paneer/2" | "matar-paneer/3" | "moong-dal/4" | "moong-dal/5" | "moong-dal/6" | "moong-dal/7" | "moth-dal/4" | "moth-dal/5" | "moth-dal/6" | "onion-tomato-masala/2" | "onion-tomato-masala/3" | "panchmel-dal/4" | "panchmel-dal/5" | "panchmel-dal/6" | "paratha/3" | "plain-dal/2" | "plain-dal/3" | "puri/2" | "puri/3" | "rajma/3" | "rajma/4" | "rajma/5" | "rasam/1" | "rasam/4" | "rasam/5" | "roti/4" | "roti/5" | "sambar/1" | "sambar/3" | "sambar/5" | "sprouts-usal/3" | "sprouts-usal/4" | "sprouts-usal/6" | "varan/4" | "whole-moong/2" | "whole-moong/3" | "whole-moong/4" | "whole-moong/5" | "whole-moong/6", ImageSourcePropType | null> = {
   "aloo-gobi/2": null,
   "aloo-gobi/3": null,
   "aloo-gobi/4": null,
@@ -453,9 +452,6 @@ export const stepPhotos: Record<"aloo-gobi/2" | "aloo-gobi/3" | "aloo-gobi/4" | 
   "plain-dal/3": null,
   "puri/2": null,
   "puri/3": null,
-  "rajma-masala-quick/4": null,
-  "rajma-masala-quick/6": null,
-  "rajma-masala-quick/7": null,
   "rajma/3": null,
   "rajma/4": null,
   "rajma/5": null,

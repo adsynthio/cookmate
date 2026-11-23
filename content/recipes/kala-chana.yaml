@@ -1,9 +1,9 @@
 # Draft written by the library generator; waiting for review (review_status in_review).
 slug: kala-chana
-title: Kala Chana Masala (Home-Style Black Chickpea Curry)
+title: Kala Chana Masala
 titles:
-  hi: काला चना मसाला (घर वाली काले चने की सब्ज़ी)
-  hi-Latn: Kala Chana Masala (Ghar Wali Kale Chane Ki Sabzi)
+  hi: काला चना मसाला
+  hi-Latn: Kala Chana Masala
 description: Soaked black chickpeas pressure-cooked soft, then simmered in an onion-tomato masala until the gravy turns thick
   and earthy. A weekday dal-style curry for rice or roti.
 descriptions:
@@ -26,14 +26,13 @@ equipment:
 tags:
 - comforting
 - high_protein
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.5
+  heat: 0.5
+  acid: 0.4
+  crunch: 0.1
+  starch: 0.6
+  sweet: 0
 food_groups:
 - dal
 - protein

@@ -27,12 +27,12 @@ tags:
 - tiffin
 - comforting
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.3
+  heat: 0.4
+  acid: 0.3
+  crunch: 0.3
+  starch: 0.1
+  sweet: 0
 food_groups:
 - sabzi
 review_status: in_review

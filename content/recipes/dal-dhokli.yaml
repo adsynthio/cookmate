@@ -27,12 +27,12 @@ tags:
 - comforting
 - one_pot
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.5
+  heat: 0.3
+  acid: 0.5
+  crunch: 0
+  starch: 0.8
+  sweet: 0.5
 food_groups:
 - dal
 - grain

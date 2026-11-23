@@ -1,9 +1,9 @@
 # Draft written by the library generator; waiting for review (review_status in_review).
 slug: rasam
-title: Tomato Rasam with Toor Dal
+title: Tomato Rasam
 titles:
-  hi: टमाटर रसम (अरहर दाल वाला)
-  hi-Latn: Tamatar Rasam (Toor Dal Wala)
+  hi: टमाटर रसम
+  hi-Latn: Tamatar Rasam
 description: A thin, tangy South Indian rasam of tomato, tamarind and crushed pepper-garlic, made with a little toor dal and
   finished with a ghee tadka. Drink it hot or pour it over rice.
 descriptions:
@@ -27,14 +27,13 @@ tags:
 - comforting
 - light
 - one_pot
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
+  rich: 0.2
+  heat: 0.5
+  acid: 0.8
   crunch: 0
-  starch: 1
-  sweet: 1
+  starch: 0.1
+  sweet: 0.1
 food_groups:
 - dal
 - sabzi

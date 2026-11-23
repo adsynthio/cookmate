@@ -26,13 +26,12 @@ equipment:
 tags:
 - comforting
 - quick
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
+  rich: 0.4
+  heat: 0.2
+  acid: 0.2
   crunch: 0
-  starch: 1
+  starch: 0.4
   sweet: 0
 food_groups:
 - dal

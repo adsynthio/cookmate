@@ -25,14 +25,13 @@ equipment:
 - gas_stove
 tags:
 - comforting
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.5
+  heat: 0.4
+  acid: 0.3
+  crunch: 0
+  starch: 0.5
+  sweet: 0
 food_groups:
 - dal
 review_status: in_review

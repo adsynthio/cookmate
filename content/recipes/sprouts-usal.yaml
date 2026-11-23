@@ -2,7 +2,7 @@
 slug: sprouts-usal
 title: Sprouts Usal
 titles:
-  hi: स्प्राउट्स उसळ
+  hi: स्प्राउट्स उसल
   hi-Latn: Sprouts Usal
 description: A Maharashtrian weekday usal of moong sprouts cooked with onion, tomato and fresh coconut, finished with a squeeze
   of lemon. Serve with pav, chapati or rice.
@@ -28,12 +28,12 @@ tags:
 - one_pot
 - tiffin
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.3
+  heat: 0.6
+  acid: 0.3
+  crunch: 0.3
+  starch: 0.4
+  sweet: 0.1
 food_groups:
 - dal
 - protein
@@ -44,7 +44,7 @@ ingredients:
   unit: g
   local: 2 katori
   role: protein
-- ingredient: groundnut oil
+- ingredient: refined oil
   qty: 20
   unit: ml
   local: 1.5 bada chammach

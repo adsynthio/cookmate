@@ -29,12 +29,12 @@ tags:
 - kids_friendly
 - one_pot
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.3
+  heat: 0.4
+  acid: 0.2
+  crunch: 0.2
+  starch: 0.7
+  sweet: 0
 food_groups:
 - sabzi
 review_status: in_review

@@ -25,12 +25,12 @@ equipment:
 tags:
 - comforting
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.4
+  heat: 0.5
+  acid: 0.3
+  crunch: 0
+  starch: 0.2
+  sweet: 0.1
 food_groups:
 - sabzi
 review_status: in_review

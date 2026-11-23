@@ -24,14 +24,13 @@ equipment:
 - gas_stove
 tags:
 - comforting
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
+  rich: 0.4
+  heat: 0.2
+  acid: 0.7
   crunch: 0
-  starch: 1
-  sweet: 0
+  starch: 0.3
+  sweet: 0.1
 food_groups:
 - dairy
 review_status: in_review

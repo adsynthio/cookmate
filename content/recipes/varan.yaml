@@ -1,9 +1,9 @@
 # Draft written by the library generator; waiting for review (review_status in_review).
 slug: varan
-title: Varan (Maharashtrian Plain Toor Dal)
+title: Varan
 titles:
-  hi: वरण (महाराष्ट्रीयन सादी तूर दाल)
-  hi-Latn: Varan (Maharashtrian Saadi Toor Dal)
+  hi: वरण
+  hi-Latn: Varan
 description: A gentle, smooth toor dal cooked with just turmeric, asafoetida and salt, with a hint of jaggery. It is served
   hot over rice with a spoon of ghee as everyday varan bhaat.
 descriptions:
@@ -24,16 +24,15 @@ equipment:
 - gas_stove
 tags:
 - comforting
-- basics
 - kids_friendly
 - one_pot
 flavor_profile:
-  rich: 1
+  rich: 0.4
   heat: 0
-  acid: 1
+  acid: 0.1
   crunch: 0
-  starch: 1
-  sweet: 1
+  starch: 0.5
+  sweet: 0.1
 food_groups:
 - dal
 review_status: in_review

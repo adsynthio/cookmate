@@ -1,9 +1,9 @@
 # Draft written by the library generator; waiting for review (review_status in_review).
 slug: sambar
-title: Everyday Sambar
+title: Sambar
 titles:
-  hi: रोज़ का सांभर
-  hi-Latn: Roz Ka Sambar
+  hi: सांभर
+  hi-Latn: Sambar
 description: A homestyle South Indian sambar of tangy tamarind, soft toor dal, drumstick and brinjal, finished with a mustard
   seed and curry leaf tadka. Serve it hot with rice, idli or dosa.
 descriptions:
@@ -25,14 +25,13 @@ equipment:
 - gas_stove
 tags:
 - comforting
-- basics
 flavor_profile:
-  rich: 1
-  heat: 1
-  acid: 1
-  crunch: 1
-  starch: 1
-  sweet: 1
+  rich: 0.3
+  heat: 0.4
+  acid: 0.7
+  crunch: 0.1
+  starch: 0.4
+  sweet: 0.1
 food_groups:
 - dal
 - sabzi
@@ -95,10 +94,10 @@ ingredients:
   local: 1 chhota tukda gud
   role: sweet
   optional: true
-- ingredient: groundnut oil
+- ingredient: refined oil
   qty: 20
   unit: ml
-  local: 1.5 bada chammach moongphali tel
+  local: 1.5 bada chammach tel
   role: fat
   group: tadka
 - ingredient: mustard seeds

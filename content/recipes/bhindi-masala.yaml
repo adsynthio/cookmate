@@ -1,0 +1,236 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: bhindi-masala
+title: Bhindi Masala
+titles:
+  hi: भिंडी मसाला
+  hi-Latn: Bhindi Masala
+description: A weekday dry okra sabzi. The bhindi is first fried until it is no longer slimy, then tossed in a quick onion-tomato
+  masala and finished with amchur. It goes well with phulka or dal-chawal.
+descriptions:
+  hi: रोज़ के खाने वाली सूखी भिंडी की सब्ज़ी। भिंडी को पहले तब तक भूनते हैं जब तक उसकी चिपचिपाहट न चली जाए, फिर प्याज़-टमाटर
+    के मसाले में मिलाकर अमचूर से खत्म करते हैं। फुलके या दाल-चावल के साथ बढ़िया लगती है।
+  hi-Latn: Roz ke khaane wali sookhi bhindi ki sabzi. Bhindi ko pehle tab tak bhoonte hain jab tak uski chipchipahat na chali
+    jaaye, phir pyaaz-tamatar ke masale mein milaakar amchur se khatam karte hain. Phulke ya dal-chawal ke saath badhiya lagti
+    hai.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 25
+difficulty: 2
+spice_level: 3
+equipment:
+- kadai
+- gas_stove
+tags:
+- tiffin
+- comforting
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: okra
+  qty: 500
+  unit: g
+  local: aadha kilo bhindi
+  role: vegetable
+- ingredient: onion
+  qty: 200
+  unit: g
+  local: 2 medium pyaaz
+  role: base
+  group: masala
+- ingredient: tomato
+  qty: 150
+  unit: g
+  local: 2 medium tamatar
+  role: base
+  group: masala
+- ingredient: ginger garlic paste
+  qty: 10
+  unit: g
+  local: 2 chhote chammach
+  role: aromatic
+  group: masala
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: masala
+- ingredient: refined oil
+  qty: 45
+  unit: ml
+  local: 3 bade chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: aadha chhota chammach
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 6
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+  group: masala
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: dry mango powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: acid
+  group: finish
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: aadha chhota chammach
+  role: spice
+  group: finish
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  group: finish
+  optional: true
+steps:
+- text: Wash the okra, wipe every piece completely dry with a cloth, trim the ends and cut it into 2 cm pieces.
+  minutes: 10
+  timer: true
+  cues:
+    touch: The okra should feel fully dry before you cut it, so it stays less slimy.
+  safety: Use a dry board and take care with the knife, because wet okra slips.
+  say:
+    hi:
+      text: भिंडी धो लें, हर भिंडी को कपड़े से पूरा सूखा पोंछें, सिरे काटें और 2 सेंटीमीटर के टुकड़े कर लें।
+      touch: काटने से पहले भिंडी पूरी सूखी लगनी चाहिए, इससे वह कम चिपचिपी रहती है।
+      safety: सूखा बोर्ड लें और चाकू ध्यान से चलाएँ, क्योंकि गीली भिंडी फिसलती है।
+    hi-Latn:
+      text: Bhindi dho lein, har bhindi ko kapde se poora sookha ponchhein, sire kaatein aur 2 centimetre ke tukde kar lein.
+      touch: Kaatne se pehle bhindi poori sookhi lagni chahiye, isse woh kam chipchipi rehti hai.
+      safety: Sookha board lein aur chaaku dhyaan se chalaayein, kyunki geeli bhindi phisalti hai.
+- text: Heat 2 tablespoons of oil in a kadai. Add the okra and fry it uncovered, stirring now and then, until it is no longer
+    slimy and the edges brown. Take it out onto a plate.
+  technique: shallow_fry
+  minutes: 12
+  timer: true
+  heat: medium
+  cues:
+    look: The sticky strings are gone and the edges are lightly browned.
+  say:
+    hi:
+      text: कड़ाही में 2 बड़े चम्मच तेल गरम करें। भिंडी डालें और बिना ढके, बीच-बीच में चलाते हुए तब तक भूनें जब तक चिपचिपाहट
+        न चली जाए और किनारे भूरे न हो जाएँ। फिर भिंडी निकालकर प्लेट में रख लें।
+      look: चिपचिपे तार खत्म हो जाएँ और किनारे हल्के भूरे हो जाएँ।
+    hi-Latn:
+      text: Kadai mein 2 bade chammach tel garam karein. Bhindi daalein aur bina dhake, beech-beech mein chalaate hue tab
+        tak bhoonein jab tak chipchipahat na chali jaaye aur kinaare bhoore na ho jaayein. Phir bhindi nikaal kar plate mein
+        rakh lein.
+      look: Chipchipe taar khatam ho jaayein aur kinaare halke bhoore ho jaayein.
+- text: Add the remaining oil to the same kadai and put in the cumin seeds. When they crackle, add the sliced onion and cook
+    it until golden.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and golden brown.
+    sound: The cumin seeds crackle.
+  say:
+    hi:
+      text: उसी कड़ाही में बचा हुआ तेल डालें और जीरा डालें। जीरा चटकने लगे तो कटा प्याज़ डालें और सुनहरा होने तक भूनें।
+      look: प्याज़ नरम होकर सुनहरा भूरा हो जाए।
+      sound: जीरा चटकने लगे।
+    hi-Latn:
+      text: Usi kadai mein bacha hua tel daalein aur jeera daalein. Jeera chatakne lage to kata pyaaz daalein aur sunehra
+        hone tak bhoonein.
+      look: Pyaaz naram hokar sunehra bhoora ho jaaye.
+      sound: Jeera chatakne lage.
+- text: Add the ginger garlic paste and the slit green chillies, and stir for about a minute.
+  technique: saute_onion
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw smell of the garlic goes away.
+  say:
+    hi:
+      text: अदरक-लहसुन का पेस्ट और बीच से चीरी हुई हरी मिर्च डालें और करीब एक मिनट तक चलाएँ।
+      smell: लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak-lehsun ka paste aur beech se cheeri hui hari mirch daalein aur kareeb ek minute tak chalaayein.
+      smell: Lehsun ki kachchi mehak chali jaaye.
+- text: Add the chopped tomato, turmeric, red chilli powder, coriander powder and salt. Cook the masala until the tomato breaks
+    down and the oil separates.
+  technique: bhuna
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato turns mushy and oil shows at the edges of the masala.
+  say:
+    hi:
+      text: कटा टमाटर, हल्दी, लाल मिर्च पाउडर, धनिया पाउडर और नमक डालें। मसाले को तब तक भूनें जब तक टमाटर गल न जाए और तेल
+        अलग न होने लगे।
+      look: टमाटर गल जाए और मसाले के किनारों पर तेल दिखने लगे।
+    hi-Latn:
+      text: Kata tamatar, haldi, laal mirch powder, dhaniya powder aur namak daalein. Masale ko tab tak bhoonein jab tak tamatar
+        gal na jaaye aur tel alag na hone lage.
+      look: Tamatar gal jaaye aur masale ke kinaaron par tel dikhne lage.
+- text: Put the fried okra back in the kadai and mix it gently with the masala. Cook uncovered until the okra is tender.
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: The masala coats every piece of okra.
+    touch: A piece of okra feels soft when you press it with the spoon.
+  say:
+    hi:
+      text: भुनी हुई भिंडी वापस कड़ाही में डालें और मसाले में हल्के हाथ से मिलाएँ। बिना ढके तब तक पकाएँ जब तक भिंडी नरम न
+        हो जाए।
+      look: मसाला भिंडी के हर टुकड़े पर लिपट जाए।
+      touch: चम्मच से दबाने पर भिंडी का टुकड़ा नरम लगे।
+    hi-Latn:
+      text: Bhuni hui bhindi wapas kadai mein daalein aur masale mein halke haath se milaayein. Bina dhake tab tak pakaayein
+        jab tak bhindi naram na ho jaaye.
+      look: Masala bhindi ke har tukde par lipat jaaye.
+      touch: Chammach se dabaane par bhindi ka tukda naram lage.
+- text: Sprinkle the amchur and garam masala over the okra, mix once and turn off the heat. Garnish with coriander leaves
+    and serve hot.
+  minutes: 1
+  heat: low
+  cues:
+    smell: A tangy, spicy aroma rises from the kadai.
+  say:
+    hi:
+      text: ऊपर से अमचूर और गरम मसाला छिड़कें, एक बार मिलाएँ और आँच बंद कर दें। हरा धनिया डालकर गरमागरम परोसें।
+      smell: कड़ाही से खट्टी-मसालेदार खुशबू उठे।
+    hi-Latn:
+      text: Upar se amchur aur garam masala chhidkein, ek baar milaayein aur aanch band kar dein. Hara dhaniya daal kar garamagaram
+        parosein.
+      smell: Kadai se khatti-masaledaar khushboo uthe.

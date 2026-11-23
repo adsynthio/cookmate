@@ -1,0 +1,225 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: aloo-matar
+title: Aloo Matar
+titles:
+  hi: आलू मटर
+  hi-Latn: Aloo Matar
+description: An everyday North Indian curry of potato and green peas in a light onion-tomato gravy, cooked in the pressure
+  cooker. Goes well with roti or rice.
+descriptions:
+  hi: प्याज़-टमाटर की हल्की ग्रेवी में आलू और हरी मटर की रोज़ बनने वाली उत्तर भारतीय सब्ज़ी, प्रेशर कुकर में बनी। रोटी या
+    चावल के साथ बढ़िया लगती है।
+  hi-Latn: Pyaaz-tamatar ki halki gravy mein aloo aur hari matar ki roz banne wali North Indian sabzi, pressure cooker mein
+    bani. Roti ya chawal ke saath badhiya lagti hai.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 25
+difficulty: 1
+spice_level: 2
+equipment:
+- pressure_cooker
+- gas_stove
+tags:
+- comforting
+- one_pot
+- kids_friendly
+- tiffin
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 0
+  starch: 1
+  sweet: 1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: potato
+  qty: 400
+  unit: g
+  local: 4 medium aloo
+  role: base
+- ingredient: green peas
+  qty: 200
+  unit: g
+  local: 1 katori matar
+  role: vegetable
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 medium pyaaz
+  role: aromatic
+  group: masala
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 3 medium tamatar
+  role: acid
+  group: masala
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: aromatic
+  group: masala
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: masala
+- ingredient: refined oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 5
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 1
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 6
+  unit: g
+  local: 1 1/2 chhota chammach
+  role: spice
+  group: masala
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1 1/2 chhota chammach (swaad anusaar)
+  role: spice
+- ingredient: garam masala
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: finish
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  group: finish
+  optional: true
+steps:
+- text: Heat oil in the pressure cooker, add cumin seeds and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The cumin crackles.
+  say:
+    hi:
+      text: प्रेशर कुकर में तेल गरम करें, जीरा और हींग डालें।
+      sound: जीरा चटकने लगे।
+    hi-Latn:
+      text: Pressure cooker mein tel garam karein, jeera aur hing daalein.
+      sound: Jeera chatakne lage.
+- text: Add the chopped onion and fry, stirring often.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Onion turns light golden.
+  say:
+    hi:
+      text: कटा प्याज़ डालें और चलाते हुए भूनें।
+      look: प्याज़ हल्का सुनहरा हो जाए।
+    hi-Latn:
+      text: Kata pyaaz daalein aur chalate hue bhunein.
+      look: Pyaaz halka sunehra ho jaye.
+- text: Add ginger garlic paste and slit green chillies and stir.
+  minutes: 1
+  heat: medium
+  cues:
+    smell: The raw garlic smell goes.
+  say:
+    hi:
+      text: अदरक लहसुन का पेस्ट और बीच से कटी हरी मिर्च डालकर चलाएँ।
+      smell: लहसुन की कच्ची महक चली जाए।
+    hi-Latn:
+      text: Adrak lehsun ka paste aur beech se kati hari mirch daal kar chalayein.
+      smell: Lehsun ki kachchi mehak chali jaye.
+- text: Add chopped tomato, turmeric, red chilli powder, coriander powder and salt, and cook the masala.
+  technique: bhuna
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Tomatoes go soft and oil shows at the edges.
+  say:
+    hi:
+      text: कटा टमाटर, हल्दी, लाल मिर्च पाउडर, धनिया पाउडर और नमक डालकर मसाला भूनें।
+      look: टमाटर गल जाएँ और किनारों पर तेल दिखने लगे।
+    hi-Latn:
+      text: Kata tamatar, haldi, lal mirch powder, dhaniya powder aur namak daal kar masala bhunein.
+      look: Tamatar gal jayein aur kinaron par tel dikhne lage.
+- text: Add the potato cubes and peas and mix well with the masala.
+  minutes: 2
+  heat: medium
+  cues:
+    look: Every piece is coated in masala.
+  say:
+    hi:
+      text: आलू के टुकड़े और मटर डालकर मसाले में अच्छे से मिलाएँ।
+      look: हर टुकड़े पर मसाला लग जाए।
+    hi-Latn:
+      text: Aloo ke tukde aur matar daal kar masale mein achhe se milayein.
+      look: Har tukde par masala lag jaye.
+- text: Pour in about 2 cups of water, close the lid and pressure-cook.
+  technique: pressure_cook
+  minutes: 8
+  whistles: 2
+  timer: true
+  heat: medium
+  safety: Let the pressure drop on its own before opening the lid.
+  say:
+    hi:
+      text: लगभग 2 कप पानी डालें, ढक्कन बंद करें और प्रेशर कुकर में पकाएँ।
+      safety: ढक्कन खोलने से पहले प्रेशर अपने आप निकलने दें।
+    hi-Latn:
+      text: Lagbhag 2 cup paani daalein, dhakkan band karein aur pressure cooker mein pakayein.
+      safety: Dhakkan kholne se pehle pressure apne aap nikalne dein.
+- text: Open, lightly mash a few potato pieces, add garam masala and simmer, then top with coriander leaves.
+  technique: simmer
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: The gravy thickens slightly.
+    touch: Potato breaks easily with the spoon.
+  say:
+    hi:
+      text: कुकर खोलें, आलू के कुछ टुकड़े हल्का मसल दें, गरम मसाला डालकर पकाएँ, फिर हरा धनिया डालें।
+      look: ग्रेवी थोड़ी गाढ़ी हो जाए।
+      touch: आलू चम्मच से आसानी से टूट जाए।
+    hi-Latn:
+      text: Cooker kholein, aloo ke kuch tukde halka masal dein, garam masala daal kar pakayein, phir hara dhaniya daalein.
+      look: Gravy thodi gaadhi ho jaye.
+      touch: Aloo chammach se aasani se toot jaye.

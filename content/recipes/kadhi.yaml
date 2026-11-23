@@ -1,0 +1,218 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: kadhi
+title: Plain Kadhi
+titles:
+  hi: सादी कढ़ी
+  hi-Latn: Saadi Kadhi
+description: 'A simple everyday kadhi: tangy buttermilk thickened with gram flour, simmered slowly, and finished with a ghee
+  tadka of cumin, mustard seeds and curry leaves. Serve hot with plain rice.'
+descriptions:
+  hi: 'रोज़ की सादी कढ़ी: खट्टी छाछ को बेसन से गाढ़ा करके धीमी आँच पर पकाया जाता है, फिर ऊपर से जीरा, राई और करी पत्ते का
+    घी वाला तड़का। गरम चावल के साथ परोसें।'
+  hi-Latn: 'Roz ki saadi kadhi: khatti chhaach ko besan se gaadha karke dheemi aanch par pakaya jaata hai, phir upar se jeera,
+    rai aur kari patte ka ghee wala tadka. Garam chawal ke saath parosein.'
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 30
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- comforting
+- basics
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 0
+  starch: 1
+  sweet: 0
+food_groups:
+- dairy
+review_status: in_review
+ingredients:
+- ingredient: buttermilk
+  qty: 900
+  unit: ml
+  local: 4.5 glass khatti chhaach
+  role: liquid
+- ingredient: gram flour
+  qty: 50
+  unit: g
+  local: 5 bade chammach besan
+  role: binder
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+- ingredient: salt
+  qty: 7
+  unit: g
+  local: 1 chhota chammach namak
+  role: spice
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, kaddukas kiya
+  role: aromatic
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch, beech se chiri
+  role: heat
+- ingredient: ghee
+  qty: 20
+  unit: g
+  local: 1.5 bada chammach ghee
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: mustard seeds
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: fenugreek seeds
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach methi dana
+  role: spice
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: g
+  local: 2 sookhi laal mirch
+  role: heat
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 10-12 kari patta
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach laal mirch powder
+  role: heat
+  group: tadka
+  optional: true
+- ingredient: coriander leaves
+  qty: 5
+  unit: g
+  local: 1 bada chammach hara dhaniya, kata
+  role: garnish
+  optional: true
+steps:
+- text: In the kadai, whisk the gram flour, turmeric and salt into the buttermilk until no lumps remain.
+  technique: batter
+  minutes: 3
+  timer: true
+  cues:
+    look: The mixture is an even pale yellow.
+    touch: It feels smooth with no lumps between your fingers.
+  say:
+    hi:
+      text: कढ़ाई में छाछ लें, उसमें बेसन, हल्दी और नमक डालकर तब तक फेंटें जब तक कोई गुठली न रहे।
+      look: मिश्रण एक जैसा हल्का पीला दिखे।
+      touch: उंगलियों में चिकना लगे, कोई गुठली न हो।
+    hi-Latn:
+      text: Kadai mein chhaach lein, usmein besan, haldi aur namak daalkar tab tak phentein jab tak koi gutthli na rahe.
+      look: Mixture ek jaisa halka peela dikhe.
+      touch: Ungliyon mein chikna lage, koi gutthli na ho.
+- text: Add the grated ginger and slit green chillies, put the kadai on medium heat and stir non-stop until it comes to a
+    boil.
+  technique: simmer
+  minutes: 8
+  timer: true
+  heat: medium
+  cues:
+    look: Bubbles rise all over the surface.
+  safety: Keep stirring until it boils, or the kadhi will split.
+  say:
+    hi:
+      text: कद्दूकस किया अदरक और चिरी हुई हरी मिर्च डालें, कढ़ाई को मध्यम आँच पर रखें और उबाल आने तक लगातार चलाते रहें।
+      look: पूरी सतह पर बुलबुले उठने लगें।
+      safety: उबाल आने तक चलाते रहें, वरना कढ़ी फट जाएगी।
+    hi-Latn:
+      text: Kaddukas kiya adrak aur chiri hui hari mirch daalein, kadai ko medium aanch par rakhein aur ubaal aane tak lagataar
+        chalate rahein.
+      look: Poori satah par bulbule uthne lagein.
+      safety: Ubaal aane tak chalate rahein, warna kadhi phat jayegi.
+- text: Lower the heat and simmer, stirring now and then, until the kadhi thickens and the raw gram flour smell is gone.
+  technique: simmer
+  minutes: 15
+  timer: true
+  heat: low
+  cues:
+    look: It lightly coats the back of the ladle.
+    sound: It bubbles gently.
+    smell: The raw besan smell turns mellow and tangy.
+  say:
+    hi:
+      text: आँच धीमी करें और बीच-बीच में चलाते हुए पकाएँ, जब तक कढ़ी गाढ़ी न हो जाए और कच्चे बेसन की महक न चली जाए।
+      look: करछी के पीछे हल्की परत चढ़ने लगे।
+      sound: धीरे-धीरे खदकने की आवाज़ आए।
+      smell: कच्चे बेसन की महक जाकर हल्की खट्टी खुशबू आए।
+    hi-Latn:
+      text: Aanch dheemi karein aur beech-beech mein chalate hue pakayein, jab tak kadhi gaadhi na ho jaye aur kachche besan
+        ki mehak na chali jaye.
+      look: Karchhi ke peeche halki parat chadhne lage.
+      sound: Dheere-dheere khadakne ki aawaaz aaye.
+      smell: Kachche besan ki mehak jaakar halki khatti khushboo aaye.
+- text: For the tadka, heat ghee in a small pan, add mustard seeds, cumin and fenugreek seeds, then dry red chillies, curry
+    leaves and asafoetida; switch off the heat and stir in red chilli powder.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    look: The cumin turns a shade darker.
+    sound: The seeds crackle and splutter.
+    smell: A nutty ghee and hing aroma rises.
+  safety: Curry leaves splutter in hot ghee, so stand back.
+  say:
+    hi:
+      text: तड़के के लिए छोटे पैन में घी गरम करें, राई, जीरा और मेथी दाना डालें, फिर सूखी लाल मिर्च, करी पत्ता और हींग डालें;
+        गैस बंद करके लाल मिर्च पाउडर मिलाएँ।
+      look: जीरा थोड़ा गहरा हो जाए।
+      sound: दाने चटकने लगें।
+      smell: घी और हींग की सौंधी खुशबू आए।
+      safety: गरम घी में करी पत्ता चटकता है, थोड़ा दूर रहें।
+    hi-Latn:
+      text: Tadke ke liye chhote pan mein ghee garam karein, rai, jeera aur methi dana daalein, phir sookhi laal mirch, kari
+        patta aur hing daalein; gas band karke laal mirch powder milayein.
+      look: Jeera thoda gehra ho jaye.
+      sound: Daane chatakne lagein.
+      smell: Ghee aur hing ki saundhi khushboo aaye.
+      safety: Garam ghee mein kari patta chatakta hai, thoda door rahein.
+- text: Pour the tadka over the kadhi, sprinkle coriander leaves and serve hot with rice.
+  cues:
+    look: Red ghee floats on top of the yellow kadhi.
+    sound: The tadka sizzles as it hits the kadhi.
+  say:
+    hi:
+      text: तड़का कढ़ी पर डालें, हरा धनिया छिड़कें और चावल के साथ गरम परोसें।
+      look: पीली कढ़ी पर लाल घी तैरता दिखे।
+      sound: कढ़ी पर तड़का डालते ही छनछनाहट हो।
+    hi-Latn:
+      text: Tadka kadhi par daalein, hara dhaniya chhidkein aur chawal ke saath garam parosein.
+      look: Peeli kadhi par laal ghee tairta dikhe.
+      sound: Kadhi par tadka daalte hi chhanchhanahat ho.

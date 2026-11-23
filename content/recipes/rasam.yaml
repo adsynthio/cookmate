@@ -1,0 +1,250 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: rasam
+title: Tomato Rasam with Toor Dal
+titles:
+  hi: टमाटर रसम (अरहर दाल वाला)
+  hi-Latn: Tamatar Rasam (Toor Dal Wala)
+description: A thin, tangy South Indian rasam of tomato, tamarind and crushed pepper-garlic, made with a little toor dal and
+  finished with a ghee tadka. Drink it hot or pour it over rice.
+descriptions:
+  hi: टमाटर, इमली और कुटी काली मिर्च-लहसुन से बना पतला, खट्टा दक्षिण भारतीय रसम, जिसमें थोड़ी अरहर दाल और ऊपर से घी का तड़का
+    होता है। इसे गरम-गरम पिएं या चावल के साथ खाएं।
+  hi-Latn: Tamatar, imli aur kuti kaali mirch-lahsun se bana patla, khatta South Indian rasam, jismein thodi toor dal aur
+    upar se ghee ka tadka hota hai. Ise garam-garam piyo ya chawal ke saath khao.
+cuisine_region: tamil_nadu
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 30
+difficulty: 2
+spice_level: 3
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- light
+- one_pot
+- basics
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 0
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: toor dal
+  qty: 50
+  unit: g
+  local: 1/4 katori
+  role: protein
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 2 medium tamatar
+  role: base
+- ingredient: tamarind
+  qty: 15
+  unit: g
+  local: nimbu jitni imli
+  role: acid
+- ingredient: rasam powder
+  qty: 10
+  unit: g
+  local: 1 bada chammach
+  role: spice
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach
+  role: spice
+- ingredient: garlic
+  qty: 18
+  unit: g
+  local: 6 kali lahsun
+  role: aromatic
+  group: kuta masala
+- ingredient: black pepper
+  qty: 4
+  unit: g
+  local: 1 chhota chammach kaali mirch
+  role: heat
+  group: kuta masala
+- ingredient: cumin seeds
+  qty: 4
+  unit: g
+  local: 1 chhota chammach jeera
+  role: spice
+  group: kuta masala
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: jaggery
+  qty: 5
+  unit: g
+  local: 1 chhota tukda gud
+  role: sweet
+  optional: true
+- ingredient: ghee
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: piece
+  local: 2 sookhi laal mirch
+  role: heat
+  group: tadka
+- ingredient: asafoetida
+  qty: 1
+  unit: g
+  local: 1 chutki hing
+  role: aromatic
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 12-15 kadi patta
+  role: aromatic
+  group: tadka
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach kata hara dhaniya
+  role: garnish
+steps:
+- text: Wash the toor dal, add turmeric and 1 cup water, and pressure-cook for 3 whistles, then mash it smooth once the pressure
+    drops.
+  technique: pressure_cook
+  minutes: 12
+  whistles: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The dal mashes into a smooth paste with no whole grains left.
+  safety: Open the cooker only after the pressure drops by itself.
+  say:
+    hi:
+      text: अरहर दाल धोकर उसमें हल्दी और 1 कप पानी डालें, प्रेशर कुकर में 3 सीटी तक पकाएं, फिर प्रेशर उतरने पर उसे चिकना मैश
+        कर लें।
+      look: दाल मैश होकर चिकनी हो जाती है, कोई साबुत दाना नहीं दिखता।
+      safety: कुकर तभी खोलें जब प्रेशर अपने आप उतर जाए।
+    hi-Latn:
+      text: Toor dal dhokar usmein haldi aur 1 cup paani daalo, pressure cooker mein 3 seeti tak pakao, phir pressure utarne
+        par use smooth mash kar lo.
+      look: Dal mash hokar smooth ho jaati hai, koi saabut daana nahi dikhta.
+      safety: Cooker tabhi kholo jab pressure apne aap utar jaaye.
+- text: Soak the tamarind in 1 cup warm water for 10 minutes, squeeze it well and strain out the pulp water.
+  technique: soak
+  minutes: 10
+  timer: true
+  cues:
+    touch: The tamarind turns soft and comes apart easily between your fingers.
+  say:
+    hi:
+      text: इमली को 1 कप गुनगुने पानी में 10 मिनट भिगोएं, अच्छी तरह मसलें और उसका पानी छान लें।
+      touch: इमली नरम हो जाती है और उंगलियों में आसानी से घुल जाती है।
+    hi-Latn:
+      text: Imli ko 1 cup gungune paani mein 10 minute bhigo do, achhi tarah masal kar uska paani chhaan lo.
+      touch: Imli naram ho jaati hai aur ungliyon mein aasaani se ghul jaati hai.
+- text: Coarsely crush the garlic, black pepper and cumin seeds together with a rolling pin or in a mortar.
+  cues:
+    look: Coarse, rough bits, not a fine powder.
+    smell: A sharp smell of pepper and garlic.
+  say:
+    hi:
+      text: लहसुन, काली मिर्च और जीरा को बेलन या खल-बट्टे से एक साथ दरदरा कूट लें।
+      look: दरदरे टुकड़े दिखें, बारीक पाउडर नहीं।
+      smell: काली मिर्च और लहसुन की तीखी खुशबू आती है।
+    hi-Latn:
+      text: Lahsun, kaali mirch aur jeera ko belan ya khal-batte se ek saath dardara kooti lo.
+      look: Dardare tukde dikhen, baarik powder nahi.
+      smell: Kaali mirch aur lahsun ki teekhi khushboo aati hai.
+- text: In a kadai, add the tamarind water, chopped tomatoes, crushed masala, rasam powder, salt, a few curry leaves and jaggery
+    if using, and boil on medium heat for 8 to 10 minutes.
+  technique: simmer
+  minutes: 10
+  timer: true
+  heat: medium
+  cues:
+    look: The tomatoes turn soft and mushy.
+    smell: The raw tamarind smell goes away.
+  say:
+    hi:
+      text: कड़ाही में इमली का पानी, कटे टमाटर, कुटा मसाला, रसम पाउडर, नमक, कुछ कढ़ी पत्ते और चाहें तो गुड़ डालें, और मध्यम
+        आंच पर 8 से 10 मिनट उबालें।
+      look: टमाटर नरम होकर गल जाते हैं।
+      smell: इमली की कच्ची महक चली जाती है।
+    hi-Latn:
+      text: Kadai mein imli ka paani, kate tamatar, kuta masala, rasam powder, namak, kuch kadi patte aur chaho to gud daalo,
+        aur medium aanch par 8 se 10 minute ubaalo.
+      look: Tamatar naram hokar gal jaate hain.
+      smell: Imli ki kachchi mehak chali jaati hai.
+- text: Add the mashed dal and 2 cups water, stir, and heat on low just until froth rises on top, then switch off without
+    letting it boil hard.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: A light froth gathers and rises on the surface.
+  say:
+    hi:
+      text: मैश की हुई दाल और 2 कप पानी डालकर चलाएं, धीमी आंच पर तब तक गरम करें जब तक ऊपर झाग न उठे, फिर तेज़ उबाल आने से
+        पहले गैस बंद कर दें।
+      look: ऊपर हल्का झाग जमा होकर उठने लगता है।
+    hi-Latn:
+      text: Mash ki hui dal aur 2 cup paani daalkar chalao, dheemi aanch par tab tak garam karo jab tak upar jhaag na uthe,
+        phir tez ubaal aane se pehle gas band kar do.
+      look: Upar halka jhaag jama hokar uthne lagta hai.
+- text: Heat ghee in a small pan, add mustard seeds, and when they crackle add dry red chillies, asafoetida and curry leaves,
+    then pour the tadka into the rasam.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    sound: The mustard seeds crackle and the curry leaves sizzle.
+    smell: A nutty smell of ghee and hing.
+  safety: Stand back when adding the curry leaves, the hot ghee splutters.
+  say:
+    hi:
+      text: छोटे पैन में घी गरम करें, राई डालें, और जब वह चटकने लगे तो सूखी लाल मिर्च, हींग और कढ़ी पत्ते डालें, फिर यह तड़का
+        रसम में डाल दें।
+      sound: राई चटकती है और कढ़ी पत्ते छनछनाते हैं।
+      smell: घी और हींग की सौंधी खुशबू आती है।
+      safety: कढ़ी पत्ते डालते समय थोड़ा पीछे हटें, गरम घी छिटकता है।
+    hi-Latn:
+      text: Chhote pan mein ghee garam karo, rai daalo, aur jab woh chatakne lage to sookhi laal mirch, hing aur kadi patte
+        daalo, phir yeh tadka rasam mein daal do.
+      sound: Rai chatakti hai aur kadi patte chhanchhanate hain.
+      smell: Ghee aur hing ki saundhi khushboo aati hai.
+      safety: Kadi patte daalte samay thoda peeche hato, garam ghee chhitakta hai.
+- text: Add the chopped coriander leaves, cover for 5 minutes, and serve hot with rice or in a cup.
+  minutes: 5
+  timer: true
+  cues:
+    smell: The rasam smells of pepper and fresh coriander.
+  say:
+    hi:
+      text: कटा हरा धनिया डालें, 5 मिनट ढककर रखें, और चावल के साथ या कप में गरम-गरम परोसें।
+      smell: रसम से काली मिर्च और ताज़े धनिए की खुशबू आती है।
+    hi-Latn:
+      text: Kata hara dhaniya daalo, 5 minute dhak kar rakho, aur chawal ke saath ya cup mein garam-garam parosو.
+      smell: Rasam se kaali mirch aur taaze dhaniye ki khushboo aati hai.

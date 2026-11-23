@@ -1,0 +1,266 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: gujarati-dal
+title: Gujarati Dal
+titles:
+  hi: गुजराती दाल
+  hi-Latn: Gujarati Dal
+description: Thin, smooth toor dal that is sweet, sour and gently spiced, with jaggery, kokum and a ghee tadka of mustard,
+  cloves and curry leaves. Everyday Gujarati comfort with hot rice.
+descriptions:
+  hi: पतली, मुलायम तूर दाल जो हल्की मीठी, खट्टी और कम तीखी होती है। इसमें गुड़, कोकम और राई, लौंग व करी पत्ते का घी वाला तड़का
+    पड़ता है। गरम चावल के साथ रोज़ का गुजराती आराम।
+  hi-Latn: Patli, smooth toor dal jo halki meethi, khatti aur kam teekhi hoti hai. Isme gud, kokum aur rai, laung aur kadi
+    patte ka ghee wala tadka padta hai. Garam chawal ke saath roz ka Gujarati aaram.
+cuisine_region: gujarat
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 25
+cook_time_min: 35
+difficulty: 2
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- basics
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: toor dal
+  qty: 150
+  unit: g
+  local: 3/4 katori
+  role: base
+  group: dal
+- ingredient: peanuts
+  qty: 25
+  unit: g
+  local: 2 bade chammach
+  role: component
+  group: dal
+  optional: true
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: dal
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 bada tamatar
+  role: acid
+  group: dal
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+  group: dal
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: dal
+- ingredient: jaggery
+  qty: 25
+  unit: g
+  local: 2 bade chammach gud
+  role: sweet
+  group: dal
+- ingredient: kokum
+  qty: 5
+  unit: g
+  local: 3-4 kokum
+  role: acid
+  group: dal
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: heat
+  group: dal
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+  group: dal
+- ingredient: ghee
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: cumin seeds
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: fenugreek seeds
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach methi dana
+  role: spice
+  group: tadka
+- ingredient: cloves
+  qty: 1
+  unit: g
+  local: 3 laung
+  role: spice
+  group: tadka
+- ingredient: cinnamon
+  qty: 2
+  unit: g
+  local: 1 inch dalchini
+  role: spice
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: g
+  local: 2 sookhi laal mirch
+  role: heat
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 10-12 kadi patta
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach kata hara dhaniya
+  role: garnish
+- ingredient: lemon
+  qty: 15
+  unit: ml
+  local: 1/2 nimbu
+  role: acid
+  optional: true
+steps:
+- text: Rinse the toor dal and peanuts 3 times and soak them in water for 20 minutes.
+  technique: soak
+  minutes: 20
+  timer: true
+  cues:
+    look: The water runs almost clear after rinsing.
+  say:
+    hi:
+      text: तूर दाल और मूंगफली को 3 बार धोकर 20 मिनट पानी में भिगो दो।
+      look: धोने के बाद पानी लगभग साफ़ दिखता है।
+    hi-Latn:
+      text: Toor dal aur moongphali ko 3 baar dhokar 20 minute paani mein bhigo do.
+      look: Dhone ke baad paani lagbhag saaf dikhta hai.
+- text: Drain, put dal and peanuts in the pressure cooker with 450 ml water and the turmeric, and cook for 4 whistles on medium
+    heat.
+  technique: pressure_cook
+  minutes: 15
+  whistles: 4
+  timer: true
+  heat: medium
+  safety: Open the cooker only after the pressure drops on its own.
+  say:
+    hi:
+      text: पानी निकालकर दाल और मूंगफली को 450 ml पानी और हल्दी के साथ प्रेशर कुकर में डालो और मध्यम आँच पर 4 सीटी आने दो।
+      safety: कुकर तभी खोलो जब प्रेशर अपने आप निकल जाए।
+    hi-Latn:
+      text: Paani nikaal kar dal aur moongphali ko 450 ml paani aur haldi ke saath pressure cooker mein daalo aur medium aanch
+        par 4 seeti aane do.
+      safety: Cooker tabhi kholo jab pressure apne aap nikal jaye.
+- text: Whisk the cooked dal until completely smooth, then stir in 400 ml water to make it thin.
+  cues:
+    look: The dal is smooth with no whole grains, and pourable like thin soup.
+  say:
+    hi:
+      text: पकी दाल को मथनी से अच्छी तरह मथकर बिल्कुल चिकना करो, फिर 400 ml पानी मिलाकर पतला करो।
+      look: दाल में कोई साबुत दाना नहीं रहता और यह पतले सूप जैसी बहती है।
+    hi-Latn:
+      text: Paki dal ko mathni se achhi tarah math kar bilkul smooth karo, phir 400 ml paani milakar patla karo.
+      look: Dal mein koi saabut daana nahi rehta aur yeh patle soup jaisi behti hai.
+- text: Add chopped tomato, grated ginger, slit green chillies, jaggery, kokum, red chilli powder and salt, and simmer for
+    10 minutes on medium-low heat.
+  technique: simmer
+  minutes: 10
+  timer: true
+  heat: medium
+  cues:
+    look: The jaggery melts and the tomato turns soft.
+  say:
+    hi:
+      text: कटा टमाटर, कसा अदरक, चीरी हरी मिर्च, गुड़, कोकम, लाल मिर्च पाउडर और नमक डालकर मध्यम-धीमी आँच पर 10 मिनट उबालो।
+      look: गुड़ घुल जाता है और टमाटर नरम हो जाता है।
+    hi-Latn:
+      text: Kata tamatar, kasa adrak, cheeri hari mirch, gud, kokum, laal mirch powder aur namak daal kar medium-dheemi aanch
+        par 10 minute ubaalo.
+      look: Gud ghul jaata hai aur tamatar naram ho jaata hai.
+- text: Heat ghee in a small kadai, add mustard seeds, then cumin, fenugreek seeds, cloves, cinnamon, dry red chillies, curry
+    leaves and asafoetida.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    sound: The mustard seeds crackle and pop.
+    smell: The cloves and curry leaves smell strong and toasty.
+  safety: Curry leaves splutter in hot ghee, so stand back.
+  say:
+    hi:
+      text: छोटी कड़ाही में घी गरम करो, राई डालो, फिर जीरा, मेथी दाना, लौंग, दालचीनी, सूखी लाल मिर्च, करी पत्ता और हींग डालो।
+      sound: राई चटकती और फूटती है।
+      smell: लौंग और करी पत्ते की तेज़, भुनी खुशबू आती है।
+      safety: गरम घी में करी पत्ता छिटकता है, थोड़ा पीछे खड़े रहो।
+    hi-Latn:
+      text: Chhoti kadai mein ghee garam karo, rai daalo, phir jeera, methi dana, laung, dalchini, sookhi laal mirch, kadi
+        patta aur hing daalo.
+      sound: Rai chatakti aur phoot-ti hai.
+      smell: Laung aur kadi patte ki tez, bhuni khushboo aati hai.
+      safety: Garam ghee mein kadi patta chhitakta hai, thoda peeche khade raho.
+- text: Pour the tadka into the dal and simmer for 5 more minutes on low heat.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: A light layer of ghee shines on top.
+    sound: It sizzles loudly as the tadka hits the dal.
+  say:
+    hi:
+      text: तड़का दाल में डालो और धीमी आँच पर 5 मिनट और उबालो।
+      look: ऊपर घी की हल्की परत चमकती है।
+      sound: तड़का पड़ते ही ज़ोर से छनछनाहट होती है।
+    hi-Latn:
+      text: Tadka dal mein daalo aur dheemi aanch par 5 minute aur ubaalo.
+      look: Upar ghee ki halki parat chamakti hai.
+      sound: Tadka padte hi zor se chhan-chhan hoti hai.
+- text: Switch off the heat, squeeze in lemon if you want more sourness, top with coriander leaves and serve hot with rice.
+  say:
+    hi:
+      text: गैस बंद करो, और खट्टापन चाहिए तो नींबू निचोड़ो, ऊपर हरा धनिया डालो और गरम-गरम चावल के साथ परोसो।
+    hi-Latn:
+      text: Gas band karo, aur khattapan chahiye to nimbu nichodo, upar hara dhaniya daalo aur garam-garam chawal ke saath
+        paroso.

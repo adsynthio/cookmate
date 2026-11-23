@@ -1,0 +1,233 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: sprouts-usal
+title: Sprouts Usal
+titles:
+  hi: स्प्राउट्स उसळ
+  hi-Latn: Sprouts Usal
+description: A Maharashtrian weekday usal of moong sprouts cooked with onion, tomato and fresh coconut, finished with a squeeze
+  of lemon. Serve with pav, chapati or rice.
+descriptions:
+  hi: महाराष्ट्र की रोज़ की उसळ, जिसमें मूंग स्प्राउट्स को प्याज़, टमाटर और ताज़े नारियल के साथ पकाया जाता है और ऊपर से नींबू
+    निचोड़ा जाता है। पाव, रोटी या चावल के साथ परोसें।
+  hi-Latn: Maharashtra ki roz wali usal, jisme moong sprouts ko pyaaz, tamatar aur taaze nariyal ke saath pakaya jaata hai
+    aur upar se nimbu nichoda jaata hai. Pav, roti ya chawal ke saath parosein.
+cuisine_region: maharashtra
+course: main
+diet: vegan
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 25
+difficulty: 2
+spice_level: 2
+equipment:
+- kadai
+- gas_stove
+tags:
+- comforting
+- high_protein
+- one_pot
+- tiffin
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+- protein
+review_status: in_review
+ingredients:
+- ingredient: moong sprouts
+  qty: 250
+  unit: g
+  local: 2 katori
+  role: protein
+- ingredient: groundnut oil
+  qty: 20
+  unit: ml
+  local: 1.5 bada chammach
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 3
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: cumin seeds
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 10-12 patte
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: aromatic
+  group: tadka
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 medium pyaaz, bareek kata
+  role: base
+- ingredient: garlic
+  qty: 12
+  unit: g
+  local: 4 kali lehsun, kuti hui
+  role: aromatic
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch, kati
+  role: heat
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 medium tamatar, kata
+  role: base
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach
+  role: spice
+  group: masala
+- ingredient: red chilli powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: masala
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: coconut
+  qty: 30
+  unit: g
+  local: 3 bada chammach kaddukas kiya nariyal
+  role: component
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+- ingredient: jaggery
+  qty: 8
+  unit: g
+  local: 1 chhota tukda gud
+  role: sweet
+  optional: true
+- ingredient: lemon
+  qty: 15
+  unit: ml
+  local: aadha nimbu
+  role: acid
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bada chammach kata dhaniya
+  role: garnish
+steps:
+- text: Rinse the moong sprouts in a strainer under running water and let them drain.
+  say:
+    hi:
+      text: मूंग स्प्राउट्स को छलनी में डालकर बहते पानी में धो लें और पानी निथरने दें।
+    hi-Latn:
+      text: Moong sprouts ko chhalni mein daal kar behte paani mein dho lein aur paani nitharne dein.
+- text: Heat oil in a kadai, add mustard seeds, then cumin seeds, curry leaves and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The mustard seeds crackle and pop.
+  safety: Curry leaves splutter in hot oil, so stand back.
+  say:
+    hi:
+      text: कढ़ाई में तेल गरम करें, राई डालें, फिर जीरा, करी पत्ता और हींग डालें।
+      sound: राई चटकने लगती है।
+      safety: गरम तेल में करी पत्ता छिटकता है, थोड़ा पीछे रहें।
+    hi-Latn:
+      text: Kadai mein tel garam karein, rai daalein, phir jeera, kadi patta aur hing daalein.
+      sound: Rai chatakne lagti hai.
+      safety: Garam tel mein kadi patta chhitakta hai, thoda peeche rahein.
+- text: Add the onion, garlic and green chilli and sauté until the onion turns light golden.
+  technique: saute_onion
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and light golden.
+    smell: The raw garlic smell goes away.
+  say:
+    hi:
+      text: प्याज़, लहसुन और हरी मिर्च डालें और प्याज़ हल्का सुनहरा होने तक भूनें।
+      look: प्याज़ नरम और हल्का सुनहरा हो जाता है।
+      smell: लहसुन की कच्ची महक चली जाती है।
+    hi-Latn:
+      text: Pyaaz, lehsun aur hari mirch daalein aur pyaaz halka sunehra hone tak bhunein.
+      look: Pyaaz naram aur halka sunehra ho jaata hai.
+      smell: Lehsun ki kachchi mehak chali jaati hai.
+- text: Add the tomato, turmeric, red chilli powder and coriander powder, then cook until the tomato is mushy.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato breaks down and oil shows at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च पाउडर और धनिया पाउडर डालें और टमाटर गलने तक पकाएँ।
+      look: टमाटर गल जाता है और किनारों पर तेल दिखने लगता है।
+    hi-Latn:
+      text: Tamatar, haldi, laal mirch powder aur dhaniya powder daalein aur tamatar galne tak pakayein.
+      look: Tamatar gal jaata hai aur kinaron par tel dikhne lagta hai.
+- text: Add the sprouts, salt and 1 cup of water, then stir, cover and simmer until the sprouts are tender.
+  technique: simmer
+  minutes: 12
+  timer: true
+  heat: low
+  cues:
+    touch: A sprout presses soft between your fingers but still holds its shape.
+  say:
+    hi:
+      text: स्प्राउट्स, नमक और 1 कप पानी डालें, फिर चलाएँ, ढककर स्प्राउट्स नरम होने तक धीमी आँच पर पकाएँ।
+      touch: उँगलियों से दबाने पर स्प्राउट नरम लगता है पर आकार बना रहता है।
+    hi-Latn:
+      text: Sprouts, namak aur 1 cup paani daalein, phir chalayein, dhak kar sprouts naram hone tak dheemi aanch par pakayein.
+      touch: Ungliyon se dabane par sprout naram lagta hai par shape bani rehti hai.
+- text: Stir in the grated coconut, garam masala and jaggery, then simmer until the gravy thickens a little.
+  technique: simmer
+  minutes: 3
+  timer: true
+  heat: low
+  cues:
+    look: The gravy coats the sprouts loosely.
+  say:
+    hi:
+      text: कद्दूकस किया नारियल, गरम मसाला और गुड़ मिलाएँ, फिर ग्रेवी थोड़ी गाढ़ी होने तक पकाएँ।
+      look: ग्रेवी स्प्राउट्स पर हल्की-सी लिपटी दिखती है।
+    hi-Latn:
+      text: Kaddukas kiya nariyal, garam masala aur gud milayein, phir gravy thodi gaadhi hone tak pakayein.
+      look: Gravy sprouts par halki-si lipti dikhti hai.
+- text: Turn off the heat, squeeze in the lemon, sprinkle coriander leaves and serve hot.
+  say:
+    hi:
+      text: आँच बंद करें, नींबू निचोड़ें, हरा धनिया डालें और गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, nimbu nichodein, hara dhaniya daalein aur garam parosein.

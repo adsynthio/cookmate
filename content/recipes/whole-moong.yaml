@@ -1,0 +1,262 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: whole-moong
+title: Sabut Moong Dal
+titles:
+  hi: साबुत मूंग दाल
+  hi-Latn: Sabut Moong Dal
+description: A homely whole green moong dal, soaked and pressure-cooked soft, then simmered in a simple onion-tomato masala
+  with a ghee and jeera tadka. Good with roti or rice on any weekday.
+descriptions:
+  hi: घर वाली साबुत हरी मूंग की दाल। मूंग को भिगोकर कुकर में नरम पकाया जाता है, फिर घी-जीरे के तड़के वाले सादे प्याज़-टमाटर
+    मसाले में उबाला जाता है। किसी भी दिन रोटी या चावल के साथ बढ़िया लगती है।
+  hi-Latn: Ghar wali sabut hari moong ki dal. Moong ko bhigokar cooker mein naram pakaya jaata hai, phir ghee-jeere ke tadke
+    wale saade pyaaz-tamatar masale mein ubaala jaata hai. Kisi bhi din roti ya chawal ke saath badhiya lagti hai.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 35
+difficulty: 2
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- high_protein
+- basics
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 0
+  starch: 1
+  sweet: 0
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: whole green moong
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: base
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: half chhota chammach
+  role: spice
+- ingredient: ghee
+  qty: 30
+  unit: ml
+  local: 2 bada chammach
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: aromatic
+  group: tadka
+- ingredient: onion
+  qty: 120
+  unit: g
+  local: 1 bada pyaaz
+  role: vegetable
+  group: masala
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak
+  role: aromatic
+  group: masala
+- ingredient: garlic
+  qty: 10
+  unit: g
+  local: 4-5 kali lehsun
+  role: aromatic
+  group: masala
+- ingredient: green chilli
+  qty: 6
+  unit: g
+  local: 1-2 hari mirch
+  role: heat
+  group: masala
+- ingredient: tomato
+  qty: 150
+  unit: g
+  local: 2 medium tamatar
+  role: acid
+  group: masala
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: half chhota chammach
+  role: heat
+  group: masala
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: masala
+- ingredient: garam masala
+  qty: 1
+  unit: g
+  local: chauthai chhota chammach
+  role: spice
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+- ingredient: lemon
+  qty: 20
+  unit: g
+  local: half nimbu
+  role: acid
+  optional: true
+steps:
+- text: Wash the moong 2 to 3 times and soak it in plenty of water for about 4 hours.
+  technique: soak
+  minutes: 240
+  timer: true
+  cues:
+    look: The grains look swollen and a few skins start to split.
+    touch: A soaked grain is plump and slightly soft when pressed.
+  say:
+    hi:
+      text: मूंग को 2-3 बार धोकर भरपूर पानी में लगभग 4 घंटे भिगो दें।
+      look: दाने फूले हुए दिखते हैं और कुछ के छिलके फटने लगते हैं।
+      touch: भीगा दाना दबाने पर मोटा और हल्का नरम लगता है।
+    hi-Latn:
+      text: Moong ko 2-3 baar dhokar bharpoor paani mein lagbhag 4 ghante bhigo dein.
+      look: Daane phoole hue dikhte hain aur kuch ke chhilke phatne lagte hain.
+      touch: Bheega daana dabane par mota aur halka naram lagta hai.
+- text: Drain the moong, put it in the pressure cooker with 700 ml water, the salt and turmeric, and cook for 4 whistles on
+    medium heat.
+  technique: pressure_cook
+  minutes: 15
+  whistles: 4
+  timer: true
+  heat: medium
+  cues:
+    look: After opening, the grains are soft and some have burst.
+    touch: A grain mashes easily between two fingers.
+  safety: Open the cooker only after the pressure has dropped on its own.
+  say:
+    hi:
+      text: मूंग का पानी निकाल दें, कुकर में 700 ml पानी, नमक और हल्दी के साथ डालें और मध्यम आँच पर 4 सीटी लगाएँ।
+      look: खोलने पर दाने नरम होते हैं और कुछ फट चुके होते हैं।
+      touch: दाना दो उंगलियों के बीच आसानी से मसल जाता है।
+      safety: कुकर तभी खोलें जब प्रेशर अपने आप पूरा निकल जाए।
+    hi-Latn:
+      text: Moong ka paani nikaal dein, cooker mein 700 ml paani, namak aur haldi ke saath daalein aur medium aanch par 4
+        seeti lagayein.
+      look: Kholne par daane naram hote hain aur kuch phat chuke hote hain.
+      touch: Daana do ungliyon ke beech aasaani se masal jaata hai.
+      safety: Cooker tabhi kholein jab pressure apne aap poora nikal jaaye.
+- text: Heat the ghee in a kadai on medium heat, add the cumin seeds and then the asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The cumin turns a shade darker.
+    sound: The cumin crackles as soon as it hits the ghee.
+    smell: A warm roasted jeera smell rises.
+  say:
+    hi:
+      text: कढ़ाई में मध्यम आँच पर घी गरम करें, जीरा डालें और फिर हींग डालें।
+      look: जीरा थोड़ा गहरा हो जाता है।
+      sound: घी में डालते ही जीरा चटकने लगता है।
+      smell: भुने जीरे की गरम खुशबू आती है।
+    hi-Latn:
+      text: Kadai mein medium aanch par ghee garam karein, jeera daalein aur phir hing daalein.
+      look: Jeera thoda gehra ho jaata hai.
+      sound: Ghee mein daalte hi jeera chatakne lagta hai.
+      smell: Bhune jeere ki garam khushboo aati hai.
+- text: Add the chopped onion, grated ginger, chopped garlic and slit green chilli, and saute until the onion is golden.
+  technique: saute_onion
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and light golden at the edges.
+    smell: The raw smell of garlic goes away.
+  say:
+    hi:
+      text: कटा प्याज़, कसा अदरक, कटा लहसुन और चीरी हुई हरी मिर्च डालें और प्याज़ सुनहरा होने तक भूनें।
+      look: प्याज़ नरम हो जाता है और किनारों से हल्का सुनहरा हो जाता है।
+      smell: लहसुन की कच्ची गंध चली जाती है।
+    hi-Latn:
+      text: Kata pyaaz, kasa adrak, kata lehsun aur cheeri hui hari mirch daalein aur pyaaz sunehra hone tak bhunein.
+      look: Pyaaz naram ho jaata hai aur kinaron se halka sunehra ho jaata hai.
+      smell: Lehsun ki kachchi gandh chali jaati hai.
+- text: Add the chopped tomato, red chilli powder and coriander powder, and cook the masala until the tomato is mushy and
+    ghee shows at the sides.
+  technique: bhuna
+  minutes: 6
+  timer: true
+  heat: medium
+  cues:
+    look: Ghee separates and shines at the edges of the masala.
+    touch: The tomato mashes easily under the spoon.
+  say:
+    hi:
+      text: कटा टमाटर, लाल मिर्च पाउडर और धनिया पाउडर डालें, और मसाले को तब तक पकाएँ जब तक टमाटर गल न जाए और किनारों पर घी
+        न दिखने लगे।
+      look: मसाले के किनारों पर घी अलग होकर चमकने लगता है।
+      touch: टमाटर चम्मच से आसानी से मसल जाता है।
+    hi-Latn:
+      text: Kata tamatar, laal mirch powder aur dhaniya powder daalein, aur masale ko tab tak pakayein jab tak tamatar gal
+        na jaaye aur kinaron par ghee na dikhne lage.
+      look: Masale ke kinaron par ghee alag hokar chamakne lagta hai.
+      touch: Tamatar chammach se aasaani se masal jaata hai.
+- text: Pour the cooked moong with its water into the masala, lightly mash a few grains, add a little hot water if it is too
+    thick, and simmer.
+  technique: simmer
+  minutes: 8
+  timer: true
+  heat: low
+  cues:
+    look: The dal turns creamy and coats the back of the spoon.
+    sound: It bubbles gently.
+  safety: Hot dal can splutter, so stir with a long spoon.
+  say:
+    hi:
+      text: पकी हुई मूंग पानी समेत मसाले में डालें, कुछ दाने हल्के से मसल दें, ज़्यादा गाढ़ी लगे तो थोड़ा गरम पानी डालें और
+        धीमी आँच पर उबालें।
+      look: दाल मलाईदार हो जाती है और चम्मच के पीछे लिपटने लगती है।
+      sound: धीरे-धीरे बुलबुले उठते हैं।
+      safety: गरम दाल उछल सकती है, इसलिए लंबे चम्मच से चलाएँ।
+    hi-Latn:
+      text: Paki hui moong paani samet masale mein daalein, kuch daane halke se masal dein, zyada gaadhi lage to thoda garam
+        paani daalein aur dheemi aanch par ubaalein.
+      look: Dal malaidaar ho jaati hai aur chammach ke peeche lipatne lagti hai.
+      sound: Dheere-dheere bulbule uthte hain.
+      safety: Garam dal uchhal sakti hai, isliye lambe chammach se chalayein.
+- text: Turn off the heat, stir in the garam masala, top with chopped coriander and a squeeze of lemon if you like, and serve
+    hot.
+  cues:
+    smell: The garam masala smells fresh and warm.
+  say:
+    hi:
+      text: आँच बंद करें, गरम मसाला मिलाएँ, ऊपर से कटा हरा धनिया और चाहें तो थोड़ा नींबू निचोड़ें, और गरम परोसें।
+      smell: गरम मसाले की ताज़ी, गरम खुशबू आती है।
+    hi-Latn:
+      text: Aanch band karein, garam masala milayein, upar se kata hara dhaniya aur chahein to thoda nimbu nichodein, aur
+        garam parosein.
+      smell: Garam masale ki taazi, garam khushboo aati hai.

@@ -1,0 +1,300 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: dal-dhokli
+title: Gujarati Dal Dhokli
+titles:
+  hi: गुजराती दाल ढोकली
+  hi-Latn: Gujarati Dal Dhokli
+description: Sweet, tangy and lightly spiced Gujarati toor dal with soft, masala wheat-flour dhokli simmered right in it.
+  A full one-pot meal for a weekday dinner.
+descriptions:
+  hi: खट्टी-मीठी, हल्की मसालेदार गुजराती तुअर दाल, जिसमें मसाले वाले गेहूँ के आटे की नरम ढोकली उसी में पकाई जाती है। हफ़्ते
+    के किसी भी दिन के खाने के लिए पूरा एक-बर्तन भोजन।
+  hi-Latn: Khatti-meethi, halki masaledar Gujarati toor dal, jismein masale wale gehun ke aate ki naram dhokli usi mein pakayi
+    jaati hai. Hafte ke kisi bhi din ke khaane ke liye poora ek-bartan bhojan.
+cuisine_region: gujarat
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 35
+difficulty: 2
+spice_level: 2
+equipment:
+- pressure_cooker
+- gas_stove
+- kadai
+tags:
+- comforting
+- one_pot
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+- grain
+review_status: in_review
+ingredients:
+- ingredient: toor dal
+  qty: 150
+  unit: g
+  local: 3/4 katori
+  role: protein
+  group: dal
+- ingredient: peanuts
+  qty: 30
+  unit: g
+  local: 2 bade chammach
+  role: component
+  group: dal
+  optional: true
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: dal
+- ingredient: tomato
+  qty: 120
+  unit: g
+  local: 1 bada tamatar, kata hua
+  role: acid
+  group: dal
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch, kati hui
+  role: heat
+  group: dal
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, kaddukas kiya
+  role: aromatic
+  group: dal
+- ingredient: jaggery
+  qty: 30
+  unit: g
+  local: 2 bade chammach gud
+  role: sweet
+  group: dal
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+  group: dal
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach (dal aur ladhokli ke liye)
+  role: spice
+- ingredient: lemon
+  qty: 30
+  unit: ml
+  local: 1 nimbu ka ras
+  role: acid
+  group: dal
+- ingredient: whole wheat flour
+  qty: 150
+  unit: g
+  local: 1 katori atta
+  role: starch
+  group: dhokli
+- ingredient: gram flour
+  qty: 20
+  unit: g
+  local: 2 bade chammach besan
+  role: binder
+  group: dhokli
+- ingredient: carom seeds
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach ajwain
+  role: spice
+  group: dhokli
+- ingredient: refined oil
+  qty: 10
+  unit: ml
+  local: 2 chhote chammach tel (moyan)
+  role: fat
+  group: dhokli
+- ingredient: ghee
+  qty: 30
+  unit: ml
+  local: 2 bade chammach
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: cumin seeds
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach jeera
+  role: spice
+  group: tadka
+- ingredient: cloves
+  qty: 1
+  unit: g
+  local: 3 laung
+  role: spice
+  group: tadka
+- ingredient: cinnamon
+  qty: 2
+  unit: g
+  local: 1 chhota tukda dalchini
+  role: spice
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: g
+  local: 2 sookhi laal mirch
+  role: heat
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 8-10 kadi patta
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 2 bade chammach hara dhaniya, kata hua
+  role: garnish
+steps:
+- text: Wash the toor dal and peanuts, add 500 ml water, half the turmeric and a little salt, and pressure-cook on medium
+    heat for 3 whistles; let the pressure drop by itself.
+  technique: pressure_cook
+  minutes: 12
+  whistles: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The dal is completely soft and falls apart when pressed.
+  safety: Open the cooker only after the pressure has fully settled.
+  say:
+    hi:
+      text: तुअर दाल और मूंगफली धोकर उसमें 500 ml पानी, आधी हल्दी और थोड़ा नमक डालें, और मध्यम आँच पर 3 सीटी तक प्रेशर कुक
+        करें; प्रेशर अपने आप उतरने दें।
+      look: दाल पूरी तरह नरम हो जाए और दबाने पर बिखर जाए।
+      safety: प्रेशर पूरी तरह उतरने के बाद ही कुकर खोलें।
+    hi-Latn:
+      text: Toor dal aur moongphali dhokar usmein 500 ml paani, aadhi haldi aur thoda namak daalein, aur medium aanch par
+        3 seeti tak pressure cook karein; pressure apne aap utarne dein.
+      look: Dal poori tarah naram ho jaaye aur dabane par bikhar jaaye.
+      safety: Pressure poori tarah utarne ke baad hi cooker kholein.
+- text: Mix the wheat flour, gram flour, carom seeds, remaining turmeric, half the red chilli powder, a pinch of salt and
+    the oil, then knead into a firm dough with a little water and rest it covered for 10 minutes.
+  technique: knead
+  minutes: 10
+  timer: true
+  cues:
+    touch: The dough is firm and smooth, like puri dough.
+  say:
+    hi:
+      text: गेहूँ का आटा, बेसन, अजवाइन, बची हल्दी, आधी लाल मिर्च, चुटकी भर नमक और तेल मिलाएँ, फिर थोड़े पानी से सख्त आटा गूँथें
+        और 10 मिनट ढककर रखें।
+      touch: आटा पूरी के आटे जैसा सख्त और चिकना हो।
+    hi-Latn:
+      text: Gehun ka aata, besan, ajwain, bachi haldi, aadhi laal mirch, chutki bhar namak aur tel milayein, phir thode paani
+        se sakht aata goondhein aur 10 minute dhak kar rakhein.
+      touch: Aata puri ke aate jaisa sakht aur chikna ho.
+- text: Divide the dough into 3 balls, roll each into a thin roti and cut into small diamond pieces with a knife.
+  technique: shape
+  cues:
+    look: The roti is thin and even, almost see-through at the edges.
+  say:
+    hi:
+      text: आटे की 3 लोइयाँ बनाएँ, हर एक को पतली रोटी की तरह बेलें और चाकू से छोटे-छोटे डायमंड टुकड़ों में काटें।
+      look: रोटी पतली और बराबर हो, किनारों पर लगभग पारदर्शी।
+    hi-Latn:
+      text: Aate ki 3 loiyaan banayein, har ek ko patli roti ki tarah belein aur chaaku se chhote-chhote diamond tukdon mein
+        kaatein.
+      look: Roti patli aur barabar ho, kinaaron par lagbhag paardarshi.
+- text: Whisk the cooked dal smooth, add 700 ml water, tomato, green chilli, ginger, jaggery, the rest of the red chilli powder
+    and salt, and bring it to a boil on medium heat.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The dal is thin and bubbling steadily.
+  say:
+    hi:
+      text: पकी दाल को मथकर एकसार करें, उसमें 700 ml पानी, टमाटर, हरी मिर्च, अदरक, गुड़, बची लाल मिर्च और नमक डालें, और मध्यम
+        आँच पर उबाल आने दें।
+      look: दाल पतली हो और लगातार बुलबुले उठ रहे हों।
+    hi-Latn:
+      text: Paki dal ko mathkar eksaar karein, usmein 700 ml paani, tamatar, hari mirch, adrak, gud, bachi laal mirch aur
+        namak daalein, aur medium aanch par ubaal aane dein.
+      look: Dal patli ho aur lagaataar bulbule uth rahe hon.
+- text: In a small pan heat the ghee on medium, add mustard seeds, then cumin, cloves, cinnamon, dry red chilli, curry leaves
+    and asafoetida, and pour this tadka into the dal.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    sound: The mustard seeds crackle and pop.
+    smell: The ghee smells of cloves and curry leaves.
+  safety: Stand back when pouring; the hot ghee will splutter.
+  say:
+    hi:
+      text: छोटे पैन में मध्यम आँच पर घी गरम करें, राई डालें, फिर जीरा, लौंग, दालचीनी, सूखी लाल मिर्च, कड़ी पत्ता और हींग
+        डालें, और यह तड़का दाल में डाल दें।
+      sound: राई चटकने और फूटने लगे।
+      smell: घी में से लौंग और कड़ी पत्ते की खुशबू आए।
+      safety: तड़का डालते समय थोड़ा पीछे हटें; गरम घी छिटकेगा।
+    hi-Latn:
+      text: Chhote pan mein medium aanch par ghee garam karein, rai daalein, phir jeera, laung, dalchini, sookhi laal mirch,
+        kadi patta aur hing daalein, aur yeh tadka dal mein daal dein.
+      sound: Rai chatakne aur phootne lage.
+      smell: Ghee mein se laung aur kadi patte ki khushboo aaye.
+      safety: Tadka daalte samay thoda peeche hatein; garam ghee chhitkega.
+- text: With the dal at a rolling boil, drop in the dhokli pieces a few at a time, stirring gently so they don't stick together.
+  heat: high
+  say:
+    hi:
+      text: दाल में तेज़ उबाल आने पर ढोकली के टुकड़े थोड़े-थोड़े करके डालें, और धीरे से चलाते रहें ताकि वे आपस में न चिपकें।
+    hi-Latn:
+      text: Dal mein tez ubaal aane par dhokli ke tukde thode-thode karke daalein, aur dheere se chalaate rahein taaki woh
+        aapas mein na chipkein.
+- text: Lower the heat and simmer for 12 to 15 minutes, stirring now and then, until the dhokli are cooked through and the
+    dal thickens slightly.
+  technique: simmer
+  minutes: 15
+  timer: true
+  heat: low
+  cues:
+    look: The dhokli turn slightly translucent and the dal coats the spoon.
+    touch: A dhokli piece is soft and not doughy when cut with a spoon.
+  say:
+    hi:
+      text: आँच धीमी करें और 12 से 15 मिनट पकाएँ, बीच-बीच में चलाते रहें, जब तक ढोकली पूरी पक न जाए और दाल थोड़ी गाढ़ी न हो
+        जाए।
+      look: ढोकली थोड़ी पारदर्शी हो जाए और दाल चम्मच पर चिपकने लगे।
+      touch: चम्मच से काटने पर ढोकली नरम हो, अंदर से कच्ची न लगे।
+    hi-Latn:
+      text: Aanch dheemi karein aur 12 se 15 minute pakayein, beech-beech mein chalaate rahein, jab tak dhokli poori pak na
+        jaaye aur dal thodi gaadhi na ho jaaye.
+      look: Dhokli thodi paardarshi ho jaaye aur dal chammach par chipakne lage.
+      touch: Chammach se kaatne par dhokli naram ho, andar se kachchi na lage.
+- text: Turn off the heat, stir in the lemon juice, sprinkle coriander leaves and serve hot.
+  say:
+    hi:
+      text: आँच बंद करें, नींबू का रस मिलाएँ, ऊपर से हरा धनिया डालें और गरमागरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, nimbu ka ras milayein, upar se hara dhaniya daalein aur garamagaram parosein.

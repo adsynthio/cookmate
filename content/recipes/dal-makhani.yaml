@@ -1,0 +1,250 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: dal-makhani
+title: Dal Makhani
+titles:
+  hi: दाल मखनी
+  hi-Latn: Dal Makhani
+description: Creamy Punjabi dal of whole black urad and a little rajma, pressure-cooked soft, then simmered slowly with a
+  buttery tomato masala and finished with cream.
+descriptions:
+  hi: साबुत काली उड़द और थोड़े राजमा की मलाईदार पंजाबी दाल। इसे कुकर में नरम पकाकर मक्खन वाले टमाटर मसाले में धीमी आँच पर
+    पकाया जाता है और ऊपर से क्रीम डाली जाती है।
+  hi-Latn: Sabut kaali urad aur thode rajma ki malaidaar Punjabi dal. Ise cooker mein naram pakakar makkhan wale tamatar masale
+    mein dheemi aanch par pakaya jaata hai aur upar se cream daali jaati hai.
+cuisine_region: punjabi
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 75
+difficulty: 3
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- high_protein
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 0
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+- dairy
+review_status: in_review
+ingredients:
+- ingredient: whole black urad
+  qty: 150
+  unit: g
+  local: 3/4 katori
+  role: base
+  group: dal
+- ingredient: kidney beans
+  qty: 30
+  unit: g
+  local: 3 bade chammach
+  role: base
+  group: dal
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach
+  role: spice
+- ingredient: butter
+  qty: 40
+  unit: g
+  local: 3 bade chammach
+  role: fat
+  group: masala
+- ingredient: ghee
+  qty: 10
+  unit: g
+  local: 1 bada chammach
+  role: fat
+  group: masala
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: masala
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 bada pyaaz, baarik kata
+  role: aromatic
+  group: masala
+- ingredient: ginger garlic paste
+  qty: 15
+  unit: g
+  local: 1 bada chammach
+  role: aromatic
+  group: masala
+- ingredient: tomato
+  qty: 250
+  unit: g
+  local: 3 tamatar, pees kar
+  role: acid
+  group: masala
+- ingredient: kashmiri chilli powder
+  qty: 5
+  unit: g
+  local: 1.5 chhota chammach
+  role: heat
+  group: masala
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: finish
+- ingredient: dried fenugreek leaves
+  qty: 2
+  unit: g
+  local: 1 chhota chammach
+  role: aromatic
+  group: finish
+- ingredient: fresh cream
+  qty: 60
+  unit: ml
+  local: 4 bade chammach
+  role: fat
+  group: finish
+- ingredient: butter
+  qty: 10
+  unit: g
+  local: 1 chhota tukda, upar se
+  role: garnish
+  group: finish
+  optional: true
+steps:
+- text: Wash the black urad and rajma together and soak them overnight, at least 8 hours, in plenty of water.
+  technique: soak
+  minutes: 480
+  timer: true
+  cues:
+    look: The beans swell to nearly double in size.
+  say:
+    hi:
+      text: काली उड़द और राजमा को साथ में धोकर खूब सारे पानी में रात भर, कम से कम 8 घंटे, भिगो दें।
+      look: दाने फूलकर लगभग दोगुने हो जाते हैं।
+    hi-Latn:
+      text: Kaali urad aur rajma ko saath mein dhokar khoob saare paani mein raat bhar, kam se kam 8 ghante, bhigo dein.
+      look: Daane phoolkar lagbhag dogune ho jaate hain.
+- text: 'Drain and throw away the soaking water, rinse, then pressure-cook with 900 ml fresh water and the salt: 7 whistles
+    on medium heat, then 20 minutes on low.'
+  technique: pressure_cook
+  minutes: 40
+  whistles: 7
+  timer: true
+  heat: medium
+  cues:
+    sound: Steady hiss and whistles from the cooker.
+  safety: Rajma must never be cooked in its soaking water or left half-cooked.
+  say:
+    hi:
+      text: भिगोने वाला पानी निकालकर फेंक दें, दाल धो लें, फिर 900 ml ताज़ा पानी और नमक डालकर कुकर में मध्यम आँच पर 7 सीटी
+        लगाएँ, फिर धीमी आँच पर 20 मिनट पकाएँ।
+      sound: कुकर से लगातार सीटी और भाप की आवाज़ आती है।
+      safety: राजमा को कभी भिगोने वाले पानी में न पकाएँ और न ही आधा कच्चा छोड़ें।
+    hi-Latn:
+      text: Bhigone wala paani nikaal kar phenk dein, dal dho lein, phir 900 ml taaza paani aur namak daalkar cooker mein
+        medium aanch par 7 seeti lagayein, phir dheemi aanch par 20 minute pakayein.
+      sound: Cooker se lagataar seeti aur bhaap ki awaaz aati hai.
+      safety: Rajma ko kabhi bhigone wale paani mein na pakayein aur na hi aadha kachcha chhodein.
+- text: Turn off the heat and open the cooker only after the pressure has dropped by itself, then check the rajma; if any
+    bean is not fully soft, cook 2 to 3 more whistles.
+  minutes: 15
+  timer: true
+  cues:
+    touch: Every rajma mashes completely between your fingers with no hard centre.
+  safety: Never force the cooker open; wait till all the pressure is gone on its own.
+  say:
+    hi:
+      text: आँच बंद कर दें और कुकर तभी खोलें जब प्रेशर अपने आप पूरा निकल जाए, फिर राजमा जाँचें; अगर कोई दाना पूरा नरम न हो
+        तो 2-3 सीटी और लगाएँ।
+      touch: हर राजमा उंगलियों के बीच पूरा मसल जाए, बीच में कोई सख़्ती न हो।
+      safety: कुकर ज़बरदस्ती कभी न खोलें; प्रेशर अपने आप पूरा निकलने तक रुकें।
+    hi-Latn:
+      text: Aanch band kar dein aur cooker tabhi kholein jab pressure apne aap poora nikal jaaye, phir rajma check karein;
+        agar koi daana poora naram na ho to 2-3 seeti aur lagayein.
+      touch: Har rajma ungliyon ke beech poora masal jaaye, beech mein koi sakhti na ho.
+      safety: Cooker zabardasti kabhi na kholein; pressure apne aap poora nikalne tak rukein.
+- text: Heat the butter and ghee in a kadai on medium heat, add cumin, then fry the onion until golden.
+  technique: saute_onion
+  minutes: 7
+  timer: true
+  heat: medium
+  cues:
+    look: Onion turns soft and golden brown.
+    sound: Cumin crackles as it hits the hot fat.
+  say:
+    hi:
+      text: कढ़ाई में मध्यम आँच पर मक्खन और घी गरम करें, जीरा डालें, फिर प्याज़ सुनहरा होने तक भूनें।
+      look: प्याज़ नरम और सुनहरा भूरा हो जाता है।
+      sound: गरम घी में जीरा चटकता है।
+    hi-Latn:
+      text: Kadai mein medium aanch par makkhan aur ghee garam karein, jeera daalein, phir pyaaz sunehra hone tak bhunein.
+      look: Pyaaz naram aur sunehra bhoora ho jaata hai.
+      sound: Garam ghee mein jeera chatakta hai.
+- text: Add ginger garlic paste, then the tomato puree and kashmiri chilli powder, and cook the masala, stirring, until the
+    fat separates.
+  technique: bhuna
+  minutes: 10
+  timer: true
+  heat: medium
+  cues:
+    look: Butter shines at the edges of a thick, dark red masala.
+    smell: The raw garlic smell goes away.
+  say:
+    hi:
+      text: अदरक लहसुन का पेस्ट डालें, फिर टमाटर की प्यूरी और कश्मीरी लाल मिर्च डालकर चलाते हुए मसाला तब तक भूनें जब तक घी
+        अलग न हो जाए।
+      look: गाढ़े गहरे लाल मसाले के किनारों पर मक्खन चमकने लगता है।
+      smell: लहसुन की कच्ची महक चली जाती है।
+    hi-Latn:
+      text: Adrak lehsun ka paste daalein, phir tamatar ki puree aur kashmiri laal mirch daalkar chalaate hue masala tab tak
+        bhunein jab tak ghee alag na ho jaaye.
+      look: Gaadhe gehre laal masale ke kinaaron par makkhan chamakne lagta hai.
+      smell: Lehsun ki kachchi mehak chali jaati hai.
+- text: Lightly mash the cooked dal with a ladle, add it to the masala with about 1 cup water, and simmer on low, stirring
+    often so it does not stick.
+  technique: simmer
+  minutes: 25
+  timer: true
+  heat: low
+  cues:
+    look: The dal turns thick, creamy and dark.
+    sound: Slow, gentle bubbling.
+  say:
+    hi:
+      text: पकी दाल को कलछी से हल्का मसल लें, लगभग 1 कप पानी के साथ मसाले में डालें और धीमी आँच पर पकाएँ, बार-बार चलाते रहें
+        ताकि नीचे न लगे।
+      look: दाल गाढ़ी, मलाईदार और गहरे रंग की हो जाती है।
+      sound: धीमे-धीमे बुलबुले उठते हैं।
+    hi-Latn:
+      text: Paki dal ko kalchhi se halka masal lein, lagbhag 1 cup paani ke saath masale mein daalein aur dheemi aanch par
+        pakayein, baar-baar chalaate rahein taaki neeche na lage.
+      look: Dal gaadhi, malaidaar aur gehre rang ki ho jaati hai.
+      sound: Dheeme-dheeme bulbule uthte hain.
+- text: Stir in garam masala, kasuri methi crushed between your palms, and the cream, simmer 5 minutes, and serve hot with
+    the extra butter on top.
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    smell: A buttery smell with the scent of kasuri methi.
+  say:
+    hi:
+      text: गरम मसाला, हथेलियों में मसली कसूरी मेथी और क्रीम मिलाएँ, 5 मिनट धीमी आँच पर पकाएँ और ऊपर से मक्खन डालकर गरमागरम
+        परोसें।
+      smell: मक्खन और कसूरी मेथी की ख़ुशबू आती है।
+    hi-Latn:
+      text: Garam masala, hatheliyon mein masli kasuri methi aur cream milaayein, 5 minute dheemi aanch par pakayein aur upar
+        se makkhan daalkar garmagaram parosein.
+      smell: Makkhan aur kasuri methi ki khushboo aati hai.

@@ -1,0 +1,220 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: baingan-bharta
+title: Baingan Bharta
+titles:
+  hi: बैंगन भर्ता
+  hi-Latn: Baingan Bharta
+description: Smoky flame-roasted brinjal mashed and cooked with onion, tomato, garlic and green chilli in mustard oil. A Punjabi
+  weekday sabzi to eat with hot rotis.
+descriptions:
+  hi: आग पर भुने धुएँदार बैंगन को मैश करके सरसों के तेल में प्याज़, टमाटर, लहसुन और हरी मिर्च के साथ पकाया जाता है। गरम रोटी
+    के साथ खाने वाली पंजाबी रोज़ की सब्ज़ी।
+  hi-Latn: Aag par bhune dhuandaar baingan ko mash karke sarson ke tel mein pyaaz, tamatar, lehsun aur hari mirch ke saath
+    pakaya jaata hai. Garam roti ke saath khaane wali Punjabi roz ki sabzi.
+cuisine_region: punjabi
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 10
+cook_time_min: 35
+difficulty: 2
+spice_level: 3
+equipment:
+- gas_stove
+- kadai
+tags:
+- comforting
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: brinjal
+  qty: 500
+  unit: g
+  local: 1 bada bharte wala baingan
+  role: vegetable
+- ingredient: garlic
+  qty: 15
+  unit: g
+  local: 8-10 lehsun ki kaliyan
+  role: aromatic
+- ingredient: mustard oil
+  qty: 30
+  unit: ml
+  local: 2 bade chammach
+  role: fat
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: onion
+  qty: 150
+  unit: g
+  local: 2 medium pyaaz, bareek kate
+  role: base
+- ingredient: ginger
+  qty: 10
+  unit: g
+  local: 1 inch adrak, kaddukas
+  role: aromatic
+- ingredient: green chilli
+  qty: 8
+  unit: g
+  local: 2 hari mirch, bareek kati
+  role: heat
+- ingredient: tomato
+  qty: 200
+  unit: g
+  local: 2 medium tamatar, bareek kate
+  role: acid
+- ingredient: turmeric powder
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach
+  role: spice
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: heat
+- ingredient: coriander powder
+  qty: 4
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: garam masala
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  optional: true
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+steps:
+- text: Wash and dry the brinjal, rub a few drops of oil on it, make 4 small slits and push 4 garlic cloves inside, then roast
+    it directly on the gas flame, turning with tongs until charred all over.
+  minutes: 15
+  timer: true
+  heat: medium
+  cues:
+    look: The skin is black and blistered everywhere and the brinjal has shrunk and collapsed.
+    smell: It smells smoky.
+    touch: A knife goes through the thickest part with no resistance.
+  safety: Turn the brinjal with tongs, not your fingers, and keep the dupatta or sleeves away from the flame.
+  say:
+    hi:
+      text: बैंगन धोकर सुखा लें, उस पर कुछ बूँद तेल लगाएँ, 4 छोटे चीरे लगाकर 4 लहसुन की कलियाँ अंदर डालें, फिर सीधे गैस की
+        आँच पर चिमटे से घुमाते हुए चारों तरफ़ से काला होने तक भूनें।
+      look: छिलका हर तरफ़ से काला और फफोलेदार हो जाए और बैंगन सिकुड़कर ढीला पड़ जाए।
+      smell: धुएँदार खुशबू आने लगे।
+      touch: सबसे मोटे हिस्से में चाकू बिना रुकावट के घुस जाए।
+      safety: बैंगन चिमटे से पलटें, उँगलियों से नहीं, और दुपट्टा या बाँह आँच से दूर रखें।
+    hi-Latn:
+      text: Baingan dhokar sukha lein, us par kuch boond tel lagayein, 4 chhote cheere lagakar 4 lehsun ki kaliyan andar daalein,
+        phir seedhe gas ki aanch par chimte se ghumate hue chaaron taraf se kaala hone tak bhunein.
+      look: Chhilka har taraf se kaala aur phapholedaar ho jaaye aur baingan sikudkar dheela pad jaaye.
+      smell: Dhuandaar khushboo aane lage.
+      touch: Sabse mote hisse mein chaaku bina rukawat ke ghus jaaye.
+      safety: Baingan chimte se palatein, ungliyon se nahin, aur dupatta ya baanh aanch se door rakhein.
+- text: Cover the roasted brinjal in a bowl for 5 minutes, then peel off the burnt skin, remove the stem and mash the pulp
+    with the roasted garlic.
+  minutes: 5
+  timer: true
+  cues:
+    look: The pulp is soft, creamy and flecked with a little smoky skin.
+  safety: The inside stays very hot, so let it cool a little before peeling.
+  say:
+    hi:
+      text: भुने बैंगन को एक कटोरे में 5 मिनट ढककर रखें, फिर जला छिलका उतारें, डंठल हटाएँ और गूदे को भुने लहसुन के साथ मैश
+        कर लें।
+      look: गूदा नरम और मलाईदार हो, उसमें थोड़े धुएँदार छिलके के टुकड़े दिखें।
+      safety: अंदर से बैंगन बहुत गरम रहता है, इसलिए छीलने से पहले थोड़ा ठंडा होने दें।
+    hi-Latn:
+      text: Bhune baingan ko ek katore mein 5 minute dhakkar rakhein, phir jala chhilka utaarein, danthal hatayein aur gudde
+        ko bhune lehsun ke saath mash kar lein.
+      look: Gudda naram aur malaidaar ho, usmein thode dhuandaar chhilke ke tukde dikhein.
+      safety: Andar se baingan bahut garam rehta hai, isliye chheelne se pehle thoda thanda hone dein.
+- text: Heat the mustard oil in a kadai until it smokes lightly, lower the heat a little and add the cumin seeds and the remaining
+    garlic, finely chopped.
+  technique: tadka
+  minutes: 2
+  heat: medium
+  cues:
+    look: The garlic turns light golden.
+    sound: The cumin crackles.
+  say:
+    hi:
+      text: कड़ाही में सरसों का तेल हल्का धुआँ उठने तक गरम करें, आँच थोड़ी कम करें और जीरा व बचा हुआ बारीक कटा लहसुन डालें।
+      look: लहसुन हल्का सुनहरा हो जाए।
+      sound: जीरा चटकने लगे।
+    hi-Latn:
+      text: Kadai mein sarson ka tel halka dhuan uthne tak garam karein, aanch thodi kam karein aur jeera va bacha hua bareek
+        kata lehsun daalein.
+      look: Lehsun halka sunehra ho jaaye.
+      sound: Jeera chatakne lage.
+- text: Add the onion, ginger and green chilli and sauté until the onion is golden.
+  technique: saute_onion
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns soft and golden.
+  say:
+    hi:
+      text: प्याज़, अदरक और हरी मिर्च डालें और प्याज़ सुनहरा होने तक भूनें।
+      look: प्याज़ नरम और सुनहरा हो जाए।
+    hi-Latn:
+      text: Pyaaz, adrak aur hari mirch daalein aur pyaaz sunehra hone tak bhunein.
+      look: Pyaaz naram aur sunehra ho jaaye.
+- text: Add the tomato, turmeric, red chilli powder, coriander powder and salt, and cook, stirring, until the tomato breaks
+    down.
+  technique: bhuna
+  minutes: 7
+  timer: true
+  heat: medium
+  cues:
+    look: The tomato turns mushy and oil shows at the edges.
+  say:
+    hi:
+      text: टमाटर, हल्दी, लाल मिर्च पाउडर, धनिया पाउडर और नमक डालें और चलाते हुए टमाटर गलने तक पकाएँ।
+      look: टमाटर गल जाए और किनारों पर तेल दिखने लगे।
+    hi-Latn:
+      text: Tamatar, haldi, laal mirch powder, dhaniya powder aur namak daalein aur chalaate hue tamatar galne tak pakayein.
+      look: Tamatar gal jaaye aur kinaaron par tel dikhne lage.
+- text: Add the mashed brinjal and cook, mashing and stirring, so it soaks up the masala; sprinkle garam masala if using.
+  technique: bhuna
+  minutes: 6
+  timer: true
+  heat: low
+  cues:
+    look: The bharta is thick, well blended and glossy.
+  say:
+    hi:
+      text: मैश किया बैंगन डालें और दबाते-चलाते हुए पकाएँ ताकि मसाला अच्छे से मिल जाए; चाहें तो गरम मसाला छिड़कें।
+      look: भर्ता गाढ़ा, अच्छी तरह मिला हुआ और चमकदार दिखे।
+    hi-Latn:
+      text: Mash kiya baingan daalein aur dabaate-chalaate hue pakayein taaki masala achhe se mil jaaye; chahein to garam
+        masala chhidkein.
+      look: Bharta gaadha, achhi tarah mila hua aur chamakdaar dikhe.
+- text: Turn off the heat, top with chopped coriander leaves and serve hot with roti.
+  say:
+    hi:
+      text: आँच बंद करें, ऊपर से कटा हरा धनिया डालें और रोटी के साथ गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, upar se kata hara dhaniya daalein aur roti ke saath garam parosein.

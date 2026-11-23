@@ -1,0 +1,232 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: masoor-dal
+title: Masoor Dal
+titles:
+  hi: मसूर दाल
+  hi-Latn: Masoor Dal
+description: Everyday homestyle red lentil dal. It is pressure-cooked soft, then finished with a garlic, onion and tomato
+  tadka in ghee. Serve it with rice or roti.
+descriptions:
+  hi: रोज़ की घर वाली लाल मसूर दाल। इसे कुकर में नरम पकाकर घी में लहसुन, प्याज़ और टमाटर का तड़का लगाया जाता है। चावल या रोटी
+    के साथ परोसें।
+  hi-Latn: Roz ki ghar wali laal masoor dal. Ise cooker mein naram pakakar ghee mein lehsun, pyaaz aur tamatar ka tadka lagaya
+    jaata hai. Chawal ya roti ke saath parosein.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 25
+difficulty: 1
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- quick
+- basics
+- high_protein
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: masoor dal
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: base
+  group: dal
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+  group: dal
+- ingredient: salt
+  qty: 7
+  unit: g
+  local: 1 chhota chammach se thoda kam
+  role: spice
+  group: dal
+- ingredient: ghee
+  qty: 30
+  unit: g
+  local: 2 bade chammach
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: aromatic
+  group: tadka
+- ingredient: garlic
+  qty: 15
+  unit: g
+  local: 5-6 kaliyan
+  role: aromatic
+  group: tadka
+- ingredient: green chilli
+  qty: 10
+  unit: g
+  local: 2 hari mirch
+  role: heat
+  group: tadka
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 bada pyaaz
+  role: aromatic
+  group: tadka
+- ingredient: tomato
+  qty: 120
+  unit: g
+  local: 2 tamatar
+  role: acid
+  group: tadka
+- ingredient: red chilli powder
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi
+  role: garnish
+  group: garnish
+- ingredient: lemon
+  qty: 20
+  unit: g
+  local: aadha nimbu
+  role: acid
+  group: garnish
+  optional: true
+steps:
+- text: Wash the masoor dal 3 to 4 times in water and soak it for 15 minutes.
+  technique: soak
+  minutes: 15
+  timer: true
+  cues:
+    look: The washing water runs almost clear.
+  say:
+    hi:
+      text: मसूर दाल को 3-4 बार पानी में धोकर 15 मिनट भिगो दें।
+      look: धोने का पानी लगभग साफ़ निकलने लगे।
+    hi-Latn:
+      text: Masoor dal ko 3-4 baar paani mein dhokar 15 minute bhigo dein.
+      look: Dhone ka paani lagbhag saaf nikalne lage.
+- text: Drain the dal and put it in the pressure cooker with 700 ml water, the turmeric and the salt. Cook for 2 whistles
+    on medium heat, then let the pressure drop on its own.
+  technique: pressure_cook
+  minutes: 10
+  whistles: 2
+  timer: true
+  heat: medium
+  safety: Open the lid only after all the pressure has gone.
+  say:
+    hi:
+      text: दाल का पानी निकालकर उसे कुकर में डालें, साथ में 700 ml पानी, हल्दी और नमक डालें। मध्यम आँच पर 2 सीटी आने दें,
+        फिर प्रेशर अपने आप उतरने दें।
+      safety: ढक्कन तभी खोलें जब पूरा प्रेशर निकल जाए।
+    hi-Latn:
+      text: Dal ka paani nikaalkar use cooker mein daalein, saath mein 700 ml paani, haldi aur namak daalein. Medium aanch
+        par 2 seeti aane dein, phir pressure apne aap utarne dein.
+      safety: Dhakkan tabhi kholein jab poora pressure nikal jaaye.
+- text: Open the cooker and whisk the dal with a ladle until it is smooth.
+  cues:
+    look: The dal is creamy and no whole grains are left.
+  say:
+    hi:
+      text: कुकर खोलकर दाल को कलछी से घोंटकर एकसार कर लें।
+      look: दाल मलाईदार हो जाए और कोई साबुत दाना न दिखे।
+    hi-Latn:
+      text: Cooker kholkar dal ko kalchhi se ghontkar eksaar kar lein.
+      look: Dal malaidaar ho jaaye aur koi saabut daana na dikhe.
+- text: Heat the ghee in a kadai on medium heat. Add the cumin seeds and asafoetida, then add the chopped garlic and green
+    chilli.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The garlic turns light golden.
+    sound: The cumin crackles.
+    smell: It smells of roasted garlic.
+  say:
+    hi:
+      text: कड़ाही में मध्यम आँच पर घी गरम करें। जीरा और हींग डालें, फिर कटा लहसुन और हरी मिर्च डालें।
+      look: लहसुन हल्का सुनहरा हो जाए।
+      sound: जीरा चटकने लगे।
+      smell: भुने लहसुन की खुशबू आए।
+    hi-Latn:
+      text: Kadai mein medium aanch par ghee garam karein. Jeera aur hing daalein, phir kata lehsun aur hari mirch daalein.
+      look: Lehsun halka sunehra ho jaaye.
+      sound: Jeera chatakne lage.
+      smell: Bhune lehsun ki khushboo aaye.
+- text: Add the chopped onion and sauté on medium heat until it turns golden.
+  technique: saute_onion
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns golden brown.
+  say:
+    hi:
+      text: कटा प्याज़ डालें और मध्यम आँच पर सुनहरा होने तक भूनें।
+      look: प्याज़ सुनहरा भूरा हो जाए।
+    hi-Latn:
+      text: Kata pyaaz daalein aur medium aanch par sunehra hone tak bhunein.
+      look: Pyaaz sunehra bhoora ho jaaye.
+- text: Add the chopped tomato and red chilli powder. Cook until the tomato is soft and the ghee separates.
+  technique: bhuna
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: Ghee shows at the edges of the masala.
+    touch: The tomato mashes easily with the spoon.
+  say:
+    hi:
+      text: कटा टमाटर और लाल मिर्च पाउडर डालें। टमाटर गलने और घी अलग होने तक पकाएँ।
+      look: मसाले के किनारों पर घी दिखने लगे।
+      touch: टमाटर चम्मच से आसानी से मसल जाए।
+    hi-Latn:
+      text: Kata tamatar aur laal mirch powder daalein. Tamatar galne aur ghee alag hone tak pakaayein.
+      look: Masale ke kinaaron par ghee dikhne lage.
+      touch: Tamatar chammach se aasaani se masal jaaye.
+- text: Pour in the dal and add up to 100 ml water if it is too thick. Simmer on low heat for 5 minutes and check the salt.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: The dal bubbles gently and pours easily from the ladle.
+  say:
+    hi:
+      text: दाल डालें और गाढ़ी हो तो 100 ml तक पानी मिलाएँ। धीमी आँच पर 5 मिनट उबालें और नमक चख लें।
+      look: दाल हल्के-हल्के उबले और कलछी से आसानी से गिरे।
+    hi-Latn:
+      text: Dal daalein aur gaadhi ho to 100 ml tak paani milaayein. Dheemi aanch par 5 minute ubaalein aur namak chakh lein.
+      look: Dal halke-halke ubale aur kalchhi se aasaani se gire.
+- text: Turn off the heat, add the chopped coriander, squeeze in lemon if you like, and serve hot.
+  say:
+    hi:
+      text: आँच बंद करें, कटा हरा धनिया डालें, चाहें तो नींबू निचोड़ें और गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, kata hara dhaniya daalein, chaahein to nimbu nichodein aur garam parosein.

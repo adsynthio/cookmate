@@ -1,0 +1,253 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: sambar
+title: Everyday Sambar
+titles:
+  hi: रोज़ का सांभर
+  hi-Latn: Roz Ka Sambar
+description: A homestyle South Indian sambar of tangy tamarind, soft toor dal, drumstick and brinjal, finished with a mustard
+  seed and curry leaf tadka. Serve it hot with rice, idli or dosa.
+descriptions:
+  hi: खट्टी इमली, नरम अरहर दाल, सहजन और बैंगन से बना घर जैसा दक्षिण भारतीय सांभर, जिस पर राई और करी पत्ते का तड़का लगता है।
+    इसे चावल, इडली या डोसा के साथ गरम परोसें।
+  hi-Latn: Khatti imli, naram arhar dal, sahjan aur baingan se bana ghar jaisa South Indian sambar, jis par rai aur kadi patte
+    ka tadka lagta hai. Ise chawal, idli ya dosa ke saath garam parosein.
+cuisine_region: south_indian
+course: main
+diet: vegan
+base_servings: 4
+prep_time_min: 15
+cook_time_min: 35
+difficulty: 2
+spice_level: 3
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- basics
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 1
+  starch: 1
+  sweet: 1
+food_groups:
+- dal
+- sabzi
+review_status: in_review
+ingredients:
+- ingredient: toor dal
+  qty: 150
+  unit: g
+  local: 3/4 katori arhar dal
+  role: base
+  group: dal
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach haldi
+  role: spice
+  group: dal
+- ingredient: tamarind
+  qty: 15
+  unit: g
+  local: 1 nimbu jitni imli
+  role: acid
+- ingredient: drumstick
+  qty: 150
+  unit: g
+  local: 2 sahjan ki phali
+  role: vegetable
+  group: vegetables
+- ingredient: brinjal
+  qty: 100
+  unit: g
+  local: 2 chhote baingan
+  role: vegetable
+  group: vegetables
+- ingredient: onion
+  qty: 100
+  unit: g
+  local: 1 pyaaz
+  role: aromatic
+  group: vegetables
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 tamatar
+  role: vegetable
+  group: vegetables
+- ingredient: sambar powder
+  qty: 15
+  unit: g
+  local: 2 bade chammach sambar masala
+  role: spice
+- ingredient: salt
+  qty: 8
+  unit: g
+  local: 1.5 chhota chammach namak
+  role: spice
+- ingredient: jaggery
+  qty: 8
+  unit: g
+  local: 1 chhota tukda gud
+  role: sweet
+  optional: true
+- ingredient: groundnut oil
+  qty: 20
+  unit: ml
+  local: 1.5 bada chammach moongphali tel
+  role: fat
+  group: tadka
+- ingredient: mustard seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach rai
+  role: spice
+  group: tadka
+- ingredient: fenugreek seeds
+  qty: 1
+  unit: g
+  local: 1/4 chhota chammach methi dana
+  role: spice
+  group: tadka
+- ingredient: dry red chilli
+  qty: 2
+  unit: piece
+  local: 2 sookhi lal mirch
+  role: heat
+  group: tadka
+- ingredient: curry leaves
+  qty: 2
+  unit: g
+  local: 10-12 kadi patte
+  role: aromatic
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki hing
+  role: spice
+  group: tadka
+- ingredient: coriander leaves
+  qty: 10
+  unit: g
+  local: 1 mutthi hara dhaniya
+  role: garnish
+  optional: true
+steps:
+- text: Wash the toor dal, add turmeric and 450 ml water, and pressure-cook for 3 whistles on medium heat, then mash it smooth.
+  technique: pressure_cook
+  minutes: 12
+  whistles: 3
+  timer: true
+  heat: medium
+  cues:
+    look: The dal is soft and mashes into a smooth paste.
+  safety: Let the pressure drop on its own before you open the cooker.
+  say:
+    hi:
+      text: अरहर दाल धोकर उसमें हल्दी और 450 ml पानी डालें, मध्यम आँच पर 3 सीटी तक प्रेशर कुक करें, फिर दाल को अच्छी तरह मैश
+        करें।
+      look: दाल नरम हो जाती है और मैश करने पर चिकना पेस्ट बन जाती है।
+      safety: कुकर खोलने से पहले प्रेशर अपने आप उतरने दें।
+    hi-Latn:
+      text: Arhar dal dho kar usme haldi aur 450 ml paani daalein, medium aanch par 3 seeti tak pressure cook karein, phir
+        dal ko achhi tarah mash karein.
+      look: Dal naram ho jaati hai aur mash karne par chikna paste ban jaati hai.
+      safety: Cooker kholne se pehle pressure apne aap utarne dein.
+- text: Soak the tamarind in 200 ml warm water for 10 minutes, then squeeze it well and strain out the juice.
+  technique: soak
+  minutes: 10
+  timer: true
+  cues:
+    touch: The pulp feels soft and comes away from the fibres easily.
+  say:
+    hi:
+      text: इमली को 200 ml गुनगुने पानी में 10 मिनट भिगोएँ, फिर अच्छे से मसलकर उसका रस छान लें।
+      touch: गूदा नरम लगता है और रेशों से आसानी से अलग हो जाता है।
+    hi-Latn:
+      text: Imli ko 200 ml gunguney paani mein 10 minute bhigoyein, phir achhe se masal kar uska ras chhaan lein.
+      touch: Gooda naram lagta hai aur reshon se aasani se alag ho jaata hai.
+- text: Heat half the oil in a kadai, sauté the chopped onion until soft, then add the tomato and cook until mushy.
+  technique: saute_onion
+  minutes: 5
+  timer: true
+  heat: medium
+  cues:
+    look: The onion turns translucent and the tomato breaks down.
+  say:
+    hi:
+      text: कड़ाही में आधा तेल गरम करें, कटा प्याज़ नरम होने तक भूनें, फिर टमाटर डालकर गलने तक पकाएँ।
+      look: प्याज़ पारदर्शी हो जाता है और टमाटर गल जाता है।
+    hi-Latn:
+      text: Kadai mein aadha tel garam karein, kata pyaaz naram hone tak bhunein, phir tamatar daal kar galne tak pakayein.
+      look: Pyaaz transparent ho jaata hai aur tamatar gal jaata hai.
+- text: Add the drumstick pieces, brinjal, salt and tamarind water, then cover and cook until the vegetables are tender.
+  technique: simmer
+  minutes: 10
+  timer: true
+  heat: medium
+  cues:
+    touch: A knife goes easily through the drumstick and brinjal.
+  say:
+    hi:
+      text: सहजन के टुकड़े, बैंगन, नमक और इमली का पानी डालें, फिर ढककर सब्ज़ियाँ नरम होने तक पकाएँ।
+      touch: चाकू सहजन और बैंगन में आसानी से चला जाता है।
+    hi-Latn:
+      text: Sahjan ke tukde, baingan, namak aur imli ka paani daalein, phir dhak kar sabziyan naram hone tak pakayein.
+      touch: Chaaku sahjan aur baingan mein aasani se chala jaata hai.
+- text: Stir in the sambar powder, mashed dal, jaggery and about 400 ml water, then simmer until it thickens slightly.
+  technique: simmer
+  minutes: 8
+  timer: true
+  heat: low
+  cues:
+    look: The sambar is pourable but coats the back of a spoon.
+    smell: The raw smell of the sambar powder goes away.
+  say:
+    hi:
+      text: सांभर मसाला, मैश की हुई दाल, गुड़ और लगभग 400 ml पानी मिलाएँ, फिर हल्का गाढ़ा होने तक धीमी आँच पर उबालें।
+      look: सांभर बहने लायक रहता है पर चम्मच के पीछे लिपट जाता है।
+      smell: सांभर मसाले की कच्ची महक चली जाती है।
+    hi-Latn:
+      text: Sambar masala, mash ki hui dal, gud aur lagbhag 400 ml paani milayein, phir halka gaadha hone tak dheemi aanch
+        par ubaalein.
+      look: Sambar behne laayak rehta hai par chammach ke peeche lipat jaata hai.
+      smell: Sambar masale ki kachchi mehak chali jaati hai.
+- text: Heat the remaining oil in a small pan, crackle the mustard seeds, then add fenugreek seeds, dry red chillies, curry
+    leaves and asafoetida.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    sound: The mustard seeds pop and crackle.
+    smell: The curry leaves smell fragrant.
+  safety: Stand back as you add the curry leaves, because the hot oil splutters.
+  say:
+    hi:
+      text: छोटे पैन में बचा हुआ तेल गरम करें, राई चटकाएँ, फिर मेथी दाना, सूखी लाल मिर्च, करी पत्ते और हींग डालें।
+      sound: राई चट-चट करके फूटती है।
+      smell: करी पत्तों से खुशबू आती है।
+      safety: करी पत्ते डालते समय पीछे हटें, क्योंकि गरम तेल छिटकता है।
+    hi-Latn:
+      text: Chhote pan mein bacha hua tel garam karein, rai chatkayein, phir methi dana, sookhi lal mirch, kadi patte aur
+        hing daalein.
+      sound: Rai chat-chat karke phootti hai.
+      smell: Kadi patton se khushboo aati hai.
+      safety: Kadi patte daalte samay peeche hatein, kyunki garam tel chhitakta hai.
+- text: Pour the tadka over the sambar, add chopped coriander, and keep it covered for 5 minutes before serving hot.
+  minutes: 5
+  timer: true
+  cues:
+    sound: The tadka sizzles as it hits the sambar.
+  say:
+    hi:
+      text: तड़का सांभर पर डालें, कटा हरा धनिया मिलाएँ और परोसने से पहले 5 मिनट ढककर रखें, फिर गरम परोसें।
+      sound: तड़का सांभर में पड़ते ही छनछनाता है।
+    hi-Latn:
+      text: Tadka sambar par daalein, kata hara dhaniya milayein aur parosne se pehle 5 minute dhak kar rakhein, phir garam
+        parosein.
+      sound: Tadka sambar mein padte hi chhanchhanata hai.

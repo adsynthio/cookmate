@@ -1,0 +1,222 @@
+# Draft written by the library generator; waiting for review (review_status in_review).
+slug: moong-dal
+title: Yellow Moong Dal Tadka
+titles:
+  hi: पीली मूंग दाल तड़का
+  hi-Latn: Peeli Moong Dal Tadka
+description: Soft, everyday yellow moong dal cooked in the pressure cooker and finished with a ghee tadka of cumin, garlic,
+  onion and tomato. Goes well with rice or roti.
+descriptions:
+  hi: प्रेशर कुकर में पकी नरम पीली मूंग दाल, ऊपर से घी में जीरा, लहसुन, प्याज़ और टमाटर का तड़का। चावल या रोटी के साथ बढ़िया
+    लगती है।
+  hi-Latn: Pressure cooker mein paki naram peeli moong dal, upar se ghee mein jeera, lehsun, pyaaz aur tamatar ka tadka. Chawal
+    ya roti ke saath badhiya lagti hai.
+cuisine_region: north_indian
+course: main
+diet: veg
+base_servings: 4
+prep_time_min: 20
+cook_time_min: 25
+difficulty: 1
+spice_level: 2
+equipment:
+- pressure_cooker
+- kadai
+- gas_stove
+tags:
+- comforting
+- quick
+- basics
+flavor_profile:
+  rich: 1
+  heat: 1
+  acid: 1
+  crunch: 0
+  starch: 1
+  sweet: 0
+food_groups:
+- dal
+review_status: in_review
+ingredients:
+- ingredient: yellow moong dal
+  qty: 200
+  unit: g
+  local: 1 katori
+  role: base
+- ingredient: turmeric powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: spice
+- ingredient: salt
+  qty: 6
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+- ingredient: ghee
+  qty: 20
+  unit: g
+  local: 1.5 bada chammach
+  role: fat
+  group: tadka
+- ingredient: cumin seeds
+  qty: 3
+  unit: g
+  local: 1 chhota chammach
+  role: spice
+  group: tadka
+- ingredient: asafoetida
+  qty: 0.5
+  unit: g
+  local: 1 chutki
+  role: spice
+  group: tadka
+- ingredient: garlic
+  qty: 10
+  unit: g
+  local: 4-5 kali
+  role: aromatic
+  group: tadka
+- ingredient: ginger
+  qty: 5
+  unit: g
+  local: 1 chhota tukda
+  role: aromatic
+  group: tadka
+- ingredient: green chilli
+  qty: 5
+  unit: g
+  local: 1 hari mirch
+  role: heat
+  group: tadka
+- ingredient: onion
+  qty: 80
+  unit: g
+  local: 1 chhota pyaaz
+  role: aromatic
+  group: tadka
+- ingredient: tomato
+  qty: 100
+  unit: g
+  local: 1 tamatar
+  role: acid
+  group: tadka
+- ingredient: red chilli powder
+  qty: 2
+  unit: g
+  local: 1/2 chhota chammach
+  role: heat
+  group: tadka
+- ingredient: coriander leaves
+  qty: 5
+  unit: g
+  local: 1 mutthi
+  role: garnish
+- ingredient: lemon
+  qty: 15
+  unit: ml
+  local: 1/2 nimbu
+  role: acid
+  optional: true
+steps:
+- text: Wash the moong dal in water 2 to 3 times and soak it in fresh water for 15 minutes, then drain.
+  technique: soak
+  minutes: 15
+  timer: true
+  cues:
+    look: The washing water runs almost clear.
+  say:
+    hi:
+      text: मूंग दाल को 2 से 3 बार पानी से धोकर 15 मिनट के लिए ताज़े पानी में भिगो दें, फिर पानी निकाल दें।
+      look: धोने का पानी लगभग साफ़ दिखने लगे।
+    hi-Latn:
+      text: Moong dal ko 2 se 3 baar paani se dhokar 15 minute ke liye taaze paani mein bhigo dein, phir paani nikaal dein.
+      look: Dhone ka paani lagbhag saaf dikhne lage.
+- text: Put the dal in the pressure cooker with 800 ml water, the turmeric and salt, and cook on medium heat for 3 whistles.
+  technique: pressure_cook
+  minutes: 12
+  whistles: 3
+  timer: true
+  heat: medium
+  safety: Let the pressure drop on its own before opening the lid.
+  say:
+    hi:
+      text: दाल को प्रेशर कुकर में 800 ml पानी, हल्दी और नमक के साथ डालें और मध्यम आँच पर 3 सीटी तक पकाएँ।
+      safety: ढक्कन खोलने से पहले प्रेशर अपने आप निकलने दें।
+    hi-Latn:
+      text: Dal ko pressure cooker mein 800 ml paani, haldi aur namak ke saath daalein aur medium aanch par 3 seeti tak pakaayein.
+      safety: Dhakkan kholne se pehle pressure apne aap nikalne dein.
+- text: Open the cooker and whisk the dal with a ladle until smooth.
+  cues:
+    look: The grains have broken down into a creamy dal.
+  say:
+    hi:
+      text: कुकर खोलें और करछी से दाल को अच्छी तरह घोटकर एकसार कर लें।
+      look: दाने टूटकर दाल मलाईदार हो जाए।
+    hi-Latn:
+      text: Cooker kholein aur karchhi se dal ko achhi tarah ghotkar eksaar kar lein.
+      look: Daane tootkar dal malaidaar ho jaaye.
+- text: Heat ghee in a kadai, add cumin seeds and asafoetida, then the chopped garlic and ginger, and stir for a minute.
+  technique: tadka
+  minutes: 1
+  heat: medium
+  cues:
+    look: The garlic turns light golden.
+    sound: The cumin crackles in the ghee.
+  say:
+    hi:
+      text: कढ़ाई में घी गरम करें, जीरा और हींग डालें, फिर कटा लहसुन और अदरक डालकर एक मिनट चलाएँ।
+      look: लहसुन हल्का सुनहरा हो जाए।
+      sound: जीरा घी में चटकने लगे।
+    hi-Latn:
+      text: Kadai mein ghee garam karein, jeera aur hing daalein, phir kata lehsun aur adrak daalkar ek minute chalaayein.
+      look: Lehsun halka sunehra ho jaaye.
+      sound: Jeera ghee mein chatakne lage.
+- text: Add the chopped onion and green chilli and saute until the onion turns soft and golden.
+  technique: saute_onion
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: The onion is soft and golden at the edges.
+  say:
+    hi:
+      text: कटा प्याज़ और हरी मिर्च डालें और प्याज़ नरम और सुनहरा होने तक भूनें।
+      look: प्याज़ नरम हो और किनारों से सुनहरा दिखे।
+    hi-Latn:
+      text: Kata pyaaz aur hari mirch daalein aur pyaaz naram aur sunehra hone tak bhoonein.
+      look: Pyaaz naram ho aur kinaaron se sunehra dikhe.
+- text: Add the chopped tomato and red chilli powder and cook, stirring, until the tomato is mushy.
+  technique: bhuna
+  minutes: 4
+  timer: true
+  heat: medium
+  cues:
+    look: Ghee starts to show at the sides of the masala.
+  say:
+    hi:
+      text: कटा टमाटर और लाल मिर्च पाउडर डालें और चलाते हुए टमाटर गलने तक पकाएँ।
+      look: मसाले के किनारों पर घी दिखने लगे।
+    hi-Latn:
+      text: Kata tamatar aur laal mirch powder daalein aur chalaate hue tamatar galne tak pakaayein.
+      look: Masale ke kinaaron par ghee dikhne lage.
+- text: Pour in the cooked dal, add a little hot water if it is too thick, and simmer for 5 minutes.
+  technique: simmer
+  minutes: 5
+  timer: true
+  heat: low
+  cues:
+    look: The dal flows easily from the ladle and bubbles gently.
+  say:
+    hi:
+      text: पकी हुई दाल डालें, ज़्यादा गाढ़ी हो तो थोड़ा गरम पानी मिलाएँ और 5 मिनट धीमी आँच पर पकाएँ।
+      look: दाल करछी से आसानी से गिरे और हल्के-हल्के उबले।
+    hi-Latn:
+      text: Paki hui dal daalein, zyada gaadhi ho to thoda garam paani milaayein aur 5 minute dheemi aanch par pakaayein.
+      look: Dal karchhi se aasaani se gire aur halke-halke ubale.
+- text: Turn off the heat, sprinkle chopped coriander leaves, add lemon juice if you like, and serve hot.
+  say:
+    hi:
+      text: आँच बंद करें, कटा हरा धनिया डालें, चाहें तो नींबू का रस मिलाएँ और गरम परोसें।
+    hi-Latn:
+      text: Aanch band karein, kata hara dhaniya daalein, chaahein to nimbu ka ras milaayein aur garam parosein.

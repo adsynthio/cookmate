@@ -28,3 +28,15 @@ test("choosing the simpler version skips those extras; putting one back or going
   h = setSimple(h, "dal", null);
   assert.deepEqual(usualSkips(h, "dal"), []);
 });
+
+test("an extra the dish also needs elsewhere stays (butter on top of dal makhani, and in its masala)", () => {
+  const doc = {
+    ingredients: [
+      { ingredient: "butter", qty: 40, unit: "g", role: "fat" },
+      { ingredient: "fresh cream", qty: 50, unit: "ml", role: "fat", optional: true },
+      { ingredient: "butter", qty: 10, unit: "g", role: "garnish", optional: true },
+    ],
+    steps: [{ text: "Simmer." }],
+  } as never;
+  assert.deepEqual(simplerLeaveOut(doc), ["fresh cream"]);
+});

@@ -65,3 +65,11 @@ Deno.test("the model's JSON answer is read, fences and all; a broken one comes b
   assertEquals(lines.some((l) => l.startsWith("course:")), true);
   assertEquals(lines.some((l) => l.startsWith("title_hi:")), true);
 });
+
+Deno.test("taste scores on a 1-5 or 1-10 scale are brought to 0-1", () => {
+  const five = toDoc("boondi-ladoo", { ...boondiLadoo, flavor: { rich: 3, heat: 0, acid: 0, crunch: 1, starch: 2, sweet: 5 } } as never);
+  assertEquals(five.flavor_profile, { rich: 0.6, heat: 0, acid: 0, crunch: 0.2, starch: 0.4, sweet: 1 });
+  const ten = toDoc("boondi-ladoo", { ...boondiLadoo, flavor: { rich: 6, heat: 0, acid: 0, crunch: 2, starch: 4, sweet: 10 } } as never);
+  assertEquals(ten.flavor_profile, { rich: 0.6, heat: 0, acid: 0, crunch: 0.2, starch: 0.4, sweet: 1 });
+  assertEquals(toDoc("boondi-ladoo", boondiLadoo as never).flavor_profile, boondiLadoo.flavor);
+});

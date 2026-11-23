@@ -256,15 +256,18 @@ const SOFT = new Set(["curry", "sabzi", "sabji", "subzi", "masala", "dish"]);
 export type SearchNames = (ingredientKey: string) => string[];
 
 /** Text a recipe can be found by: titles in every script, slug, description and ingredient names and aliases. */
-export function searchText(doc: RecipeDoc, names: SearchNames): { title: string; body: string } {
+export function searchText(doc: RecipeDoc, names: SearchNames): { title: string; body: string; lead: string } {
   const title = normaliseSearch([doc.title, doc.titles?.hi, doc.titles?.["hi-Latn"], doc.titles?.en, doc.slug.replace(/-/g, " ")].filter(Boolean).join(" "));
-  const main = doc.ingredients.filter((i) => ["base", "protein", "vegetable"].includes(i.role)).flatMap((i) => [i.ingredient, ...names(i.ingredient)]);
+  const mains = doc.ingredients.filter((i) => ["base", "protein", "vegetable"].includes(i.role));
+  const main = mains.flatMap((i) => [i.ingredient, ...names(i.ingredient)]);
   const body = normaliseSearch([doc.description, ...main, ...(doc.tags ?? []), doc.course].join(" "));
-  return { title, body };
+  // What the dish is made of first (kidney beans in Rajma; urad in Dal Makhani, which has a little rajma too).
+  const lead = mains[0] ? normaliseSearch([mains[0].ingredient, ...names(mains[0].ingredient)].join(" ")) : "";
+  return { title, body, lead };
 }
 
 /** 0..1: share of meaningful query words found, title hits weigh double. */
-export function searchScore(query: string, text: { title: string; body: string }): number {
+export function searchScore(query: string, text: { title: string; body: string; lead?: string }): number {
   const words = normaliseSearch(query).split(" ").filter((w) => w && !STOP.has(w));
   const meaningful = words.filter((w) => !SOFT.has(w));
   const terms = meaningful.length ? meaningful : words;
@@ -274,7 +277,7 @@ export function searchScore(query: string, text: { title: string; body: string }
     return ` ${hay} `.includes(` ${w}`) || (s.length >= 3 && ` ${hay} `.includes(` ${s}`));
   };
   let score = 0;
-  for (const w of terms) score += has(text.title, w) ? 1 : has(text.body, w) ? 0.75 : 0;
+  for (const w of terms) score += has(text.title, w) ? 1 : text.lead && has(text.lead, w) ? 0.8 : has(text.body, w) ? 0.75 : 0;
   return score / terms.length;
 }
 

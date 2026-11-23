@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import catalog from "../data/catalog.json" with { type: "json" };
 import { pantryMatch, type PantryEntry, type RankRecipe } from "./ranking.ts";
-import { cheaperSwaps, SKIPPABLE, SWAPS, swapBetween, swapsFor, swapsPrompt, twistsFor, withKitchenSwaps } from "./swaps.ts";
+import { canSkip, cheaperSwaps, SKIPPABLE, SWAPS, swapBetween, swapsFor, swapsPrompt, twistsFor, withKitchenSwaps } from "./swaps.ts";
 
 const known = new Set((catalog as { name: string; category: string }[]).map((c) => c.name));
 const category = new Map((catalog as { name: string; category: string }[]).map((c) => [c.name, c.category]));
@@ -87,4 +87,14 @@ test("M1: swaps keep a job, and Eno can make it rise when the soda has run out",
   assert.equal(jobOf(between("lemon", "dry mango powder")!), "sour");
   assert.equal(jobOf(between("kidney beans", "chickpeas")!), null, "one dish for another keeps no single job");
   assert.deepEqual(jobsOf("unknown thing"), ["base"]);
+});
+
+test("a garnish or extra heat can be skipped; the dish's own ingredients can't", () => {
+  assert.ok(canSkip({ ingredient: "green chilli", role: "heat" }));
+  assert.ok(canSkip({ ingredient: "coriander leaves", role: "garnish" }));
+  assert.ok(canSkip({ ingredient: "curry leaves", role: "aromatic" }));
+  assert.ok(canSkip({ ingredient: "ginger", role: "aromatic", optional: true }));
+  assert.ok(!canSkip({ ingredient: "paneer", role: "protein" }));
+  assert.ok(!canSkip({ ingredient: "onion", role: "aromatic" }));
+  assert.ok(!canSkip({ ingredient: "green chilli", role: "vegetable" }));
 });

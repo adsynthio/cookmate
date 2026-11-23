@@ -29,7 +29,7 @@ import { radius, shadow, space } from "@/design-system/tokens";
 import { displayName } from "@/domain/kitchen";
 import { CUISINES, LANGUAGE_CODES } from "@/domain/onboarding";
 import { CONFIDENT, pantryMatch, type IngredientMatch } from "@/domain/ranking";
-import { jobOf, swapBetween } from "@/domain/swaps";
+import { canSkip, jobOf, swapBetween } from "@/domain/swaps";
 import { trickFor, tricksFrom, type Trick } from "@/domain/tricks";
 import {
   cueSenses,
@@ -464,6 +464,7 @@ function RecipeBody({
                 key={`${ing.ingredient}-${i}`}
                 ing={ing}
                 match={byKey.get(ing.ingredient)}
+                have={inKitchen.has(ing.ingredient)}
                 servings={servings}
                 base={doc.base_servings}
                 nameOf={nameOf}
@@ -658,6 +659,7 @@ function Stat({ icon, value, label, highlight }: { icon: "timer" | "skillet" | "
 function IngredientRow({
   ing,
   match,
+  have,
   servings,
   base,
   nameOf,
@@ -672,6 +674,8 @@ function IngredientRow({
   onKeep?: () => void;
   ing: RecipeIngredientDoc;
   match: IngredientMatch | undefined;
+  /** In the kitchen (or an everyday staple). */
+  have: boolean;
   servings: number;
   base: number;
   nameOf: (key: string) => string;
@@ -680,7 +684,8 @@ function IngredientRow({
 }) {
   const { colors } = useTheme();
   const { label: amount, note: changeNote } = rememberedAmount(ing, base, servings, change);
-  const status = ing.optional ? "optional" : (match?.status ?? "missing");
+  // Green chilli, coriander, kasuri methi: shown as optional, never as something to buy (23 Nov 2026).
+  const status = canSkip(ing) ? (have ? "have" : "optional") : (match?.status ?? "missing");
   const detail = skipped
     ? t("recipe.usuallySkip")
     : status === "have"
